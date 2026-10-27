@@ -14,7 +14,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 **Centre spatial et fusées**
 - Centres spatiaux à découvrir dans le monde, normaux ou abandonnés.
-- Pas de tir en cinq tailles, bâtis bloc par bloc d'après un plan fantôme : tour de service, bras ombilicaux, déluge, raccords de ravitaillement, console de lancement, écrans de mission.
+- Pas de tir en trois tailles (5×5, 9×9, 11×11), bâtis bloc par bloc d'après un plan fantôme : tour de service, bras ombilicaux, déluge, raccords de ravitaillement, console de lancement, écrans de mission.
 - Ordinateur de conception avec éditeur d'étages libre, boosters latéraux, chantier de fusée et bras d'assemblage.
 - Moteurs kérosène, hydrogène, méthalox, à poudre, nucléaire thermique, ionique, voile solaire et fusion.
 
@@ -29,6 +29,9 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 **Progression**
 - Arbre de recherche, objectifs et jalons ; un guide illustré, scènes animées comprises ; recettes des machines dans JEI.
+
+**Langues**
+- Français, anglais, allemand, espagnol, italien, portugais (Brésil), russe, polonais, ukrainien, chinois simplifié, japonais et coréen ; variantes régionales comprises.
 
 ## À savoir
 - Le voyage interstellaire (chantier naval orbital, vaisseau, moteur à distorsion, Proxima b) est en préparation. Il est désactivé par défaut et arrivera dans une prochaine mise à jour. Pour le découvrir en avance, malgré ses manques : `interstellar = true` dans `config/orbitalis-startup.toml`, puis relancer le jeu (sur un serveur, même réglage pour le serveur et les joueurs).
@@ -52,7 +55,7 @@ The first public release of Orbitalis: from the first steel ingot to the moons o
 
 **Spaceport and rockets**
 - Spaceports to discover in the world, intact or abandoned.
-- Launch pads in five sizes, built block by block from a ghost plan: service tower, umbilical arms, deluge, fuel ports, launch console, mission displays.
+- Launch pads in three sizes (5×5, 9×9, 11×11), built block by block from a ghost plan: service tower, umbilical arms, deluge, fuel ports, launch console, mission displays.
 - Design computer with a free stage editor, side boosters, rocket construction site and assembly arm.
 - Kerosene, hydrogen, methalox, solid, nuclear thermal, ion, solar sail and fusion engines.
 
@@ -67,6 +70,9 @@ The first public release of Orbitalis: from the first steel ingot to the moons o
 
 **Progression**
 - Research tree, goals and milestones; an illustrated guide with animated scenes; machine recipes in JEI.
+
+**Languages**
+- English, French, German, Spanish, Italian, Portuguese (Brazil), Russian, Polish, Ukrainian, Simplified Chinese, Japanese and Korean, regional variants included.
 
 ## Good to know
 - Interstellar travel (orbital shipyard, ship, warp drive, Proxima b) is in development. It is disabled by default and will arrive in a future update. To try it early, gaps included: set `interstellar = true` in `config/orbitalis-startup.toml`, then restart the game (on a server, use the same setting for the server and the players).
