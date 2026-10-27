@@ -1,4 +1,6 @@
-# Orbitalis — prochaine version
+# Orbitalis — 0.9.1 (bêta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
 
 ## Nouveautés
 - **Pas de tir d'essai** : le kit de pas de tir propose maintenant un 3×3 sans tour, sans mâts ni bras. Treize blocs suffisent pour lancer ses premières fusées-sondes, à poudre et sans équipage (20 t et 8 blocs de haut au plus).
@@ -56,7 +58,9 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 ---
 
-# Orbitalis — next version
+# Orbitalis — 0.9.1 (beta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommended*
 
 ## New
 - **Test pad**: the launch pad kit now offers a 3×3 pad with no tower, masts or arm. Thirteen blocks are enough to fly your first sounding rockets, solid-fuel and uncrewed (up to 20 t and 8 blocks tall).
