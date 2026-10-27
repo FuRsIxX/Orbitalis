@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_reactor_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:reactor_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:nuclear_thermal_engine"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_reactor_core"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:nuclear_thermal_engine"
+    ]
+  }
+}

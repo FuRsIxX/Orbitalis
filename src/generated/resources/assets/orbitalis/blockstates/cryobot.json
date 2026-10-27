@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/exploration/cryobot",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "orbitalis:block/exploration/cryobot"
+    },
+    "facing=south": {
+      "model": "orbitalis:block/exploration/cryobot",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "orbitalis:block/exploration/cryobot",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "orbitalis:block/ship/ring_drive_item"
+  }
+}

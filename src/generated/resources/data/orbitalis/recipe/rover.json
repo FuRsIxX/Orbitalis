@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "B": "orbitalis:battery_cell",
+    "M": "orbitalis:electric_motor",
+    "N": "orbitalis:navigation_unit",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "ANA",
+    "MBM",
+    "T T"
+  ],
+  "result": {
+    "id": "orbitalis:rover"
+  }
+}

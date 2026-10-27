@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.1,
+  "group": "steel_ingot_from_debris",
+  "ingredient": "orbitalis:rocket_debris",
+  "result": {
+    "id": "orbitalis:steel_ingot"
+  }
+}

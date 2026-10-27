@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "orbitalis:block/station/life_support"
+    },
+    "active=true": {
+      "model": "orbitalis:block/station/life_support_on"
+    }
+  }
+}

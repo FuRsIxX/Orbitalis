@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "orbitalis:block/facility_concrete_slab"
+    },
+    "type=double": {
+      "model": "orbitalis:block/facility_concrete"
+    },
+    "type=top": {
+      "model": "orbitalis:block/facility_concrete_slab_top"
+    }
+  }
+}

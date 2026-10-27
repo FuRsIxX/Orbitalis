@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:flight_processor",
+    "E": "orbitalis:staged_combustion_engine",
+    "N": "minecraft:netherite_scrap",
+    "S": "orbitalis:stainless_tank"
+  },
+  "pattern": [
+    "SES",
+    "SCS",
+    " N "
+  ],
+  "result": {
+    "id": "orbitalis:methalox_engine"
+  }
+}

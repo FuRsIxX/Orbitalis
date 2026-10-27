@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "H": "orbitalis:station_hull",
+    "W": "orbitalis:station_window"
+  },
+  "pattern": [
+    "HH",
+    "WH",
+    "HH"
+  ],
+  "result": {
+    "id": "orbitalis:station_hatch"
+  }
+}

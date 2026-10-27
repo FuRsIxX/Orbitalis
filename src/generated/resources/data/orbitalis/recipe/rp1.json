@@ -1,0 +1,15 @@
+{
+  "type": "orbitalis:refining",
+  "energy": 2000,
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "id": "orbitalis:rp1"
+    }
+  ],
+  "item_input": {
+    "count": 1,
+    "ingredient": "#minecraft:coals"
+  },
+  "time": 100
+}

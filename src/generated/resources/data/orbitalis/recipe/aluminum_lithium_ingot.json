@@ -1,0 +1,19 @@
+{
+  "type": "orbitalis:alloying",
+  "energy": 9000,
+  "ingredients": [
+    {
+      "count": 4,
+      "ingredient": "#c:ingots/aluminum"
+    },
+    {
+      "count": 1,
+      "ingredient": "#c:ingots/lithium"
+    }
+  ],
+  "result": {
+    "count": 5,
+    "id": "orbitalis:aluminum_lithium_ingot"
+  },
+  "time": 300
+}

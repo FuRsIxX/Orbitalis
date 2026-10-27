@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "C": "orbitalis:battery_cell",
+    "E": "orbitalis:hypergolic_engine",
+    "R": "orbitalis:radio_transmitter",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "CRC",
+    "AEA",
+    "T T"
+  ],
+  "result": {
+    "id": "orbitalis:lunar_robotic_lander"
+  }
+}

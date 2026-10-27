@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": "orbitalis:heating_element",
+    "I": "orbitalis:insulation_blanket",
+    "P": "orbitalis:flight_processor",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "THT",
+    "IPI",
+    "THT"
+  ],
+  "result": {
+    "id": "orbitalis:reactor_core"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "S": "#c:plates/steel"
+  },
+  "pattern": [
+    "A A",
+    "SSS",
+    "A A"
+  ],
+  "result": {
+    "count": 2,
+    "id": "orbitalis:interstage"
+  }
+}

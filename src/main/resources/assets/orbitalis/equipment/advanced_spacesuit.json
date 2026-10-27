@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "orbitalis:advanced_spacesuit"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "orbitalis:advanced_spacesuit"
+      }
+    ]
+  }
+}

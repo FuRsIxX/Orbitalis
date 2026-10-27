@@ -1,0 +1,216 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "copper": "orbitalis:block/machine_copper",
+  "dark": "orbitalis:block/machine_dark",
+  "gear": "orbitalis:block/ring_drive_gear",
+  "hull": "orbitalis:block/station_hull",
+  "particle": "orbitalis:block/station_hull"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    4,
+    0
+   ],
+   "to": [
+    16,
+    16,
+    16
+   ],
+   "faces": {
+    "north": {
+     "texture": "#hull",
+     "uv": [
+      0,
+      0,
+      16,
+      12
+     ]
+    },
+    "south": {
+     "texture": "#hull",
+     "uv": [
+      0,
+      0,
+      16,
+      12
+     ]
+    },
+    "west": {
+     "texture": "#hull",
+     "uv": [
+      0,
+      0,
+      16,
+      12
+     ]
+    },
+    "east": {
+     "texture": "#hull",
+     "uv": [
+      0,
+      0,
+      16,
+      12
+     ]
+    },
+    "up": {
+     "texture": "#hull",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    },
+    "down": {
+     "texture": "#hull",
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    2,
+    0,
+    2
+   ],
+   "to": [
+    14,
+    3.8,
+    14
+   ],
+   "faces": {
+    "north": {
+     "texture": "#dark",
+     "uv": [
+      2,
+      12.2,
+      14,
+      16
+     ]
+    },
+    "south": {
+     "texture": "#dark",
+     "uv": [
+      2,
+      12.2,
+      14,
+      16
+     ]
+    },
+    "west": {
+     "texture": "#dark",
+     "uv": [
+      2,
+      12.2,
+      14,
+      16
+     ]
+    },
+    "east": {
+     "texture": "#dark",
+     "uv": [
+      2,
+      12.2,
+      14,
+      16
+     ]
+    },
+    "up": {
+     "texture": "#dark",
+     "uv": [
+      2,
+      2,
+      14,
+      14
+     ]
+    },
+    "down": {
+     "texture": "#gear",
+     "uv": [
+      2,
+      2,
+      14,
+      14
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    1.5,
+    3,
+    1.5
+   ],
+   "to": [
+    14.5,
+    4,
+    14.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#copper",
+     "uv": [
+      1.5,
+      12,
+      14.5,
+      13
+     ]
+    },
+    "south": {
+     "texture": "#copper",
+     "uv": [
+      1.5,
+      12,
+      14.5,
+      13
+     ]
+    },
+    "west": {
+     "texture": "#copper",
+     "uv": [
+      1.5,
+      12,
+      14.5,
+      13
+     ]
+    },
+    "east": {
+     "texture": "#copper",
+     "uv": [
+      1.5,
+      12,
+      14.5,
+      13
+     ]
+    },
+    "up": {
+     "texture": "#copper",
+     "uv": [
+      1.5,
+      1.5,
+      14.5,
+      14.5
+     ]
+    },
+    "down": {
+     "texture": "#copper",
+     "uv": [
+      1.5,
+      1.5,
+      14.5,
+      14.5
+     ]
+    }
+   }
+  }
+ ]
+}

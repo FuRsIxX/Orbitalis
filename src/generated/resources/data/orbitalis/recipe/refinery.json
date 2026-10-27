@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "#c:ingots/copper",
+    "F": "orbitalis:heating_element",
+    "P": "#c:plates/steel",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "PPP",
+    "PFP",
+    "CRC"
+  ],
+  "result": {
+    "id": "orbitalis:refinery"
+  }
+}

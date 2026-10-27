@@ -1,0 +1,14 @@
+{
+  "type": "orbitalis:rolling",
+  "energy": 1000,
+  "ingredients": [
+    {
+      "count": 1,
+      "ingredient": "#c:ingots/steel"
+    }
+  ],
+  "result": {
+    "id": "orbitalis:steel_plate"
+  },
+  "time": 100
+}

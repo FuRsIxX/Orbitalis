@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:sample_container",
+    "E": "orbitalis:hypergolic_engine",
+    "H": "orbitalis:heat_shield_tile",
+    "L": "orbitalis:mars_robotic_lander"
+  },
+  "pattern": [
+    " H ",
+    "CLC",
+    " E "
+  ],
+  "result": {
+    "id": "orbitalis:mars_sample_return"
+  }
+}

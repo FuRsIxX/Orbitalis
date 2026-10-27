@@ -1,0 +1,19 @@
+{
+  "type": "orbitalis:electrolysis",
+  "energy": 400,
+  "fluid_input": {
+    "amount": 100,
+    "id": "minecraft:water"
+  },
+  "fluid_outputs": [
+    {
+      "amount": 200,
+      "id": "orbitalis:hydrogen"
+    },
+    {
+      "amount": 100,
+      "id": "orbitalis:oxygen"
+    }
+  ],
+  "time": 20
+}

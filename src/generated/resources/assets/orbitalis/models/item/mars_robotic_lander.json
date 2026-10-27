@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "orbitalis:item/mars_robotic_lander"
+  }
+}

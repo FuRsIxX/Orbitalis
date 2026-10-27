@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "orbitalis:item/suit_module_thrusters"
+  }
+}

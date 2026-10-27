@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 1.0,
+  "group": "titanium_ingot",
+  "ingredient": "orbitalis:deepslate_titanium_ore",
+  "result": {
+    "id": "orbitalis:titanium_ingot"
+  }
+}

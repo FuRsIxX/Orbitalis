@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "C": "minecraft:crafting_table",
+    "G": "orbitalis:reinforced_glass",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TGT",
+    "ACA"
+  ],
+  "result": {
+    "id": "orbitalis:suit_workbench"
+  }
+}

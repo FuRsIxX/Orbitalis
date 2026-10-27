@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "orbitalis:facility_siding",
+    "orbitalis:facility_siding",
+    "orbitalis:facility_siding",
+    "orbitalis:facility_siding",
+    "#c:dyes/blue"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:blue_facility_siding"
+  }
+}

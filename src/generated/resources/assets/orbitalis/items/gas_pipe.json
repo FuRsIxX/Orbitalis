@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "orbitalis:block/conduit/gas_pipe_inventory"
+  }
+}

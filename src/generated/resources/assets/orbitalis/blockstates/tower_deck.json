@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/tower_deck"
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/tower_deck",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/tower_deck",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/tower_deck",
+      "y": 180
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "#c:ingots/copper",
+    "I": "#c:ingots/iron",
+    "S": "#c:plates/steel"
+  },
+  "pattern": [
+    " C ",
+    "SIS",
+    "S S"
+  ],
+  "result": {
+    "id": "orbitalis:pressure_fed_engine"
+  }
+}

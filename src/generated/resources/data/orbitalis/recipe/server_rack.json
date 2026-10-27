@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/steel",
+    "B": "orbitalis:steel_grating",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "ABA",
+    "ARA",
+    "ABA"
+  ],
+  "result": {
+    "id": "orbitalis:server_rack"
+  }
+}

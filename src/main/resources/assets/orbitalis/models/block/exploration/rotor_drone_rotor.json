@@ -1,0 +1,146 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "dark": "orbitalis:block/rover_dark",
+  "frame": "orbitalis:block/robotic_lander_frame",
+  "particle": "orbitalis:block/rover_white"
+ },
+ "elements": [
+  {
+   "from": [
+    1,
+    0,
+    7.4
+   ],
+   "to": [
+    15,
+    0.35,
+    8.6
+   ],
+   "faces": {
+    "north": {
+     "texture": "#dark",
+     "uv": [
+      1,
+      15.65,
+      15,
+      16
+     ]
+    },
+    "south": {
+     "texture": "#dark",
+     "uv": [
+      1,
+      15.65,
+      15,
+      16
+     ]
+    },
+    "west": {
+     "texture": "#dark",
+     "uv": [
+      7.4,
+      15.65,
+      8.6,
+      16
+     ]
+    },
+    "east": {
+     "texture": "#dark",
+     "uv": [
+      7.4,
+      15.65,
+      8.6,
+      16
+     ]
+    },
+    "up": {
+     "texture": "#dark",
+     "uv": [
+      1,
+      7.4,
+      15,
+      8.6
+     ]
+    },
+    "down": {
+     "texture": "#dark",
+     "uv": [
+      1,
+      7.4,
+      15,
+      8.6
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    7.2,
+    0.175,
+    7.2
+   ],
+   "to": [
+    8.8,
+    0.7,
+    8.8
+   ],
+   "faces": {
+    "north": {
+     "texture": "#frame",
+     "uv": [
+      7.2,
+      15.3,
+      8.8,
+      15.825
+     ]
+    },
+    "south": {
+     "texture": "#frame",
+     "uv": [
+      7.2,
+      15.3,
+      8.8,
+      15.825
+     ]
+    },
+    "west": {
+     "texture": "#frame",
+     "uv": [
+      7.2,
+      15.3,
+      8.8,
+      15.825
+     ]
+    },
+    "east": {
+     "texture": "#frame",
+     "uv": [
+      7.2,
+      15.3,
+      8.8,
+      15.825
+     ]
+    },
+    "up": {
+     "texture": "#frame",
+     "uv": [
+      7.2,
+      7.2,
+      8.8,
+      8.8
+     ]
+    },
+    "down": {
+     "texture": "#frame",
+     "uv": [
+      7.2,
+      7.2,
+      8.8,
+      8.8
+     ]
+    }
+   }
+  }
+ ]
+}

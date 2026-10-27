@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "look=border": {
+      "model": "orbitalis:block/launch_pad_border"
+    },
+    "look=inner": {
+      "model": "orbitalis:block/launch_pad_inner"
+    },
+    "look=plain": {
+      "model": "orbitalis:block/launch_pad"
+    },
+    "look=trench": {
+      "model": "orbitalis:block/launch_pad_trench"
+    }
+  }
+}

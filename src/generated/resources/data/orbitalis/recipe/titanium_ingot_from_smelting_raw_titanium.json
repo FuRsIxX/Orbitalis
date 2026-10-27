@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 1.0,
+  "group": "titanium_ingot",
+  "ingredient": "orbitalis:raw_titanium",
+  "result": {
+    "id": "orbitalis:titanium_ingot"
+  }
+}

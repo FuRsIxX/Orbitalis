@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "orbitalis:block/exploration/robotic_lander"
+    }
+  }
+}

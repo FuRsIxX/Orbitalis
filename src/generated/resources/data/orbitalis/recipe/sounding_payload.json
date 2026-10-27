@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "C": "orbitalis:navigation_unit",
+    "G": "orbitalis:reinforced_glass",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    " G ",
+    "ARA",
+    "ACA"
+  ],
+  "result": {
+    "id": "orbitalis:sounding_payload"
+  }
+}

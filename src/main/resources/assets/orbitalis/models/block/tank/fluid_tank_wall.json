@@ -1,0 +1,28 @@
+{
+ "textures": {
+  "side": "orbitalis:block/tank_side",
+  "particle": "orbitalis:block/tank_frame"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    0,
+    0.25
+   ],
+   "to": [
+    16,
+    16,
+    0.75
+   ],
+   "faces": {
+    "north": {
+     "texture": "#side"
+    },
+    "south": {
+     "texture": "#side"
+    }
+   }
+  }
+ ]
+}

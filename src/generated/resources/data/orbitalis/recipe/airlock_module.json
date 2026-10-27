@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:cargo_rack",
+    "D": "orbitalis:airlock_door",
+    "H": "orbitalis:station_hull"
+  },
+  "pattern": [
+    "HDH",
+    "HCH",
+    "HDH"
+  ],
+  "result": {
+    "id": "orbitalis:airlock_module"
+  }
+}

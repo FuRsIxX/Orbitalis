@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "#c:storage_blocks/copper",
+    "C": "orbitalis:circuit_board",
+    "H": "orbitalis:heating_element",
+    "P": "#c:plates/steel",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "PCP",
+    "HBH",
+    "PRP"
+  ],
+  "result": {
+    "id": "orbitalis:sabatier_reactor"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:energy_cable",
+    "G": "orbitalis:display_screen",
+    "P": "#c:plates/steel",
+    "R": "orbitalis:flight_processor"
+  },
+  "pattern": [
+    "GGG",
+    "PRP",
+    "PCP"
+  ],
+  "result": {
+    "id": "orbitalis:design_computer"
+  }
+}

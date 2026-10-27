@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "C": "orbitalis:circuit_board",
+    "T": "orbitalis:circuit_board"
+  },
+  "pattern": [
+    " T ",
+    "ACA",
+    " A "
+  ],
+  "result": {
+    "id": "orbitalis:recovery_remote"
+  }
+}

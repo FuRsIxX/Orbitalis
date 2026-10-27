@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "G": "#c:glass_blocks",
+    "W": "orbitalis:insulation_blanket"
+  },
+  "pattern": [
+    "AWA",
+    "AGA",
+    "AWA"
+  ],
+  "result": {
+    "id": "orbitalis:cryogenic_tank"
+  }
+}

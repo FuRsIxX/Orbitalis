@@ -1,0 +1,74 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "paint": "orbitalis:block/mast_white",
+    "paintred": "orbitalis:block/mast_red",
+    "particle": "orbitalis:block/pad_steel"
+  },
+  "elements": [
+    {
+      "from": [
+        6,
+        0,
+        6
+      ],
+      "to": [
+        10,
+        11,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#paint"
+        },
+        "south": {
+          "texture": "#paint"
+        },
+        "east": {
+          "texture": "#paint"
+        },
+        "west": {
+          "texture": "#paint"
+        },
+        "up": {
+          "texture": "#paint"
+        },
+        "down": {
+          "texture": "#paint"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        11,
+        6
+      ],
+      "to": [
+        10,
+        16,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#paintred"
+        },
+        "south": {
+          "texture": "#paintred"
+        },
+        "east": {
+          "texture": "#paintred"
+        },
+        "west": {
+          "texture": "#paintred"
+        },
+        "up": {
+          "texture": "#paintred"
+        },
+        "down": {
+          "texture": "#paintred"
+        }
+      }
+    }
+  ]
+}

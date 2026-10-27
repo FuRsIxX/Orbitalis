@@ -1,0 +1,484 @@
+{
+  "variants": {
+    "facing=east,half=lower,phase=closed,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_closed",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=closed,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_closed",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=closed,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_closed",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=closed,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_closed",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=closing,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_cycling",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=closing,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_cycling",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=closing,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_cycling",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=closing,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_cycling",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=cycling,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_cycling",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=cycling,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_cycling",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=cycling,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_cycling",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=cycling,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_cycling",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=open,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_open",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=open,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_open",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=open,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_open",
+      "y": 90
+    },
+    "facing=east,half=lower,phase=open,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_open",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=closed,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_closed",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=closed,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_closed",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=closed,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_closed",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=closed,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_closed",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=closing,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_cycling",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=closing,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_cycling",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=closing,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_cycling",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=closing,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_cycling",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=cycling,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_cycling",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=cycling,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_cycling",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=cycling,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_cycling",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=cycling,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_cycling",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=open,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_open",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=open,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_open",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=open,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_open",
+      "y": 90
+    },
+    "facing=east,half=upper,phase=open,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_open",
+      "y": 90
+    },
+    "facing=north,half=lower,phase=closed,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_closed"
+    },
+    "facing=north,half=lower,phase=closed,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_closed"
+    },
+    "facing=north,half=lower,phase=closed,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_closed"
+    },
+    "facing=north,half=lower,phase=closed,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_closed"
+    },
+    "facing=north,half=lower,phase=closing,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_cycling"
+    },
+    "facing=north,half=lower,phase=closing,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_cycling"
+    },
+    "facing=north,half=lower,phase=closing,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_cycling"
+    },
+    "facing=north,half=lower,phase=closing,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_cycling"
+    },
+    "facing=north,half=lower,phase=cycling,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_cycling"
+    },
+    "facing=north,half=lower,phase=cycling,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_cycling"
+    },
+    "facing=north,half=lower,phase=cycling,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_cycling"
+    },
+    "facing=north,half=lower,phase=cycling,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_cycling"
+    },
+    "facing=north,half=lower,phase=open,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_open"
+    },
+    "facing=north,half=lower,phase=open,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_open"
+    },
+    "facing=north,half=lower,phase=open,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_open"
+    },
+    "facing=north,half=lower,phase=open,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_open"
+    },
+    "facing=north,half=upper,phase=closed,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_closed"
+    },
+    "facing=north,half=upper,phase=closed,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_closed"
+    },
+    "facing=north,half=upper,phase=closed,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_closed"
+    },
+    "facing=north,half=upper,phase=closed,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_closed"
+    },
+    "facing=north,half=upper,phase=closing,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_cycling"
+    },
+    "facing=north,half=upper,phase=closing,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_cycling"
+    },
+    "facing=north,half=upper,phase=closing,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_cycling"
+    },
+    "facing=north,half=upper,phase=closing,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_cycling"
+    },
+    "facing=north,half=upper,phase=cycling,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_cycling"
+    },
+    "facing=north,half=upper,phase=cycling,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_cycling"
+    },
+    "facing=north,half=upper,phase=cycling,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_cycling"
+    },
+    "facing=north,half=upper,phase=cycling,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_cycling"
+    },
+    "facing=north,half=upper,phase=open,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_open"
+    },
+    "facing=north,half=upper,phase=open,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_open"
+    },
+    "facing=north,half=upper,phase=open,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_open"
+    },
+    "facing=north,half=upper,phase=open,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_open"
+    },
+    "facing=south,half=lower,phase=closed,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_closed",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=closed,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_closed",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=closed,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_closed",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=closed,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_closed",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=closing,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_cycling",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=closing,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_cycling",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=closing,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_cycling",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=closing,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_cycling",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=cycling,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_cycling",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=cycling,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_cycling",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=cycling,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_cycling",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=cycling,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_cycling",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=open,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_open",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=open,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_open",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=open,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_open",
+      "y": 180
+    },
+    "facing=south,half=lower,phase=open,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_open",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=closed,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_closed",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=closed,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_closed",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=closed,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_closed",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=closed,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_closed",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=closing,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_cycling",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=closing,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_cycling",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=closing,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_cycling",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=closing,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_cycling",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=cycling,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_cycling",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=cycling,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_cycling",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=cycling,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_cycling",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=cycling,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_cycling",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=open,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_open",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=open,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_open",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=open,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_open",
+      "y": 180
+    },
+    "facing=south,half=upper,phase=open,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_open",
+      "y": 180
+    },
+    "facing=west,half=lower,phase=closed,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_closed",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=closed,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_closed",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=closed,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_closed",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=closed,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_closed",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=closing,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_cycling",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=closing,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_cycling",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=closing,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_cycling",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=closing,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_cycling",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=cycling,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_cycling",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=cycling,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_cycling",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=cycling,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_cycling",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=cycling,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_cycling",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=open,step=0": {
+      "model": "orbitalis:block/station/airlock_door_lower_0_open",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=open,step=1": {
+      "model": "orbitalis:block/station/airlock_door_lower_1_open",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=open,step=2": {
+      "model": "orbitalis:block/station/airlock_door_lower_2_open",
+      "y": 270
+    },
+    "facing=west,half=lower,phase=open,step=3": {
+      "model": "orbitalis:block/station/airlock_door_lower_3_open",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=closed,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_closed",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=closed,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_closed",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=closed,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_closed",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=closed,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_closed",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=closing,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_cycling",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=closing,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_cycling",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=closing,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_cycling",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=closing,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_cycling",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=cycling,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_cycling",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=cycling,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_cycling",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=cycling,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_cycling",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=cycling,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_cycling",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=open,step=0": {
+      "model": "orbitalis:block/station/airlock_door_upper_0_open",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=open,step=1": {
+      "model": "orbitalis:block/station/airlock_door_upper_1_open",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=open,step=2": {
+      "model": "orbitalis:block/station/airlock_door_upper_2_open",
+      "y": 270
+    },
+    "facing=west,half=upper,phase=open,step=3": {
+      "model": "orbitalis:block/station/airlock_door_upper_3_open",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,90 @@
+ORBITALIS - SONS A IMPORTER
+===========================
+Liste etablie le 25/10/2026, mise a jour le 26/10/2026 : tous les sons coches [x] sont branches dans le jeu.
+
+Les fichiers se deposent dans tools/sounds/orbitalis sound/ (pad, capsule, station), puis :
+    python tools/generate_sounds.py
+L'outil ramene chaque son a son niveau sonore : inutile de regler le volume des fichiers.
+
+Deja fournis (rien a faire) : pad/deluge, pad/ignition, pad/valve,
+et tous les sons d'explosion du dossier explosion/.
+Retires (ne servent plus) : pad_alarm, pad_warning.
+
+Conseils pour tous les fichiers :
+- formats acceptes : .wav, .ogg, .mp3, .flac
+- en mono si possible
+- pas de silence au debut
+- les sons marques "BOUCLE" doivent pouvoir se repeter sans coupure audible
+
+
+1. SONS DEJA PREVUS, ENCORE SYNTHETISES
+---------------------------------------
+A deposer dans orbitalis sound/pad/, sous ce nom exact, puis lancer :
+    python tools/generate_sounds.py
+Rien d'autre a faire.
+
+[x] pad_hydraulic   3 s
+    Retrait du bras ombilical et de la passerelle, portique d'embarquement.
+    Sert aussi, faute de mieux, a la poussee des manoeuvres en orbite (en attendant capsule_burn).
+
+[x] pad_purge       2 a 3 s
+    Mise sous pression, mise en froid des moteurs, debut du compte a rebours, cycle d'air du sas.
+
+[x] pad_creak       1 a 2 s
+    A T-13 s, quand les bras et les passerelles se rangent.
+
+
+3. SONS DEDIES QUI N'EXISTENT PAS ENCORE
+----------------------------------------
+Ces moments empruntent aujourd'hui un son du jeu de base ou du pas de tir, ou sont muets.
+Ceux-la doivent etre branches dans le code : deposer les fichiers ici sous ces noms et demander
+a Claude de les declarer. note les sons d'alerte peuvent tous se jouer en même temps
+
+Vol et capsule (les plus utiles)
+[ ] capsule_burn        3 a 6 s, BOUCLE   poussee des manoeuvres en orbite (aujourd'hui : le son hydraulique)
+[x] stage_separation    1 s               separation d'etage, claquement pyrotechnique (aujourd'hui : rien)
+[x] fairing_jettison    1 s               largage de la coiffe (aujourd'hui : rien)
+[x] reentry_loop        BOUCLE            sifflement de la rentree atmospherique (aujourd'hui : rien)
+[x] parachute_deploy    1 a 2 s           ouverture des parachutes (aujourd'hui : une trappe en fer)
+[x] parachute_deploy_loop        BOUCLE   continue pile à la fin du parachute_deploy jusqu'à ce qu'il se pose
+[x] capsule_landing     1 s               impact au sol ou sur la Lune (aujourd'hui : petite chute du joueur) fonctionne sur toute les autres planètes
+[x] lander_engine       BOUCLE            moteur de descente du module lunaire (aujourd'hui : rien) fonctionne sur toute les autres planètes
+[x] capsule_alert_maneuver	  	  alerte de la capsule quand une maneuvre n'est pas exécuté rapidement
+[x] capsule_alert_imminent_crash BOUCLE   alerte de la capsule quand un crash ou une défaillance critique est imminente (quand la capsule reviens sur terre ou va trop vite dans les descente jouer ce sont)
+[x] capsule_alert_stall	  	 BOUCLE   alerte de la capsule quand elle est trop penché et qu'elle doit être vite redressé
+[x] capsule_alert_deploy	 BOUCLE   alerte de la capsule quand le parachute n'est pas largué
+
+Station
+[x] airlock_cycle       2 s               mise a niveau de l'air du sas
+[x] airlock_hatch (open and close)        1,5 s             ecoutille motorisee qui monte et descend
+[x] life_support_hum    BOUCLE            ronronnement du generateur d'air (aujourd'hui : bourdonnement de balise)
+[x] docking       		          amarrage de la capsule à la station
+[x] undoking             		  désamarrage de la capsule à la station
+[x] station_ambient_noise   BOUCLE        ambiance discrete des pieces pressurisees de la station (ajoute)
+
+Pas de tir et centre spatial
+[x] part_placed         court             piece de fusee posee sur le plan, "clang" metallique (aujourd'hui : une enclume) (5 variantes)
+[ ] pad_ready           court             pas de tir en service ou fusee assemblee, petite sonnerie
+[x] warning_overpressure     BOUCLE       alerte pas de tir quand la pression des valve atteigne 80% (joue des 70% depuis le 26/10) (se joue jusqu'à l'explosion)
+[ ] elevator_motor      BOUCLE            ascenseur de la tour en marche (aujourd'hui : un piston)
+[ ] elevator_ding       court             arrivee de l'ascenseur (aujourd'hui : un bloc musical)
+[ ] fuel_connect        1 s               branchement d'un raccord de ravitaillement (aujourd'hui : un seau)
+
+Machines (3 a 6 s, BOUCLE ; seul le generateur a un son aujourd'hui)
+[ ] machine_electrolyzer    bulles
+[ ] machine_liquefier       compresseur
+[ ] machine_foundry         arc electrique
+[ ] machine_rolling_mill    laminoir
+[ ] machine_fusion          bourdonnement grave
+[ ] machine_casimir         crepitement
+
+Combinaison
+[ ] suit_equip          court             enfiler une piece de combinaison (aujourd'hui : armure en fer)
+[ ] suit_module         court             fixer un module a l'etabli (aujourd'hui : armure en netherite)
+
+
+PRIORITES CONSEILLEES
+---------------------
+1. pad_hydraulic, pad_purge, pad_creak (aucun code a toucher)
+2. capsule_burn, stage_separation, reentry_loop, parachute_deploy, airlock_cycle
+3. le reste, au fil de l'eau

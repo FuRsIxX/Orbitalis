@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "orbitalis:interstellar"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fusion_engine": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:fusion_engine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:shipyard_module"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fusion_engine"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:shipyard_module"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_spacesuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:spacesuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:advanced_spacesuit"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_spacesuit"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:advanced_spacesuit"
+    ]
+  }
+}

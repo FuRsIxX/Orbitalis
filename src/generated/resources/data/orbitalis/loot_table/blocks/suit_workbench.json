@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "orbitalis:suit_workbench",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "right": "false"
+              }
+            }
+          ],
+          "name": "orbitalis:suit_workbench"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "orbitalis:blocks/suit_workbench"
+}

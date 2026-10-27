@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "H": "orbitalis:station_hull",
+    "W": "orbitalis:insulation_blanket"
+  },
+  "pattern": [
+    "HHH",
+    "HWH",
+    "HHH"
+  ],
+  "result": {
+    "count": 8,
+    "id": "orbitalis:station_panel"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:reactor_core",
+    "H": "orbitalis:heating_element",
+    "N": "orbitalis:navigation_unit",
+    "R": "orbitalis:radio_transmitter",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TRT",
+    "HCH",
+    "TNT"
+  ],
+  "result": {
+    "id": "orbitalis:cryobot"
+  }
+}

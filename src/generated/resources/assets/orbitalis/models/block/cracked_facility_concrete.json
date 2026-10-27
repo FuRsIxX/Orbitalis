@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "orbitalis:block/cracked_facility_concrete"
+  }
+}

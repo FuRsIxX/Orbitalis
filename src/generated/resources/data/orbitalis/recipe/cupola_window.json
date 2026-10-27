@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "G": "#c:glass_blocks",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TGT",
+    "G G",
+    "TGT"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:cupola_window"
+  }
+}

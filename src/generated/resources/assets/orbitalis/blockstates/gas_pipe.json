@@ -1,0 +1,1069 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_core_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "content": "0"
+          },
+          {
+            "OR": [
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "none"
+                      },
+                      {
+                        "south": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "none"
+                      },
+                      {
+                        "west": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "none"
+                      },
+                      {
+                        "down": "none"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_0"
+      },
+      "when": {
+        "content": "0",
+        "down": "none",
+        "east": "none",
+        "north": "!none",
+        "south": "!none",
+        "up": "none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_0",
+        "y": 90
+      },
+      "when": {
+        "content": "0",
+        "down": "none",
+        "east": "!none",
+        "north": "none",
+        "south": "none",
+        "up": "none",
+        "west": "!none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_0",
+        "x": 90
+      },
+      "when": {
+        "content": "0",
+        "down": "!none",
+        "east": "none",
+        "north": "none",
+        "south": "none",
+        "up": "!none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_0",
+        "x": 90
+      },
+      "when": {
+        "content": "0",
+        "down": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_0",
+        "x": 90
+      },
+      "when": {
+        "content": "0",
+        "down": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_0",
+        "x": 90
+      },
+      "when": {
+        "content": "0",
+        "down": "machine",
+        "pull": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_0",
+        "x": 270
+      },
+      "when": {
+        "content": "0",
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_0",
+        "x": 270
+      },
+      "when": {
+        "content": "0",
+        "pull": "false",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_0",
+        "x": 270
+      },
+      "when": {
+        "content": "0",
+        "pull": "true",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_0"
+      },
+      "when": {
+        "content": "0",
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_0"
+      },
+      "when": {
+        "content": "0",
+        "north": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_0"
+      },
+      "when": {
+        "content": "0",
+        "north": "machine",
+        "pull": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_0",
+        "y": 180
+      },
+      "when": {
+        "content": "0",
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_0",
+        "y": 180
+      },
+      "when": {
+        "content": "0",
+        "pull": "false",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_0",
+        "y": 180
+      },
+      "when": {
+        "content": "0",
+        "pull": "true",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_0",
+        "y": 270
+      },
+      "when": {
+        "content": "0",
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_0",
+        "y": 270
+      },
+      "when": {
+        "content": "0",
+        "pull": "false",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_0",
+        "y": 270
+      },
+      "when": {
+        "content": "0",
+        "pull": "true",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_0",
+        "y": 90
+      },
+      "when": {
+        "content": "0",
+        "east": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_0",
+        "y": 90
+      },
+      "when": {
+        "content": "0",
+        "east": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_0",
+        "y": 90
+      },
+      "when": {
+        "content": "0",
+        "east": "machine",
+        "pull": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_core_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "content": "1"
+          },
+          {
+            "OR": [
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "none"
+                      },
+                      {
+                        "south": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "none"
+                      },
+                      {
+                        "west": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "none"
+                      },
+                      {
+                        "down": "none"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_1"
+      },
+      "when": {
+        "content": "1",
+        "down": "none",
+        "east": "none",
+        "north": "!none",
+        "south": "!none",
+        "up": "none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_1",
+        "y": 90
+      },
+      "when": {
+        "content": "1",
+        "down": "none",
+        "east": "!none",
+        "north": "none",
+        "south": "none",
+        "up": "none",
+        "west": "!none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_1",
+        "x": 90
+      },
+      "when": {
+        "content": "1",
+        "down": "!none",
+        "east": "none",
+        "north": "none",
+        "south": "none",
+        "up": "!none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_1",
+        "x": 90
+      },
+      "when": {
+        "content": "1",
+        "down": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_1",
+        "x": 90
+      },
+      "when": {
+        "content": "1",
+        "down": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_1",
+        "x": 90
+      },
+      "when": {
+        "content": "1",
+        "down": "machine",
+        "pull": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_1",
+        "x": 270
+      },
+      "when": {
+        "content": "1",
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_1",
+        "x": 270
+      },
+      "when": {
+        "content": "1",
+        "pull": "false",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_1",
+        "x": 270
+      },
+      "when": {
+        "content": "1",
+        "pull": "true",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_1"
+      },
+      "when": {
+        "content": "1",
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_1"
+      },
+      "when": {
+        "content": "1",
+        "north": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_1"
+      },
+      "when": {
+        "content": "1",
+        "north": "machine",
+        "pull": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_1",
+        "y": 180
+      },
+      "when": {
+        "content": "1",
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_1",
+        "y": 180
+      },
+      "when": {
+        "content": "1",
+        "pull": "false",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_1",
+        "y": 180
+      },
+      "when": {
+        "content": "1",
+        "pull": "true",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_1",
+        "y": 270
+      },
+      "when": {
+        "content": "1",
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_1",
+        "y": 270
+      },
+      "when": {
+        "content": "1",
+        "pull": "false",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_1",
+        "y": 270
+      },
+      "when": {
+        "content": "1",
+        "pull": "true",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_1",
+        "y": 90
+      },
+      "when": {
+        "content": "1",
+        "east": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_1",
+        "y": 90
+      },
+      "when": {
+        "content": "1",
+        "east": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_1",
+        "y": 90
+      },
+      "when": {
+        "content": "1",
+        "east": "machine",
+        "pull": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_core_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "content": "2"
+          },
+          {
+            "OR": [
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "none"
+                      },
+                      {
+                        "south": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "none"
+                      },
+                      {
+                        "west": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "none"
+                      },
+                      {
+                        "down": "none"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_2"
+      },
+      "when": {
+        "content": "2",
+        "down": "none",
+        "east": "none",
+        "north": "!none",
+        "south": "!none",
+        "up": "none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_2",
+        "y": 90
+      },
+      "when": {
+        "content": "2",
+        "down": "none",
+        "east": "!none",
+        "north": "none",
+        "south": "none",
+        "up": "none",
+        "west": "!none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_straight_2",
+        "x": 90
+      },
+      "when": {
+        "content": "2",
+        "down": "!none",
+        "east": "none",
+        "north": "none",
+        "south": "none",
+        "up": "!none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_2",
+        "x": 90
+      },
+      "when": {
+        "content": "2",
+        "down": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_2",
+        "x": 90
+      },
+      "when": {
+        "content": "2",
+        "down": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_2",
+        "x": 90
+      },
+      "when": {
+        "content": "2",
+        "down": "machine",
+        "pull": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_2",
+        "x": 270
+      },
+      "when": {
+        "content": "2",
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_2",
+        "x": 270
+      },
+      "when": {
+        "content": "2",
+        "pull": "false",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_2",
+        "x": 270
+      },
+      "when": {
+        "content": "2",
+        "pull": "true",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_2"
+      },
+      "when": {
+        "content": "2",
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_2"
+      },
+      "when": {
+        "content": "2",
+        "north": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_2"
+      },
+      "when": {
+        "content": "2",
+        "north": "machine",
+        "pull": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_2",
+        "y": 180
+      },
+      "when": {
+        "content": "2",
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_2",
+        "y": 180
+      },
+      "when": {
+        "content": "2",
+        "pull": "false",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_2",
+        "y": 180
+      },
+      "when": {
+        "content": "2",
+        "pull": "true",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_2",
+        "y": 270
+      },
+      "when": {
+        "content": "2",
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_2",
+        "y": 270
+      },
+      "when": {
+        "content": "2",
+        "pull": "false",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_2",
+        "y": 270
+      },
+      "when": {
+        "content": "2",
+        "pull": "true",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_arm_2",
+        "y": 90
+      },
+      "when": {
+        "content": "2",
+        "east": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_link_2",
+        "y": 90
+      },
+      "when": {
+        "content": "2",
+        "east": "machine",
+        "pull": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/gas_pipe_pull_2",
+        "y": 90
+      },
+      "when": {
+        "content": "2",
+        "east": "machine",
+        "pull": "true"
+      }
+    }
+  ]
+}

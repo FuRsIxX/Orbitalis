@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "C": "orbitalis:circuit_board",
+    "D": "#c:dyes/orange",
+    "L": "orbitalis:insulation_blanket"
+  },
+  "pattern": [
+    "ADA",
+    "ALA",
+    "ACA"
+  ],
+  "result": {
+    "id": "orbitalis:spacesuit"
+  }
+}

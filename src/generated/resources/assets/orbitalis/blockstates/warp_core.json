@@ -1,0 +1,274 @@
+{
+  "variants": {
+    "charge=0,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower",
+      "y": 90
+    },
+    "charge=0,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper",
+      "y": 90
+    },
+    "charge=0,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower"
+    },
+    "charge=0,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper"
+    },
+    "charge=0,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower",
+      "y": 180
+    },
+    "charge=0,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper",
+      "y": 180
+    },
+    "charge=0,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower",
+      "y": 270
+    },
+    "charge=0,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper",
+      "y": 270
+    },
+    "charge=1,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 90
+    },
+    "charge=1,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 90
+    },
+    "charge=1,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on"
+    },
+    "charge=1,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on"
+    },
+    "charge=1,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 180
+    },
+    "charge=1,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 180
+    },
+    "charge=1,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 270
+    },
+    "charge=1,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 270
+    },
+    "charge=2,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 90
+    },
+    "charge=2,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 90
+    },
+    "charge=2,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on"
+    },
+    "charge=2,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on"
+    },
+    "charge=2,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 180
+    },
+    "charge=2,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 180
+    },
+    "charge=2,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 270
+    },
+    "charge=2,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 270
+    },
+    "charge=3,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 90
+    },
+    "charge=3,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 90
+    },
+    "charge=3,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on"
+    },
+    "charge=3,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on"
+    },
+    "charge=3,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 180
+    },
+    "charge=3,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 180
+    },
+    "charge=3,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 270
+    },
+    "charge=3,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 270
+    },
+    "charge=4,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 90
+    },
+    "charge=4,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 90
+    },
+    "charge=4,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on"
+    },
+    "charge=4,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on"
+    },
+    "charge=4,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 180
+    },
+    "charge=4,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 180
+    },
+    "charge=4,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 270
+    },
+    "charge=4,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 270
+    },
+    "charge=5,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 90
+    },
+    "charge=5,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 90
+    },
+    "charge=5,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on"
+    },
+    "charge=5,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on"
+    },
+    "charge=5,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 180
+    },
+    "charge=5,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 180
+    },
+    "charge=5,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 270
+    },
+    "charge=5,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 270
+    },
+    "charge=6,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 90
+    },
+    "charge=6,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 90
+    },
+    "charge=6,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on"
+    },
+    "charge=6,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on"
+    },
+    "charge=6,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 180
+    },
+    "charge=6,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 180
+    },
+    "charge=6,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 270
+    },
+    "charge=6,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 270
+    },
+    "charge=7,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 90
+    },
+    "charge=7,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 90
+    },
+    "charge=7,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on"
+    },
+    "charge=7,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on"
+    },
+    "charge=7,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 180
+    },
+    "charge=7,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 180
+    },
+    "charge=7,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 270
+    },
+    "charge=7,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 270
+    },
+    "charge=8,facing=east,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 90
+    },
+    "charge=8,facing=east,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 90
+    },
+    "charge=8,facing=north,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on"
+    },
+    "charge=8,facing=north,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on"
+    },
+    "charge=8,facing=south,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 180
+    },
+    "charge=8,facing=south,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 180
+    },
+    "charge=8,facing=west,half=lower": {
+      "model": "orbitalis:block/ship/warp_core_lower_on",
+      "y": 270
+    },
+    "charge=8,facing=west,half=upper": {
+      "model": "orbitalis:block/ship/warp_core_upper_on",
+      "y": 270
+    }
+  }
+}

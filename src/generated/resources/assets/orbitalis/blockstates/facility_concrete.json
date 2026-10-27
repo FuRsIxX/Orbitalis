@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "orbitalis:block/facility_concrete"
+      },
+      {
+        "model": "orbitalis:block/facility_concrete_1"
+      },
+      {
+        "model": "orbitalis:block/facility_concrete_2"
+      }
+    ]
+  }
+}

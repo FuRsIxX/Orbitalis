@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "B": "orbitalis:circuit_board",
+    "G": "#c:ingots/gold",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "ABA",
+    "GRG"
+  ],
+  "result": {
+    "id": "orbitalis:navigation_unit"
+  }
+}

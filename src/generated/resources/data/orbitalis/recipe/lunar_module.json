@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:crew_capsule",
+    "E": "orbitalis:pressure_fed_engine",
+    "G": "#c:ingots/gold",
+    "P": "#c:plates/titanium",
+    "T": "orbitalis:aluminum_lithium_tank"
+  },
+  "pattern": [
+    " C ",
+    "TPT",
+    "GEG"
+  ],
+  "result": {
+    "id": "orbitalis:lunar_module"
+  }
+}

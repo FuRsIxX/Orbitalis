@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "G": "minecraft:glass_pane",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "AGA",
+    "AGA",
+    "ARA"
+  ],
+  "result": {
+    "id": "orbitalis:glass_door"
+  }
+}

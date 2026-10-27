@@ -1,0 +1,23 @@
+{
+  "type": "orbitalis:sabatier",
+  "energy": 1600,
+  "fluid_input": {
+    "amount": 800,
+    "id": "orbitalis:hydrogen"
+  },
+  "fluid_outputs": [
+    {
+      "amount": 400,
+      "id": "orbitalis:methane"
+    },
+    {
+      "amount": 200,
+      "id": "minecraft:water"
+    }
+  ],
+  "item_input": {
+    "count": 1,
+    "ingredient": "#minecraft:coals"
+  },
+  "time": 80
+}

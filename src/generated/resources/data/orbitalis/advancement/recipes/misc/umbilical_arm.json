@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_service_tower": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:service_tower"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:umbilical_arm"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_service_tower"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:umbilical_arm"
+    ]
+  }
+}

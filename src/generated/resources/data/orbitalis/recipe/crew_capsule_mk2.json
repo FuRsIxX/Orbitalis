@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum_lithium",
+    "C": "orbitalis:crew_capsule",
+    "D": "orbitalis:solar_cell",
+    "G": "orbitalis:reinforced_glass",
+    "H": "orbitalis:heat_shield_tile"
+  },
+  "pattern": [
+    "AGA",
+    "DCD",
+    "AHA"
+  ],
+  "result": {
+    "id": "orbitalis:crew_capsule_mk2"
+  }
+}

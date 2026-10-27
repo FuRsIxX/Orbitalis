@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "orbitalis:steel_grating",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "I I",
+    "PPP",
+    "I I"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:flame_trench"
+  }
+}

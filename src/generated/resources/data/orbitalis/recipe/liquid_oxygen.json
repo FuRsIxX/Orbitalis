@@ -1,0 +1,15 @@
+{
+  "type": "orbitalis:liquefaction",
+  "energy": 800,
+  "fluid_input": {
+    "amount": 100,
+    "id": "orbitalis:oxygen"
+  },
+  "fluid_outputs": [
+    {
+      "amount": 50,
+      "id": "orbitalis:liquid_oxygen"
+    }
+  ],
+  "time": 40
+}

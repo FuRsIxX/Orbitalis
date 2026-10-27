@@ -1,0 +1,214 @@
+{
+  "pad_purge": {
+    "subtitle": "subtitles.orbitalis.pad_purge",
+    "sounds": [
+      "orbitalis:pad/purge"
+    ]
+  },
+  "pad_valve": {
+    "subtitle": "subtitles.orbitalis.pad_valve",
+    "sounds": [
+      "orbitalis:pad/valve"
+    ]
+  },
+  "pad_hydraulic": {
+    "subtitle": "subtitles.orbitalis.pad_hydraulic",
+    "sounds": [
+      "orbitalis:pad/hydraulic"
+    ]
+  },
+  "pad_deluge": {
+    "subtitle": "subtitles.orbitalis.pad_deluge",
+    "sounds": [
+      {
+        "name": "orbitalis:pad/deluge",
+        "volume": 0.5
+      }
+    ]
+  },
+  "pad_ignition": {
+    "subtitle": "subtitles.orbitalis.pad_ignition",
+    "sounds": [
+      "orbitalis:pad/ignition"
+    ]
+  },
+  "pad_creak": {
+    "subtitle": "subtitles.orbitalis.pad_creak",
+    "sounds": [
+      "orbitalis:pad/creak"
+    ]
+  },
+  "pad_engine": {
+    "subtitle": "subtitles.orbitalis.pad_engine",
+    "sounds": [
+      "orbitalis:pad/engine_loop"
+    ]
+  },
+  "pad_deluge_loop": {
+    "subtitle": "subtitles.orbitalis.pad_deluge_loop",
+    "sounds": [
+      {
+        "name": "orbitalis:pad/deluge_loop",
+        "volume": 0.9
+      }
+    ]
+  },
+  "explosion_near": {
+    "subtitle": "subtitles.orbitalis.explosion_near",
+    "sounds": [
+      "orbitalis:explosion/near_1",
+      "orbitalis:explosion/near_2"
+    ]
+  },
+  "explosion_mid": {
+    "subtitle": "subtitles.orbitalis.explosion_mid",
+    "sounds": [
+      "orbitalis:explosion/mid_1",
+      "orbitalis:explosion/mid_2"
+    ]
+  },
+  "explosion_far": {
+    "subtitle": "subtitles.orbitalis.explosion_far",
+    "sounds": [
+      "orbitalis:explosion/far_1"
+    ]
+  },
+  "debris_fall": {
+    "subtitle": "subtitles.orbitalis.debris_fall",
+    "sounds": [
+      "orbitalis:explosion/debris_1",
+      "orbitalis:explosion/debris_2",
+      "orbitalis:explosion/debris_3"
+    ]
+  },
+  "pad_overpressure": {
+    "subtitle": "subtitles.orbitalis.pad_overpressure",
+    "sounds": [
+      "orbitalis:explosion/pressure_1"
+    ]
+  },
+  "part_placed": {
+    "subtitle": "subtitles.orbitalis.part_placed",
+    "sounds": [
+      "orbitalis:pad/part_placed_1",
+      "orbitalis:pad/part_placed_2",
+      "orbitalis:pad/part_placed_3",
+      "orbitalis:pad/part_placed_4",
+      "orbitalis:pad/part_placed_5"
+    ]
+  },
+  "warning_overpressure": {
+    "subtitle": "subtitles.orbitalis.warning_overpressure",
+    "sounds": [
+      "orbitalis:pad/warning_overpressure"
+    ]
+  },
+  "stage_separation": {
+    "subtitle": "subtitles.orbitalis.stage_separation",
+    "sounds": [
+      "orbitalis:capsule/stage_separation"
+    ]
+  },
+  "fairing_jettison": {
+    "subtitle": "subtitles.orbitalis.fairing_jettison",
+    "sounds": [
+      "orbitalis:capsule/fairing_jettison"
+    ]
+  },
+  "reentry_loop": {
+    "subtitle": "subtitles.orbitalis.reentry_loop",
+    "sounds": [
+      "orbitalis:capsule/reentry_loop"
+    ]
+  },
+  "parachute_deploy": {
+    "subtitle": "subtitles.orbitalis.parachute_deploy",
+    "sounds": [
+      "orbitalis:capsule/parachute_deploy"
+    ]
+  },
+  "parachute_deploy_loop": {
+    "subtitle": "subtitles.orbitalis.parachute_deploy_loop",
+    "sounds": [
+      "orbitalis:capsule/parachute_deploy_loop"
+    ]
+  },
+  "capsule_landing": {
+    "subtitle": "subtitles.orbitalis.capsule_landing",
+    "sounds": [
+      "orbitalis:capsule/capsule_landing"
+    ]
+  },
+  "lander_engine": {
+    "subtitle": "subtitles.orbitalis.lander_engine",
+    "sounds": [
+      "orbitalis:capsule/lander_engine"
+    ]
+  },
+  "capsule_alert_maneuver": {
+    "subtitle": "subtitles.orbitalis.capsule_alert_maneuver",
+    "sounds": [
+      "orbitalis:capsule/capsule_alert_maneuver"
+    ]
+  },
+  "capsule_alert_imminent_crash": {
+    "subtitle": "subtitles.orbitalis.capsule_alert_imminent_crash",
+    "sounds": [
+      "orbitalis:capsule/capsule_alert_imminent_crash"
+    ]
+  },
+  "capsule_alert_stall": {
+    "subtitle": "subtitles.orbitalis.capsule_alert_stall",
+    "sounds": [
+      "orbitalis:capsule/capsule_alert_stall"
+    ]
+  },
+  "capsule_alert_deploy": {
+    "subtitle": "subtitles.orbitalis.capsule_alert_deploy",
+    "sounds": [
+      "orbitalis:capsule/capsule_alert_deploy"
+    ]
+  },
+  "airlock_cycle": {
+    "subtitle": "subtitles.orbitalis.airlock_cycle",
+    "sounds": [
+      "orbitalis:station/airlock_cycle"
+    ]
+  },
+  "airlock_hatch_open": {
+    "subtitle": "subtitles.orbitalis.airlock_hatch_open",
+    "sounds": [
+      "orbitalis:station/airlock_hatch_open"
+    ]
+  },
+  "airlock_hatch_close": {
+    "subtitle": "subtitles.orbitalis.airlock_hatch_close",
+    "sounds": [
+      "orbitalis:station/airlock_hatch_close"
+    ]
+  },
+  "docking": {
+    "subtitle": "subtitles.orbitalis.docking",
+    "sounds": [
+      "orbitalis:station/docking"
+    ]
+  },
+  "undocking": {
+    "subtitle": "subtitles.orbitalis.undocking",
+    "sounds": [
+      "orbitalis:station/undocking"
+    ]
+  },
+  "life_support_hum": {
+    "subtitle": "subtitles.orbitalis.life_support_hum",
+    "sounds": [
+      "orbitalis:station/life_support_hum"
+    ]
+  },
+  "station_ambient": {
+    "subtitle": "subtitles.orbitalis.station_ambient",
+    "sounds": [
+      "orbitalis:station/station_ambient"
+    ]
+  }
+}

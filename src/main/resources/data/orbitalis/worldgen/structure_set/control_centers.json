@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 902716431,
+    "separation": 18,
+    "spacing": 56,
+    "exclusion_zone": {
+      "other_set": "orbitalis:space_facilities",
+      "chunk_count": 4
+    }
+  },
+  "structures": [
+    {
+      "structure": "orbitalis:control_center",
+      "weight": 1
+    }
+  ]
+}

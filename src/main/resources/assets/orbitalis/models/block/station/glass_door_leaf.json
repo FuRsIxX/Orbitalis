@@ -1,0 +1,129 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "gframe": "orbitalis:block/glass_door_frame",
+  "gleaf_hi": "orbitalis:block/glass_door_leaf_hi",
+  "gleaf_lo": "orbitalis:block/glass_door_leaf_lo",
+  "particle": "orbitalis:block/station_hull"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    0.5,
+    7.25
+   ],
+   "to": [
+    16,
+    16,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "texture": "#gleaf_lo",
+     "uv": [
+      0,
+      0.0,
+      16,
+      15.5
+     ]
+    },
+    "south": {
+     "texture": "#gleaf_lo",
+     "uv": [
+      0,
+      0.0,
+      16,
+      15.5
+     ]
+    },
+    "east": {
+     "texture": "#gframe",
+     "uv": [
+      7.25,
+      0.0,
+      8.75,
+      15.5
+     ]
+    },
+    "west": {
+     "texture": "#gframe",
+     "uv": [
+      7.25,
+      0.0,
+      8.75,
+      15.5
+     ]
+    },
+    "down": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      7.25,
+      16,
+      8.75
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    0,
+    16,
+    7.25
+   ],
+   "to": [
+    16,
+    30,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "texture": "#gleaf_hi",
+     "uv": [
+      0,
+      2,
+      16,
+      16
+     ]
+    },
+    "south": {
+     "texture": "#gleaf_hi",
+     "uv": [
+      0,
+      2,
+      16,
+      16
+     ]
+    },
+    "east": {
+     "texture": "#gframe",
+     "uv": [
+      7.25,
+      2,
+      8.75,
+      16
+     ]
+    },
+    "west": {
+     "texture": "#gframe",
+     "uv": [
+      7.25,
+      2,
+      8.75,
+      16
+     ]
+    },
+    "up": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      7.25,
+      16,
+      8.75
+     ]
+    }
+   }
+  }
+ ]
+}

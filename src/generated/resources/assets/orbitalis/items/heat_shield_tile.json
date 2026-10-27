@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "orbitalis:item/heat_shield_tile"
+  }
+}

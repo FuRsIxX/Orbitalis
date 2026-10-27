@@ -1,0 +1,33 @@
+{
+  "values": [
+    "orbitalis:launch_pad",
+    "orbitalis:flame_deflector",
+    "orbitalis:flame_trench",
+    "orbitalis:tower_frame",
+    "orbitalis:deluge_pipe",
+    "orbitalis:pad_floodlight",
+    "orbitalis:solar_panel",
+    "orbitalis:launch_console",
+    "orbitalis:tracking_station",
+    "orbitalis:mission_display",
+    "orbitalis:workstation_part",
+    "orbitalis:station_light",
+    "orbitalis:server_rack",
+    "orbitalis:rocket_engine_solid",
+    "orbitalis:rocket_engine_pressure",
+    "orbitalis:rocket_engine_kerolox",
+    "orbitalis:rocket_engine_staged",
+    "orbitalis:rocket_engine_methalox",
+    "orbitalis:rocket_engine_hydrolox",
+    "orbitalis:rocket_tank_steel",
+    "orbitalis:rocket_tank_aluminum",
+    "orbitalis:rocket_tank_alloy",
+    "orbitalis:rocket_tank_composite",
+    "orbitalis:rocket_tank_cryo",
+    "orbitalis:rocket_motor_casing",
+    "orbitalis:rocket_interstage",
+    "orbitalis:rocket_payload_bay",
+    "orbitalis:rocket_fairing",
+    "orbitalis:rocket_nose"
+  ]
+}

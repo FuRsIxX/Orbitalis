@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:steel_block",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "BPB",
+    "P P",
+    "BPB"
+  ],
+  "result": {
+    "id": "orbitalis:stainless_tank"
+  }
+}

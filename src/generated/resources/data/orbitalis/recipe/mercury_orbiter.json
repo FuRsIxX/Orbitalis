@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": "orbitalis:heat_shield_tile",
+    "P": "orbitalis:mars_probe",
+    "R": "orbitalis:radio_transmitter",
+    "S": "orbitalis:solar_cell"
+  },
+  "pattern": [
+    " R ",
+    "HPH",
+    " S "
+  ],
+  "result": {
+    "id": "orbitalis:mercury_orbiter"
+  }
+}

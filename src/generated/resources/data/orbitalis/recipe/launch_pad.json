@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "minecraft:smooth_stone",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "CCC",
+    "CPC",
+    "CCC"
+  ],
+  "result": {
+    "count": 8,
+    "id": "orbitalis:launch_pad"
+  }
+}

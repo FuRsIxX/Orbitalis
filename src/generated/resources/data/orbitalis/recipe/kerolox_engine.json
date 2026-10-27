@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "E": "orbitalis:pressure_fed_engine",
+    "R": "#c:dusts/redstone",
+    "S": "#c:plates/steel",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "SRS",
+    "TET",
+    "T T"
+  ],
+  "result": {
+    "id": "orbitalis:kerolox_engine"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,has_plan=false": {
+      "model": "orbitalis:block/facility/drafting_table",
+      "y": 90
+    },
+    "facing=east,has_plan=true": {
+      "model": "orbitalis:block/facility/drafting_table_plan",
+      "y": 90
+    },
+    "facing=north,has_plan=false": {
+      "model": "orbitalis:block/facility/drafting_table"
+    },
+    "facing=north,has_plan=true": {
+      "model": "orbitalis:block/facility/drafting_table_plan"
+    },
+    "facing=south,has_plan=false": {
+      "model": "orbitalis:block/facility/drafting_table",
+      "y": 180
+    },
+    "facing=south,has_plan=true": {
+      "model": "orbitalis:block/facility/drafting_table_plan",
+      "y": 180
+    },
+    "facing=west,has_plan=false": {
+      "model": "orbitalis:block/facility/drafting_table",
+      "y": 270
+    },
+    "facing=west,has_plan=true": {
+      "model": "orbitalis:block/facility/drafting_table_plan",
+      "y": 270
+    }
+  }
+}

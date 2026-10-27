@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_life_support": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:life_support"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:station_core"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_life_support"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:station_core"
+    ]
+  }
+}

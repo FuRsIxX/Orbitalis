@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": "minecraft:paper",
+    "T": "orbitalis:launch_table"
+  },
+  "pattern": [
+    "P",
+    "T"
+  ],
+  "result": {
+    "id": "orbitalis:pad_kit"
+  }
+}

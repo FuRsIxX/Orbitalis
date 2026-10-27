@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "orbitalis:facility_concrete",
+    "orbitalis:facility_concrete",
+    "orbitalis:facility_concrete",
+    "orbitalis:facility_concrete",
+    "#c:dyes/yellow",
+    "#c:dyes/black"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:hazard_stripes"
+  }
+}

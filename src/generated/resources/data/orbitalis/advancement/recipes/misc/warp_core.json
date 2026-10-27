@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "orbitalis:interstellar"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_exotic_matter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:exotic_matter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:warp_core"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_exotic_matter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:warp_core"
+    ]
+  }
+}

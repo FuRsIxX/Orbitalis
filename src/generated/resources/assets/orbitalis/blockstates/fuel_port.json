@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "kind=ch4": {
+      "model": "orbitalis:block/machine/fuel_port_ch4"
+    },
+    "kind=he3": {
+      "model": "orbitalis:block/machine/fuel_port_he3"
+    },
+    "kind=lh2": {
+      "model": "orbitalis:block/machine/fuel_port_lh2"
+    },
+    "kind=lox": {
+      "model": "orbitalis:block/machine/fuel_port_lox"
+    },
+    "kind=rp1": {
+      "model": "orbitalis:block/machine/fuel_port_rp1"
+    },
+    "kind=water": {
+      "model": "orbitalis:block/machine/fuel_port_water"
+    }
+  }
+}

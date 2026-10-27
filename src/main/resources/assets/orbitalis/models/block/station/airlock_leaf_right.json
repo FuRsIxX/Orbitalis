@@ -1,0 +1,130 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "edge": "orbitalis:block/airlock_edge",
+  "leaf_hi": "orbitalis:block/airlock_leaf_hi",
+  "leaf_lo": "orbitalis:block/airlock_leaf_lo",
+  "particle": "orbitalis:block/station_hull"
+ },
+ "elements": [
+  {
+   "from": [
+    1,
+    0.5,
+    6.5
+   ],
+   "to": [
+    15,
+    16,
+    9.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#leaf_lo",
+     "uv": [
+      1,
+      0.0,
+      15,
+      15.5
+     ]
+    },
+    "south": {
+     "texture": "#leaf_lo",
+     "uv": [
+      1,
+      0.0,
+      15,
+      15.5
+     ]
+    },
+    "east": {
+     "texture": "#edge",
+     "uv": [
+      6.5,
+      0.0,
+      9.5,
+      15.5
+     ]
+    },
+    "west": {
+     "texture": "#edge",
+     "uv": [
+      6.5,
+      0.0,
+      9.5,
+      15.5
+     ]
+    },
+    "down": {
+     "texture": "#edge",
+     "uv": [
+      1,
+      6.5,
+      15,
+      9.5
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    1,
+    16,
+    6.5
+   ],
+   "to": [
+    15,
+    30,
+    9.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#leaf_hi",
+     "uv": [
+      1,
+      2,
+      15,
+      16
+     ]
+    },
+    "south": {
+     "texture": "#leaf_hi",
+     "uv": [
+      1,
+      2,
+      15,
+      16
+     ]
+    },
+    "east": {
+     "texture": "#edge",
+     "uv": [
+      6.5,
+      2,
+      9.5,
+      16
+     ]
+    },
+    "west": {
+     "texture": "#edge",
+     "uv": [
+      6.5,
+      2,
+      9.5,
+      16
+     ]
+    },
+    "up": {
+     "texture": "#edge",
+     "uv": [
+      1,
+      6.5,
+      15,
+      9.5
+     ]
+    }
+   }
+  }
+ ],
+ "ambientocclusion": false
+}

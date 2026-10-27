@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "#c:ingots/copper",
+    "F": "orbitalis:heating_element",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "III",
+    "CFC",
+    "IRI"
+  ],
+  "result": {
+    "id": "orbitalis:combustion_generator"
+  }
+}

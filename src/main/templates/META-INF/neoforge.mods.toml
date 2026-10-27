@@ -1,0 +1,46 @@
+# Métadonnées du mod Orbitalis.
+# Les variables entre accolades sont remplacées à la compilation par les valeurs de gradle.properties.
+
+license="${mod_license}"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="${mod_authors}"
+description='''
+Du premier lingot d'acier aux lunes de Jupiter : bâtissez une industrie spatiale, un centre spatial et des fusées modulaires, lancez satellites et sondes, assemblez des stations en orbite, posez-vous sur la Lune, Mars, Titan et Europe, et allumez la fusion.
+From the first steel ingot to the moons of Jupiter: build a space industry, a spaceport and modular rockets, launch satellites and probes, assemble stations in orbit, land on the Moon, Mars, Titan and Europa, and ignite fusion.
+'''
+
+# NeoForge (obligatoire)
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="[${neo_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+# Minecraft (obligatoire)
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+# GeckoLib (obligatoire) : modèles et animations des entités et blocs animés
+[[dependencies.${mod_id}]]
+    modId="geckolib"
+    type="required"
+    versionRange="[${geckolib_version},)"
+    ordering="AFTER"
+    side="BOTH"
+
+# JEI (optionnel) : affichage des recettes
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    versionRange="[${jei_version},)"
+    ordering="AFTER"
+    side="CLIENT"

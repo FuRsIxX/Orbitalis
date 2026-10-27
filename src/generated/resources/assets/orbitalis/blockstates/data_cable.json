@@ -1,0 +1,266 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_core_0"
+      },
+      "when": {
+        "OR": [
+          {
+            "AND": [
+              {
+                "OR": [
+                  {
+                    "north": "!none"
+                  },
+                  {
+                    "south": "!none"
+                  }
+                ]
+              },
+              {
+                "OR": [
+                  {
+                    "east": "!none"
+                  },
+                  {
+                    "west": "!none"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "AND": [
+              {
+                "OR": [
+                  {
+                    "north": "!none"
+                  },
+                  {
+                    "south": "!none"
+                  }
+                ]
+              },
+              {
+                "OR": [
+                  {
+                    "up": "!none"
+                  },
+                  {
+                    "down": "!none"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "AND": [
+              {
+                "OR": [
+                  {
+                    "east": "!none"
+                  },
+                  {
+                    "west": "!none"
+                  }
+                ]
+              },
+              {
+                "OR": [
+                  {
+                    "up": "!none"
+                  },
+                  {
+                    "down": "!none"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "AND": [
+              {
+                "OR": [
+                  {
+                    "north": "none"
+                  },
+                  {
+                    "south": "none"
+                  }
+                ]
+              },
+              {
+                "OR": [
+                  {
+                    "east": "none"
+                  },
+                  {
+                    "west": "none"
+                  }
+                ]
+              },
+              {
+                "OR": [
+                  {
+                    "up": "none"
+                  },
+                  {
+                    "down": "none"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_straight_0"
+      },
+      "when": {
+        "down": "none",
+        "east": "none",
+        "north": "!none",
+        "south": "!none",
+        "up": "none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_straight_0",
+        "y": 90
+      },
+      "when": {
+        "down": "none",
+        "east": "!none",
+        "north": "none",
+        "south": "none",
+        "up": "none",
+        "west": "!none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_straight_0",
+        "x": 90
+      },
+      "when": {
+        "down": "!none",
+        "east": "none",
+        "north": "none",
+        "south": "none",
+        "up": "!none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_arm_0",
+        "x": 90
+      },
+      "when": {
+        "down": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_link_0",
+        "x": 90
+      },
+      "when": {
+        "down": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_arm_0",
+        "x": 270
+      },
+      "when": {
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_link_0",
+        "x": 270
+      },
+      "when": {
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_arm_0"
+      },
+      "when": {
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_link_0"
+      },
+      "when": {
+        "north": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_arm_0",
+        "y": 180
+      },
+      "when": {
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_link_0",
+        "y": 180
+      },
+      "when": {
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_arm_0",
+        "y": 270
+      },
+      "when": {
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_link_0",
+        "y": 270
+      },
+      "when": {
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_arm_0",
+        "y": 90
+      },
+      "when": {
+        "east": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/data_cable_link_0",
+        "y": 90
+      },
+      "when": {
+        "east": "machine"
+      }
+    }
+  ]
+}

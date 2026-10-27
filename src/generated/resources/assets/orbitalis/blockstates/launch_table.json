@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "orbitalis:block/machine/launch_table"
+    },
+    "formed=true": {
+      "model": "orbitalis:block/machine/launch_table_on"
+    }
+  }
+}

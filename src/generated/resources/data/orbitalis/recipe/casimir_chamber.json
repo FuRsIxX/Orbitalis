@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:circuit_board",
+    "D": "#c:gems/diamond",
+    "G": "#c:glass_blocks",
+    "M": "orbitalis:electric_motor",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TGT",
+    "DCD",
+    "TMT"
+  ],
+  "result": {
+    "id": "orbitalis:casimir_chamber"
+  }
+}

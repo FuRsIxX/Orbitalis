@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:reactor_core",
+    "I": "orbitalis:insulation_blanket",
+    "R": "orbitalis:heat_shield_tile",
+    "T": "#c:plates/titanium",
+    "V": "orbitalis:vacuum_engine"
+  },
+  "pattern": [
+    "ICI",
+    "TRT",
+    " V "
+  ],
+  "result": {
+    "id": "orbitalis:nuclear_thermal_engine"
+  }
+}

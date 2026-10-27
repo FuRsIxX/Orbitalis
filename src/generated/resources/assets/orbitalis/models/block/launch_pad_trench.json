@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "orbitalis:block/launch_pad",
+    "side": "orbitalis:block/launch_pad",
+    "top": "orbitalis:block/launch_pad_trench"
+  }
+}

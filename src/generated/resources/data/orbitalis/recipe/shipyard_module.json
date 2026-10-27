@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "orbitalis:interstellar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:station_terminal",
+    "F": "orbitalis:fusion_engine",
+    "T": "orbitalis:station_truss",
+    "W": "orbitalis:cupola_window"
+  },
+  "pattern": [
+    "TWT",
+    "CFC",
+    "TTT"
+  ],
+  "result": {
+    "id": "orbitalis:shipyard_module"
+  }
+}

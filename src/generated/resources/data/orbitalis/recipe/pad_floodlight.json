@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "orbitalis:reinforced_glass",
+    "L": "orbitalis:led_lamp",
+    "M": "orbitalis:lightning_mast",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "GLG",
+    "PMP"
+  ],
+  "result": {
+    "id": "orbitalis:pad_floodlight"
+  }
+}

@@ -1,0 +1,274 @@
+{
+  "variants": {
+    "closed=false,column=0,facing=east,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=false,column=0,facing=east,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=false,column=0,facing=east,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=false,column=0,facing=north,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=false,column=0,facing=north,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=false,column=0,facing=north,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=false,column=0,facing=south,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=false,column=0,facing=south,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=false,column=0,facing=south,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=false,column=0,facing=west,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=false,column=0,facing=west,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=false,column=0,facing=west,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=false,column=1,facing=east,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate"
+    },
+    "closed=false,column=1,facing=east,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=false,column=1,facing=east,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_top"
+    },
+    "closed=false,column=1,facing=north,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate",
+      "y": 270
+    },
+    "closed=false,column=1,facing=north,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=false,column=1,facing=north,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_top",
+      "y": 270
+    },
+    "closed=false,column=1,facing=south,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate",
+      "y": 90
+    },
+    "closed=false,column=1,facing=south,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=false,column=1,facing=south,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_top",
+      "y": 90
+    },
+    "closed=false,column=1,facing=west,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate",
+      "y": 180
+    },
+    "closed=false,column=1,facing=west,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=false,column=1,facing=west,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_top",
+      "y": 180
+    },
+    "closed=false,column=2,facing=east,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=false,column=2,facing=east,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=false,column=2,facing=east,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=false,column=2,facing=north,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=false,column=2,facing=north,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=false,column=2,facing=north,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=false,column=2,facing=south,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=false,column=2,facing=south,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=false,column=2,facing=south,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=false,column=2,facing=west,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=false,column=2,facing=west,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=false,column=2,facing=west,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=true,column=0,facing=east,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=true,column=0,facing=east,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=true,column=0,facing=east,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=true,column=0,facing=north,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=true,column=0,facing=north,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=true,column=0,facing=north,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=true,column=0,facing=south,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=true,column=0,facing=south,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=true,column=0,facing=south,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=true,column=0,facing=west,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=true,column=0,facing=west,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=true,column=0,facing=west,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=true,column=1,facing=east,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_closed"
+    },
+    "closed=true,column=1,facing=east,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=true,column=1,facing=east,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_top_closed"
+    },
+    "closed=true,column=1,facing=north,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_closed",
+      "y": 270
+    },
+    "closed=true,column=1,facing=north,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=true,column=1,facing=north,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_top_closed",
+      "y": 270
+    },
+    "closed=true,column=1,facing=south,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_closed",
+      "y": 90
+    },
+    "closed=true,column=1,facing=south,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=true,column=1,facing=south,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_top_closed",
+      "y": 90
+    },
+    "closed=true,column=1,facing=west,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_closed",
+      "y": 180
+    },
+    "closed=true,column=1,facing=west,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=true,column=1,facing=west,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_top_closed",
+      "y": 180
+    },
+    "closed=true,column=2,facing=east,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=true,column=2,facing=east,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=true,column=2,facing=east,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part"
+    },
+    "closed=true,column=2,facing=north,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=true,column=2,facing=north,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=true,column=2,facing=north,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 270
+    },
+    "closed=true,column=2,facing=south,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=true,column=2,facing=south,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=true,column=2,facing=south,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 90
+    },
+    "closed=true,column=2,facing=west,row=0": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=true,column=2,facing=west,row=1": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    },
+    "closed=true,column=2,facing=west,row=2": {
+      "model": "orbitalis:block/machine/boarding_gate_part",
+      "y": 180
+    }
+  }
+}

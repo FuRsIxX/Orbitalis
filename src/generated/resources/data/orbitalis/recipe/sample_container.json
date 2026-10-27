@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "orbitalis:reinforced_glass",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TGT",
+    "T T",
+    "TTT"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:sample_container"
+  }
+}

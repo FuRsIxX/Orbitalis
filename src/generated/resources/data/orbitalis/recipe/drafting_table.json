@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": "minecraft:paper",
+    "S": "minecraft:stick",
+    "W": "#minecraft:wooden_slabs"
+  },
+  "pattern": [
+    "PPP",
+    "WWW",
+    "S S"
+  ],
+  "result": {
+    "id": "orbitalis:drafting_table"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "orbitalis:interstellar"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_shipyard_module": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:shipyard_module"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:ship_helm"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_shipyard_module"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:ship_helm"
+    ]
+  }
+}

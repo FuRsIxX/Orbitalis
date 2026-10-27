@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:suit_module_radiation_shield",
+    "C": "orbitalis:navigation_unit",
+    "E": "orbitalis:pressure_fed_engine",
+    "M": "orbitalis:crew_capsule_mk3",
+    "P": "#c:plates/titanium"
+  },
+  "pattern": [
+    " C ",
+    "BMB",
+    "EPE"
+  ],
+  "result": {
+    "id": "orbitalis:europa_lander"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "H": "orbitalis:station_hull",
+    "P": "orbitalis:electric_motor",
+    "R": "#c:dusts/redstone",
+    "W": "orbitalis:station_window"
+  },
+  "pattern": [
+    "HWH",
+    "PRP",
+    "HHH"
+  ],
+  "result": {
+    "id": "orbitalis:airlock_door"
+  }
+}

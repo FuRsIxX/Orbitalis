@@ -1,0 +1,175 @@
+{
+  "variants": {
+    "part=capsule,size=large": {
+      "model": "orbitalis:block/rocket/capsule_large"
+    },
+    "part=capsule,size=medium": {
+      "model": "orbitalis:block/rocket/capsule_medium"
+    },
+    "part=capsule,size=slim": {
+      "model": "orbitalis:block/rocket/capsule_slim"
+    },
+    "part=capsule_mk2,size=large": {
+      "model": "orbitalis:block/rocket/capsule_mk2_large"
+    },
+    "part=capsule_mk2,size=medium": {
+      "model": "orbitalis:block/rocket/capsule_mk2_medium"
+    },
+    "part=capsule_mk2,size=slim": {
+      "model": "orbitalis:block/rocket/capsule_mk2_slim"
+    },
+    "part=capsule_mk3,size=large": {
+      "model": "orbitalis:block/rocket/capsule_mk3_large"
+    },
+    "part=capsule_mk3,size=medium": {
+      "model": "orbitalis:block/rocket/capsule_mk3_medium"
+    },
+    "part=capsule_mk3,size=slim": {
+      "model": "orbitalis:block/rocket/capsule_mk3_slim"
+    },
+    "part=capsule_upper,size=large": {
+      "model": "orbitalis:block/rocket/capsule_upper_large"
+    },
+    "part=capsule_upper,size=medium": {
+      "model": "orbitalis:block/rocket/capsule_upper_medium"
+    },
+    "part=capsule_upper,size=slim": {
+      "model": "orbitalis:block/rocket/capsule_upper_slim"
+    },
+    "part=engine,size=large": {
+      "model": "orbitalis:block/rocket/engine_large"
+    },
+    "part=engine,size=medium": {
+      "model": "orbitalis:block/rocket/engine_medium"
+    },
+    "part=engine,size=slim": {
+      "model": "orbitalis:block/rocket/engine_slim"
+    },
+    "part=engine_hydrolox,size=large": {
+      "model": "orbitalis:block/rocket/engine_hydrolox_large"
+    },
+    "part=engine_hydrolox,size=medium": {
+      "model": "orbitalis:block/rocket/engine_hydrolox_medium"
+    },
+    "part=engine_hydrolox,size=slim": {
+      "model": "orbitalis:block/rocket/engine_hydrolox_slim"
+    },
+    "part=engine_pressure,size=large": {
+      "model": "orbitalis:block/rocket/engine_pressure_large"
+    },
+    "part=engine_pressure,size=medium": {
+      "model": "orbitalis:block/rocket/engine_pressure_medium"
+    },
+    "part=engine_pressure,size=slim": {
+      "model": "orbitalis:block/rocket/engine_pressure_slim"
+    },
+    "part=engine_solid,size=large": {
+      "model": "orbitalis:block/rocket/engine_solid_large"
+    },
+    "part=engine_solid,size=medium": {
+      "model": "orbitalis:block/rocket/engine_solid_medium"
+    },
+    "part=engine_solid,size=slim": {
+      "model": "orbitalis:block/rocket/engine_solid_slim"
+    },
+    "part=escape_tower,size=large": {
+      "model": "orbitalis:block/rocket/escape_tower_large"
+    },
+    "part=escape_tower,size=medium": {
+      "model": "orbitalis:block/rocket/escape_tower_medium"
+    },
+    "part=escape_tower,size=slim": {
+      "model": "orbitalis:block/rocket/escape_tower_slim"
+    },
+    "part=interstage,size=large": {
+      "model": "orbitalis:block/rocket/interstage_large"
+    },
+    "part=interstage,size=medium": {
+      "model": "orbitalis:block/rocket/interstage_medium"
+    },
+    "part=interstage,size=slim": {
+      "model": "orbitalis:block/rocket/interstage_slim"
+    },
+    "part=nose,size=large": {
+      "model": "orbitalis:block/rocket/nose_large"
+    },
+    "part=nose,size=medium": {
+      "model": "orbitalis:block/rocket/nose_medium"
+    },
+    "part=nose,size=slim": {
+      "model": "orbitalis:block/rocket/nose_slim"
+    },
+    "part=nose_lower,size=large": {
+      "model": "orbitalis:block/rocket/nose_lower_large"
+    },
+    "part=nose_lower,size=medium": {
+      "model": "orbitalis:block/rocket/nose_lower_medium"
+    },
+    "part=nose_lower,size=slim": {
+      "model": "orbitalis:block/rocket/nose_lower_slim"
+    },
+    "part=payload,size=large": {
+      "model": "orbitalis:block/rocket/payload_large"
+    },
+    "part=payload,size=medium": {
+      "model": "orbitalis:block/rocket/payload_medium"
+    },
+    "part=payload,size=slim": {
+      "model": "orbitalis:block/rocket/payload_slim"
+    },
+    "part=tank_alloy,size=large": {
+      "model": "orbitalis:block/rocket/tank_alloy_large"
+    },
+    "part=tank_alloy,size=medium": {
+      "model": "orbitalis:block/rocket/tank_alloy_medium"
+    },
+    "part=tank_alloy,size=slim": {
+      "model": "orbitalis:block/rocket/tank_alloy_slim"
+    },
+    "part=tank_composite,size=large": {
+      "model": "orbitalis:block/rocket/tank_composite_large"
+    },
+    "part=tank_composite,size=medium": {
+      "model": "orbitalis:block/rocket/tank_composite_medium"
+    },
+    "part=tank_composite,size=slim": {
+      "model": "orbitalis:block/rocket/tank_composite_slim"
+    },
+    "part=tank_orange,size=large": {
+      "model": "orbitalis:block/rocket/tank_orange_large"
+    },
+    "part=tank_orange,size=medium": {
+      "model": "orbitalis:block/rocket/tank_orange_medium"
+    },
+    "part=tank_orange,size=slim": {
+      "model": "orbitalis:block/rocket/tank_orange_slim"
+    },
+    "part=tank_solid,size=large": {
+      "model": "orbitalis:block/rocket/tank_solid_large"
+    },
+    "part=tank_solid,size=medium": {
+      "model": "orbitalis:block/rocket/tank_solid_medium"
+    },
+    "part=tank_solid,size=slim": {
+      "model": "orbitalis:block/rocket/tank_solid_slim"
+    },
+    "part=tank_steel,size=large": {
+      "model": "orbitalis:block/rocket/tank_steel_large"
+    },
+    "part=tank_steel,size=medium": {
+      "model": "orbitalis:block/rocket/tank_steel_medium"
+    },
+    "part=tank_steel,size=slim": {
+      "model": "orbitalis:block/rocket/tank_steel_slim"
+    },
+    "part=tank_white,size=large": {
+      "model": "orbitalis:block/rocket/tank_white_large"
+    },
+    "part=tank_white,size=medium": {
+      "model": "orbitalis:block/rocket/tank_white_medium"
+    },
+    "part=tank_white,size=slim": {
+      "model": "orbitalis:block/rocket/tank_white_slim"
+    }
+  }
+}

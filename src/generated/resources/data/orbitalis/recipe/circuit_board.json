@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "C": "#c:ingots/copper",
+    "G": "#c:ingots/gold",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "RGR",
+    "CAC"
+  ],
+  "result": {
+    "count": 3,
+    "id": "orbitalis:circuit_board"
+  }
+}

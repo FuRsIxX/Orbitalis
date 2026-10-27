@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "diagonal=false,facing=east,lit=false": {
+      "model": "orbitalis:block/machine/pad_floodlight",
+      "y": 90
+    },
+    "diagonal=false,facing=east,lit=true": {
+      "model": "orbitalis:block/machine/pad_floodlight_on",
+      "y": 90
+    },
+    "diagonal=false,facing=north,lit=false": {
+      "model": "orbitalis:block/machine/pad_floodlight"
+    },
+    "diagonal=false,facing=north,lit=true": {
+      "model": "orbitalis:block/machine/pad_floodlight_on"
+    },
+    "diagonal=false,facing=south,lit=false": {
+      "model": "orbitalis:block/machine/pad_floodlight",
+      "y": 180
+    },
+    "diagonal=false,facing=south,lit=true": {
+      "model": "orbitalis:block/machine/pad_floodlight_on",
+      "y": 180
+    },
+    "diagonal=false,facing=west,lit=false": {
+      "model": "orbitalis:block/machine/pad_floodlight",
+      "y": 270
+    },
+    "diagonal=false,facing=west,lit=true": {
+      "model": "orbitalis:block/machine/pad_floodlight_on",
+      "y": 270
+    },
+    "diagonal=true,facing=east,lit=false": {
+      "model": "orbitalis:block/machine/pad_floodlight_diagonal",
+      "y": 90
+    },
+    "diagonal=true,facing=east,lit=true": {
+      "model": "orbitalis:block/machine/pad_floodlight_diagonal_on",
+      "y": 90
+    },
+    "diagonal=true,facing=north,lit=false": {
+      "model": "orbitalis:block/machine/pad_floodlight_diagonal"
+    },
+    "diagonal=true,facing=north,lit=true": {
+      "model": "orbitalis:block/machine/pad_floodlight_diagonal_on"
+    },
+    "diagonal=true,facing=south,lit=false": {
+      "model": "orbitalis:block/machine/pad_floodlight_diagonal",
+      "y": 180
+    },
+    "diagonal=true,facing=south,lit=true": {
+      "model": "orbitalis:block/machine/pad_floodlight_diagonal_on",
+      "y": 180
+    },
+    "diagonal=true,facing=west,lit=false": {
+      "model": "orbitalis:block/machine/pad_floodlight_diagonal",
+      "y": 270
+    },
+    "diagonal=true,facing=west,lit=true": {
+      "model": "orbitalis:block/machine/pad_floodlight_diagonal_on",
+      "y": 270
+    }
+  }
+}

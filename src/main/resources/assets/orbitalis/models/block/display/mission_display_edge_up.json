@@ -1,0 +1,40 @@
+{
+ "textures": {
+  "rim": "orbitalis:block/display_rim",
+  "particle": "orbitalis:block/display_shell"
+ },
+ "elements": [
+  {
+   "from": [
+    0.5,
+    15.5,
+    12.8
+   ],
+   "to": [
+    15.5,
+    16,
+    13
+   ],
+   "faces": {
+    "north": {
+     "texture": "#rim"
+    },
+    "south": {
+     "texture": "#rim"
+    },
+    "east": {
+     "texture": "#rim"
+    },
+    "west": {
+     "texture": "#rim"
+    },
+    "up": {
+     "texture": "#rim"
+    },
+    "down": {
+     "texture": "#rim"
+    }
+   }
+  }
+ ]
+}

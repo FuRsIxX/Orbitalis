@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "orbitalis:station_hatch",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "half": "lower"
+              }
+            }
+          ],
+          "name": "orbitalis:station_hatch"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "orbitalis:blocks/station_hatch"
+}

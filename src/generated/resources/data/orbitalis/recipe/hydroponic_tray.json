@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "G": "orbitalis:reinforced_glass",
+    "L": "orbitalis:led_lamp",
+    "W": "minecraft:water_bucket"
+  },
+  "pattern": [
+    "GLG",
+    "AWA",
+    "AAA"
+  ],
+  "result": {
+    "id": "orbitalis:hydroponic_tray"
+  }
+}

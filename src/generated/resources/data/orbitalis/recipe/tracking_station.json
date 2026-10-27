@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "C": "orbitalis:circuit_board",
+    "R": "#c:dusts/redstone",
+    "S": "#c:plates/steel"
+  },
+  "pattern": [
+    " A ",
+    "ARA",
+    "SCS"
+  ],
+  "result": {
+    "id": "orbitalis:tracking_station"
+  }
+}

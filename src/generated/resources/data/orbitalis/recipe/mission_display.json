@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "G": "orbitalis:display_screen",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "AAA",
+    "GRG",
+    "AAA"
+  ],
+  "result": {
+    "count": 2,
+    "id": "orbitalis:mission_display"
+  }
+}

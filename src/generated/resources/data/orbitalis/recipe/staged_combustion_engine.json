@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "E": "orbitalis:kerolox_engine",
+    "N": "minecraft:netherite_scrap",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TET",
+    "TET",
+    " N "
+  ],
+  "result": {
+    "id": "orbitalis:staged_combustion_engine"
+  }
+}

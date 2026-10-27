@@ -1,0 +1,214 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "dark": "orbitalis:block/machine_dark",
+  "gframe": "orbitalis:block/glass_door_frame",
+  "particle": "orbitalis:block/station_hull"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    14,
+    5.5
+   ],
+   "to": [
+    16,
+    16,
+    10.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      0,
+      16,
+      2
+     ]
+    },
+    "south": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      0,
+      16,
+      2
+     ]
+    },
+    "west": {
+     "texture": "#gframe",
+     "uv": [
+      5.5,
+      0,
+      10.5,
+      2
+     ]
+    },
+    "east": {
+     "texture": "#gframe",
+     "uv": [
+      5.5,
+      0,
+      10.5,
+      2
+     ]
+    },
+    "up": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      5.5,
+      16,
+      10.5
+     ]
+    },
+    "down": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      5.5,
+      16,
+      10.5
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    0,
+    13.3,
+    5.5
+   ],
+   "to": [
+    2,
+    14,
+    6.3
+   ],
+   "faces": {
+    "north": {
+     "texture": "#dark",
+     "uv": [
+      14,
+      2.0,
+      16,
+      2.7
+     ]
+    },
+    "south": {
+     "texture": "#dark",
+     "uv": [
+      0,
+      2.0,
+      2,
+      2.7
+     ]
+    },
+    "west": {
+     "texture": "#dark",
+     "uv": [
+      5.5,
+      2.0,
+      6.3,
+      2.7
+     ]
+    },
+    "east": {
+     "texture": "#dark",
+     "uv": [
+      9.7,
+      2.0,
+      10.5,
+      2.7
+     ]
+    },
+    "up": {
+     "texture": "#dark",
+     "uv": [
+      0,
+      5.5,
+      2,
+      6.3
+     ]
+    },
+    "down": {
+     "texture": "#dark",
+     "uv": [
+      0,
+      9.7,
+      2,
+      10.5
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    0,
+    13.3,
+    9.7
+   ],
+   "to": [
+    2,
+    14,
+    10.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#dark",
+     "uv": [
+      14,
+      2.0,
+      16,
+      2.7
+     ]
+    },
+    "south": {
+     "texture": "#dark",
+     "uv": [
+      0,
+      2.0,
+      2,
+      2.7
+     ]
+    },
+    "west": {
+     "texture": "#dark",
+     "uv": [
+      9.7,
+      2.0,
+      10.5,
+      2.7
+     ]
+    },
+    "east": {
+     "texture": "#dark",
+     "uv": [
+      5.5,
+      2.0,
+      6.3,
+      2.7
+     ]
+    },
+    "up": {
+     "texture": "#dark",
+     "uv": [
+      0,
+      9.7,
+      2,
+      10.5
+     ]
+    },
+    "down": {
+     "texture": "#dark",
+     "uv": [
+      0,
+      5.5,
+      2,
+      6.3
+     ]
+    }
+   }
+  }
+ ]
+}

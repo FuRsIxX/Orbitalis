@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:cargo_rack",
+    "T": "orbitalis:hydroponic_tray"
+  },
+  "pattern": [
+    "TTT",
+    "TCT",
+    "TTT"
+  ],
+  "result": {
+    "id": "orbitalis:greenhouse_module"
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "variants": {
+    "part=arm_hose_1": {
+      "model": "orbitalis:block/machine/arm_hose_1"
+    },
+    "part=arm_hose_2": {
+      "model": "orbitalis:block/machine/arm_hose_2"
+    },
+    "part=arm_hose_4": {
+      "model": "orbitalis:block/machine/arm_hose_4"
+    },
+    "part=arm_plate": {
+      "model": "orbitalis:block/machine/arm_plate"
+    },
+    "part=arm_rib": {
+      "model": "orbitalis:block/machine/arm_rib"
+    },
+    "part=arm_span_1": {
+      "model": "orbitalis:block/machine/arm_span_1"
+    },
+    "part=arm_span_16": {
+      "model": "orbitalis:block/machine/arm_span_16"
+    },
+    "part=arm_span_2": {
+      "model": "orbitalis:block/machine/arm_span_2"
+    },
+    "part=arm_span_4": {
+      "model": "orbitalis:block/machine/arm_span_4"
+    },
+    "part=arm_span_8": {
+      "model": "orbitalis:block/machine/arm_span_8"
+    },
+    "part=beacon": {
+      "model": "orbitalis:block/machine/beacon"
+    },
+    "part=capsule": {
+      "model": "orbitalis:block/machine/capsule"
+    },
+    "part=capsule_cabin": {
+      "model": "orbitalis:block/machine/capsule_cabin"
+    },
+    "part=capsule_mk2_cabin": {
+      "model": "orbitalis:block/machine/capsule_mk2_cabin"
+    },
+    "part=capsule_mk2_shell": {
+      "model": "orbitalis:block/machine/capsule_mk2_shell"
+    },
+    "part=capsule_mk3_cabin": {
+      "model": "orbitalis:block/machine/capsule_mk3_cabin"
+    },
+    "part=capsule_mk3_shell": {
+      "model": "orbitalis:block/machine/capsule_mk3_shell"
+    },
+    "part=capsule_shell": {
+      "model": "orbitalis:block/machine/capsule_shell"
+    },
+    "part=capsule_stick": {
+      "model": "orbitalis:block/machine/capsule_stick"
+    },
+    "part=elevator_cabin": {
+      "model": "orbitalis:block/machine/elevator_cabin"
+    },
+    "part=elevator_cabin_top": {
+      "model": "orbitalis:block/machine/elevator_cabin_top"
+    },
+    "part=flame_trench": {
+      "model": "orbitalis:block/machine/flame_trench"
+    },
+    "part=gangway_end": {
+      "model": "orbitalis:block/machine/gangway_end"
+    },
+    "part=gangway_post": {
+      "model": "orbitalis:block/machine/gangway_post"
+    },
+    "part=gangway_span_1": {
+      "model": "orbitalis:block/machine/gangway_span_1"
+    },
+    "part=gangway_span_16": {
+      "model": "orbitalis:block/machine/gangway_span_16"
+    },
+    "part=gangway_span_2": {
+      "model": "orbitalis:block/machine/gangway_span_2"
+    },
+    "part=gangway_span_4": {
+      "model": "orbitalis:block/machine/gangway_span_4"
+    },
+    "part=gangway_span_8": {
+      "model": "orbitalis:block/machine/gangway_span_8"
+    },
+    "part=lander": {
+      "model": "orbitalis:block/machine/lander"
+    },
+    "part=mast_base": {
+      "model": "orbitalis:block/machine/mast_base"
+    },
+    "part=mast_lamp": {
+      "model": "orbitalis:block/machine/mast_lamp"
+    },
+    "part=mast_lamp_on": {
+      "model": "orbitalis:block/machine/mast_lamp_on"
+    },
+    "part=mast_mid": {
+      "model": "orbitalis:block/machine/mast_mid"
+    },
+    "part=mast_mid_red": {
+      "model": "orbitalis:block/machine/mast_mid_red"
+    },
+    "part=mast_top": {
+      "model": "orbitalis:block/machine/mast_top"
+    },
+    "part=parachute": {
+      "model": "orbitalis:block/machine/parachute"
+    }
+  }
+}

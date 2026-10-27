@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "B": "orbitalis:circuit_board",
+    "C": "#c:ingots/copper"
+  },
+  "pattern": [
+    " C ",
+    " C ",
+    "ABA"
+  ],
+  "result": {
+    "id": "orbitalis:radio_transmitter"
+  }
+}

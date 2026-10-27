@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/pad_support"
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/pad_support",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/pad_support",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/pad_support",
+      "y": 180
+    }
+  }
+}

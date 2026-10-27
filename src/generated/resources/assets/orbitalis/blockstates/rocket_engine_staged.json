@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/rocket_engine_staged",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/rocket_engine_staged"
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/rocket_engine_staged",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/rocket_engine_staged",
+      "y": 270
+    }
+  }
+}

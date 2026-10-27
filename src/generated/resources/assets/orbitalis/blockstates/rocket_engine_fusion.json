@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/rocket_engine_fusion",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/rocket_engine_fusion"
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/rocket_engine_fusion",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/rocket_engine_fusion",
+      "y": 270
+    }
+  }
+}

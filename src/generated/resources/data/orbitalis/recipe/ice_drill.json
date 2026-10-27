@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:battery_cell",
+    "H": "orbitalis:heating_element",
+    "M": "orbitalis:electric_motor",
+    "S": "#c:ingots/steel",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TBT",
+    "MHM",
+    "TST"
+  ],
+  "result": {
+    "id": "orbitalis:ice_drill"
+  }
+}

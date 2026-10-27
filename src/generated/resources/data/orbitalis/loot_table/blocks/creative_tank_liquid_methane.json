@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:creative_tank_liquid_methane"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "orbitalis:blocks/creative_tank_liquid_methane"
+}

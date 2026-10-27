@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "orbitalis:interstellar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:circuit_board",
+    "G": "orbitalis:cupola_window",
+    "H": "orbitalis:station_hull",
+    "L": "orbitalis:life_support"
+  },
+  "pattern": [
+    "HGH",
+    "HLH",
+    "HCH"
+  ],
+  "result": {
+    "count": 2,
+    "id": "orbitalis:hibernation_pod"
+  }
+}

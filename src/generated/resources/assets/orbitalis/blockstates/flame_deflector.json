@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/flame_deflector"
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/flame_deflector",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/flame_deflector",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/flame_deflector",
+      "y": 180
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum_lithium",
+    "B": "orbitalis:circuit_board",
+    "E": "orbitalis:hydrolox_engine",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TBT",
+    "AEA",
+    "A A"
+  ],
+  "result": {
+    "id": "orbitalis:vacuum_engine"
+  }
+}

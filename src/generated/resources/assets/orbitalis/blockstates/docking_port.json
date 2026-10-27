@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/docking_port",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/docking_port"
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/docking_port",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/docking_port",
+      "y": 270
+    }
+  }
+}

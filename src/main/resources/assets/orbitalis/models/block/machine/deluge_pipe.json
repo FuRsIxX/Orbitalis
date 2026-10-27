@@ -1,0 +1,208 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "dark": "orbitalis:block/machine_dark",
+    "grey": "orbitalis:block/pad_steel_grey",
+    "inox": "orbitalis:block/pad_stainless",
+    "waterh": "orbitalis:block/pad_water_h",
+    "particle": "orbitalis:block/pad_steel"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        6.5
+      ],
+      "to": [
+        5,
+        1,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#grey"
+        },
+        "south": {
+          "texture": "#grey"
+        },
+        "east": {
+          "texture": "#grey"
+        },
+        "west": {
+          "texture": "#grey"
+        },
+        "up": {
+          "texture": "#grey"
+        },
+        "down": {
+          "texture": "#grey"
+        }
+      }
+    },
+    {
+      "from": [
+        11,
+        0,
+        6.5
+      ],
+      "to": [
+        13,
+        1,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#grey"
+        },
+        "south": {
+          "texture": "#grey"
+        },
+        "east": {
+          "texture": "#grey"
+        },
+        "west": {
+          "texture": "#grey"
+        },
+        "up": {
+          "texture": "#grey"
+        },
+        "down": {
+          "texture": "#grey"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        1,
+        6
+      ],
+      "to": [
+        16,
+        5,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#waterh",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ]
+        },
+        "south": {
+          "texture": "#waterh",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ]
+        },
+        "east": {
+          "texture": "#waterh",
+          "uv": [
+            0,
+            0,
+            4,
+            4
+          ]
+        },
+        "west": {
+          "texture": "#waterh",
+          "uv": [
+            0,
+            0,
+            4,
+            4
+          ]
+        },
+        "up": {
+          "texture": "#waterh",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ]
+        },
+        "down": {
+          "texture": "#waterh",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        5,
+        6.5
+      ],
+      "to": [
+        9.5,
+        8,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#inox"
+        },
+        "south": {
+          "texture": "#inox"
+        },
+        "east": {
+          "texture": "#inox"
+        },
+        "west": {
+          "texture": "#inox"
+        },
+        "up": {
+          "texture": "#inox"
+        },
+        "down": {
+          "texture": "#inox"
+        }
+      }
+    },
+    {
+      "from": [
+        7.25,
+        8,
+        7.25
+      ],
+      "to": [
+        8.75,
+        9,
+        8.75
+      ],
+      "faces": {
+        "north": {
+          "texture": "#dark"
+        },
+        "south": {
+          "texture": "#dark"
+        },
+        "east": {
+          "texture": "#dark"
+        },
+        "west": {
+          "texture": "#dark"
+        },
+        "up": {
+          "texture": "#dark"
+        },
+        "down": {
+          "texture": "#dark"
+        }
+      }
+    }
+  ]
+}

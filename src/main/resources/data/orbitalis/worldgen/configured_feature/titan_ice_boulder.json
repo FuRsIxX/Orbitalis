@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block_blob",
+  "config": {
+    "can_place_on": {
+      "type": "minecraft:matching_blocks",
+      "blocks": [
+        "orbitalis:tholin_sand",
+        "orbitalis:titan_ice"
+      ]
+    },
+    "state": {
+      "Name": "orbitalis:titan_ice"
+    }
+  }
+}

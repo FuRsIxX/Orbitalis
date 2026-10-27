@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "orbitalis:steel_grating",
+    "H": "orbitalis:heating_element",
+    "P": "orbitalis:flight_processor",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    " P ",
+    "THT",
+    "TGT"
+  ],
+  "result": {
+    "id": "orbitalis:ion_thruster"
+  }
+}

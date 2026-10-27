@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "right=false": {
+      "model": "orbitalis:block/station/airlock_leaf_left"
+    },
+    "right=true": {
+      "model": "orbitalis:block/station/airlock_leaf_right"
+    }
+  }
+}

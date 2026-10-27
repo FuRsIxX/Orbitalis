@@ -1,0 +1,19 @@
+{
+  "type": "orbitalis:helium3_extraction",
+  "energy": 4000,
+  "fluid_outputs": [
+    {
+      "amount": 10,
+      "id": "orbitalis:helium_3"
+    },
+    {
+      "amount": 50,
+      "id": "orbitalis:hydrogen"
+    }
+  ],
+  "item_input": {
+    "count": 1,
+    "ingredient": "orbitalis:moon_regolith"
+  },
+  "time": 200
+}

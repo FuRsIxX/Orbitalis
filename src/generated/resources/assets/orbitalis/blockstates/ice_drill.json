@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/exploration/ice_drill",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "orbitalis:block/exploration/ice_drill"
+    },
+    "facing=south": {
+      "model": "orbitalis:block/exploration/ice_drill",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "orbitalis:block/exploration/ice_drill",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_advanced_spacesuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:advanced_spacesuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:suit_module_oxygen_tank"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_advanced_spacesuit"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:suit_module_oxygen_tank"
+    ]
+  }
+}

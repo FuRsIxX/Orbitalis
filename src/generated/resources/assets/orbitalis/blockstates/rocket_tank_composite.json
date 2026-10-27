@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/rocket_tank_composite",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/rocket_tank_composite"
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/rocket_tank_composite",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/rocket_tank_composite",
+      "y": 270
+    }
+  }
+}

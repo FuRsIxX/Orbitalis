@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "orbitalis:block/tank/creative_tank_liquid_methane"
+  }
+}

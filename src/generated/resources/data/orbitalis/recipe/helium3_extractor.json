@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:circuit_board",
+    "H": "orbitalis:heating_element",
+    "M": "orbitalis:electric_motor",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "THT",
+    "HMH",
+    "TCT"
+  ],
+  "result": {
+    "id": "orbitalis:helium3_extractor"
+  }
+}

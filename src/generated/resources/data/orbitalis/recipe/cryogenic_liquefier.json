@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "I": "minecraft:packed_ice",
+    "P": "orbitalis:electric_motor",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "APA",
+    "IRI",
+    "AAA"
+  ],
+  "result": {
+    "id": "orbitalis:cryogenic_liquefier"
+  }
+}

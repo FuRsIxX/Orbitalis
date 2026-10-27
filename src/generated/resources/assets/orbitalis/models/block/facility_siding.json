@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "orbitalis:block/facility_siding_top",
+    "side": "orbitalis:block/facility_siding_side"
+  }
+}

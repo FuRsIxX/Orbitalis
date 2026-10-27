@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "#c:ingots/copper",
+    "R": "#c:dusts/redstone",
+    "W": "#minecraft:wool"
+  },
+  "pattern": [
+    "WWW",
+    "CRC",
+    "WWW"
+  ],
+  "result": {
+    "count": 6,
+    "id": "orbitalis:energy_cable"
+  }
+}

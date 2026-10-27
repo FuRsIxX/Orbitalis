@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "orbitalis:interstellar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": "orbitalis:flight_computer",
+    "H": "orbitalis:station_hull",
+    "N": "orbitalis:navigation_unit",
+    "T": "orbitalis:station_terminal"
+  },
+  "pattern": [
+    " N ",
+    "TFT",
+    "HHH"
+  ],
+  "result": {
+    "id": "orbitalis:ship_helm"
+  }
+}

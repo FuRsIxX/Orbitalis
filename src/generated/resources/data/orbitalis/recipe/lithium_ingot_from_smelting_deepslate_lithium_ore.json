@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.7,
+  "group": "lithium_ingot",
+  "ingredient": "orbitalis:deepslate_lithium_ore",
+  "result": {
+    "id": "orbitalis:lithium_ingot"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "E": "orbitalis:pressure_fed_engine",
+    "L": "orbitalis:lunar_module",
+    "P": "#c:plates/titanium",
+    "T": "orbitalis:composite_tank"
+  },
+  "pattern": [
+    " L ",
+    "TPT",
+    "EPE"
+  ],
+  "result": {
+    "id": "orbitalis:mars_lander"
+  }
+}

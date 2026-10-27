@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_flight_processor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:flight_processor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:ion_thruster"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_flight_processor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:ion_thruster"
+    ]
+  }
+}

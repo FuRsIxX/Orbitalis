@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "orbitalis:insulation_blanket",
+    "P": "#c:plates/aluminum_lithium"
+  },
+  "pattern": [
+    "PIP",
+    "I I",
+    "PIP"
+  ],
+  "result": {
+    "id": "orbitalis:hydrogen_tank"
+  }
+}

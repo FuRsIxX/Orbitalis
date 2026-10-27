@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": "orbitalis:tower_frame",
+    "P": "orbitalis:fluid_pipe",
+    "S": "#c:plates/steel"
+  },
+  "pattern": [
+    "SPS",
+    "PFP",
+    "SPS"
+  ],
+  "result": {
+    "id": "orbitalis:fuel_port"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "orbitalis:casimir",
+  "energy": 240000,
+  "ingredients": [
+    {
+      "count": 1,
+      "ingredient": "minecraft:ender_pearl"
+    }
+  ],
+  "result": {
+    "id": "orbitalis:exotic_matter"
+  },
+  "time": 1200
+}

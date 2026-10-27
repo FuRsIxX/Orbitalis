@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:heat_shield_tile",
+    "I": "minecraft:iron_block",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "PPP",
+    "PIP",
+    "BBB"
+  ],
+  "result": {
+    "id": "orbitalis:flame_deflector"
+  }
+}

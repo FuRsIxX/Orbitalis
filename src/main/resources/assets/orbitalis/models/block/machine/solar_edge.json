@@ -1,0 +1,77 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "alu": "orbitalis:block/solar_frame",
+    "particle": "orbitalis:block/machine_metal"
+  },
+  "elements": [
+    {
+      "from": [
+        -0.25,
+        11.6,
+        -0.25
+      ],
+      "to": [
+        15.5,
+        13.5,
+        0.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

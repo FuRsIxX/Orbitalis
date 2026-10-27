@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "#c:ingots/copper",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "CCC",
+    "CRC",
+    "III"
+  ],
+  "result": {
+    "count": 2,
+    "id": "orbitalis:heating_element"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": "orbitalis:electric_motor",
+    "P": "#c:plates/aluminum_lithium",
+    "R": "orbitalis:reactor_core",
+    "S": "orbitalis:optical_sensor"
+  },
+  "pattern": [
+    "MPM",
+    "PSP",
+    "MRM"
+  ],
+  "result": {
+    "id": "orbitalis:rotor_drone"
+  }
+}

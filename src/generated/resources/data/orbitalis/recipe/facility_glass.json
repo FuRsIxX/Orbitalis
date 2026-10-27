@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "G": "#c:glass_blocks/colorless"
+  },
+  "pattern": [
+    "GA",
+    "AG"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:facility_glass"
+  }
+}

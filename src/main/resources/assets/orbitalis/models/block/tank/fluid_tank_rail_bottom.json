@@ -1,0 +1,40 @@
+{
+ "textures": {
+  "belt": "orbitalis:block/tank_belt",
+  "particle": "orbitalis:block/tank_frame"
+ },
+ "elements": [
+  {
+   "from": [
+    1,
+    0,
+    0
+   ],
+   "to": [
+    15,
+    2,
+    1
+   ],
+   "faces": {
+    "north": {
+     "texture": "#belt"
+    },
+    "south": {
+     "texture": "#belt"
+    },
+    "east": {
+     "texture": "#belt"
+    },
+    "west": {
+     "texture": "#belt"
+    },
+    "up": {
+     "texture": "#belt"
+    },
+    "down": {
+     "texture": "#belt"
+    }
+   }
+  }
+ ]
+}

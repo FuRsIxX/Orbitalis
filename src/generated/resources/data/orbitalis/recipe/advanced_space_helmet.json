@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "P": "orbitalis:space_helmet",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TGT",
+    "TPT"
+  ],
+  "result": {
+    "id": "orbitalis:advanced_space_helmet"
+  }
+}

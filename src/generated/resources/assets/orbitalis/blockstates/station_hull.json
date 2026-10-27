@@ -1,0 +1,17 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "orbitalis:block/station_hull",
+        "weight": 6
+      },
+      {
+        "model": "orbitalis:block/station_hull_quilted",
+        "weight": 3
+      },
+      {
+        "model": "orbitalis:block/station_hull_rail"
+      }
+    ]
+  }
+}

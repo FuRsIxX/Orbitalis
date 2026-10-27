@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "ARA"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:data_cable"
+  }
+}

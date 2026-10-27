@@ -1,0 +1,235 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "tech": "orbitalis:block/pad_concrete_tech",
+    "brick": "orbitalis:block/pad_refractory",
+    "thermal": "orbitalis:block/pad_thermal",
+    "particle": "orbitalis:block/pad_steel"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        5,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tech"
+        },
+        "south": {
+          "texture": "#tech"
+        },
+        "east": {
+          "texture": "#tech"
+        },
+        "west": {
+          "texture": "#tech"
+        },
+        "up": {
+          "texture": "#tech"
+        },
+        "down": {
+          "texture": "#tech"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        5,
+        1
+      ],
+      "to": [
+        15,
+        12,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#brick"
+        },
+        "south": {
+          "texture": "#brick"
+        },
+        "east": {
+          "texture": "#brick"
+        },
+        "west": {
+          "texture": "#brick"
+        },
+        "up": {
+          "texture": "#brick"
+        },
+        "down": {
+          "texture": "#brick"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        5.2,
+        0
+      ],
+      "to": [
+        3,
+        11.8,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tech"
+        },
+        "south": {
+          "texture": "#tech"
+        },
+        "east": {
+          "texture": "#tech"
+        },
+        "west": {
+          "texture": "#tech"
+        },
+        "up": {
+          "texture": "#tech"
+        },
+        "down": {
+          "texture": "#tech"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        5.2,
+        0
+      ],
+      "to": [
+        16,
+        11.8,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tech"
+        },
+        "south": {
+          "texture": "#tech"
+        },
+        "east": {
+          "texture": "#tech"
+        },
+        "west": {
+          "texture": "#tech"
+        },
+        "up": {
+          "texture": "#tech"
+        },
+        "down": {
+          "texture": "#tech"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        5.2,
+        13
+      ],
+      "to": [
+        3,
+        11.8,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tech"
+        },
+        "south": {
+          "texture": "#tech"
+        },
+        "east": {
+          "texture": "#tech"
+        },
+        "west": {
+          "texture": "#tech"
+        },
+        "up": {
+          "texture": "#tech"
+        },
+        "down": {
+          "texture": "#tech"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        5.2,
+        13
+      ],
+      "to": [
+        16,
+        11.8,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tech"
+        },
+        "south": {
+          "texture": "#tech"
+        },
+        "east": {
+          "texture": "#tech"
+        },
+        "west": {
+          "texture": "#tech"
+        },
+        "up": {
+          "texture": "#tech"
+        },
+        "down": {
+          "texture": "#tech"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        12,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#thermal"
+        },
+        "south": {
+          "texture": "#thermal"
+        },
+        "east": {
+          "texture": "#thermal"
+        },
+        "west": {
+          "texture": "#thermal"
+        },
+        "up": {
+          "texture": "#thermal"
+        },
+        "down": {
+          "texture": "#thermal"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "orbitalis:block/proxima_regolith",
+    "side": "orbitalis:block/proxima_moss_side",
+    "top": "orbitalis:block/proxima_moss_top"
+  }
+}

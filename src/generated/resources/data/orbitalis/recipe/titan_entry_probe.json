@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:battery_cell",
+    "H": "orbitalis:heat_shield_tile",
+    "O": "orbitalis:optical_sensor",
+    "P": "orbitalis:saturn_orbiter"
+  },
+  "pattern": [
+    " O ",
+    "BPB",
+    "HHH"
+  ],
+  "result": {
+    "id": "orbitalis:titan_entry_probe"
+  }
+}

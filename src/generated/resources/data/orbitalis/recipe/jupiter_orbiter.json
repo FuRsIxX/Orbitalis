@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:reactor_core",
+    "N": "orbitalis:navigation_unit",
+    "P": "orbitalis:mars_probe",
+    "R": "orbitalis:radio_transmitter",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "RNR",
+    "TPT",
+    " C "
+  ],
+  "result": {
+    "id": "orbitalis:jupiter_orbiter"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/tower_stairs"
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/tower_stairs",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/tower_stairs",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/tower_stairs",
+      "y": 180
+    }
+  }
+}

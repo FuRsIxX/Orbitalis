@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:heating_element",
+    "C": "#c:ingots/copper",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "ICI",
+    "CBC",
+    "IRI"
+  ],
+  "result": {
+    "id": "orbitalis:arc_foundry"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": "orbitalis:tower_frame",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "P  ",
+    "FP ",
+    " FP"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:tower_stairs"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_left_open",
+  "textures": {
+    "bottom": "orbitalis:block/station_hatch_bottom",
+    "top": "orbitalis:block/station_hatch_top"
+  }
+}

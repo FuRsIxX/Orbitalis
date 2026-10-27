@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "B": "minecraft:brewing_stand",
+    "C": "orbitalis:circuit_board",
+    "G": "orbitalis:display_screen",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "AGA",
+    "RBR",
+    "ACA"
+  ],
+  "result": {
+    "id": "orbitalis:lab_rack"
+  }
+}

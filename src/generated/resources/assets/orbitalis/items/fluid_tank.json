@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "orbitalis:block/tank/fluid_tank_inventory"
+  }
+}

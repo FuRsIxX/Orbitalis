@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:tower_landing"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tower_frame": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:tower_frame"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tower_frame"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:tower_landing"
+    ]
+  }
+}

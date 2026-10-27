@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "orbitalis:steel_grating",
+    "P": "#c:plates/steel",
+    "R": "orbitalis:flight_processor"
+  },
+  "pattern": [
+    "PPP",
+    "IRI",
+    "PPP"
+  ],
+  "result": {
+    "id": "orbitalis:tower_elevator"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/flame_trench"
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/flame_trench",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/flame_trench",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/flame_trench",
+      "y": 180
+    }
+  }
+}

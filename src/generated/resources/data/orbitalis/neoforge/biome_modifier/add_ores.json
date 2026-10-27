@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "orbitalis:ore_bauxite",
+    "orbitalis:ore_lithium",
+    "orbitalis:ore_titanium"
+  ],
+  "step": "underground_ores"
+}

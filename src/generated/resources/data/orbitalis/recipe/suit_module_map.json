@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "orbitalis:reinforced_glass",
+    "M": "orbitalis:navigation_unit",
+    "R": "minecraft:redstone",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TGT",
+    "RMR",
+    "TTT"
+  ],
+  "result": {
+    "id": "orbitalis:suit_module_map"
+  }
+}

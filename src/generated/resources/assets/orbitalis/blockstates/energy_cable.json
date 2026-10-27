@@ -1,0 +1,1140 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_core_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "glow": "0"
+          },
+          {
+            "OR": [
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "none"
+                      },
+                      {
+                        "south": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "none"
+                      },
+                      {
+                        "west": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "none"
+                      },
+                      {
+                        "down": "none"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_0"
+      },
+      "when": {
+        "down": "none",
+        "east": "none",
+        "glow": "0",
+        "north": "!none",
+        "south": "!none",
+        "up": "none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_0",
+        "y": 90
+      },
+      "when": {
+        "down": "none",
+        "east": "!none",
+        "glow": "0",
+        "north": "none",
+        "south": "none",
+        "up": "none",
+        "west": "!none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_0",
+        "x": 90
+      },
+      "when": {
+        "down": "!none",
+        "east": "none",
+        "glow": "0",
+        "north": "none",
+        "south": "none",
+        "up": "!none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_0",
+        "x": 90
+      },
+      "when": {
+        "down": "conduit",
+        "glow": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_0",
+        "x": 90
+      },
+      "when": {
+        "down": "machine",
+        "glow": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_0",
+        "x": 270
+      },
+      "when": {
+        "glow": "0",
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_0",
+        "x": 270
+      },
+      "when": {
+        "glow": "0",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_0"
+      },
+      "when": {
+        "glow": "0",
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_0"
+      },
+      "when": {
+        "glow": "0",
+        "north": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_0",
+        "y": 180
+      },
+      "when": {
+        "glow": "0",
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_0",
+        "y": 180
+      },
+      "when": {
+        "glow": "0",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_0",
+        "y": 270
+      },
+      "when": {
+        "glow": "0",
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_0",
+        "y": 270
+      },
+      "when": {
+        "glow": "0",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_0",
+        "y": 90
+      },
+      "when": {
+        "east": "conduit",
+        "glow": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_0",
+        "y": 90
+      },
+      "when": {
+        "east": "machine",
+        "glow": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_core_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "glow": "1"
+          },
+          {
+            "OR": [
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "none"
+                      },
+                      {
+                        "south": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "none"
+                      },
+                      {
+                        "west": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "none"
+                      },
+                      {
+                        "down": "none"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_1"
+      },
+      "when": {
+        "down": "none",
+        "east": "none",
+        "glow": "1",
+        "north": "!none",
+        "south": "!none",
+        "up": "none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_1",
+        "y": 90
+      },
+      "when": {
+        "down": "none",
+        "east": "!none",
+        "glow": "1",
+        "north": "none",
+        "south": "none",
+        "up": "none",
+        "west": "!none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_1",
+        "x": 90
+      },
+      "when": {
+        "down": "!none",
+        "east": "none",
+        "glow": "1",
+        "north": "none",
+        "south": "none",
+        "up": "!none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_1",
+        "x": 90
+      },
+      "when": {
+        "down": "conduit",
+        "glow": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_1",
+        "x": 90
+      },
+      "when": {
+        "down": "machine",
+        "glow": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_1",
+        "x": 270
+      },
+      "when": {
+        "glow": "1",
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_1",
+        "x": 270
+      },
+      "when": {
+        "glow": "1",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_1"
+      },
+      "when": {
+        "glow": "1",
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_1"
+      },
+      "when": {
+        "glow": "1",
+        "north": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_1",
+        "y": 180
+      },
+      "when": {
+        "glow": "1",
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_1",
+        "y": 180
+      },
+      "when": {
+        "glow": "1",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_1",
+        "y": 270
+      },
+      "when": {
+        "glow": "1",
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_1",
+        "y": 270
+      },
+      "when": {
+        "glow": "1",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_1",
+        "y": 90
+      },
+      "when": {
+        "east": "conduit",
+        "glow": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_1",
+        "y": 90
+      },
+      "when": {
+        "east": "machine",
+        "glow": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_core_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "glow": "2"
+          },
+          {
+            "OR": [
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "none"
+                      },
+                      {
+                        "south": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "none"
+                      },
+                      {
+                        "west": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "none"
+                      },
+                      {
+                        "down": "none"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_2"
+      },
+      "when": {
+        "down": "none",
+        "east": "none",
+        "glow": "2",
+        "north": "!none",
+        "south": "!none",
+        "up": "none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_2",
+        "y": 90
+      },
+      "when": {
+        "down": "none",
+        "east": "!none",
+        "glow": "2",
+        "north": "none",
+        "south": "none",
+        "up": "none",
+        "west": "!none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_2",
+        "x": 90
+      },
+      "when": {
+        "down": "!none",
+        "east": "none",
+        "glow": "2",
+        "north": "none",
+        "south": "none",
+        "up": "!none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_2",
+        "x": 90
+      },
+      "when": {
+        "down": "conduit",
+        "glow": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_2",
+        "x": 90
+      },
+      "when": {
+        "down": "machine",
+        "glow": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_2",
+        "x": 270
+      },
+      "when": {
+        "glow": "2",
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_2",
+        "x": 270
+      },
+      "when": {
+        "glow": "2",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_2"
+      },
+      "when": {
+        "glow": "2",
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_2"
+      },
+      "when": {
+        "glow": "2",
+        "north": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_2",
+        "y": 180
+      },
+      "when": {
+        "glow": "2",
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_2",
+        "y": 180
+      },
+      "when": {
+        "glow": "2",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_2",
+        "y": 270
+      },
+      "when": {
+        "glow": "2",
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_2",
+        "y": 270
+      },
+      "when": {
+        "glow": "2",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_2",
+        "y": 90
+      },
+      "when": {
+        "east": "conduit",
+        "glow": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_2",
+        "y": 90
+      },
+      "when": {
+        "east": "machine",
+        "glow": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_core_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "glow": "3"
+          },
+          {
+            "OR": [
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "!none"
+                      },
+                      {
+                        "south": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "east": "!none"
+                      },
+                      {
+                        "west": "!none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "!none"
+                      },
+                      {
+                        "down": "!none"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "AND": [
+                  {
+                    "OR": [
+                      {
+                        "north": "none"
+                      },
+                      {
+                        "south": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "east": "none"
+                      },
+                      {
+                        "west": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "OR": [
+                      {
+                        "up": "none"
+                      },
+                      {
+                        "down": "none"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_3"
+      },
+      "when": {
+        "down": "none",
+        "east": "none",
+        "glow": "3",
+        "north": "!none",
+        "south": "!none",
+        "up": "none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_3",
+        "y": 90
+      },
+      "when": {
+        "down": "none",
+        "east": "!none",
+        "glow": "3",
+        "north": "none",
+        "south": "none",
+        "up": "none",
+        "west": "!none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_straight_3",
+        "x": 90
+      },
+      "when": {
+        "down": "!none",
+        "east": "none",
+        "glow": "3",
+        "north": "none",
+        "south": "none",
+        "up": "!none",
+        "west": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_3",
+        "x": 90
+      },
+      "when": {
+        "down": "conduit",
+        "glow": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_3",
+        "x": 90
+      },
+      "when": {
+        "down": "machine",
+        "glow": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_3",
+        "x": 270
+      },
+      "when": {
+        "glow": "3",
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_3",
+        "x": 270
+      },
+      "when": {
+        "glow": "3",
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_3"
+      },
+      "when": {
+        "glow": "3",
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_3"
+      },
+      "when": {
+        "glow": "3",
+        "north": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_3",
+        "y": 180
+      },
+      "when": {
+        "glow": "3",
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_3",
+        "y": 180
+      },
+      "when": {
+        "glow": "3",
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_3",
+        "y": 270
+      },
+      "when": {
+        "glow": "3",
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_3",
+        "y": 270
+      },
+      "when": {
+        "glow": "3",
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_arm_3",
+        "y": 90
+      },
+      "when": {
+        "east": "conduit",
+        "glow": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/conduit/energy_cable_link_3",
+        "y": 90
+      },
+      "when": {
+        "east": "machine",
+        "glow": "3"
+      }
+    }
+  ]
+}

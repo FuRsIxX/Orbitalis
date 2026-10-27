@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "wheel=false": {
+      "model": "orbitalis:block/exploration/rover"
+    },
+    "wheel=true": {
+      "model": "orbitalis:block/exploration/rover_wheel"
+    }
+  }
+}

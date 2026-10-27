@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": "orbitalis:lab_rack",
+    "T": "orbitalis:station_terminal"
+  },
+  "pattern": [
+    "LLL",
+    "LTL",
+    "LLL"
+  ],
+  "result": {
+    "id": "orbitalis:laboratory_module"
+  }
+}

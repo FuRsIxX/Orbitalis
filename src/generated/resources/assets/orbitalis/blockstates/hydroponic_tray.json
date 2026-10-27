@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "age=0,crop=beetroot": {
+      "model": "orbitalis:block/station/hydroponic_tray_beetroot_0"
+    },
+    "age=0,crop=carrot": {
+      "model": "orbitalis:block/station/hydroponic_tray_carrot_0"
+    },
+    "age=0,crop=none": {
+      "model": "orbitalis:block/station/hydroponic_tray"
+    },
+    "age=0,crop=potato": {
+      "model": "orbitalis:block/station/hydroponic_tray_potato_0"
+    },
+    "age=0,crop=wheat": {
+      "model": "orbitalis:block/station/hydroponic_tray_wheat_0"
+    },
+    "age=1,crop=beetroot": {
+      "model": "orbitalis:block/station/hydroponic_tray_beetroot_1"
+    },
+    "age=1,crop=carrot": {
+      "model": "orbitalis:block/station/hydroponic_tray_carrot_1"
+    },
+    "age=1,crop=none": {
+      "model": "orbitalis:block/station/hydroponic_tray"
+    },
+    "age=1,crop=potato": {
+      "model": "orbitalis:block/station/hydroponic_tray_potato_1"
+    },
+    "age=1,crop=wheat": {
+      "model": "orbitalis:block/station/hydroponic_tray_wheat_1"
+    },
+    "age=2,crop=beetroot": {
+      "model": "orbitalis:block/station/hydroponic_tray_beetroot_2"
+    },
+    "age=2,crop=carrot": {
+      "model": "orbitalis:block/station/hydroponic_tray_carrot_2"
+    },
+    "age=2,crop=none": {
+      "model": "orbitalis:block/station/hydroponic_tray"
+    },
+    "age=2,crop=potato": {
+      "model": "orbitalis:block/station/hydroponic_tray_potato_2"
+    },
+    "age=2,crop=wheat": {
+      "model": "orbitalis:block/station/hydroponic_tray_wheat_2"
+    },
+    "age=3,crop=beetroot": {
+      "model": "orbitalis:block/station/hydroponic_tray_beetroot_3"
+    },
+    "age=3,crop=carrot": {
+      "model": "orbitalis:block/station/hydroponic_tray_carrot_3"
+    },
+    "age=3,crop=none": {
+      "model": "orbitalis:block/station/hydroponic_tray"
+    },
+    "age=3,crop=potato": {
+      "model": "orbitalis:block/station/hydroponic_tray_potato_3"
+    },
+    "age=3,crop=wheat": {
+      "model": "orbitalis:block/station/hydroponic_tray_wheat_3"
+    }
+  }
+}

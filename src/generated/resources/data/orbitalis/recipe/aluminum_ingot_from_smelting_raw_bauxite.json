@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "experience": 0.7,
+  "group": "aluminum_ingot",
+  "ingredient": "orbitalis:raw_bauxite",
+  "result": {
+    "id": "orbitalis:aluminum_ingot"
+  }
+}

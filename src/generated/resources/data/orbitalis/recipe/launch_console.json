@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "G": "orbitalis:display_screen",
+    "L": "orbitalis:circuit_board",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "AGA",
+    "RLR",
+    "AAA"
+  ],
+  "result": {
+    "id": "orbitalis:launch_console"
+  }
+}

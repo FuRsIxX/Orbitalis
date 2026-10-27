@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:battery_cell",
+    "C": "orbitalis:station_core",
+    "H": "orbitalis:station_hull",
+    "L": "orbitalis:life_support",
+    "S": "orbitalis:solar_cell"
+  },
+  "pattern": [
+    "HLH",
+    "SCS",
+    "HBH"
+  ],
+  "result": {
+    "id": "orbitalis:base_kit"
+  }
+}

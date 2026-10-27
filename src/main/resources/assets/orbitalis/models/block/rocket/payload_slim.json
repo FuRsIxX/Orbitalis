@@ -1,0 +1,213 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "body": "orbitalis:block/rocket_hull_fairing",
+    "particle": "orbitalis:block/rocket_hull_fairing"
+  },
+  "elements": [
+    {
+      "from": [
+        4.0,
+        0,
+        5.8
+      ],
+      "to": [
+        12.0,
+        16,
+        10.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.0,
+            0,
+            12.0,
+            16
+          ],
+          "texture": "#body"
+        },
+        "south": {
+          "uv": [
+            4.0,
+            0,
+            12.0,
+            16
+          ],
+          "texture": "#body"
+        },
+        "east": {
+          "uv": [
+            5.8,
+            0,
+            10.2,
+            16
+          ],
+          "texture": "#body"
+        },
+        "west": {
+          "uv": [
+            5.8,
+            0,
+            10.2,
+            16
+          ],
+          "texture": "#body"
+        },
+        "up": {
+          "uv": [
+            4.0,
+            5.8,
+            12.0,
+            10.2
+          ],
+          "texture": "#body"
+        },
+        "down": {
+          "uv": [
+            4.0,
+            5.8,
+            12.0,
+            10.2
+          ],
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "from": [
+        4.6,
+        0,
+        4.6
+      ],
+      "to": [
+        11.4,
+        16,
+        11.4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.6,
+            0,
+            11.4,
+            16
+          ],
+          "texture": "#body"
+        },
+        "south": {
+          "uv": [
+            4.6,
+            0,
+            11.4,
+            16
+          ],
+          "texture": "#body"
+        },
+        "east": {
+          "uv": [
+            4.6,
+            0,
+            11.4,
+            16
+          ],
+          "texture": "#body"
+        },
+        "west": {
+          "uv": [
+            4.6,
+            0,
+            11.4,
+            16
+          ],
+          "texture": "#body"
+        },
+        "up": {
+          "uv": [
+            4.6,
+            4.6,
+            11.4,
+            11.4
+          ],
+          "texture": "#body"
+        },
+        "down": {
+          "uv": [
+            4.6,
+            4.6,
+            11.4,
+            11.4
+          ],
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "from": [
+        5.8,
+        0,
+        4.0
+      ],
+      "to": [
+        10.2,
+        16,
+        12.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.8,
+            0,
+            10.2,
+            16
+          ],
+          "texture": "#body"
+        },
+        "south": {
+          "uv": [
+            5.8,
+            0,
+            10.2,
+            16
+          ],
+          "texture": "#body"
+        },
+        "east": {
+          "uv": [
+            4.0,
+            0,
+            12.0,
+            16
+          ],
+          "texture": "#body"
+        },
+        "west": {
+          "uv": [
+            4.0,
+            0,
+            12.0,
+            16
+          ],
+          "texture": "#body"
+        },
+        "up": {
+          "uv": [
+            5.8,
+            4.0,
+            10.2,
+            12.0
+          ],
+          "texture": "#body"
+        },
+        "down": {
+          "uv": [
+            5.8,
+            4.0,
+            10.2,
+            12.0
+          ],
+          "texture": "#body"
+        }
+      }
+    }
+  ]
+}

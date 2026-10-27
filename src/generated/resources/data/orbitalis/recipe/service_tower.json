@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:energy_cable",
+    "F": "orbitalis:tower_frame",
+    "P": "orbitalis:fluid_pipe"
+  },
+  "pattern": [
+    "FPF",
+    "FCF"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:service_tower"
+  }
+}

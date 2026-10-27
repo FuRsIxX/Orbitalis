@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum_lithium",
+    "C": "orbitalis:circuit_board",
+    "D": "orbitalis:solar_cell",
+    "K": "orbitalis:navigation_unit",
+    "O": "orbitalis:navigation_unit"
+  },
+  "pattern": [
+    "DKD",
+    "ACA",
+    " O "
+  ],
+  "result": {
+    "id": "orbitalis:navigation_satellite"
+  }
+}

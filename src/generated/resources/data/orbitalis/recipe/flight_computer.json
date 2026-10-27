@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:circuit_board",
+    "F": "orbitalis:rocket_fuselage",
+    "G": "minecraft:gold_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "FRF",
+    "GCG",
+    "FRF"
+  ],
+  "result": {
+    "id": "orbitalis:flight_computer"
+  }
+}

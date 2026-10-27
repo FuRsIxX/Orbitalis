@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "#c:ingots/copper",
+    "G": "#c:glass_panes"
+  },
+  "pattern": [
+    "GGG",
+    "C C",
+    "GGG"
+  ],
+  "result": {
+    "count": 6,
+    "id": "orbitalis:gas_pipe"
+  }
+}

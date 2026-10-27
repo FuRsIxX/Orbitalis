@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:reactor_core",
+    "S": "minecraft:nether_star",
+    "T": "#c:plates/titanium",
+    "V": "orbitalis:nuclear_thermal_engine"
+  },
+  "pattern": [
+    "TCT",
+    "CSC",
+    "TVT"
+  ],
+  "result": {
+    "id": "orbitalis:fusion_engine"
+  }
+}

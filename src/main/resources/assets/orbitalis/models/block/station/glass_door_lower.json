@@ -1,0 +1,77 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "gframe": "orbitalis:block/glass_door_frame",
+  "particle": "orbitalis:block/station_hull"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    0,
+    6.5
+   ],
+   "to": [
+    16,
+    0.5,
+    9.5
+   ],
+   "faces": {
+    "north": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      15.5,
+      16,
+      16
+     ]
+    },
+    "south": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      15.5,
+      16,
+      16
+     ]
+    },
+    "west": {
+     "texture": "#gframe",
+     "uv": [
+      6.5,
+      15.5,
+      9.5,
+      16
+     ]
+    },
+    "east": {
+     "texture": "#gframe",
+     "uv": [
+      6.5,
+      15.5,
+      9.5,
+      16
+     ]
+    },
+    "up": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      6.5,
+      16,
+      9.5
+     ]
+    },
+    "down": {
+     "texture": "#gframe",
+     "uv": [
+      0,
+      6.5,
+      16,
+      9.5
+     ]
+    }
+   }
+  }
+ ]
+}

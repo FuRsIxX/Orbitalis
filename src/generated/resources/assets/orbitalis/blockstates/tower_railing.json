@@ -1,0 +1,98 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_post"
+      },
+      "when": {
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_side"
+      },
+      "when": {
+        "north": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_side",
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_side",
+        "y": 180
+      },
+      "when": {
+        "south": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_side",
+        "y": 270
+      },
+      "when": {
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_post_low"
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_side_low"
+      },
+      "when": {
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_side_low",
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_side_low",
+        "y": 180
+      },
+      "when": {
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/tower_railing_side_low",
+        "y": 270
+      },
+      "when": {
+        "up": "true",
+        "west": "true"
+      }
+    }
+  ]
+}

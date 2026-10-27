@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:circuit_board",
+    "G": "#c:ingots/gold",
+    "L": "#c:ingots/lithium"
+  },
+  "pattern": [
+    "BLB",
+    "LGL",
+    "BLB"
+  ],
+  "result": {
+    "id": "orbitalis:flight_processor"
+  }
+}

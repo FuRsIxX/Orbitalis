@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "#c:storage_blocks/iron",
+    "I": "orbitalis:insulation_blanket",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TIT",
+    "IBI",
+    "TIT"
+  ],
+  "result": {
+    "id": "orbitalis:suit_module_radiation_shield"
+  }
+}

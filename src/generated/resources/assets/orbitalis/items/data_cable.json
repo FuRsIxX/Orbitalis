@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "orbitalis:block/conduit/data_cable_inventory"
+  }
+}

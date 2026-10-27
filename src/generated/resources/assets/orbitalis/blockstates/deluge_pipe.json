@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "orbitalis:block/machine/deluge_pipe"
+    },
+    "facing=north": {
+      "model": "orbitalis:block/machine/deluge_pipe",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "orbitalis:block/machine/deluge_pipe",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "orbitalis:block/machine/deluge_pipe",
+      "y": 180
+    }
+  }
+}

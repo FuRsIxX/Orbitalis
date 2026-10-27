@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": "orbitalis:aluminum_lithium_tank",
+    "S": "minecraft:string"
+  },
+  "pattern": [
+    "SLS",
+    "L L",
+    "SLS"
+  ],
+  "result": {
+    "id": "orbitalis:composite_tank"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "L": "#c:ingots/lithium",
+    "R": "orbitalis:battery_cell"
+  },
+  "pattern": [
+    "ARA",
+    "LLL",
+    "ARA"
+  ],
+  "result": {
+    "id": "orbitalis:station_battery"
+  }
+}

@@ -1,0 +1,362 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "frame": "orbitalis:block/machine_frame",
+    "fairing": "orbitalis:block/rocket_fairing",
+    "particle": "orbitalis:block/machine_frame"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        1.5,
+        1.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame"
+        },
+        "east": {
+          "texture": "#frame"
+        },
+        "west": {
+          "texture": "#frame"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "down": {
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        14.5
+      ],
+      "to": [
+        16,
+        1.5,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame"
+        },
+        "east": {
+          "texture": "#frame"
+        },
+        "west": {
+          "texture": "#frame"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "down": {
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        1.5
+      ],
+      "to": [
+        1.5,
+        1.5,
+        14.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame"
+        },
+        "east": {
+          "texture": "#frame"
+        },
+        "west": {
+          "texture": "#frame"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "down": {
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        14.5,
+        0,
+        1.5
+      ],
+      "to": [
+        16,
+        1.5,
+        14.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame"
+        },
+        "east": {
+          "texture": "#frame"
+        },
+        "west": {
+          "texture": "#frame"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "down": {
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        0.7999999999999998,
+        1.9,
+        4.4
+      ],
+      "to": [
+        15.2,
+        15.6,
+        11.6
+      ],
+      "faces": {
+        "north": {
+          "texture": "#fairing"
+        },
+        "south": {
+          "texture": "#fairing"
+        },
+        "east": {
+          "texture": "#fairing"
+        },
+        "west": {
+          "texture": "#fairing"
+        },
+        "up": {
+          "texture": "#fairing"
+        },
+        "down": {
+          "texture": "#fairing"
+        }
+      }
+    },
+    {
+      "from": [
+        4.4,
+        1.7,
+        0.7999999999999998
+      ],
+      "to": [
+        11.6,
+        15.8,
+        15.2
+      ],
+      "faces": {
+        "north": {
+          "texture": "#fairing"
+        },
+        "south": {
+          "texture": "#fairing"
+        },
+        "east": {
+          "texture": "#fairing"
+        },
+        "west": {
+          "texture": "#fairing"
+        },
+        "up": {
+          "texture": "#fairing"
+        },
+        "down": {
+          "texture": "#fairing"
+        }
+      }
+    },
+    {
+      "from": [
+        2.096,
+        1.5,
+        2.096
+      ],
+      "to": [
+        13.904,
+        16,
+        13.904
+      ],
+      "faces": {
+        "north": {
+          "texture": "#fairing"
+        },
+        "south": {
+          "texture": "#fairing"
+        },
+        "east": {
+          "texture": "#fairing"
+        },
+        "west": {
+          "texture": "#fairing"
+        },
+        "up": {
+          "texture": "#fairing"
+        },
+        "down": {
+          "texture": "#fairing"
+        }
+      }
+    },
+    {
+      "from": [
+        7.6,
+        1.5,
+        0.5
+      ],
+      "to": [
+        8.4,
+        16,
+        0.9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame"
+        },
+        "east": {
+          "texture": "#frame"
+        },
+        "west": {
+          "texture": "#frame"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "down": {
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        7.6,
+        1.5,
+        15.1
+      ],
+      "to": [
+        8.4,
+        16,
+        15.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame"
+        },
+        "east": {
+          "texture": "#frame"
+        },
+        "west": {
+          "texture": "#frame"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "down": {
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        0.5,
+        1.5,
+        7.6
+      ],
+      "to": [
+        0.9,
+        16,
+        8.4
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame"
+        },
+        "east": {
+          "texture": "#frame"
+        },
+        "west": {
+          "texture": "#frame"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "down": {
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        15.1,
+        1.5,
+        7.6
+      ],
+      "to": [
+        15.5,
+        16,
+        8.4
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame"
+        },
+        "east": {
+          "texture": "#frame"
+        },
+        "west": {
+          "texture": "#frame"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "down": {
+          "texture": "#frame"
+        }
+      }
+    }
+  ]
+}

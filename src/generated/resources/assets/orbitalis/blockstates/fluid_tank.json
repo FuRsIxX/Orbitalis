@@ -1,0 +1,346 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_top"
+      },
+      "when": {
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_bottom"
+      },
+      "when": {
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_wall"
+      },
+      "when": {
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_post"
+      },
+      "when": {
+        "north": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_rail_top"
+      },
+      "when": {
+        "north": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_rail_bottom"
+      },
+      "when": {
+        "down": "false",
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_corner_top"
+      },
+      "when": {
+        "OR": [
+          {
+            "north": "false",
+            "west": "false"
+          },
+          {
+            "north": "false",
+            "up": "false"
+          },
+          {
+            "up": "false",
+            "west": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_corner_bottom"
+      },
+      "when": {
+        "OR": [
+          {
+            "north": "false",
+            "west": "false"
+          },
+          {
+            "down": "false",
+            "north": "false"
+          },
+          {
+            "down": "false",
+            "west": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_wall",
+        "y": 90
+      },
+      "when": {
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_post",
+        "y": 90
+      },
+      "when": {
+        "east": "false",
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_rail_top",
+        "y": 90
+      },
+      "when": {
+        "east": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_rail_bottom",
+        "y": 90
+      },
+      "when": {
+        "down": "false",
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_corner_top",
+        "y": 90
+      },
+      "when": {
+        "OR": [
+          {
+            "east": "false",
+            "north": "false"
+          },
+          {
+            "east": "false",
+            "up": "false"
+          },
+          {
+            "north": "false",
+            "up": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_corner_bottom",
+        "y": 90
+      },
+      "when": {
+        "OR": [
+          {
+            "east": "false",
+            "north": "false"
+          },
+          {
+            "down": "false",
+            "east": "false"
+          },
+          {
+            "down": "false",
+            "north": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_wall",
+        "y": 180
+      },
+      "when": {
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_post",
+        "y": 180
+      },
+      "when": {
+        "east": "false",
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_rail_top",
+        "y": 180
+      },
+      "when": {
+        "south": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_rail_bottom",
+        "y": 180
+      },
+      "when": {
+        "down": "false",
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_corner_top",
+        "y": 180
+      },
+      "when": {
+        "OR": [
+          {
+            "east": "false",
+            "south": "false"
+          },
+          {
+            "south": "false",
+            "up": "false"
+          },
+          {
+            "east": "false",
+            "up": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_corner_bottom",
+        "y": 180
+      },
+      "when": {
+        "OR": [
+          {
+            "east": "false",
+            "south": "false"
+          },
+          {
+            "down": "false",
+            "south": "false"
+          },
+          {
+            "down": "false",
+            "east": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_wall",
+        "y": 270
+      },
+      "when": {
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_post",
+        "y": 270
+      },
+      "when": {
+        "south": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_rail_top",
+        "y": 270
+      },
+      "when": {
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_rail_bottom",
+        "y": 270
+      },
+      "when": {
+        "down": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_corner_top",
+        "y": 270
+      },
+      "when": {
+        "OR": [
+          {
+            "south": "false",
+            "west": "false"
+          },
+          {
+            "up": "false",
+            "west": "false"
+          },
+          {
+            "south": "false",
+            "up": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/tank/fluid_tank_corner_bottom",
+        "y": 270
+      },
+      "when": {
+        "OR": [
+          {
+            "south": "false",
+            "west": "false"
+          },
+          {
+            "down": "false",
+            "west": "false"
+          },
+          {
+            "down": "false",
+            "south": "false"
+          }
+        ]
+      }
+    }
+  ]
+}

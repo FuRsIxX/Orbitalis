@@ -1,0 +1,13 @@
+{
+  "type": "orbitalis:proxima_b",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "orbitalis:proxima_b",
+    "biome_source": {
+      "type": "orbitalis:proxima",
+      "day": "orbitalis:proxima_dayside",
+      "twilight": "orbitalis:proxima_twilight",
+      "night": "orbitalis:proxima_nightside"
+    }
+  }
+}

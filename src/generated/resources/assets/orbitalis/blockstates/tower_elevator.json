@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "orbitalis:block/machine/tower_elevator"
+    }
+  }
+}

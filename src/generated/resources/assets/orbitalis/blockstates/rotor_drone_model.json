@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "rotor=false": {
+      "model": "orbitalis:block/exploration/rotor_drone"
+    },
+    "rotor=true": {
+      "model": "orbitalis:block/exploration/rotor_drone_rotor"
+    }
+  }
+}
