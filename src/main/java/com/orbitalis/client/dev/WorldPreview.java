@@ -2063,6 +2063,19 @@ public final class WorldPreview {
         // Les fusées du catalogue : en blocs au premier rang, assemblées au second.
         SHOTS.add(new Shot("tm_rockets", null, -14.0, -38.0, 22.0, -50.0F, 22.0F, 120));
         SHOTS.add(new Shot("tm_rockets_close", null, 18.0, -52.0, 28.0, -15.0F, 8.0F, 60));
+        // Le pas de tir d'essai (table en -20 -59 40) et son pupitre, dix blocs au sud : vue d'ensemble, puis le pupitre
+        // de près, son écran ouvert, et le kit réglé sur le 3×3.
+        SHOTS.add(new Shot("tm_test_pad", null, -15.5, -55.0, 56.5, 150.0F, 18.0F, 80));
+        SHOTS.add(new Shot("tm_test_console", null, -18.2, -58.4, 52.2, 145.0F, 28.0F, 40));
+        SHOTS.add(new Shot("tm_test_console_screen", level -> {
+            var status = com.orbitalis.phase1.spaceport.LaunchConsoleBlock.status(level, new BlockPos(-20, -60, 50), true);
+            net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(
+                    new com.orbitalis.client.screen.SequenceScreen(status, null, true)));
+        }, -20.5, -58.4, 53.5, 180.0F, 10.0F, 40));
+        SHOTS.add(new Shot("tm_test_kit", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance()
+                .gui.setScreen(new com.orbitalis.client.screen.PadKitScreen(null, Direction.NORTH, 1, false))), -20.5, -58.4, 53.5, 180.0F, 10.0F, 30));
+        SHOTS.add(new Shot("tm_test_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
+                () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), -20.5, -58.4, 53.5, 180.0F, 10.0F, 10));
         // Le chantier naval, au bout du module logistique : le pupitre est en 12 99 -4, le vaisseau part vers l'est. Pour
         // la vue, la salle des machines et l'anneau sont posés ; le reste du vaisseau est en fantômes.
         SHOTS.add(new Shot("tm_orbit_shipyard", level -> {

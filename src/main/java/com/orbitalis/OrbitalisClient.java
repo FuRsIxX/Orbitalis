@@ -191,10 +191,13 @@ public class OrbitalisClient {
             Minecraft minecraft = Minecraft.getInstance();
             com.orbitalis.client.CockpitHud.onStatus(payload);
             if (payload.open()) {
-                // Depuis un pupitre : le centre de contrôle. Depuis la cabine d'une fusée : le séquenceur de lancement.
-                boolean console = minecraft.level != null
-                        && minecraft.level.getBlockState(payload.console()).getBlock() instanceof com.orbitalis.phase1.spaceport.LaunchConsoleBlock;
-                minecraft.gui.setScreen(console ? new LaunchConsoleScreen(payload) : new com.orbitalis.client.screen.SequenceScreen(payload, null));
+                // Depuis un pupitre : le centre de contrôle. Depuis un pupitre d'essai, ou la cabine d'une fusée : le
+                // séquenceur de lancement, seul.
+                net.minecraft.world.level.block.Block block = minecraft.level == null ? null
+                        : minecraft.level.getBlockState(payload.console()).getBlock();
+                minecraft.gui.setScreen(block instanceof com.orbitalis.phase1.spaceport.LaunchConsoleBlock ? new LaunchConsoleScreen(payload)
+                        : new com.orbitalis.client.screen.SequenceScreen(payload, null,
+                                block instanceof com.orbitalis.phase1.spaceport.TestConsoleBlock));
             } else if (minecraft.gui.screen() instanceof LaunchConsoleScreen console) {
                 // Actualisation demandée par l'écran déjà ouvert.
                 console.update(payload);

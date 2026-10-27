@@ -1,6 +1,6 @@
 {
   "type": "orbitalis:sabatier",
-  "energy": 1600,
+  "energy": 4000,
   "fluid_input": {
     "amount": 800,
     "id": "orbitalis:hydrogen"

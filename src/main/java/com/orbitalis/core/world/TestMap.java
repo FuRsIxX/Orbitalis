@@ -61,6 +61,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
  * <li>les machines en marche : le réacteur à fusion et ce qu'il alimente, nourris par des réservoirs créatifs ;</li>
  * <li>les fusées : chaque modèle du catalogue deux fois, ses blocs de construction tous posés (pas encore assemblée),
  * puis assemblée comme sur le pas de tir ;</li>
+ * <li>le pas de tir d'essai, en service, une fusée-sonde sur sa table et son pupitre à distance de sécurité ;</li>
  * <li>les centres spatiaux : chaque sorte, normale et en grand, puis abandonnée et en petit ;</li>
  * <li>la station complète, en orbite.</li>
  * </ul>
@@ -78,6 +79,9 @@ public final class TestMap {
     /** Écart entre deux fusées d'une rangée, et entre les deux rangées. */
     private static final int ROCKET_SPACING = 12;
     private static final int ROCKET_ROWS = 16;
+    /** Où est bâti le pas de tir d'essai (sa table), à l'ouest des fusées. */
+    private static final int TEST_PAD_X = -20;
+    private static final int TEST_PAD_Z = 40;
     /** Où est bâtie la station en orbite. */
     private static final BlockPos STATION = new BlockPos(0, 100, 0);
 
@@ -117,6 +121,8 @@ public final class TestMap {
         rockets(level, ROCKETS_X, ROCKETS_Z);
         destinations.add(new String[] {"testmap.orbitalis.zone.rockets", "tp @s " + (ROCKETS_X - 6) + " " + (Y + 6) + " " + (ROCKETS_Z - 14)
                 + " -45 20"});
+        testPad(level, TEST_PAD_X, TEST_PAD_Z);
+        destinations.add(new String[] {"testmap.orbitalis.zone.test_pad", "tp @s " + TEST_PAD_X + " " + Y + " " + (TEST_PAD_Z + 12) + " 180 10"});
         int[] sites = facilities(server, level, destinations);
         station(server);
         destinations.add(new String[] {"testmap.orbitalis.zone.station", "execute in orbitalis:orbit run tp @s " + STATION.getX() + " "
@@ -358,6 +364,35 @@ public final class TestMap {
                         Component.translatable(row == 0 ? "testmap.orbitalis.rocket.parts" : "testmap.orbitalis.rocket.assembled"), null);
             }
         }
+    }
+
+    /**
+     * Le pas de tir d'essai : son tablier 3×3 posé sur le sol, mis en service, une fusée-sonde à poudre sur sa table, et
+     * le pupitre d'essai dix blocs au sud, l'écran tourné vers celui qui le regarde depuis le sud, le pas de tir derrière.
+     */
+    private static void testPad(ServerLevel level, int x0, int z0) {
+        loadAround(level, x0, z0, 1);
+        BlockPos tablePos = new BlockPos(x0, Y + 1, z0);
+        level.setBlock(tablePos, ModBlocks.LAUNCH_TABLE.get().defaultBlockState(), Block.UPDATE_ALL);
+        if (!(level.getBlockEntity(tablePos) instanceof com.orbitalis.phase1.spaceport.LaunchTableBlockEntity table)) {
+            return;
+        }
+        var plan = com.orbitalis.phase1.spaceport.PadPlan.test(Direction.NORTH);
+        table.setPlan(plan);
+        for (var piece : plan.pieces()) {
+            level.setBlock(tablePos.offset(piece.offset()), piece.display(), Block.UPDATE_ALL);
+        }
+        table.commission(true);
+        net.minecraft.core.NonNullList<ItemStack> parts = net.minecraft.core.NonNullList.withSize(com.orbitalis.phase1.rocket.RocketDesign.SLOT_COUNT,
+                ItemStack.EMPTY);
+        parts.set(com.orbitalis.phase1.rocket.RocketDesign.SLOT_PAYLOAD, new ItemStack(com.orbitalis.core.registry.ModItems.SOUNDING_PAYLOAD.get()));
+        parts.set(com.orbitalis.phase1.rocket.RocketDesign.SLOT_NOSE, new ItemStack(com.orbitalis.core.registry.ModItems.NOSE_CONE.get()));
+        parts.set(com.orbitalis.phase1.rocket.RocketDesign.engineSlot(0), new ItemStack(com.orbitalis.core.registry.ModItems.SOLID_MOTOR.get()));
+        table.setRocket(com.orbitalis.phase1.rocket.RocketItem.create(parts));
+        BlockPos console = new BlockPos(x0, Y, z0 + 10);
+        level.setBlock(console, ModBlocks.TEST_CONSOLE.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
+                Block.UPDATE_ALL);
+        sign(level, console.east(2), Component.translatable("testmap.orbitalis.zone.test_pad"), null, null);
     }
 
     /** Pose une machine tournée vers le sud, et met dans sa première case ce qu'on lui donne à transformer. */

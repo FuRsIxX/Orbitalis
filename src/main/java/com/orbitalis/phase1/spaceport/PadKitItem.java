@@ -76,7 +76,7 @@ public class PadKitItem extends Item {
             return;
         }
         // Seules les tailles proposées se posent : une demande d'une autre taille est ramenée à la plus proche.
-        PadPlan plan = new PadPlan(PadPlan.nearestSize(payload.radius()), payload.elevator(), payload.facing());
+        PadPlan plan = PadPlan.forKit(payload.radius(), payload.elevator(), payload.facing());
         BlockState state = level.getBlockState(pos);
         if (!state.is(ModBlocks.LAUNCH_TABLE.get())) {
             if (!state.canBeReplaced() || level.isOutsideBuildHeight(pos)) {

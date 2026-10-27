@@ -41,7 +41,7 @@ public class CryogenicTankBlockEntity extends MachineBlockEntity {
     /** Capacité du réservoir, en mB. */
     public static final int CAPACITY = 32_000;
     /** Énergie consommée par tick pour maintenir un ergol cryogénique au froid, en FE. */
-    public static final int COOLING_PER_TICK = 5;
+    public static final int COOLING_PER_TICK = 10;
     /** Sans refroidissement, 1 mB s'évapore tous les 4 ticks, soit 5 mB par seconde. */
     private static final int EVAPORATION_INTERVAL = 4;
     /** Débit de ravitaillement d'une fusée, en mB par tick. */

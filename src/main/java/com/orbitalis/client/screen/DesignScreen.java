@@ -845,7 +845,9 @@ public class DesignScreen extends Screen {
             RocketFuel fuel = RocketFuel.required(stats);
             int ports = (fuel.rp1() > 0 ? 1 : 0) + (fuel.oxygen() > 0 ? 1 : 0) + (fuel.hydrogen() > 0 ? 1 : 0) + (fuel.methane() > 0 ? 1 : 0)
                     + (fuel.helium3() > 0 ? 1 : 0);
-            int pad = requiredPad(stats, shape);
+            // Une fusée à poudre sans équipage peut partir du pas de tir d'essai.
+            boolean testable = fuel.isEmpty() && !com.orbitalis.phase1.rocket.RocketParts.isCrewCabin(RocketDesign.fromSlots(parts::get).payload());
+            int pad = requiredPad(stats, shape, testable);
             Component padText = pad == 0 ? Component.translatable("design.orbitalis.pad.none")
                     : Component.literal((2 * pad + 1) + "×" + (2 * pad + 1));
             note = Component.translatable("design.orbitalis.summary_short", tonnes(stats.liftoffMass()), shape.height(), padText).getString();
@@ -1000,7 +1002,7 @@ public class DesignScreen extends Screen {
             list.add(new Problem(Component.translatable("design.orbitalis.problem.payload", new ItemStack(payload).getHoverName()), cargo, -1, Target.PAYLOAD, true));
         }
         // Trop lourde ou trop haute pour le plus grand pas de tir : on peut imprimer le plan, mais pas la lancer.
-        if (requiredPad(stats, shape) == 0) {
+        if (requiredPad(stats, shape, false) == 0) {
             int biggest = PadPlan.SIZES[PadPlan.SIZES.length - 1];
             list.add(new Problem(Component.translatable("design.orbitalis.problem.pad"),
                     Component.translatable("design.orbitalis.fix.pad", tonnes(stats.liftoffMass()), shape.height(),
@@ -1157,8 +1159,14 @@ public class DesignScreen extends Screen {
     // Outils
     // ------------------------------------------------------------------
 
-    /** Plus petit pas de tir qui accepte ce lanceur (masse et hauteur), de 1 à 5 ; 0 si aucun ne convient. */
-    private static int requiredPad(RocketStats stats, RocketShape shape) {
+    /**
+     * Plus petit pas de tir qui accepte ce lanceur (masse et hauteur), de 1 à 5 ; 0 si aucun ne convient. Le 3×3, le pas de
+     * tir d'essai, n'est proposé qu'aux fusées à poudre sans équipage ({@code testable}).
+     */
+    private static int requiredPad(RocketStats stats, RocketShape shape, boolean testable) {
+        if (testable && stats.liftoffMass() <= LaunchComplex.maxRocketMass(1) && shape.height() <= LaunchComplex.TEST_PAD_HEIGHT) {
+            return 1;
+        }
         for (int radius : PadPlan.SIZES) {
             if (stats.liftoffMass() <= LaunchComplex.maxRocketMass(radius)
                     && shape.height() <= LaunchComplex.maxRocketHeight(PadPlan.towerLevels(radius))) {

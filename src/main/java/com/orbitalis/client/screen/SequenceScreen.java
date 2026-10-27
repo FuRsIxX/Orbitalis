@@ -18,9 +18,9 @@ import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 /**
- * Séquenceur de lancement, dans la cabine d'une fusée (touche de saut) : la check-list complète (voir
- * {@link SequencePanel}), tour de table et essais du pas de tir compris. Au centre de contrôle, la même liste est
- * dans l'écran lui-même.
+ * Séquenceur de lancement, dans la cabine d'une fusée (touche de saut), ou sur le pupitre d'essai : la check-list
+ * complète (voir {@link SequencePanel}), tour de table compris. Au centre de contrôle, la même liste est dans l'écran
+ * lui-même.
  * <p>
  * En tête, l'horloge de mission en grand, la phase et le niveau d'aide de l'ordinateur de bord ; en pied, ce qu'il
  * faut savoir maintenant, et l'arrêt.
@@ -40,7 +40,12 @@ public class SequenceScreen extends Screen {
     private int age;
 
     public SequenceScreen(LaunchStatusPayload status, Screen parent) {
-        super(Component.translatable("sequence.orbitalis.title"));
+        this(status, parent, false);
+    }
+
+    /** @param testConsole vrai si l'écran est celui d'un pupitre d'essai (il en porte le nom) */
+    public SequenceScreen(LaunchStatusPayload status, Screen parent, boolean testConsole) {
+        super(Component.translatable(testConsole ? "block.orbitalis.test_console" : "sequence.orbitalis.title"));
         this.status = status;
         this.parent = parent;
     }

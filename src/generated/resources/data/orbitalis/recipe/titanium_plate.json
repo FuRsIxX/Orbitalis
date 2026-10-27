@@ -1,6 +1,6 @@
 {
   "type": "orbitalis:rolling",
-  "energy": 2000,
+  "energy": 4000,
   "ingredients": [
     {
       "count": 1,

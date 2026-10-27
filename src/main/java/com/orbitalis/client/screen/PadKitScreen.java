@@ -29,7 +29,7 @@ import org.joml.Matrix3x2fStack;
 
 /**
  * Écran du kit de pas de tir. On y choisit le plan à poser : la taille du tablier et la tour (à escalier ou à
- * ascenseur). L'écran dit ce que ce pas de tir pourra lancer, et dresse la liste des blocs à réunir, avec ce que le
+ * ascenseur). Le 3×3 est le pas de tir d'essai, qui n'a pas de tour. L'écran dit ce que ce pas de tir pourra lancer, et dresse la liste des blocs à réunir, avec ce que le
  * joueur a déjà sur lui. Le sens du carneau ne se choisit pas ici : le plan esquissé en jeu se tourne à la molette.
  * <p>
  * Ouvert sur une table déjà posée, il change son plan (en gardant son orientation). Sinon il arme le kit : le plan
@@ -74,7 +74,7 @@ public class PadKitScreen extends Screen {
     public PadKitScreen(BlockPos table, Direction facing, int radius, boolean elevator) {
         super(Component.translatable("spaceport.orbitalis.kit.title"));
         this.table = table;
-        this.radius = PadPlan.nearestSize(radius);
+        this.radius = radius == 1 ? 1 : PadPlan.nearestSize(radius);
         this.elevator = elevator;
         this.facing = facing.getAxis().isHorizontal() ? facing : Direction.EAST;
     }
@@ -86,7 +86,7 @@ public class PadKitScreen extends Screen {
     }
 
     private PadPlan plan() {
-        return new PadPlan(radius, elevator, facing);
+        return PadPlan.forKit(radius, elevator, facing);
     }
 
     @Override
@@ -108,20 +108,28 @@ public class PadKitScreen extends Screen {
         int column = 166;
         int y = top + 32;
         heading(graphics, x, y, "spaceport.orbitalis.kit.size");
-        Component[] sizes = new Component[PadPlan.SIZES.length];
+        Component[] sizes = new Component[PadPlan.KIT_SIZES.length];
         int chosenSize = 0;
         for (int k = 0; k < sizes.length; k++) {
-            sizes[k] = Component.literal((2 * PadPlan.SIZES[k] + 1) + " × " + (2 * PadPlan.SIZES[k] + 1));
-            chosenSize = PadPlan.SIZES[k] == radius ? k : chosenSize;
+            // Quatre tailles sur une barre étroite : « 11×11 » doit tenir, sans espaces.
+            sizes[k] = Component.literal((2 * PadPlan.KIT_SIZES[k] + 1) + "×" + (2 * PadPlan.KIT_SIZES[k] + 1));
+            chosenSize = PadPlan.KIT_SIZES[k] == radius ? k : chosenSize;
         }
-        segmented(graphics, x, y + 12, column, sizes, chosenSize, mouseX, mouseY, k -> radius = PadPlan.SIZES[k]);
+        segmented(graphics, x, y + 12, column, sizes, chosenSize, mouseX, mouseY, k -> radius = PadPlan.KIT_SIZES[k]);
         y += 38;
+        PadPlan plan = plan();
         heading(graphics, x, y, "spaceport.orbitalis.kit.tower");
-        segmented(graphics, x, y + 12, column, new Component[] {Component.translatable("spaceport.orbitalis.kit.tower.stairs"),
-                Component.translatable("spaceport.orbitalis.kit.tower.elevator")}, elevator ? 1 : 0, mouseX, mouseY, k -> elevator = k == 1);
+        if (plan.compact()) {
+            // Le pas de tir d'essai n'a pas de tour : rien à choisir.
+            segmented(graphics, x, y + 12, column, new Component[] {Component.translatable("spaceport.orbitalis.kit.tower.none")}, 0,
+                    mouseX, mouseY, k -> {
+                    });
+        } else {
+            segmented(graphics, x, y + 12, column, new Component[] {Component.translatable("spaceport.orbitalis.kit.tower.stairs"),
+                    Component.translatable("spaceport.orbitalis.kit.tower.elevator")}, elevator ? 1 : 0, mouseX, mouseY, k -> elevator = k == 1);
+        }
         y += 40;
 
-        PadPlan plan = plan();
         heading(graphics, x, y, "spaceport.orbitalis.kit.capacity");
         y += 12;
         int tileW = (column - 4) / 2;
@@ -129,9 +137,12 @@ public class PadKitScreen extends Screen {
                 String.format(Locale.ROOT, "%,d", (int) (LaunchComplex.maxRocketMass(radius) / 1000)).replace(',', ' ')).getString(),
                 "spaceport.orbitalis.kit.mass_short");
         tile(graphics, x + tileW + 4, y, tileW, Component.translatable("spaceport.orbitalis.pad.blocks",
-                LaunchComplex.maxRocketHeight(plan.towerLevels())).getString(), "spaceport.orbitalis.kit.height_short");
+                plan.compact() ? LaunchComplex.TEST_PAD_HEIGHT : LaunchComplex.maxRocketHeight(plan.towerLevels())).getString(),
+                "spaceport.orbitalis.kit.height_short");
         tile(graphics, x, y + 30, tileW, Integer.toString(plan.towerLevels()), "spaceport.orbitalis.kit.levels_short");
-        tile(graphics, x + tileW + 4, y + 30, tileW, (plan.deckSize() + 5) + " × " + plan.deckSize(), "spaceport.orbitalis.kit.footprint_short");
+        // La tour ajoute cinq rangées derrière le tablier ; le pas de tir d'essai n'en a pas.
+        tile(graphics, x + tileW + 4, y + 30, tileW, (plan.deckSize() + (plan.compact() ? 0 : 5)) + " × " + plan.deckSize(),
+                "spaceport.orbitalis.kit.footprint_short");
         y += 64;
         for (String line : Ui.lines(font, Component.translatable("spaceport.orbitalis.kit.use." + radius), column, 3)) {
             graphics.text(font, line, x, y, COLOR_MUTED, false);

@@ -160,7 +160,7 @@ final class SequencePanel {
             case 0 -> !status.liquid() || status.fuelPercent() >= 100;
             case 1 -> !status.liquid() || status.pressure() > 0;
             case 2 -> status.chill() != 0;
-            case 3 -> status.retracted();
+            case 3 -> status.retracted() || status.testPad();
             case 4 -> status.weatherGo();
             default -> status.hasRocket() && status.internal() != 0;
         };
@@ -187,13 +187,19 @@ final class SequencePanel {
         if (status.hasDeluge()) {
             lines.add(new Line(LaunchStep.TEST_DELUGE, State.OPTIONAL, Component.translatable("sequence.orbitalis.value.water", status.water()), -1.0F));
         }
-        lines.add(new Line(LaunchStep.TEST_ARMS, State.OPTIONAL,
-                Component.translatable(status.retracted() ? "sequence.orbitalis.value.retracted" : "sequence.orbitalis.value.connected"), -1.0F));
+        if (!status.testPad()) {
+            lines.add(new Line(LaunchStep.TEST_ARMS, State.OPTIONAL,
+                    Component.translatable(status.retracted() ? "sequence.orbitalis.value.retracted" : "sequence.orbitalis.value.connected"), -1.0F));
+        }
         lines.add(new Line(LaunchStep.TEST_ALARM, State.OPTIONAL, Component.empty(), -1.0F));
         return lines;
     }
 
     List<Line> lines() {
+        // Un pupitre sans pas de tir en service n'a rien à commander : l'alerte dit pourquoi.
+        if (!status.linked() || !status.commissioned() || status.radius() == 0) {
+            return List.of();
+        }
         if (phase() == LaunchTableBlockEntity.Phase.FLIGHT) {
             return flightLines();
         }
@@ -224,9 +230,11 @@ final class SequencePanel {
                             : Component.translatable("sequence.orbitalis.value.no_pressure"),
                     status.chill() > 0 ? Math.min(1.0F, status.chill() / 120.0F) : -1.0F));
         }
-        // Le bras et la passerelle.
-        lines.add(new Line(LaunchStep.RETRACT, status.retracted() ? State.DONE : State.TODO,
-                Component.translatable(status.retracted() ? "sequence.orbitalis.value.retracted" : "sequence.orbitalis.value.connected"), -1.0F));
+        // Le bras et la passerelle : le pas de tir d'essai n'en a pas.
+        if (!status.testPad()) {
+            lines.add(new Line(LaunchStep.RETRACT, status.retracted() ? State.DONE : State.TODO,
+                    Component.translatable(status.retracted() ? "sequence.orbitalis.value.retracted" : "sequence.orbitalis.value.connected"), -1.0F));
+        }
         if (status.internal() >= 0) {
             // Les lanceurs avancés quittent le courant du sol pour leurs propres batteries.
             lines.add(new Line(LaunchStep.INTERNAL, status.internal() > 0 || ignited ? State.DONE : State.TODO,
@@ -298,15 +306,23 @@ final class SequencePanel {
                 return Component.translatable(key).withStyle(ChatFormatting.GRAY);
             }
         }
+        if (!status.linked()) {
+            return Component.translatable("sequence.orbitalis.alert.no_pad", com.orbitalis.phase1.spaceport.LaunchConsoleBlock.RANGE)
+                    .withStyle(ChatFormatting.GOLD);
+        }
+        if (!status.commissioned() || status.radius() == 0) {
+            return Component.translatable("sequence.orbitalis.alert.pad_not_ready").withStyle(ChatFormatting.GOLD);
+        }
         if (status.overpressure() > 0 && status.valvesOpen()) {
             return Component.translatable("sequence.orbitalis.alert.overpressure", status.overpressure()).withStyle(ChatFormatting.RED);
         }
         if (!status.hasRocket()) {
-            return Component.translatable(status.busyStep() >= 0 ? "sequence.orbitalis.alert.testing" : "sequence.orbitalis.alert.no_rocket_tests")
-                    .withStyle(ChatFormatting.GRAY);
+            // Les essais du pas de tir ne se font que depuis le grand pupitre, qui porte la liste courte.
+            return Component.translatable(status.busyStep() >= 0 ? "sequence.orbitalis.alert.testing"
+                    : complete ? "sequence.orbitalis.alert.no_rocket" : "sequence.orbitalis.alert.no_rocket_tests").withStyle(ChatFormatting.GRAY);
         }
         if (phase() == LaunchTableBlockEntity.Phase.COUNTDOWN) {
-            if (!status.retracted()) {
+            if (!status.retracted() && !status.testPad()) {
                 return Component.translatable("sequence.orbitalis.alert.arm").withStyle(ChatFormatting.RED);
             }
             if (status.hasDeluge() && status.deluge() <= 0) {

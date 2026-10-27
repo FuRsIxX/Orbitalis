@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "orbitalis:circuit_board",
+    "G": "minecraft:glass_pane",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone",
+    "S": "#c:plates/steel"
+  },
+  "pattern": [
+    "IGI",
+    "RCR",
+    "SSS"
+  ],
+  "result": {
+    "id": "orbitalis:test_console"
+  }
+}

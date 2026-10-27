@@ -1,3 +1,20 @@
+# Orbitalis — prochaine version
+
+## Nouveautés
+- **Pas de tir d'essai** : le kit de pas de tir propose maintenant un 3×3 sans tour, sans mâts ni bras. Treize blocs suffisent pour lancer ses premières fusées-sondes, à poudre et sans équipage (20 t et 8 blocs de haut au plus).
+- **Pupitre d'essai** : un pupitre d'un seul bloc qui n'affiche que la séquence de lancement (tour de table, allumage, lâcher des attaches), sans carte ni fiche de la fusée. Il marche aussi avec les grands pas de tir.
+- Un nouveau chapitre du manuel, « Le pas de tir d'essai ».
+
+## Équilibrage de l'énergie
+L'énergie venait trop facilement. Les chiffres s'inspirent maintenant de Mekanism : un générateur fait tourner à peu près une machine, et les machines à gaz sont les plus gourmandes.
+- Générateur à combustion : 20 FE/t au lieu de 40 (un charbon donne 32 000 FE).
+- Panneau solaire : 8 FE/t au sol au lieu de 15, 40 FE/t en orbite au lieu de 60.
+- Réacteur à fusion : 1 200 FE/t au lieu de 2 000.
+- Fonderie à arc : 30 FE/t pour l'acier, 50 pour l'aluminium-lithium. Laminoir : 20 FE/t, 40 pour le titane.
+- Électrolyseur : 80 FE/t. Liquéfacteur : 50 (oxygène), 80 (hydrogène), 40 (méthane). Raffinerie : 40. Réacteur de Sabatier : 50. Extracteur d'hélium-3 : 80. Chambre de Casimir : 400.
+- Réservoir cryogénique : 10 FE/t pour garder le froid, au lieu de 5.
+- Les machines acceptent jusqu'à 400 FE/t au lieu de 200.
+
 # Orbitalis — 0.9.0 (bêta)
 
 *Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
@@ -38,6 +55,23 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Les réglages de jeu (réalisme, pannes, évaporation des ergols, dégâts des accidents…) sont dans la configuration serveur du monde.
 
 ---
+
+# Orbitalis — next version
+
+## New
+- **Test pad**: the launch pad kit now offers a 3×3 pad with no tower, masts or arm. Thirteen blocks are enough to fly your first sounding rockets, solid-fuel and uncrewed (up to 20 t and 8 blocks tall).
+- **Test console**: a one-block console that only shows the launch sequence (Go/No-Go poll, ignition, clamp release), with no map and no rocket sheet. It also works with the big pads.
+- A new manual chapter, "The Test Pad".
+
+## Energy balance
+Power came too easily. The numbers now take after Mekanism: one generator runs about one machine, and the gas machines are the hungriest.
+- Combustion generator: 20 FE/t instead of 40 (one coal gives 32,000 FE).
+- Solar panel: 8 FE/t on the ground instead of 15, 40 FE/t in orbit instead of 60.
+- Fusion reactor: 1,200 FE/t instead of 2,000.
+- Arc foundry: 30 FE/t for steel, 50 for aluminum-lithium. Rolling mill: 20 FE/t, 40 for titanium.
+- Electrolyzer: 80 FE/t. Liquefier: 50 (oxygen), 80 (hydrogen), 40 (methane). Refinery: 40. Sabatier reactor: 50. Helium-3 extractor: 80. Casimir chamber: 400.
+- Cryogenic tank: 10 FE/t to stay cold, instead of 5.
+- Machines accept up to 400 FE/t instead of 200.
 
 # Orbitalis — 0.9.0 (beta)
 

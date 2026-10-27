@@ -1,6 +1,6 @@
 {
   "type": "orbitalis:refining",
-  "energy": 2000,
+  "energy": 4000,
   "fluid_outputs": [
     {
       "amount": 250,

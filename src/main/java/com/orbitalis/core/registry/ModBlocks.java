@@ -42,6 +42,7 @@ import com.orbitalis.phase1.spaceport.TowerRailingBlock;
 import com.orbitalis.phase1.spaceport.WorkstationPartBlock;
 import com.orbitalis.phase1.spaceport.StructurePartBlock;
 import com.orbitalis.phase1.spaceport.TowerStepBlock;
+import com.orbitalis.phase1.spaceport.TestConsoleBlock;
 import com.orbitalis.phase1.spaceport.RocketBlock;
 import com.orbitalis.phase1.spaceport.RocketHullBlock;
 import com.orbitalis.phase1.machines.MachineBlockEntity;
@@ -413,6 +414,17 @@ public final class ModBlocks {
                     .sound(SoundType.METAL)
                     .noOcclusion()
                     .lightLevel(state -> 7)));
+    /** Pupitre d'essai : d'un seul bloc, il ne commande que la séquence de lancement de la table la plus proche. */
+    public static final DeferredBlock<TestConsoleBlock> TEST_CONSOLE = withItem(BLOCKS.registerBlock("test_console",
+            TestConsoleBlock::new,
+            properties -> properties
+                    .mapColor(MapColor.METAL)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()
+                    .lightLevel(state -> 5)));
 
     /** Écran mural du centre de contrôle : il suit le lancement en cours sur la table la plus proche. */
     public static final DeferredBlock<MissionDisplayBlock> MISSION_DISPLAY = withItem(BLOCKS.registerBlock("mission_display",

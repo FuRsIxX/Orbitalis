@@ -1,6 +1,6 @@
 {
   "type": "orbitalis:electrolysis",
-  "energy": 400,
+  "energy": 1600,
   "fluid_input": {
     "amount": 100,
     "id": "minecraft:water"

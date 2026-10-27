@@ -28,8 +28,8 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
  * puis la distribue aux machines qui le touchent.
  */
 public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
-    /** Énergie produite par tick de combustion, en FE. Un charbon (1600 ticks) donne donc 64 000 FE. */
-    public static final int ENERGY_PER_TICK = 40;
+    /** Énergie produite par tick de combustion, en FE. Un charbon (1600 ticks) donne donc 32 000 FE. */
+    public static final int ENERGY_PER_TICK = 20;
     private static final int FUEL_SLOT = 0;
 
     /** Ticks de combustion restants pour le combustible en cours. */

@@ -39,8 +39,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
  * @param gate     étage du seuil du portique d'embarquement. La table de lancement le déplace d'elle-même à la
  *                 hauteur de la cabine de la fusée qu'on lui confie
  * @param arm      étage du bras ombilical. La table le déplace de même à la hauteur des réservoirs de la fusée
+ * @param compact  vrai pour le pas de tir d'essai : un tablier 3×3, sans tour, sans mâts ni bras (voir {@link #test})
  */
-public record PadPlan(int radius, boolean elevator, Direction facing, int gate, int arm) {
+public record PadPlan(int radius, boolean elevator, Direction facing, int gate, int arm, boolean compact) {
     /** Étage du bras ombilical tant qu'aucune fusée ne dit où le mettre. */
     private static final int ARM_LEVEL = 4;
 
@@ -106,20 +107,40 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
     private static final Map<PadPlan, List<Piece>> CACHE = new ConcurrentHashMap<>();
 
     public PadPlan {
-        radius = Math.clamp(radius, 1, LaunchComplex.MAX_RADIUS);
         facing = facing.getAxis().isHorizontal() ? facing : Direction.EAST;
-        gate = gateLevel(radius, elevator, gate);
-        // Le bras reste sous le sommet, au-dessus du tablier, et ne sort jamais de la tour à travers le portique ni
-        // contre sa passerelle : il passe alors au-dessus du portique, ou en dessous s'il n'y a pas la place.
-        int levels = towerLevels(radius);
-        arm = Math.clamp(arm, 3, levels - 2);
-        if (arm >= gate - 1 && arm <= gate + 2) {
-            arm = gate + 3 < levels ? gate + 3 : gate - 2;
+        if (compact) {
+            // Le pas de tir d'essai n'a ni tour, ni portique, ni bras.
+            radius = 1;
+            elevator = false;
+            gate = 0;
+            arm = 0;
+        } else {
+            radius = Math.clamp(radius, 1, LaunchComplex.MAX_RADIUS);
+            gate = gateLevel(radius, elevator, gate);
+            // Le bras reste sous le sommet, au-dessus du tablier, et ne sort jamais de la tour à travers le portique
+            // ni contre sa passerelle : il passe alors au-dessus du portique, ou en dessous s'il n'y a pas la place.
+            int levels = towerLevels(radius);
+            arm = Math.clamp(arm, 3, levels - 2);
+            if (arm >= gate - 1 && arm <= gate + 2) {
+                arm = gate + 3 < levels ? gate + 3 : gate - 2;
+            }
         }
+    }
+
+    public PadPlan(int radius, boolean elevator, Direction facing, int gate, int arm) {
+        this(radius, elevator, facing, gate, arm, false);
     }
 
     public PadPlan(int radius, boolean elevator, Direction facing, int gate) {
         this(radius, elevator, facing, gate, ARM_LEVEL);
+    }
+
+    /**
+     * Le pas de tir d'essai : un tablier 3×3 posé sur son déflecteur, sans tour, sans mâts ni bras. On y lance ses
+     * premières fusées-sondes, à poudre et sans équipage, depuis le pupitre d'essai.
+     */
+    public static PadPlan test(Direction facing) {
+        return new PadPlan(1, false, facing, 0, 0, true);
     }
 
     /** Plan dont le portique est à sa hauteur habituelle : à dix blocs du sol, ou au plus haut si la tour est basse. */
@@ -146,12 +167,12 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
 
     /** Le même plan, portique à un autre étage. */
     public PadPlan withGate(int level) {
-        return new PadPlan(radius, elevator, facing, level, arm);
+        return compact ? this : new PadPlan(radius, elevator, facing, level, arm);
     }
 
     /** Le même plan, bras ombilical à un autre étage. */
     public PadPlan withArm(int level) {
-        return new PadPlan(radius, elevator, facing, gate, level);
+        return compact ? this : new PadPlan(radius, elevator, facing, gate, level);
     }
 
     /** Étage du bras ombilical. */
@@ -183,17 +204,20 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
         return cells;
     }
 
-    /** Nombre d'étages de la tour. */
+    /** Nombre d'étages de la tour ; 0 pour le pas de tir d'essai, qui n'en a pas. */
     public int towerLevels() {
-        return TOWER_LEVELS[radius - 1];
+        return compact ? 0 : TOWER_LEVELS[radius - 1];
     }
 
     /**
-     * Tailles de tablier que le kit propose, par leur rayon : 5×5, 9×9 et 11×11. Le 3×3 et le 7×7 n'existent plus :
-     * on n'en pose plus, et un pas de tir de ces tailles bâti avant leur retrait ne se met plus en service. Un clic
-     * droit sur sa table avec un kit le remplace par une taille proposée.
+     * Tailles de pas de tir à tour que le kit propose, par leur rayon : 5×5, 9×9 et 11×11. Le 3×3 à tour et le 7×7
+     * n'existent plus : on n'en pose plus, et un pas de tir de ces tailles bâti avant leur retrait ne se met plus en
+     * service. Un clic droit sur sa table avec un kit le remplace par une taille proposée. Le 3×3 reste proposé, mais
+     * sans tour : c'est le pas de tir d'essai ({@link #test}).
      */
     public static final int[] SIZES = {2, 4, 5};
+    /** Tailles que l'écran du kit propose : le pas de tir d'essai (3×3, sans tour), puis les pas de tir à tour. */
+    public static final int[] KIT_SIZES = {1, 2, 4, 5};
     /**
      * Pour les tests automatiques : ils bâtissent de petits pas de tir 3×3, qui tiennent dans leur zone d'essai. Faux
      * en temps normal.
@@ -213,6 +237,14 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
         return false;
     }
 
+    /**
+     * Plan choisi dans le kit : le 3×3 est le pas de tir d'essai, sans tour ; toute autre taille est ramenée à la plus
+     * proche des tailles proposées.
+     */
+    public static PadPlan forKit(int radius, boolean elevator, Direction facing) {
+        return radius == 1 ? test(facing) : new PadPlan(nearestSize(radius), elevator, facing);
+    }
+
     /** La taille proposée qui convient à celle qu'on demande : la plus petite qui la contient, sinon la plus grande. */
     public static int nearestSize(int radius) {
         for (int size : SIZES) {
@@ -227,9 +259,9 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
         return TOWER_LEVELS[Math.clamp(radius, 1, LaunchComplex.MAX_RADIUS) - 1];
     }
 
-    /** Hauteur de chacun des quatre mâts, en blocs. */
+    /** Hauteur de chacun des quatre mâts, en blocs ; le pas de tir d'essai n'en a pas. */
     public int mastHeight() {
-        return LaunchComplex.requiredMastHeight(radius);
+        return compact ? 0 : LaunchComplex.requiredMastHeight(radius);
     }
 
     /** Côté du tablier, en blocs. */
@@ -331,6 +363,10 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
             }
         }
 
+        // Le pas de tir d'essai s'arrête là : ni mâts (voir plus haut), ni tour, ni bras.
+        if (plan.compact) {
+            return List.copyOf(pieces);
+        }
         // Tour : cinq blocs de côté, contre le bord du tablier opposé au carneau. `depth` compte les rangées depuis
         // sa face avant (0) jusqu'à sa face arrière (4).
         int levels = plan.towerLevels();

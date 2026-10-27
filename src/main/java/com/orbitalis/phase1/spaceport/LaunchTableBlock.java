@@ -160,6 +160,8 @@ public class LaunchTableBlock extends BaseEntityBlock {
         } else if (stats.liftoffMass() > table.getComplex().maxRocketMass()) {
             problem = Component.translatable("spaceport.orbitalis.table.rocket_too_heavy",
                     (int) (table.getComplex().maxRocketMass() / 1000));
+        } else if (table.testPadProblem(stack) != null) {
+            problem = table.testPadProblem(stack);
         } else if (!table.isHeightAllowedFor(stack)) {
             problem = Component.translatable("spaceport.orbitalis.table.rocket_too_tall",
                     RocketShape.of(RocketItem.design(stack)).height(), table.getComplex().maxRocketHeight());
@@ -305,7 +307,7 @@ public class LaunchTableBlock extends BaseEntityBlock {
         PacketDistributor.sendToPlayer(player, new LaunchPadInfoPayload(table.isCommissioned(), complex.radius(), complex.skyClear(),
                 complex.hasDeflector(), complex.hasTrench(), complex.mastHeight(),
                 complex.towerHeight(), table.requiredTowerHeight(), complex.arms(), table.isTowerAuthorized(),
-                table.getRocket(), table.rocketHeight(), fuel[0], fuel[1], fuel[2], fuel[4], fuel[5], table.getPhase().ordinal()));
+                table.getRocket(), table.rocketHeight(), fuel[0], fuel[1], fuel[2], fuel[4], fuel[5], table.getPhase().ordinal(), complex.compact()));
     }
 
     /**

@@ -23,8 +23,8 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 public abstract class MachineBlockEntity extends BlockEntity implements MenuProvider {
     /** Capacité par défaut de la réserve d'énergie d'une machine, en FE. */
     public static final int ENERGY_CAPACITY = 20_000;
-    /** Débit maximal d'énergie reçu ou fourni par une machine, en FE par tick. */
-    public static final int ENERGY_TRANSFER = 200;
+    /** Débit maximal d'énergie reçu ou fourni par une machine, en FE par tick : de quoi nourrir la plus gourmande (400 FE/t). */
+    public static final int ENERGY_TRANSFER = 400;
 
     protected final MachineEnergyStorage energy;
     protected final MachineInventory inventory;

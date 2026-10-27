@@ -31,10 +31,11 @@ import net.minecraft.world.item.ItemStack;
  * @param methane         méthane liquide chargé, en mB
  * @param helium3         hélium-3 chargé, en mB
  * @param phase           déroulement du lancement (rang dans {@code LaunchTableBlockEntity.Phase})
+ * @param compact         vrai pour le pas de tir d'essai, qui n'a ni tour, ni mâts, ni bras
  */
 public record LaunchPadInfoPayload(boolean commissioned, int radius, boolean skyClear, boolean hasDeflector, boolean hasTrench,
         int mastHeight, int towerHeight, int requiredTower, int arms, boolean towerAuthorized, ItemStack rocket,
-        int rocketHeight, int rp1, int oxygen, int hydrogen, int methane, int helium3, int phase) implements CustomPacketPayload {
+        int rocketHeight, int rp1, int oxygen, int hydrogen, int methane, int helium3, int phase, boolean compact) implements CustomPacketPayload {
     public static final Type<LaunchPadInfoPayload> TYPE = new Type<>(Orbitalis.id("launch_pad_info"));
 
     /** Sans méthane chargé. */
@@ -42,7 +43,7 @@ public record LaunchPadInfoPayload(boolean commissioned, int radius, boolean sky
             int mastHeight, int towerHeight, int requiredTower, int arms, boolean towerAuthorized, ItemStack rocket,
             int rocketHeight, int rp1, int oxygen, int hydrogen, int phase) {
         this(commissioned, radius, skyClear, hasDeflector, hasTrench, mastHeight, towerHeight, requiredTower, arms, towerAuthorized,
-                rocket, rocketHeight, rp1, oxygen, hydrogen, 0, 0, phase);
+                rocket, rocketHeight, rp1, oxygen, hydrogen, 0, 0, phase, false);
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, LaunchPadInfoPayload> STREAM_CODEC = StreamCodec.of(
@@ -65,11 +66,12 @@ public record LaunchPadInfoPayload(boolean commissioned, int radius, boolean sky
                 buffer.writeInt(payload.methane);
                 buffer.writeInt(payload.helium3);
                 buffer.writeInt(payload.phase);
+                buffer.writeBoolean(payload.compact);
             },
             buffer -> new LaunchPadInfoPayload(buffer.readBoolean(), buffer.readInt(), buffer.readBoolean(), buffer.readBoolean(),
                     buffer.readBoolean(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readBoolean(),
                     ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer), buffer.readInt(), buffer.readInt(), buffer.readInt(),
-                    buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt()));
+                    buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readBoolean()));
 
     @Override
     public Type<LaunchPadInfoPayload> type() {

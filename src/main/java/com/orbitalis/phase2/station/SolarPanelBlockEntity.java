@@ -31,8 +31,8 @@ public class SolarPanelBlockEntity extends BlockEntity {
     private static final int ENERGY_CAPACITY = 10_000;
     private static final int ENERGY_TRANSFER = 200;
     /** Production en orbite, puis au sol en plein jour, en FE par tick. */
-    public static final int ORBIT_OUTPUT = 60;
-    public static final int GROUND_OUTPUT = 15;
+    public static final int ORBIT_OUTPUT = 40;
+    public static final int GROUND_OUTPUT = 8;
     /** Intervalle entre deux relevés des prises du grand panneau, et de l'ensoleillement, en ticks. */
     private static final int SCAN_INTERVAL = 40;
 

@@ -1,6 +1,6 @@
 {
   "type": "orbitalis:helium3_extraction",
-  "energy": 4000,
+  "energy": 16000,
   "fluid_outputs": [
     {
       "amount": 10,

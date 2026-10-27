@@ -40,6 +40,7 @@ public final class GuideChapters {
             new GuideChapter("rocket_assembly", ROCKETS, ModBlocks.DESIGN_COMPUTER),
             new GuideChapter("rocket_stats", ROCKETS, ModItems.KEROLOX_ENGINE),
             new GuideChapter("launch_complex", SPACEPORT, ModBlocks.LAUNCH_TABLE),
+            new GuideChapter("test_pad", SPACEPORT, ModBlocks.TEST_CONSOLE),
             new GuideChapter("launch", SPACEPORT, ModItems.ROCKET),
             new GuideChapter("pad_sizes", SPACEPORT, ModBlocks.LAUNCH_PAD),
             new GuideChapter("pad_9x9", SPACEPORT, ModBlocks.SERVICE_TOWER),

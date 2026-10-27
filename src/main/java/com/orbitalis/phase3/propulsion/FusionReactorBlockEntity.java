@@ -33,7 +33,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
  */
 public class FusionReactorBlockEntity extends BlockEntity {
     /** Production, en FE par tick, tant que le plasma brûle. */
-    public static final int OUTPUT = 2000;
+    public static final int OUTPUT = 1200;
     /** Ce qu'il brûle par seconde, en mB : un peu d'hélium-3, dix fois plus d'hydrogène. */
     public static final int HELIUM3_PER_SECOND = 2;
     public static final int HYDROGEN_PER_SECOND = 20;

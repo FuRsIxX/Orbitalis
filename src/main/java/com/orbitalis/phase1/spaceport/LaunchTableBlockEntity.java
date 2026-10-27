@@ -1121,7 +1121,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
      * de tir qui cesse d'être en service reprend toute la lumière qu'il avait déposée.
      */
     private void tickBeacons(ServerLevel level) {
-        if (plan == null || !isOperational()) {
+        if (plan == null || !isOperational() || plan.compact()) {
             if (beaconsOn) {
                 beaconsOn = false;
                 clearLights(level);
@@ -1164,6 +1164,10 @@ public class LaunchTableBlockEntity extends BlockEntity {
         }
         if (!candidateStats.isFlightReady()) {
             return Component.translatable("spaceport.orbitalis.table.rocket_invalid");
+        }
+        Component testPad = testPadProblem(candidate);
+        if (testPad != null) {
+            return testPad;
         }
         if (candidateStats.liftoffMass() > complex.maxRocketMass()) {
             return Component.translatable("spaceport.orbitalis.table.rocket_too_heavy", (int) (complex.maxRocketMass() / 1000));
@@ -1216,6 +1220,10 @@ public class LaunchTableBlockEntity extends BlockEntity {
         }
         if (hasRocket() || hasRocketPlan() || phase != Phase.IDLE || !freeCargo.isEmpty()) {
             return Component.translatable("spaceport.orbitalis.table.occupied");
+        }
+        // Le pas de tir d'essai n'a pas de passerelle : pas de capsule habitée.
+        if (isTestPad() && RocketParts.isCrewCabin(cargo)) {
+            return Component.translatable("spaceport.orbitalis.table.test_pad_crew");
         }
         freeCargo = cargo.copyWithCount(1);
         lastReadout = "";
@@ -2036,9 +2044,33 @@ public class LaunchTableBlockEntity extends BlockEntity {
         return complex;
     }
 
-    /** Vrai si ce pas de tir est d'une taille qui n'existe plus (3×3, 7×7) : il ne peut plus être mis en service. */
+    /** Vrai si ce pas de tir est d'une taille qui n'existe plus (3×3 à tour, 7×7) : il ne peut plus être mis en service. */
     public boolean isRetiredSize() {
-        return plan != null && !PadPlan.isOffered(plan.radius());
+        return plan != null && !plan.compact() && !PadPlan.isOffered(plan.radius());
+    }
+
+    /** Vrai si c'est le pas de tir d'essai : un 3×3 sans tour, pour les fusées-sondes à poudre, sans équipage. */
+    public boolean isTestPad() {
+        return plan != null && plan.compact();
+    }
+
+    /**
+     * Ce qui interdit cette fusée sur le pas de tir d'essai, ou {@code null} si elle y a sa place (ou si ce n'est pas un
+     * pas de tir d'essai). Il n'a ni bras pour faire le plein, ni passerelle pour embarquer : il ne prend que des
+     * fusées à poudre, sans équipage.
+     */
+    public Component testPadProblem(ItemStack candidate) {
+        if (!isTestPad() || candidate.isEmpty()) {
+            return null;
+        }
+        com.orbitalis.phase1.rocket.RocketDesign design = RocketItem.design(candidate);
+        if (RocketParts.isCrewCabin(design.payload())) {
+            return Component.translatable("spaceport.orbitalis.table.test_pad_crew");
+        }
+        if (!RocketFuel.required(RocketStats.of(design)).isEmpty()) {
+            return Component.translatable("spaceport.orbitalis.table.test_pad_liquid");
+        }
+        return null;
     }
 
     /** Vrai si le complexe est mis en service et que sa structure est complète. */
@@ -2374,7 +2406,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
      * de la tour, il lui en faut donc une. Une fusée à poudre n'exige rien.
      */
     public int requiredTowerHeight() {
-        return LaunchComplex.requiredTowerHeight(complex.radius());
+        return complex.requiredTowerHeight();
     }
 
     /** Durée minimale d'un plein complet, en ticks : le débit des bras est borné pour qu'on le voie monter. */
@@ -2570,7 +2602,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
 
     /** Vrai si tout est en ordre pour lancer. */
     public boolean isGoForLaunch() {
-        return isOperational() && hasRocket() && rocketStats().isFlightReady() && isMassAllowed()
+        return isOperational() && hasRocket() && rocketStats().isFlightReady() && isMassAllowed() && testPadProblem(rocket) == null
                 && (!needsArm() || usableArms() > 0) && usableTowerHeight() >= requiredTowerHeight()
                 && isFuelled() && isWeatherGo();
     }
@@ -2679,7 +2711,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
 
     /** Vrai si tout est en ordre pour allumer les moteurs. Le plein n'en fait pas partie : c'est l'affaire de l'équipe. */
     public boolean isReadyToIgnite() {
-        return isOperational() && hasRocket() && rocketStats().isFlightReady() && isMassAllowed()
+        return isOperational() && hasRocket() && rocketStats().isFlightReady() && isMassAllowed() && testPadProblem(rocket) == null
                 && usableTowerHeight() >= requiredTowerHeight() && isWeatherGo();
     }
 
@@ -2905,7 +2937,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
             case 0 -> !isLiquid() || fuelPercent() >= 100;
             case 1 -> !isLiquid() || isPressurized();
             case 2 -> !needsChill() || isChilled();
-            case 3 -> retracted;
+            case 3 -> retracted || isTestPad();
             case 4 -> isWeatherGo();
             default -> hasRocket() && isOperational() && rocketStats().isFlightReady() && isMassAllowed()
                     && usableTowerHeight() >= requiredTowerHeight() && (!needsInternal() || internalPower);
@@ -4090,7 +4122,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
             padFailure(level, "sequence.orbitalis.fail.early", 0);
             return;
         }
-        if (!retracted) {
+        if (!retracted && !isTestPad()) {
             // Le bras est emporté avec la fusée, qui se déchire à sa hauteur.
             int torn = 0;
             for (BlockPos arm : complex.armPositions()) {
@@ -4579,6 +4611,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
             output.putInt("plan_facing", plan.facing().get2DDataValue());
             output.putInt("plan_gate", plan.gate());
             output.putInt("plan_arm", plan.arm());
+            output.putBoolean("plan_compact", plan.compact());
         }
         output.putInt("pad_missing", complex.missing());
         output.putInt("pad_radius", complex.radius());
@@ -4667,10 +4700,12 @@ public class LaunchTableBlockEntity extends BlockEntity {
         complex = new LaunchComplex(input.getIntOr("pad_radius", 0), 0, input.getBooleanOr("pad_sky", false),
                 input.getIntOr("tower_height", 0), arms.size(), input.getBooleanOr("pad_deflector", false),
                 input.getBooleanOr("pad_trench", false), input.getIntOr("pad_masts", 0),
-                towerBase == Long.MIN_VALUE ? null : BlockPos.of(towerBase), List.copyOf(arms), input.getIntOr("pad_missing", 0));
+                towerBase == Long.MIN_VALUE ? null : BlockPos.of(towerBase), List.copyOf(arms), input.getIntOr("pad_missing", 0),
+                input.getBooleanOr("plan_compact", false));
         int planRadius = input.getIntOr("plan_radius", 0);
         plan = planRadius <= 0 ? null : new PadPlan(planRadius, input.getBooleanOr("plan_elevator", false),
-                Direction.from2DDataValue(input.getIntOr("plan_facing", Direction.EAST.get2DDataValue())), input.getIntOr("plan_gate", 10), input.getIntOr("plan_arm", 4));
+                Direction.from2DDataValue(input.getIntOr("plan_facing", Direction.EAST.get2DDataValue())), input.getIntOr("plan_gate", 10),
+                input.getIntOr("plan_arm", 4), input.getBooleanOr("plan_compact", false));
     }
 
     /** Vrai si les échecs de lancement sont activés dans la configuration du serveur. */

@@ -11,6 +11,7 @@ tournés vers l'opérateur. Ce qui les distingue se voit de loin :
 - le pupitre de lancement est rouge ; il porte une rangée de leviers, le gros bouton de mise à feu sous son capot
   rayé, et un gyrophare orange sur son toit ;
 - la station de poursuite est verte ; elle porte un manche, un récepteur, une parabole inclinée et une antenne fouet.
+Le pupitre d'essai, d'un seul bloc, est le petit frère rouge du pupitre de lancement.
 
 Les modèles sont dessinés face avant au nord, le bloc du meuble étant celui du milieu, en bas, à l'avant. Les
 textures gardent partout des pixels de la taille de ceux des blocs, et aucune face n'en recouvre une autre.
@@ -391,18 +392,49 @@ TRACKING = shell("trim_green", "screen_track") + [
     box(26, 29, 27, 26.6, 32, 27.6, "light"),
 ]
 
+# Pupitre d'essai : le petit frère du pupitre de lancement, d'un seul bloc. Le même rouge, un seul écran, le clavier,
+# le bouton de mise à feu sous son capot rayé et la clé d'armement, et une petite lampe orange sur le caisson.
+TEST = [
+    # Socle et caisson, avec leur liseré rouge et une grille d'aération en façade comme au dos.
+    box(0, 0, 1, 16, 1, 16, "shelld"),
+    {**box(0, 0.25, 0.6, 16, 0.75, 1, "trim_red"), "only": ("north", "west", "east", "up", "down")},
+    box(1, 1, 3, 15, 10, 15, "shell"),
+    {**box(3, 3, 2.6, 13, 8, 3, "vent"), "only": ("north", "west", "east", "up", "down")},
+    {**box(3, 3, 15, 13, 8, 15.4, "vent"), "only": ("south", "west", "east", "up", "down")},
+    # Plan de travail, son chant rouge, le clavier.
+    box(0, 10, 1, 16, 11, 16, "desk"),
+    {**box(0, 10.25, 0.6, 16, 10.75, 1, "trim_red"), "only": ("north", "west", "east", "up", "down")},
+    {**faced(box(1.5, 11, 2.5, 8, 11.5, 7.5, "shelld"), up="keys"), "stretch": True,
+     "uv": {"up": [0, 0, 16, 16], "north": [0, 0, 13, 1], "south": [0, 0, 13, 1], "west": [0, 0, 5, 1], "east": [0, 0, 5, 1], "down": [0, 0, 13, 5]}},
+    # Bouton de mise à feu sur son embase rayée, et la clé d'armement.
+    box(10, 11, 2.5, 14.5, 12, 7, "hazard"),
+    box(11.25, 12, 3.75, 13.25, 13, 5.75, "red"),
+    box(8.75, 11, 5, 9.5, 11.75, 5.75, "brass"),
+    # L'écran, dans son cadre, sur le caisson arrière.
+    box(1, 11, 9, 15, 16, 15, "shell"),
+    {**box(2, 11.5, 8.6, 14, 15.75, 9, "shelld"), "only": ("north", "west", "east", "up", "down")},
+    screen(2.5, 12, 13.5, 15.25, 8.3, "screen_launch", [0, 8, 8, 16]),
+    # Lampe orange.
+    box(11.5, 16, 11, 14.5, 16.5, 14, "shelld"),
+    box(12, 16.5, 11.5, 14, 18, 13.5, "amber"),
+]
+
 CONSOLES = {"design_computer": DESIGN, "launch_console": LAUNCH, "tracking_station": TRACKING}
+# Les postes d'un seul bloc, et le pavé qu'ils occupent (pour leur présentation dans l'inventaire).
+SMALL = {"test_console": (TEST, [0, 0, 0], [16, 18, 16])}
 
 
 def write_models():
     os.makedirs(gm.MODEL_DIR, exist_ok=True)
     overlaps = 0
-    for name, parts in CONSOLES.items():
+    models = {name: (parts, [-16, 0, 0], [32, 32, 32], 1.25) for name, parts in CONSOLES.items()}
+    models.update({name: (parts, lo, hi, 1.0) for name, (parts, lo, hi) in SMALL.items()})
+    for name, (parts, lo, hi, fill) in models.items():
         for part in parts:
             assert all(-16 <= c <= 32 for c in part["from"] + part["to"]), (name, part)
             assert all(a < b for a, b in zip(part["from"], part["to"])), (name, part)
         overlaps += check_overlaps(name, parts)
-        model = build_tiled(parts, TEXTURES, EMISSIVE, display=display([-16, 0, 0], [32, 32, 32], fill=1.25))
+        model = build_tiled(parts, TEXTURES, EMISSIVE, display=display(lo, hi, fill=fill))
         with open(os.path.join(gm.MODEL_DIR, name + ".json"), "w", newline="\n") as f:
             json.dump(model, f, indent=1)
     return overlaps
@@ -411,4 +443,4 @@ def write_models():
 if __name__ == "__main__":
     write_textures()
     found = write_models()
-    print("%d postes de travail écrits, %d chevauchement(s)." % (len(CONSOLES), found))
+    print("%d postes de travail écrits, %d chevauchement(s)." % (len(CONSOLES) + len(SMALL), found))

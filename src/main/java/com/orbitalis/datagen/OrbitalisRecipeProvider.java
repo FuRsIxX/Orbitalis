@@ -281,6 +281,19 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('L', ModItems.CIRCUIT_BOARD)
                 .unlockedBy("has_aluminum_plate", has(ModTags.Items.PLATES_ALUMINUM))
                 .save(output, key("launch_console"));
+
+        // Pupitre d'essai : un écran, une carte électronique et de l'acier, de quoi tirer ses premières fusées-sondes.
+        shaped(RecipeCategory.MISC, ModBlocks.TEST_CONSOLE)
+                .pattern("IGI")
+                .pattern("RCR")
+                .pattern("SSS")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('G', Items.GLASS_PANE)
+                .define('R', Tags.Items.DUSTS_REDSTONE)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .define('S', ModTags.Items.PLATES_STEEL)
+                .unlockedBy("has_steel_plate", has(ModTags.Items.PLATES_STEEL))
+                .save(output, key("test_console"));
     }
 
     /** Atelier d'assemblage et pièces de fusée. */
@@ -1838,32 +1851,32 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
     private void buildFuels() {
         // Électrolyse : l'eau donne deux volumes d'hydrogène pour un volume d'oxygène.
         fluid(ModRecipes.ELECTROLYSIS, "water_electrolysis", Optional.empty(), Optional.of(stack(Fluids.WATER, 100)),
-                400, 20, stack(ModFluids.HYDROGEN.get(), 200), stack(ModFluids.OXYGEN.get(), 100));
+                1600, 20, stack(ModFluids.HYDROGEN.get(), 200), stack(ModFluids.OXYGEN.get(), 100));
 
         // Liquéfaction : l'hydrogène, plus froid, demande plus d'énergie que l'oxygène.
         fluid(ModRecipes.LIQUEFACTION, "liquid_oxygen", Optional.empty(), Optional.of(stack(ModFluids.OXYGEN.get(), 100)),
-                800, 40, stack(ModFluids.LIQUID_OXYGEN.get(), 50));
+                2000, 40, stack(ModFluids.LIQUID_OXYGEN.get(), 50));
         fluid(ModRecipes.LIQUEFACTION, "liquid_hydrogen", Optional.empty(), Optional.of(stack(ModFluids.HYDROGEN.get(), 100)),
-                1200, 40, stack(ModFluids.LIQUID_HYDROGEN.get(), 50));
+                3200, 40, stack(ModFluids.LIQUID_HYDROGEN.get(), 50));
 
         // Liquéfaction du méthane : à 111 K, il demande moins de froid que l'oxygène.
         fluid(ModRecipes.LIQUEFACTION, "liquid_methane", Optional.empty(), Optional.of(stack(ModFluids.METHANE.get(), 100)),
-                600, 40, stack(ModFluids.LIQUID_METHANE.get(), 50));
+                1600, 40, stack(ModFluids.LIQUID_METHANE.get(), 50));
         // Réaction de Sabatier : le carbone d'un charbon, brûlé en gaz carbonique, et quatre volumes d'hydrogène donnent
         // du méthane et de l'eau.
         fluid(ModRecipes.SABATIER, "methane", Optional.of(tag(ItemTags.COALS, 1)), Optional.of(stack(ModFluids.HYDROGEN.get(), 800)),
-                1600, 80, stack(ModFluids.METHANE.get(), 400), stack(net.minecraft.world.level.material.Fluids.WATER, 200));
+                4000, 80, stack(ModFluids.METHANE.get(), 400), stack(net.minecraft.world.level.material.Fluids.WATER, 200));
 
         // Hélium-3 : cuit vers 700 °C, le régolithe lunaire libère l'hélium-3 et l'hydrogène que le vent solaire y a
         // déposés ; le minerai d'ilménite, qui les retient mieux, en donne quatre fois plus.
         fluid(ModRecipes.HELIUM3, "helium_3_from_regolith", Optional.of(item(ModBlocks.MOON_REGOLITH.get(), 1)), Optional.empty(),
-                4000, 200, stack(ModFluids.HELIUM_3.get(), 10), stack(ModFluids.HYDROGEN.get(), 50));
+                16000, 200, stack(ModFluids.HELIUM_3.get(), 10), stack(ModFluids.HYDROGEN.get(), 50));
         fluid(ModRecipes.HELIUM3, "helium_3_from_ilmenite", Optional.of(item(ModBlocks.MOON_ILMENITE_ORE.get(), 1)), Optional.empty(),
-                4000, 200, stack(ModFluids.HELIUM_3.get(), 40), stack(ModFluids.HYDROGEN.get(), 50));
+                16000, 200, stack(ModFluids.HELIUM_3.get(), 40), stack(ModFluids.HYDROGEN.get(), 50));
 
         // Raffinage : le charbon est transformé en kérosène.
         fluid(ModRecipes.REFINING, "rp1", Optional.of(tag(ItemTags.COALS, 1)), Optional.empty(),
-                2000, 100, stack(ModFluids.RP1.get(), 250));
+                4000, 100, stack(ModFluids.RP1.get(), 250));
     }
 
     private void fluid(FluidRecipe.Kind kind, String name, Optional<SizedIngredient> itemInput,
@@ -1917,21 +1930,21 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
     /** Fonderie à arc : alliages. */
     private void buildAlloying() {
         // Acier : fer + carbone (charbon ou charbon de bois).
-        machine(ModRecipes.ALLOYING, "steel_ingot", ModItems.STEEL_INGOT, 1, 4000, 200,
+        machine(ModRecipes.ALLOYING, "steel_ingot", ModItems.STEEL_INGOT, 1, 6000, 200,
                 tag(Tags.Items.INGOTS_IRON, 1), tag(ItemTags.COALS, 1));
         // Aluminium-lithium : alliage léger des réservoirs de fusée.
-        machine(ModRecipes.ALLOYING, "aluminum_lithium_ingot", ModItems.ALUMINUM_LITHIUM_INGOT, 5, 9000, 300,
+        machine(ModRecipes.ALLOYING, "aluminum_lithium_ingot", ModItems.ALUMINUM_LITHIUM_INGOT, 5, 15000, 300,
                 tag(ModTags.Items.INGOTS_ALUMINUM, 4), tag(ModTags.Items.INGOTS_LITHIUM, 1));
     }
 
     /** Laminoir : un lingot donne une tôle. */
     private void buildRolling() {
-        machine(ModRecipes.ROLLING, "steel_plate", ModItems.STEEL_PLATE, 1, 1000, 100, tag(ModTags.Items.INGOTS_STEEL, 1));
-        machine(ModRecipes.ROLLING, "aluminum_plate", ModItems.ALUMINUM_PLATE, 1, 1000, 100, tag(ModTags.Items.INGOTS_ALUMINUM, 1));
-        machine(ModRecipes.ROLLING, "titanium_plate", ModItems.TITANIUM_PLATE, 1, 2000, 100, tag(ModTags.Items.INGOTS_TITANIUM, 1));
-        // Matière exotique : une perle d'ender, qui plie déjà l'espace, tenue une minute entre les miroirs, à 200 FE/t.
-        machine(ModRecipes.CASIMIR, "exotic_matter", ModItems.EXOTIC_MATTER, 1, 240_000, 1200, item(Items.ENDER_PEARL, 1));
-        machine(ModRecipes.ROLLING, "aluminum_lithium_plate", ModItems.ALUMINUM_LITHIUM_PLATE, 1, 1000, 100,
+        machine(ModRecipes.ROLLING, "steel_plate", ModItems.STEEL_PLATE, 1, 2000, 100, tag(ModTags.Items.INGOTS_STEEL, 1));
+        machine(ModRecipes.ROLLING, "aluminum_plate", ModItems.ALUMINUM_PLATE, 1, 2000, 100, tag(ModTags.Items.INGOTS_ALUMINUM, 1));
+        machine(ModRecipes.ROLLING, "titanium_plate", ModItems.TITANIUM_PLATE, 1, 4000, 100, tag(ModTags.Items.INGOTS_TITANIUM, 1));
+        // Matière exotique : une perle d'ender, qui plie déjà l'espace, tenue une minute entre les miroirs, à 400 FE/t.
+        machine(ModRecipes.CASIMIR, "exotic_matter", ModItems.EXOTIC_MATTER, 1, 480_000, 1200, item(Items.ENDER_PEARL, 1));
+        machine(ModRecipes.ROLLING, "aluminum_lithium_plate", ModItems.ALUMINUM_LITHIUM_PLATE, 1, 2000, 100,
                 tag(ModTags.Items.INGOTS_ALUMINUM_LITHIUM, 1));
     }
 

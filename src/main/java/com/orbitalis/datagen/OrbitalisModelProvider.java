@@ -192,6 +192,10 @@ public class OrbitalisModelProvider extends ModelProvider {
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.LAUNCH_CONSOLE.get(),
                 BlockModelGenerators.plainVariant(console)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
         blockModels.registerSimpleItemModel(ModBlocks.LAUNCH_CONSOLE.get(), console);
+        Identifier testConsole = Orbitalis.id("block/machine/test_console");
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.TEST_CONSOLE.get(),
+                BlockModelGenerators.plainVariant(testConsole)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+        blockModels.registerSimpleItemModel(ModBlocks.TEST_CONSOLE.get(), testConsole);
         Identifier station = Orbitalis.id("block/machine/tracking_station");
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.TRACKING_STATION.get(),
                 BlockModelGenerators.plainVariant(station)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));

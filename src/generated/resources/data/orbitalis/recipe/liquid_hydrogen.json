@@ -1,6 +1,6 @@
 {
   "type": "orbitalis:liquefaction",
-  "energy": 1200,
+  "energy": 3200,
   "fluid_input": {
     "amount": 100,
     "id": "orbitalis:hydrogen"

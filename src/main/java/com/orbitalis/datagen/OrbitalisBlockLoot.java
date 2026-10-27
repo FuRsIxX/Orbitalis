@@ -90,6 +90,7 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         add(ModBlocks.BOARDING_GATE.get(), noDrop());
         dropSelf(ModBlocks.UMBILICAL_ARM.get());
         dropSelf(ModBlocks.LAUNCH_CONSOLE.get());
+        dropSelf(ModBlocks.TEST_CONSOLE.get());
         dropSelf(ModBlocks.MISSION_DISPLAY.get());
         dropSelf(ModBlocks.TRACKING_STATION.get());
         dropSelf(ModBlocks.STATION_HULL.get());

@@ -178,6 +178,9 @@ public final class OrbitalisGameTests {
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LAYER_BUILD =
             FUNCTIONS.register("layer_build", () -> OrbitalisGameTests::layerBuild);
 
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> TEST_PAD =
+            FUNCTIONS.register("test_pad", () -> OrbitalisGameTests::testPad);
+
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> LAUNCH_STEPS =
             FUNCTIONS.register("launch_steps", () -> OrbitalisGameTests::launchSteps);
 
@@ -253,9 +256,9 @@ public final class OrbitalisGameTests {
         Holder<TestEnvironmentDefinition<?>> environment = event.registerEnvironment(Orbitalis.id("default"));
         Identifier emptyStructure = Identifier.withDefaultNamespace("empty");
 
-        // 400 ticks (20 secondes) au maximum.
+        // Un seul générateur (20 FE/t) pour la fonderie et le laminoir : 8 000 FE à produire, 800 ticks (40 secondes) au maximum.
         event.registerTest(Orbitalis.id("machines_process_items"), new FunctionGameTestInstance(
-                MACHINES_PROCESS_ITEMS.getKey(), spaced(environment, emptyStructure, 400)));
+                MACHINES_PROCESS_ITEMS.getKey(), spaced(environment, emptyStructure, 800)));
         event.registerTest(Orbitalis.id("machine_slot_rules"), new FunctionGameTestInstance(
                 MACHINE_SLOT_RULES.getKey(), spaced(environment, emptyStructure, 20)));
         event.registerTest(Orbitalis.id("fuel_production_chain"), new FunctionGameTestInstance(
@@ -296,6 +299,9 @@ public final class OrbitalisGameTests {
                 TOWER_ELEVATOR.getKey(), spaced(environment, emptyStructure, 20)));
         event.registerTest(Orbitalis.id("layer_build"), new FunctionGameTestInstance(
                 LAYER_BUILD.getKey(), spaced(environment, emptyStructure, 20)));
+        // Le pas de tir d'essai : sans tour, il lance une fusée-sonde à poudre et refuse le reste.
+        event.registerTest(Orbitalis.id("test_pad"), new FunctionGameTestInstance(
+                TEST_PAD.getKey(), spaced(environment, emptyStructure, 20)));
         event.registerTest(Orbitalis.id("launch_steps"), new FunctionGameTestInstance(
                 LAUNCH_STEPS.getKey(), spaced(environment, emptyStructure, 20)));
         event.registerTest(Orbitalis.id("orbit_elements"), new FunctionGameTestInstance(
@@ -1040,6 +1046,62 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 }
             }
         });
+    }
+
+    /**
+     * Pas de tir d'essai : un 3×3 sans tour, sans mâts ni bras. Il est en service une fois son tablier posé, refuse les
+     * fusées à ergols liquides et les capsules habitées, et lance une fusée-sonde à poudre sans qu'on ait de bras à retirer.
+     */
+    private static void testPad(GameTestHelper helper) {
+        BlockPos tablePos = new BlockPos(3, 2, 3);
+        helper.setBlock(tablePos, ModBlocks.LAUNCH_TABLE.get());
+        LaunchTableBlockEntity table = helper.getBlockEntity(tablePos, LaunchTableBlockEntity.class);
+        PadPlan plan = PadPlan.test(Direction.EAST);
+        table.setPlan(plan);
+        for (PadPlan.Piece piece : plan.pieces()) {
+            helper.assertTrue(piece.role() != PadPlan.Role.TOWER && piece.role() != PadPlan.Role.MAST && piece.role() != PadPlan.Role.ARM
+                    && piece.role() != PadPlan.Role.ROOF, "le pas de tir d'essai ne devrait avoir ni tour, ni mâts, ni bras");
+            helper.getLevel().setBlockAndUpdate(helper.absolutePos(tablePos).offset(piece.offset()), piece.display());
+        }
+        table.commission(true);
+        LaunchComplex complex = table.getComplex();
+        helper.assertTrue(complex.compact() && complex.isComplete() && table.isOperational() && !table.isRetiredSize(),
+                "le pas de tir d'essai complet devrait être en service : il manque " + complex.missing() + " bloc(s)");
+        helper.assertTrue(complex.towerHeight() == 0 && complex.arms() == 0 && complex.towerBase() == null
+                && complex.maxRocketMass() == 20_000 && complex.maxRocketHeight() == LaunchComplex.TEST_PAD_HEIGHT
+                && table.requiredTowerHeight() == 0, "capacités du pas de tir d'essai incorrectes");
+        helper.assertTrue(PadPlan.forKit(1, true, Direction.NORTH).compact() && !PadPlan.forKit(2, false, Direction.NORTH).compact(),
+                "le kit devrait proposer le 3×3 comme pas de tir d'essai, et les autres tailles avec leur tour");
+
+        // Ni ergols liquides (pas de bras pour le plein), ni équipage (pas de passerelle).
+        helper.assertTrue(table.testPadProblem(CreativeRockets.all().get(1)) != null, "une fusée à ergols liquides devrait être refusée");
+        NonNullList<ItemStack> crewed = NonNullList.withSize(RocketDesign.SLOT_COUNT, ItemStack.EMPTY);
+        crewed.set(RocketDesign.SLOT_PAYLOAD, new ItemStack(ModItems.CREW_CAPSULE.get()));
+        crewed.set(RocketDesign.engineSlot(0), new ItemStack(ModItems.SOLID_MOTOR.get()));
+        helper.assertTrue(table.testPadProblem(RocketItem.create(crewed)) != null, "une capsule habitée devrait être refusée");
+
+        // Une fusée-sonde à poudre : allumage, puis lâcher des attaches, sans bras à retirer.
+        RocketBreakup.forced = RocketBreakup.Damage.PAD_ONLY;
+        NonNullList<ItemStack> solid = NonNullList.withSize(RocketDesign.SLOT_COUNT, ItemStack.EMPTY);
+        solid.set(RocketDesign.SLOT_PAYLOAD, new ItemStack(ModItems.SOUNDING_PAYLOAD.get()));
+        solid.set(RocketDesign.SLOT_NOSE, new ItemStack(ModItems.NOSE_CONE.get()));
+        solid.set(RocketDesign.engineSlot(0), new ItemStack(ModItems.SOLID_MOTOR.get()));
+        ItemStack sounding = RocketItem.create(solid);
+        helper.assertTrue(table.testPadProblem(sounding) == null && table.setRocket(sounding), "la fusée-sonde à poudre aurait dû être posée");
+        table.setReliable(true);
+        helper.assertTrue(table.stationGo(3), "sur le pas de tir d'essai, le poste « pas de tir » n'a pas de bras à attendre");
+        BlockPos console = helper.absolutePos(tablePos.offset(0, 0, 10));
+        helper.assertTrue(com.orbitalis.phase1.spaceport.LaunchConsoleBlock.status(helper.getLevel(), console, false).testPad(),
+                "l'écran du pupitre devrait savoir qu'il commande un pas de tir d'essai");
+        String agency = "test:test_pad";
+        helper.assertTrue(table.command(LaunchStep.IGNITE, agency) == null && table.getPhase() == LaunchTableBlockEntity.Phase.COUNTDOWN,
+                "les moteurs auraient dû s'allumer");
+        tickTable(helper, table, LaunchTableBlockEntity.IGNITION_TICKS + 1);
+        table.command(LaunchStep.RELEASE, agency);
+        helper.assertTrue(table.getPhase() == LaunchTableBlockEntity.Phase.FLIGHT && table.getLastResult() != LaunchTableBlockEntity.Result.FAILURE,
+                "la fusée-sonde aurait dû décoller du pas de tir d'essai");
+        RocketBreakup.forced = null;
+        helper.succeed();
     }
 
     private static void launchSteps(GameTestHelper helper) {

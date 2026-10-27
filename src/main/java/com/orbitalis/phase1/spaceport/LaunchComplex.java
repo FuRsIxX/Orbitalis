@@ -32,22 +32,32 @@ import net.minecraft.world.level.block.state.BlockState;
  * @param towerBase    position du pied de la colonne technique, ou {@code null} sans plan
  * @param armPositions positions des bras ombilicaux
  * @param missing      nombre total de blocs du plan qu'il reste à poser
+ * @param compact      vrai pour le pas de tir d'essai, qui n'a ni tour, ni mâts, ni bras
  */
 public record LaunchComplex(int radius, int missingPads, boolean skyClear, int towerHeight, int arms,
-        boolean hasDeflector, boolean hasTrench, int mastHeight, BlockPos towerBase, List<BlockPos> armPositions, int missing) {
+        boolean hasDeflector, boolean hasTrench, int mastHeight, BlockPos towerBase, List<BlockPos> armPositions, int missing,
+        boolean compact) {
     /** Plus grand tablier reconnu (11×11). */
     public static final int MAX_RADIUS = 5;
     /** Hauteur maximale d'une tour, en blocs. */
     public static final int MAX_TOWER_HEIGHT = 96;
     /** Distance maximale entre la table et le bloc le plus éloigné de son plan, à l'horizontale. */
     public static final int REACH = MAX_RADIUS + 6;
+    /** Hauteur maximale d'une fusée sur le pas de tir d'essai, qui n'a pas de tour pour la borner, en blocs. */
+    public static final int TEST_PAD_HEIGHT = 8;
 
     /** Pas de tir sans plan : rien n'est attendu, rien n'est formé. */
-    public static final LaunchComplex NONE = new LaunchComplex(0, 0, false, 0, 0, false, false, 0, null, List.of(), 0);
+    public static final LaunchComplex NONE = new LaunchComplex(0, 0, false, 0, 0, false, false, 0, null, List.of(), 0, false);
 
     /** Pas de tir entièrement équipé, de la taille donnée (sert aux écrans, qui ne connaissent que la taille). */
     public LaunchComplex(int radius, int missingPads, boolean skyClear, int towerHeight, int arms) {
-        this(radius, missingPads, skyClear, towerHeight, arms, true, true, requiredMastHeight(radius), null, List.of(), 0);
+        this(radius, missingPads, skyClear, towerHeight, arms, false);
+    }
+
+    /** Pas de tir entièrement équipé, à tour ou d'essai (sert aux écrans). */
+    public LaunchComplex(int radius, int missingPads, boolean skyClear, int towerHeight, int arms, boolean compact) {
+        this(radius, missingPads, skyClear, towerHeight, arms, true, true, compact ? 0 : requiredMastHeight(radius), null, List.of(), 0,
+                compact);
     }
 
     /** Hauteur exigée de chacun des quatre mâts paratonnerres, en blocs. */
@@ -68,14 +78,14 @@ public record LaunchComplex(int radius, int missingPads, boolean skyClear, int t
         return Math.max(0, towerLevels - 2);
     }
 
-    /** Vrai si les mâts atteignent la hauteur exigée. */
+    /** Vrai si les mâts atteignent la hauteur exigée. Le pas de tir d'essai n'en demande pas. */
     public boolean hasMasts() {
-        return radius > 0 && mastHeight >= requiredMastHeight(radius);
+        return radius > 0 && (compact || mastHeight >= requiredMastHeight(radius));
     }
 
-    /** Vrai si la tour atteint la hauteur exigée. */
+    /** Vrai si la tour atteint la hauteur exigée. Le pas de tir d'essai n'en demande pas. */
     public boolean hasTower() {
-        return radius > 0 && towerHeight >= requiredTowerHeight(radius);
+        return radius > 0 && (compact || towerHeight >= requiredTowerHeight(radius));
     }
 
     /** Vrai si le déflecteur, le carneau, les mâts et la tour sont tous en place. */
@@ -105,7 +115,12 @@ public record LaunchComplex(int radius, int missingPads, boolean skyClear, int t
 
     /** Hauteur maximale de la fusée : elle doit rester sous le sommet de la tour, en blocs. */
     public int maxRocketHeight() {
-        return maxRocketHeight(towerHeight);
+        return compact ? TEST_PAD_HEIGHT : maxRocketHeight(towerHeight);
+    }
+
+    /** Hauteur de tour exigée sur ce pas de tir : aucune sur le pas de tir d'essai. */
+    public int requiredTowerHeight() {
+        return compact ? 0 : requiredTowerHeight(radius);
     }
 
     /** Masse maximale supportée par un pas de tir de cette taille, en kg. */
@@ -195,10 +210,11 @@ public record LaunchComplex(int radius, int missingPads, boolean skyClear, int t
         }
         boolean skyClear = level.canSeeSky(aboveRocket);
 
-        BlockPos towerBase = table.offset(plan.riserBase()).immutable();
-        List<BlockPos> armPositions = findArms(level, towerBase, towerHeight);
+        // Le pas de tir d'essai n'a pas de tour : ni colonne technique, ni bras.
+        BlockPos towerBase = plan.compact() ? null : table.offset(plan.riserBase()).immutable();
+        List<BlockPos> armPositions = towerBase == null ? List.of() : findArms(level, towerBase, towerHeight);
         return new LaunchComplex(missingPads == 0 ? plan.radius() : 0, missingPads, skyClear, towerHeight, armPositions.size(), hasDeflector,
-                hasTrench, hasMasts ? plan.mastHeight() : 0, towerBase, armPositions, missing);
+                hasTrench, hasMasts ? plan.mastHeight() : 0, towerBase, armPositions, missing, plan.compact());
     }
 
     /** Bras ombilicaux accrochés à la colonne technique d'une tour. */

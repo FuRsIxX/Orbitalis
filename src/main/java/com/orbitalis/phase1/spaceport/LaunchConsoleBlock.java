@@ -179,7 +179,7 @@ public class LaunchConsoleBlock extends HorizontalDirectionalBlock implements Wo
                 table.delugeNeed() <= 0 ? 0 : Math.min(100, 100 * table.getWater() / table.delugeNeed()), table.thrustPercent(),
                 table.holdSeconds(), table.flightBits(), table.flightWindowSeconds(), table.getAssist(),
                 complex.capacityRadius(), table.busyStep(), table.busyPercent(), table.pollState(), forecast[0], forecast[1],
-                table.chillSeconds(), table.internalState(), table.overpressurePercent());
+                table.chillSeconds(), table.internalState(), table.overpressurePercent(), table.isTestPad());
     }
 
     /**
@@ -192,9 +192,10 @@ public class LaunchConsoleBlock extends HorizontalDirectionalBlock implements Wo
         if (!level.isLoaded(console)) {
             return;
         }
-        // Le joueur doit se trouver devant un vrai pupitre et avoir le droit de s'en servir, ou être assis dans la
-        // cabine de la fusée que porte cette table de lancement.
-        boolean atConsole = level.getBlockState(console).getBlock() instanceof LaunchConsoleBlock
+        // Le joueur doit se trouver devant un vrai pupitre (de lancement ou d'essai) et avoir le droit de s'en servir,
+        // ou être assis dans la cabine de la fusée que porte cette table de lancement.
+        net.minecraft.world.level.block.Block block = level.getBlockState(console).getBlock();
+        boolean atConsole = (block instanceof LaunchConsoleBlock || block instanceof TestConsoleBlock)
                 && player.blockPosition().closerThan(console, REACH) && isAuthorized(player);
         boolean aboard = player.getVehicle() instanceof com.orbitalis.phase2.flight.CapsuleEntity capsule && console.equals(capsule.getTable());
         if (!atConsole && !aboard) {

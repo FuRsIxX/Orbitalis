@@ -95,7 +95,7 @@ public class LaunchPadScreen extends Screen {
 
     private void extractPad(GuiGraphicsExtractor graphics, int x, int y, int columnWidth) {
         LaunchComplex complex = new LaunchComplex(info.radius(), 0, info.skyClear(), info.towerHeight(), info.arms(),
-                info.hasDeflector(), info.hasTrench(), info.mastHeight(), null, java.util.List.of(), 0);
+                info.hasDeflector(), info.hasTrench(), info.mastHeight(), null, java.util.List.of(), 0, info.compact());
         heading(graphics, x, y, "spaceport.orbitalis.pad.heading_pad");
         y += LINE_HEIGHT + 4;
 
@@ -116,10 +116,13 @@ public class LaunchPadScreen extends Screen {
         if (info.radius() >= 1) {
             y = equipmentRow(graphics, x, y, columnWidth, "spaceport.orbitalis.pad.deflector", info.hasDeflector());
             y = equipmentRow(graphics, x, y, columnWidth, "spaceport.orbitalis.pad.trench", info.hasTrench());
-            row(graphics, x, y, columnWidth, "spaceport.orbitalis.pad.masts",
-                    Component.translatable("spaceport.orbitalis.pad.mast_height", info.mastHeight(), LaunchComplex.requiredMastHeight(info.radius())),
-                    info.mastHeight() >= LaunchComplex.requiredMastHeight(info.radius()) ? COLOR_OK : COLOR_BAD);
-            y += LINE_HEIGHT;
+            // Le pas de tir d'essai n'a pas de mâts.
+            if (!info.compact()) {
+                row(graphics, x, y, columnWidth, "spaceport.orbitalis.pad.masts",
+                        Component.translatable("spaceport.orbitalis.pad.mast_height", info.mastHeight(), LaunchComplex.requiredMastHeight(info.radius())),
+                        info.mastHeight() >= LaunchComplex.requiredMastHeight(info.radius()) ? COLOR_OK : COLOR_BAD);
+                y += LINE_HEIGHT;
+            }
         }
         y += 6;
 

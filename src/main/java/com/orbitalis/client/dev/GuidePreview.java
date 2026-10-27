@@ -198,7 +198,7 @@ public final class GuidePreview {
         com.orbitalis.core.network.LaunchStatusPayload status = new com.orbitalis.core.network.LaunchStatusPayload(here, true, true, 42, true,
                 2, 0, true, 12, 1, true, 8, true, 48_000.0F, 3, true, 100, true, 0, 0, 0.0F, 0.0F, 0, 0, true, false,
                 page == 1 ? 96 : 0, page == 1, true, 0, 100, 0, 0, 0, 0, 1, 2, page == 1 ? com.orbitalis.phase1.spaceport.LaunchStep.POLL.ordinal() : -1,
-                page == 1 ? 70 : 0, page == 1 ? 70 : -1, page == 1 ? 0 : -1, 1500, page == 1 ? 88 : 0, page, 0);
+                page == 1 ? 70 : 0, page == 1 ? 70 : -1, page == 1 ? 0 : -1, 1500, page == 1 ? 88 : 0, page, 0, false);
         com.orbitalis.client.screen.LaunchConsoleScreen console = new com.orbitalis.client.screen.LaunchConsoleScreen(status);
         minecraft.gui.setScreen(which == 1 ? new com.orbitalis.client.screen.SequenceScreen(status, console) : console);
     }

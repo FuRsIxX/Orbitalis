@@ -132,7 +132,7 @@ public final class PadKitPlacement {
         if (table == null) {
             return;
         }
-        PadPlan plan = new PadPlan(radius, elevator, facing);
+        PadPlan plan = PadPlan.forKit(radius, elevator, facing);
         if (!plan.equals(sketched)) {
             sketched = plan;
             OFFSETS.clear();
