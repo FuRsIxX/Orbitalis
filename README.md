@@ -77,4 +77,4 @@ Models, textures and sounds are produced by the Python scripts in `tools/`.
 
 ## License
 
-All rights reserved © the-simimoune.
+All rights reserved © Azzukashi. See [LICENSE](LICENSE).
