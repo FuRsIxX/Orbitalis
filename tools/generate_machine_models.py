@@ -38,13 +38,6 @@ def blend(a, b, t):
     return tuple(int(round(a[k] + (b[k] - a[k]) * t)) for k in range(3)) + (255,)
 
 
-def ramp(colors, t):
-    """Couleur à la position t (de 0 à 1) d'un dégradé de plusieurs couleurs."""
-    t = max(0.0, min(1.0, t)) * (len(colors) - 1)
-    k = min(len(colors) - 2, int(t))
-    return blend(rgb(colors[k]), rgb(colors[k + 1]), t - k)
-
-
 def plain(seed, base, light, dark, lines=()):
     """
     Métal brossé : chaque rangée a sa propre nuance, très légère, comme une tôle passée à la brosse, avec un grain fin.
@@ -68,225 +61,8 @@ def plain(seed, base, light, dark, lines=()):
     return img
 
 
-FIRE_COLORS = ["#FFF7D0", "#FFE27A", "#FFB23E", "#E86A1F", "#B5391E", "#5A1A12"]
-
-
-def fire_frame(step, frames=12):
-    """
-    Foyer : des flammes qui ondulent. Leur hauteur suit deux ondes superposées, qui reviennent exactement à leur
-    point de départ au bout du cycle : l'animation tourne en boucle sans à-coup.
-    """
-    img = [[rgb("#15171A") for _ in range(SIZE)] for _ in range(SIZE)]
-    phase = 2 * math.pi * step / frames
-    for x in range(SIZE):
-        height = 9.5 + 3.0 * math.sin(phase + x * 1.3) + 2.0 * math.sin(2 * phase + x * 2.9 + 1.0)
-        height = max(4.0, min(15.0, height))
-        for dy in range(int(height)):
-            img[SIZE - 1 - dy][x] = ramp(FIRE_COLORS, dy / height)
-        # Le dessus de la flamme se fond dans l'ombre du foyer.
-        top = SIZE - 1 - int(height)
-        if top >= 0:
-            img[top][x] = blend(rgb("#5A1A12"), rgb("#15171A"), 0.5)
-    return img
-
-
-def molten_frame(seed):
-    """Métal en fusion, figé : des taches incandescentes."""
-    return blotchy(seed, [rgb("#E8872A"), rgb("#FFD75A"), rgb("#FFF1A8"), rgb("#C4501C")], [5, 3, 1, 2])
-
-
-def molten_flow(step, frames=12):
-    """Bain de métal en fusion : des veines claires qui se déplacent lentement, en boucle."""
-    phase = 2 * math.pi * step / frames
-    img = []
-    for y in range(SIZE):
-        row = []
-        for x in range(SIZE):
-            value = (math.sin(x * 0.9 + phase) + math.sin(y * 1.1 - phase) + math.sin((x + y) * 0.6 + 2 * phase)) / 3.0
-            row.append(ramp(["#B5451A", "#E8872A", "#FFC04A", "#FFF1A8"], 0.5 + 0.5 * value))
-        img.append(row)
-    return img
-
-
-def arc_frame(step):
-    """Arc électrique au bout des électrodes : un éclat blanc-bleu qui crépite, différent à chaque image."""
-    rnd = random.Random(700 + step)
-    colors = ["#FFFFFF", "#E6FAFF", "#CFF4FF", "#9FE8FF"] if step % 2 == 0 else ["#CFF4FF", "#9FE8FF", "#5FB0F5", "#FFFFFF"]
-    return [[rgb(rnd.choice(colors)) for _ in range(SIZE)] for _ in range(SIZE)]
-
-
-def roller_frame(offset):
-    """Cylindre de laminoir : des génératrices claires qui défilent quand il tourne, ombrées comme un vrai cylindre."""
-    tones = ["#C2CBD6", "#98A3B0", "#6C7683", "#454C56"]
-    img = []
-    for y in range(SIZE):
-        color = rgb(tones[(y + offset) % 4])
-        img.append([color for _ in range(SIZE)])
-    for y in range(SIZE):
-        img[y][0] = img[y][SIZE - 1] = rgb("#23272E")
-        img[y][1] = shade(img[y][1], 0.85)
-        img[y][SIZE - 2] = shade(img[y][SIZE - 2], 0.85)
-    return img
-
-
-def bubbles_frame(step, still=False):
-    """Tube d'électrolyse : de l'eau, plus claire au centre du tube, et des bulles qui montent d'un pixel par image."""
-    img = []
-    for y in range(SIZE):
-        row = []
-        for x in range(SIZE):
-            edge = abs(x - 7.5) / 7.5
-            row.append(blend(rgb("#4F88EE"), rgb("#2F5FC4"), edge * edge))
-        img.append(row)
-    if still:
-        return img
-    rnd = random.Random(32)
-    for _ in range(11):
-        x, y = rnd.randrange(1, SIZE - 1), rnd.randrange(SIZE)
-        y = (y - step) % SIZE
-        img[y][x] = rgb("#FFFFFF")
-        img[(y + 1) % SIZE][x] = rgb("#BFE3FF")
-    return img
-
-
-def fan_frame(step, frames=8, still=False):
-    """
-    Ventilateur du compresseur : quatre pales qui tournent d'un huitième de quart de tour par image. Comme les
-    pales sont identiques, huit images suffisent à un mouvement continu.
-    """
-    img = [[rgb("#15171A") for _ in range(SIZE)] for _ in range(SIZE)]
-    turn = (math.pi / 2) * step / frames
-    blade = rgb("#5C6672") if still else rgb("#B4BEC9")
-    edge = rgb("#454C56") if still else rgb("#7F8A97")
-    for y in range(SIZE):
-        for x in range(SIZE):
-            dx, dy = x - 7.5, y - 7.5
-            radius = math.hypot(dx, dy)
-            if radius > 7.6:
-                continue
-            around = (math.atan2(dy, dx) - turn) % (math.pi / 2)
-            if around < 0.42:
-                img[y][x] = blade
-            elif around < 0.62:
-                img[y][x] = edge
-            if radius < 2.2:
-                img[y][x] = rgb("#C8672A") if radius < 1.3 else rgb("#8A4521")
-    return img
-
-
-def frost_frame(step, frames=8, still=False):
-    """Serpentin de refroidissement : gris à l'arrêt, couvert d'un givre dont le scintillement se déplace en marche."""
-    img = [[rgb("#24272C") for _ in range(SIZE)] for _ in range(SIZE)]
-    phase = 2 * math.pi * step / frames
-    for y in range(1, SIZE - 1, 3):
-        for x in range(1, SIZE - 1):
-            if still:
-                img[y][x] = rgb("#6B737D")
-                img[y + 1][x] = rgb("#4A5058")
-            else:
-                glow = 0.5 + 0.5 * math.sin(phase + x * 0.8 + y * 0.5)
-                img[y][x] = blend(rgb("#8FD6F2"), rgb("#F2FCFF"), glow)
-                img[y + 1][x] = blend(rgb("#4E9CC4"), rgb("#9FE0F7"), glow)
-    return img
-
-
-def level_frame(step, frames=8, still=False):
-    """Hublot de niveau du réservoir : sombre à l'arrêt, un liquide froid dont la surface ondule en marche."""
-    img = [[rgb("#15171A") for _ in range(SIZE)] for _ in range(SIZE)]
-    if still:
-        return img
-    for x in range(SIZE):
-        surface = 3 + round(math.sin((x + step) * 2 * math.pi / frames))
-        for y in range(surface, SIZE):
-            depth = (y - surface) / (SIZE - surface)
-            img[y][x] = rgb("#CFF4FF") if y == surface else blend(rgb("#6FBEF7"), rgb("#2F5FC4"), depth)
-    return img
-
-
 # Première image de chaque texture écrite, pour l'aperçu.
 TEXTURES = {}
-
-
-MAP_ROWS = [
-    "................",
-    "..##....####.##.",
-    ".####..########.",
-    "..###..#######..",
-    "...##...####.#..",
-    "...###..###.....",
-    "....##..##...##.",
-    "....#....#...##.",
-    "................",
-]
-
-
-def screen_base(dim):
-    """Fond d'un écran mural : une petite carte du monde sur fond bleu nuit."""
-    ocean = rgb("#0A1622") if dim else rgb("#0E1C2B")
-    land = rgb("#1B3A30") if dim else rgb("#2C5A4A")
-    img = [[ocean for _ in range(SIZE)] for _ in range(SIZE)]
-    for y, row in enumerate(MAP_ROWS):
-        for x, c in enumerate(row):
-            if c == "#":
-                img[3 + y][x] = land
-    return img
-
-
-def screen_idle_frame():
-    """Écran en veille : la carte, assombrie, et un témoin d'attente."""
-    img = screen_base(True)
-    for x in range(2, 6):
-        img[13][x] = rgb("#5A626B")
-    return img
-
-
-def screen_countdown_frame(step):
-    """Écran pendant le compte à rebours : la carte, et une barre orange qui se remplit puis clignote."""
-    img = screen_base(False)
-    for x in range(2, 14):
-        img[13][x] = img[14][x] = rgb("#33373A")
-    for x in range(2, 2 + 3 * (step + 1)):
-        img[13][x] = img[14][x] = rgb("#FFC857")
-    img[1][13 if step % 2 == 0 else 12] = rgb("#FFC857")
-    return img
-
-
-def screen_flight_frame(step):
-    """Écran pendant le vol : la trace au sol sinueuse, et la fusée qui avance le long de cette trace."""
-    img = screen_base(False)
-    points = [(x, 7 + round(3 * math.sin(x * math.pi / 8))) for x in range(SIZE)]
-    for x, y in points:
-        img[y][x] = rgb("#8FA3B8")
-    x, y = points[(2 * step) % SIZE]
-    img[y][x] = rgb("#FFFFFF")
-    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-        if 0 <= x + dx < SIZE and 0 <= y + dy < SIZE:
-            img[y + dy][x + dx] = rgb("#FFC857")
-    for i in range(2, 14):
-        img[14][i] = rgb("#5BC27A")
-    return img
-
-
-def console_screen_frame(step):
-    """Écran du pupitre : des lignes de télémétrie vertes qui défilent."""
-    rnd = random.Random(91)
-    lines = [(rnd.randint(2, 6), rnd.randint(8, 13)) for _ in range(8)]
-    img = [[rgb("#0C1410") for _ in range(SIZE)] for _ in range(SIZE)]
-    for row in range(7):
-        start, end = lines[(row + step) % len(lines)]
-        for x in range(start, end + 1):
-            img[1 + 2 * row][x] = rgb("#7CE08A") if row != 6 - step % 7 else rgb("#FFC857")
-    return img
-
-
-def keys_texture():
-    """Clavier du pupitre : des rangées de touches sombres, quelques-unes colorées."""
-    img = [[rgb("#25282D") for _ in range(SIZE)] for _ in range(SIZE)]
-    rnd = random.Random(92)
-    for y in range(1, SIZE, 2):
-        for x in range(1, SIZE, 2):
-            img[y][x] = rgb(rnd.choice(["#4A5058", "#4A5058", "#4A5058", "#5BC27A", "#E0655F", "#FFC857"]))
-    return img
 
 
 def solar_cells_texture():
@@ -389,17 +165,6 @@ def port_texture():
     return img
 
 
-def side_texture():
-    """Flanc d'une machine : la tôle claire, une bande d'évents à lamelles dans le bas, un filet sombre au pied."""
-    img = plain(64, "#8C95A0", "#9DA6B1", "#7A838E", [3])
-    for y in range(9, 15):
-        for x in range(3, 13):
-            img[y][x] = rgb("#6B747F") if y % 2 == 1 else rgb("#111316")
-    for x in range(SIZE):
-        img[15][x] = rgb("#343A42")
-    return img
-
-
 def back_texture():
     """Dos d'une machine : la tôle claire, et dans le bas le port d'énergie, ses carrés emboîtés, où se branchent les câbles."""
     img = plain(66, "#8C95A0", "#9DA6B1", "#7A838E", [3])
@@ -410,35 +175,6 @@ def back_texture():
             img[y][x] = rgb(colors[min(ring, len(colors) - 1)])
     for x in range(SIZE):
         img[15][x] = rgb("#343A42")
-    return img
-
-
-def tube_glass_texture():
-    """Verre d'un tube : presque transparent, légèrement bleuté, avec un reflet vertical."""
-    img = [[(175, 215, 240, 55) for _ in range(SIZE)] for _ in range(SIZE)]
-    for y in range(SIZE):
-        img[y][3] = (240, 250, 255, 140)
-        img[y][4] = (240, 250, 255, 85)
-        img[y][12] = (120, 170, 205, 90)
-    return img
-
-
-def led_frame(step, frames=8):
-    """Voyant d'état en marche : un vert qui respire lentement."""
-    glow = 0.5 + 0.5 * math.sin(2 * math.pi * step / frames)
-    color = blend(rgb("#2FA657"), rgb("#B6FFC9"), glow)
-    return [[color for _ in range(SIZE)] for _ in range(SIZE)]
-
-
-def status_frame(step):
-    """Petit écran d'état d'une machine en marche : des barres vertes dont la longueur change."""
-    rnd = random.Random(96)
-    lengths = [rnd.randint(4, 12) for _ in range(12)]
-    img = [[rgb("#0C1410") for _ in range(SIZE)] for _ in range(SIZE)]
-    for row in range(5):
-        length = lengths[(row * 2 + step) % len(lengths)]
-        for x in range(2, 2 + length):
-            img[2 + 3 * row][x] = rgb("#7CE08A") if row != step % 5 else rgb("#FFC857")
     return img
 
 
@@ -649,54 +385,24 @@ def write_textures():
     write_texture("machine_light", [plain(53, "#AEB6BF", "#BDC4CC", "#9CA4AD", [15])])
     write_texture("machine_base", [plain(54, "#4A5058", "#555B64", "#3F444B", [0])])
     write_texture("machine_copper", [plain(55, "#C46A35", "#D98450", "#A85525", [3, 7, 11, 15])])
-    write_texture("machine_insulation", [plain(56, "#E2E5E8", "#EEF0F2", "#D2D6DA", [5, 10])])
     write_texture("machine_red", [plain(57, "#D96A6A", "#E58484", "#BF5252")])
-    write_texture("machine_blue", [plain(58, "#5FB0F5", "#82C2F8", "#4494DC")])
-    write_texture("machine_plate_cold", [plain(59, "#7F8A97", "#93A0AD", "#6B7682")])
-    write_texture("machine_plate_hot", [molten_frame(60)])
 
     # Châssis des machines : cadre sombre, panneaux clairs, évents, port d'énergie, voyant d'état, verre.
     write_texture("machine_frame", [plain(63, "#343A42", "#434A53", "#262B31", [7, 15])])
     write_texture("machine_panel", [plain(64, "#8C95A0", "#9DA6B1", "#7A838E", [3, 11])])
     write_texture("machine_vent", [vent_texture()])
     write_texture("machine_port", [port_texture()])
-    write_texture("machine_side", [side_texture()])
     write_texture("machine_back", [back_texture()])
-    write_texture("machine_glass", [tube_glass_texture()])
-    write_texture("machine_led_off", [plain(65, "#4A1B18", "#5C2320", "#35120F")])
-    write_texture("machine_led_on", [led_frame(s) for s in range(8)], 3)
-    write_texture("machine_status_on", [status_frame(s) for s in range(6)], 6, interpolate=False)
-    write_texture("machine_fire_off", [plain(61, "#15171A", "#1E2125", "#0F1113", [4, 9, 14])])
     # Capsule habitée : coque, vitres, planche de bord.
     write_texture("capsule_hull", [flat("#EEF0F2", rows={15: "#D3D8DD"})])
-    # Bas de la coque : la même, ceinte d'un bandeau sombre au-dessus du bouclier.
-    write_texture("capsule_hull_low", [flat("#EEF0F2", rows={0: "#D3D8DD", 12: "#1C2026", 13: "#1C2026", 14: "#1C2026"})])
     write_texture("capsule_trim", [flat("#1C2026", rows={0: "#2A2F37"})])
-    write_texture("capsule_shield", [flat("#2A2622", rows={0: "#3A342E"})])
     write_texture("capsule_glass", [glass_texture()])
     write_texture("capsule_screen", [cockpit_screen_frame(s) for s in range(8)], 6, interpolate=False)
     write_texture("capsule_touch", [touch_pad_texture()])
-    write_texture("capsule_seat", [flat("#17191D", rows={3: "#22262C", 7: "#22262C", 11: "#22262C", 15: "#22262C"})])
-    write_texture("capsule_liner", [flat("#252930", frame="#1A1D22")])
-    write_texture("capsule_floor", [flat("#1D2025", rows={7: "#272B31", 15: "#272B31"}, columns={7: "#272B31", 15: "#272B31"})])
     write_texture("capsule_side", [cabin_side_screen_frame(s) for s in range(6)], 8, interpolate=False)
     write_texture("capsule_strap", [flat("#F08A24")])
     write_texture("capsule_led", [flat("#D8F4FF")])
     write_texture("capsule_grip", [flat("#D8442F", rows={0: "#F06A52"})])
-    write_texture("machine_fire_on", [fire_frame(s) for s in range(12)], 2)
-    write_texture("machine_molten_off", [plain(62, "#3A3D42", "#44484E", "#2E3136")])
-    write_texture("machine_molten_on", [molten_flow(s) for s in range(12)], 3)
-    write_texture("machine_arc_on", [arc_frame(s) for s in range(6)], 1, interpolate=False)
-    write_texture("machine_roller_off", [roller_frame(0)])
-    write_texture("machine_roller_on", [roller_frame(s) for s in (0, 1, 2, 3)], 2)
-    write_texture("machine_water_off", [bubbles_frame(0, still=True)])
-    write_texture("machine_water_on", [bubbles_frame(s) for s in range(16)], 2)
-    write_texture("machine_fan_off", [fan_frame(0, still=True)])
-    write_texture("machine_fan_on", [fan_frame(s) for s in range(8)], 1)
-    write_texture("machine_coil_off", [frost_frame(0, still=True)])
-    write_texture("machine_coil_on", [frost_frame(s) for s in range(8)], 3)
-    write_texture("machine_level_off", [level_frame(0, still=True)])
-    write_texture("machine_level_on", [level_frame(s) for s in range(8)], 3)
 
     # Voile des parachutes de la capsule habitée.
     write_texture("capsule_chute", [chute_texture()])
@@ -706,14 +412,6 @@ def write_textures():
     write_texture("solar_frame", [solar_frame_texture()])
     write_texture("solar_back", [solar_back_texture()])
 
-    # Centre de contrôle : pupitre et écrans muraux.
-    write_texture("machine_keys", [keys_texture()])
-    write_texture("machine_console_screen", [console_screen_frame(s) for s in range(7)], 6, interpolate=False)
-    write_texture("machine_screen_idle", [screen_idle_frame()])
-    # Dalle d'écran éteinte : c'est le mur entier qui affiche l'image, pas chaque dalle.
-    write_texture("machine_screen_blank", [plain(93, "#0B0E12", "#0E1217", "#090B0E")])
-    write_texture("machine_screen_countdown", [screen_countdown_frame(s) for s in range(4)], 5, interpolate=False)
-    write_texture("machine_screen_flight", [screen_flight_frame(s) for s in range(8)], 3, interpolate=False)
 
 
 # ---------------------------------------------------------------------------
@@ -751,27 +449,10 @@ def brace(axis, plane, angle, texture, half=11.0):
 # Textures de base, communes à toutes les machines.
 COMMON = {
     "base": "machine_base", "metal": "machine_metal", "dark": "machine_dark", "light": "machine_light",
-    "copper": "machine_copper", "insulation": "machine_insulation", "red": "machine_red", "blue": "machine_blue",
+    "copper": "machine_copper", "red": "machine_red",
     "frame": "machine_frame", "panel": "machine_panel", "vent": "machine_vent", "port": "machine_port",
-    "side": "machine_side", "back": "machine_back",
-    "glass": "machine_glass",
+    "back": "machine_back",
 }
-# Pièces animées : texture à l'arrêt, texture en marche. En marche, elles émettent de la lumière.
-ANIMATED = {
-    "fire": ("machine_fire_off", "machine_fire_on"),
-    "molten": ("machine_molten_off", "machine_molten_on"),
-    "arc": ("machine_copper", "machine_arc_on"),
-    "roller": ("machine_roller_off", "machine_roller_on"),
-    "plate": ("machine_plate_cold", "machine_plate_hot"),
-    "water": ("machine_water_off", "machine_water_on"),
-    "fan": ("machine_fan_off", "machine_fan_on"),
-    "coil": ("machine_coil_off", "machine_coil_on"),
-    "level": ("machine_level_off", "machine_level_on"),
-    "led": ("machine_led_off", "machine_led_on"),
-    "screen": ("machine_screen_blank", "machine_status_on"),
-}
-# Pièces qui tournent sans chauffer : animées, mais sans lumière.
-UNLIT = {"roller", "fan"}
 
 
 def chassis(height, vents=True, port=True):
@@ -834,10 +515,6 @@ def door(x0, y0, x1, y1, texture):
         box(x0, y1, 0.4, x1, y1 + 1, 1, "frame"), box(x0, y0 - 1, 0.4, x1, y0, 1, "frame"),
         box(x0, y0, 0.7, x1, y1, 1, texture),
     ]
-
-
-# Les machines sont écrites par write_machines.py, leur seul auteur : un même cube plein, leur accent et leur fenêtre.
-MACHINES = {}
 
 
 # Dalle d'écran du centre de contrôle : un caisson, un cadre fin et la dalle, sombre tant que le mur n'affiche rien.
@@ -971,37 +648,8 @@ def build_extra(parts, own_textures, emissive):
     return {"parent": "minecraft:block/block", "textures": textures, "elements": elements}
 
 
-def build_model(parts, lit):
-    textures = {key: "orbitalis:block/" + name for key, name in COMMON.items()}
-    for key, (off, on) in ANIMATED.items():
-        textures[key] = "orbitalis:block/" + (on if lit else off)
-    textures["particle"] = "orbitalis:block/machine_metal"
-
-    used = {part["texture"] for part in parts} | {key for part in parts for key in part.get("faces", {}).values()}
-    elements = []
-    for part in parts:
-        own = part.get("faces", {})
-        element = {"from": part["from"], "to": part["to"],
-                   "faces": {face: {"texture": "#" + own.get(face, part["texture"])} for face in FACES}}
-        if lit and part["texture"] in ANIMATED and part["texture"] not in UNLIT:
-            element["light_emission"] = 15
-        elements.append(element)
-    # Seules les textures réellement utilisées par la machine sont déclarées.
-    textures = {key: value for key, value in textures.items() if key in used or key == "particle"}
-    # Le parent donne au modèle sa présentation habituelle dans l'inventaire et en main.
-    return {"parent": "minecraft:block/block", "textures": textures, "elements": elements}
-
-
 def write_models():
     os.makedirs(MODEL_DIR, exist_ok=True)
-    for name, parts in MACHINES.items():
-        for part in parts:
-            assert all(0 <= c <= 16 for c in part["from"] + part["to"]), (name, part)
-            assert all(a < b for a, b in zip(part["from"], part["to"])), (name, part)
-        for lit in (False, True):
-            path = os.path.join(MODEL_DIR, name + ("_on" if lit else "") + ".json")
-            with open(path, "w", newline="\n") as f:
-                json.dump(build_model(parts, lit), f, indent=2)
     for name, (parts, own_textures, emissive) in EXTRAS.items():
         model = build_extra(parts, own_textures, emissive)
         if name in ("capsule", "parachute"):
@@ -1025,8 +673,6 @@ def render(parts, lit, scale=10, own_textures=None):
         if own_textures and key in own_textures:
             # Les textures écrites par un autre outil ne sont pas connues ici : l'aperçu prend alors le métal nu.
             return TEXTURES.get(own_textures[key], TEXTURES["machine_metal"])
-        if key in ANIMATED:
-            return TEXTURES[ANIMATED[key][1 if lit else 0]]
         return TEXTURES[COMMON[key]]
 
     def plot(x, y, z, color, shade):
@@ -1061,9 +707,6 @@ def render(parts, lit, scale=10, own_textures=None):
 
 def write_preview(path):
     tiles = []
-    for name, parts in MACHINES.items():
-        tiles.append(render(parts, False))
-        tiles.append(render(parts, True))
     for name, (parts, own_textures, emissive) in EXTRAS.items():
         tiles.append(render(parts, False, own_textures=own_textures))
     per_row = 4
@@ -1083,4 +726,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         write_preview(sys.argv[1])
         print("Aperçu :", sys.argv[1])
-    print(f"{len(MACHINES)} machines : modèles et textures écrits.")
+    print("Modèles et textures écrits.")

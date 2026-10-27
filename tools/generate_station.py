@@ -191,15 +191,6 @@ def truss_texture():
     return img
 
 
-def truss_node_texture():
-    """Nœud de la poutre : une pièce d'assemblage plus sombre, avec ses boulons."""
-    img = plain(86, "#7F8A97", "#93A0AD", "#6B7682")
-    for x, y in ((3, 3), (12, 3), (3, 12), (12, 12)):
-        dot(img, x, y, "#3A4048")
-        dot(img, x - 1, y - 1, "#B3BCC6")
-    return img
-
-
 def hatch_texture(half):
     """
     Sas étanche, un battant de deux blocs, dessiné à plat : un cadre graphite et ses deux charnières, un battant
@@ -338,16 +329,6 @@ def keys_texture():
             dot(img, x, y + 1, "#454C55")
     for x, y, c in ((3, 1, "#E8872A"), (11, 7, "#5BE08A"), (13, 13, "#D9534F")):
         dot(img, x, y, c)
-    return img
-
-
-def keyboard_tray_texture():
-    """Plateau du clavier : un fond graphite, à peine strié, où sont posées les touches."""
-    img = canvas("#1E2125")
-    for y in range(SIZE):
-        for x in range(SIZE):
-            if (x + 2 * y) % 7 == 0:
-                dot(img, x, y, "#24282D")
     return img
 
 
@@ -772,15 +753,6 @@ def lab_glovebox_texture():
     return img
 
 
-def lab_drawer_texture():
-    """Tiroir d'expérience : un plastique gris clair à poignée sombre et étiquette jaune."""
-    img = plain(91, "#D2D7DD", "#DDE1E6", "#C3C9D0")
-    rect(img, 5, 12, 10, 13, "#3A4048")
-    rect(img, 11, 2, 14, 3, "#E8C02A")
-    outline(img, 0, 0, 15, 15, "#9AA3AE")
-    return img
-
-
 def rack_frame_texture():
     """Cadre des baies : un profilé gris sombre, à trous de fixation."""
     img = plain(92, "#5A626C", "#6B737D", "#4A515A")
@@ -802,15 +774,6 @@ def mat_texture():
     for _ in range(14):
         x, y = rnd.randrange(16), rnd.randrange(16)
         dot(img, x, y, "#2A221A")
-    return img
-
-
-def grow_led_texture():
-    """Rampe de culture : des diodes rouges et bleues alternées."""
-    img = canvas("#B04AC8")
-    for x in range(SIZE):
-        for y in range(SIZE):
-            img[y][x] = rgb("#FF5A8A") if (x // 2) % 2 == 0 else rgb("#6A7BFF")
     return img
 
 
@@ -1097,16 +1060,6 @@ def glass_frame_texture():
     return img
 
 
-def glass_header_texture():
-    """Face du linteau : l'aluminium, et la fenêtre noire du détecteur au milieu, son voyant vert."""
-    img = glass_frame_texture()
-    for x in range(6, 10):
-        for y in (6, 7, 8, 9):
-            img[y][x] = rgb("#15171A")
-    img[7][9] = rgb("#5BE08A")
-    return img
-
-
 def glass_door_icon():
     """Objet : la porte vitrée de deux battants, leur cadre d'aluminium et le linteau à détecteur."""
     img = [[TRANSPARENT for _ in range(SIZE)] for _ in range(SIZE)]
@@ -1275,7 +1228,6 @@ def write_textures():
     write("glass_door_leaf_lo", [glass_leaf_texture(False)])
     write("glass_door_leaf_hi", [glass_leaf_texture(True)])
     write("glass_door_frame", [glass_frame_texture()])
-    write("glass_door_header", [glass_header_texture()])
     hi, lo = airlock_leaf_textures()
     write("airlock_leaf_hi", [hi])
     write("airlock_leaf_lo", [lo])
@@ -1294,10 +1246,8 @@ def write_textures():
     write("station_rail", [rail_texture()])
     write("station_floor", [floor_texture()])
     write("station_light", [light_texture()])
-    write("station_light_frame", [light_frame_texture()])
     write("station_light_face", [light_face_texture()])
     write("station_truss", [truss_texture()])
-    write("station_truss_node", [truss_node_texture()])
     write("station_hatch_top", [hatch_texture("top")])
     write("station_hatch_bottom", [hatch_texture("bottom")])
     write("cupola_window", [cupola_texture()])
@@ -1308,10 +1258,7 @@ def write_textures():
     write("life_support_side_off", [air_fan_texture(0, on=False, framed=True)])
     write("life_support_top_on", [life_support_top_texture(True)])
     write("life_support_top_off", [life_support_top_texture(False)])
-    write("station_keyboard_tray", [keyboard_tray_texture()])
     write("station_keycap", [keycap_texture("#A9B1BB", "#7A838E", "#D4DAE0")])
-    write("station_keycap_dark", [keycap_texture("#4A525C", "#353B42", "#6B747F")])
-    write("station_keycap_orange", [keycap_texture("#E8872A", "#A85C18", "#F7B26A")])
     write("station_keycap_green", [keycap_texture("#5BE08A", "#2E9A58", "#A8F2C2")])
     write("station_led", [led_texture("#7FD0FF")])
     write("cargo_bag", [bag_texture(97, "#E7E9EC", "#FFFFFF", "#3F76E4")])
@@ -1335,7 +1282,6 @@ def write_textures():
     write("lab_screen_off", [lab_screen(0, on=False)])
     write("lab_screen_on", [lab_screen(k) for k in range(8)], frametime=6, interpolate=False)
     write("lab_glovebox", [lab_glovebox_texture()])
-    write("lab_drawer", [lab_drawer_texture()])
     write("lab_panel", [lab_panel_texture()])
     write("lab_locker", [lab_locker_texture()])
     write("lab_led_off", [led_texture("#2A3A30")])
@@ -1343,7 +1289,6 @@ def write_textures():
     write("rack_frame", [rack_frame_texture()])
     write("hydroponic_tray", [tray_texture()])
     write("hydroponic_mat", [mat_texture()])
-    write("hydroponic_led", [grow_led_texture()])
     write("station_battery", [battery_texture()])
     write("station_battery_top", [battery_top_texture()])
     write("station_battery_label", [battery_label_texture()])
@@ -1456,22 +1401,22 @@ def kit_icons():
 # ---------------------------------------------------------------------------
 TEXTURES = {
     "hull": "station_hull", "panel": "station_panel", "panel_rail": "station_panel_rail", "panel_vent": "station_panel_vent",
-    "rail": "station_rail", "floor": "station_floor", "light": "station_light", "light_frame": "station_light_frame", "light_face": "station_light_face",
-    "truss": "station_truss", "node": "station_truss_node", "console": "station_console", "screen": "station_terminal_screen",
+    "rail": "station_rail", "floor": "station_floor", "light": "station_light", "light_face": "station_light_face",
+    "truss": "station_truss", "console": "station_console", "screen": "station_terminal_screen",
     "keys": "station_keys", "led": "station_led",
     "air_side_on": "life_support_side_on", "air_side_off": "life_support_side_off",
-    "air_top_on": "life_support_top_on", "air_top_off": "life_support_top_off", "tray": "station_keyboard_tray", "keycap": "station_keycap",
-    "keycap_dark": "station_keycap_dark", "keycap_orange": "station_keycap_orange", "keycap_green": "station_keycap_green", "dark": "machine_dark", "frame": "rack_frame",
+    "air_top_on": "life_support_top_on", "air_top_off": "life_support_top_off", "keycap": "station_keycap",
+    "keycap_green": "station_keycap_green", "dark": "machine_dark", "frame": "rack_frame",
     "bag": "cargo_bag", "bag_b": "cargo_bag_b", "strap": "cargo_strap",
     "sleep": "crew_bunk_bag", "liner": "crew_bunk_liner", "lamp": "crew_bunk_lamp", "cq_side": "crew_bunk_side",
     "cq_ceiling": "crew_bunk_ceiling", "cq_floor": "crew_bunk_floor", "cq_door": "crew_bunk_door",
     "pillow": "crew_bunk_pillow", "cq_side_lo": "crew_bunk_side_lower", "cq_side_hi": "crew_bunk_side_upper",
     "bezel_lo": "crew_bunk_bezel_lower", "bezel_hi": "crew_bunk_bezel_upper", "bag_lo": "crew_bunk_bag_lower",
     "bag_hi": "crew_bunk_bag_upper",
-    "lab_screen": "lab_screen_off", "lab_screen_on": "lab_screen_on", "glovebox": "lab_glovebox", "drawer": "lab_drawer",
+    "lab_screen": "lab_screen_off", "lab_screen_on": "lab_screen_on", "glovebox": "lab_glovebox",
     "lab_panel": "lab_panel", "locker": "lab_locker",
     "lab_led": "lab_led_off", "lab_led_on": "lab_led_on",
-    "tray": "hydroponic_tray", "mat": "hydroponic_mat", "grow": "hydroponic_led",
+    "tray": "hydroponic_tray", "mat": "hydroponic_mat",
     "battery": "station_battery", "label": "station_battery_label", "port": "station_port", "battop": "station_battery_top",
     "gauge0": "battery_gauge_0", "gauge1": "battery_gauge_1", "gauge2": "battery_gauge_2", "gauge3": "battery_gauge_3",
     "gauge4": "battery_gauge_4", "plant": "station_light",
@@ -1479,7 +1424,6 @@ TEXTURES = {
     "sill": "airlock_threshold", "edge": "airlock_edge", "led_closed": "airlock_led_closed", "led_cycling": "airlock_led_cycling",
     "led_open": "airlock_led_open",
     "gleaf_lo": "glass_door_leaf_lo", "gleaf_hi": "glass_door_leaf_hi", "gframe": "glass_door_frame",
-    "gheader": "glass_door_header",
     "sw_front_l": "suit_workbench_front_left", "sw_front_r": "suit_workbench_front_right", "sw_side": "suit_workbench_side",
     "sw_mat": "suit_workbench_mat", "sw_edge": "suit_workbench_edge", "sw_back": "suit_workbench_back",
     "sw_screen": "suit_workbench_screen", "sw_mod": "suit_workbench_module", "sw_mod_o": "suit_workbench_module_orange",

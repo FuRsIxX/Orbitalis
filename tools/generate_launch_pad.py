@@ -294,34 +294,6 @@ def lamp(lit):
     return img
 
 
-def amber_frame(step, frames=6):
-    """Feu orange à éclats : le reflet de son miroir tournant passe d'un bord à l'autre."""
-    img = []
-    bright = step * SIZE / frames
-    for y in range(SIZE):
-        row = []
-        for x in range(SIZE):
-            distance = min(abs(x - bright), abs(x - bright + SIZE), abs(x - bright - SIZE))
-            row.append(mix(rgb("#FF9D1E"), rgb("#FFF3C4"), max(0.0, 1.0 - distance / 4.0)))
-        img.append(row)
-    return img
-
-
-def wheel():
-    """Volant de vanne, vu de face : une jante rouge, quatre rayons et le moyeu ; le reste est à jour."""
-    img = [[TRANSPARENT for _ in range(SIZE)] for _ in range(SIZE)]
-    for y in range(SIZE):
-        for x in range(SIZE):
-            distance = math.hypot(x - 7.5, y - 7.5)
-            if 5.6 <= distance <= 7.8:
-                img[y][x] = rgb("#D9342B") if x + y < 17 else rgb("#A82219")
-            elif distance < 2.2:
-                img[y][x] = rgb("#3A3D42")
-            elif abs(x - 7.5) < 1.0 or abs(y - 7.5) < 1.0:
-                img[y][x] = rgb("#C22B22")
-    return img
-
-
 def sign(background, border, draw):
     """Panneau : un fond, un liseré, et un dessin."""
     img = fill(rgb(background))
@@ -344,14 +316,6 @@ def draw_warning(img):
         img[y][7] = img[y][8] = black
 
 
-def draw_no_entry(img):
-    """Disque rouge barré de blanc : accès réservé au personnel autorisé."""
-    for y in range(SIZE):
-        for x in range(SIZE):
-            if math.hypot(x - 7.5, y - 7.5) <= 6.2:
-                img[y][x] = rgb("#F4F5F6") if 6 <= y <= 9 and 4 <= x <= 11 else rgb("#D9342B")
-
-
 def draw_arrow(img):
     """Flèche blanche : chemin d'évacuation."""
     white = rgb("#F4F5F6")
@@ -360,15 +324,6 @@ def draw_arrow(img):
     for k in range(5):
         img[7 - k][12 - k] = img[8 + k][12 - k] = white
         img[7 - k][11 - k] = img[8 + k][11 - k] = white
-
-
-def draw_wrench(img):
-    """Clé plate blanche : accès de maintenance."""
-    white = rgb("#F4F5F6")
-    for k in range(3, 12):
-        img[15 - k][k] = img[14 - k][k] = white
-    for x, y in ((11, 2), (13, 4), (12, 2), (13, 3), (2, 11), (4, 13), (2, 12), (3, 13)):
-        img[y][x] = white
 
 
 def draw_orbit(img):
@@ -483,7 +438,6 @@ def write_materials():
 
     add("pad_concrete", [concrete(201)])
     add("pad_concrete_tech", [concrete_tech()])
-    add("pad_concrete_burnt", [concrete_burnt()])
     add("pad_refractory", [refractory()])
     add("pad_steel", [steel(206, "#8C949E", "#959DA7", "#838B95", [15])])
     add("pad_steel_red", [steel_red()])
@@ -522,11 +476,8 @@ def write_materials():
     # Balise à LED : un aplat net, sans grain, allumée comme éteinte.
     add("beacon_red", [[[rgb("#FF4A3D")] * SIZE for _ in range(SIZE)]])
     add("pad_beacon_off", [[[rgb("#6A1A15")] * SIZE for _ in range(SIZE)]])
-    add("pad_amber", [amber_frame(s) for s in range(6)], 2)
-    add("pad_amber_off", [plain(222, "#6E4A10", "#835A18", "#55380A")])
     add("pad_led", [plain(223, "#7CE08A", "#B4F5BD", "#57C768")])
     add("pad_led_off", [plain(224, "#24402A", "#2E5036", "#1A3020")])
-    add("pad_wheel", [wheel()])
 
     # Peintures des mâts.
     add("mast_white", [plain(81, "#E9ECEF", "#F7F8F9", "#D3D8DD", [15])])
@@ -535,9 +486,7 @@ def write_materials():
 
     # Signalétique d'Orbitalis.
     add("pad_sign_warning", [sign("#F2C14E", "#1B1C1F", draw_warning)])
-    add("pad_sign_no_entry", [sign("#F4F5F6", "#D9342B", draw_no_entry)])
     add("pad_sign_exit", [sign("#2E8B57", "#F4F5F6", draw_arrow)])
-    add("pad_sign_maintenance", [sign("#2F6FB5", "#F4F5F6", draw_wrench)])
     add("pad_sign_orbitalis", [sign("#1B2A4A", "#F2C14E", draw_orbit)])
     add("pad_sign_lox", [fluid_sign("#2F6FB5", "LOX", "#EEF1F4")])
     add("pad_sign_lh2", [fluid_sign("#B13A22", "LH2", "#D9B24A")])
@@ -560,17 +509,17 @@ def write_materials():
 # ---------------------------------------------------------------------------
 # Nom court d'une texture dans les modèles, et la texture qu'il désigne.
 PAD_TEXTURES = {
-    "concrete": "pad_concrete", "tech": "pad_concrete_tech", "burnt": "pad_concrete_burnt", "brick": "pad_refractory",
+    "concrete": "pad_concrete", "tech": "pad_concrete_tech", "brick": "pad_refractory",
     "steel": "pad_steel", "red": "pad_steel_red", "grey": "pad_steel_grey", "inox": "pad_stainless",
     "thermal": "pad_thermal", "grate": "pad_grating", "cglass": "pad_cabin_glass", "plate": "pad_tread", "rubber": "pad_rubber",
     "white": "pad_white", "hazard": "pad_hazard", "casing": "pad_casing", "brass": "pad_brass", "cable": "pad_cable", "cableh": "pad_cable_h",
     "lox": "pad_lox", "loxh": "pad_lox_h", "lh2": "pad_lh2", "lh2h": "pad_lh2_h", "rp1": "pad_rp1", "rp1h": "pad_rp1_h",
-    "water": "pad_water", "waterh": "pad_water_h", "wheel": "pad_wheel",
+    "water": "pad_water", "waterh": "pad_water_h",
     "lamp": "pad_lamp", "lampoff": "pad_lamp_off", "beacon": "beacon_red", "beaconoff": "pad_beacon_off",
-    "amber": "pad_amber", "amberoff": "pad_amber_off", "led": "pad_led", "ledoff": "pad_led_off",
+    "led": "pad_led", "ledoff": "pad_led_off",
     "paint": "mast_white", "paintred": "mast_red", "insulator": "mast_insulator",
-    "s_warning": "pad_sign_warning", "s_noentry": "pad_sign_no_entry", "s_exit": "pad_sign_exit",
-    "s_maint": "pad_sign_maintenance", "s_orbitalis": "pad_sign_orbitalis",
+    "s_warning": "pad_sign_warning", "s_exit": "pad_sign_exit",
+    "s_orbitalis": "pad_sign_orbitalis",
     "s_lox": "pad_sign_lox", "s_lh2": "pad_sign_lh2", "s_rp1": "pad_sign_rp1", "s_water": "pad_sign_water",
     "ch4": "pad_ch4", "ch4h": "pad_ch4_h", "s_ch4": "pad_sign_ch4",
     "he3": "pad_he3", "he3h": "pad_he3_h", "s_he3": "pad_sign_he3",

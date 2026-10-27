@@ -1,6 +1,6 @@
 # Orbitalis — 0.9.0 (bêta)
 
-*Minecraft 26.2 · NeoForge 26.2.0.88 · GeckoLib 5.5.6 · JEI recommandé*
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
 
 Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de Jupiter. C'est une bêta : tout ce qui suit est jouable de bout en bout, et vos retours aideront à l'équilibrer avant la 1.0.
 
@@ -41,7 +41,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 # Orbitalis — 0.9.0 (beta)
 
-*Minecraft 26.2 · NeoForge 26.2.0.88 · GeckoLib 5.5.6 · JEI recommended*
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommended*
 
 The first public release of Orbitalis: from the first steel ingot to the moons of Jupiter. This is a beta: everything below is playable end to end, and your feedback will help balance it before 1.0.
 

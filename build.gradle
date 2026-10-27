@@ -33,18 +33,6 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // GeckoLib (via le Maven de Modrinth, limité au groupe maven.modrinth).
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = 'Modrinth'
-                url = 'https://api.modrinth.com/maven'
-            }
-        }
-        filter {
-            includeGroup 'maven.modrinth'
-        }
-    }
     // JEI et sa bibliothèque de configuration.
     exclusiveContent {
         forRepository {
@@ -157,16 +145,12 @@ configurations {
 }
 
 dependencies {
-    // GeckoLib : dépendance obligatoire (entités et blocs animés).
-    implementation "maven.modrinth:geckolib:${geckolib_file_id}"
-
     // JEI : API à la compilation, mod complet uniquement pour les tests en développement.
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     // Mods tiers déployés dans l'instance CurseForge.
-    curseforgeMods "maven.modrinth:geckolib:${geckolib_file_id}"
     curseforgeMods "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 }
 
@@ -176,7 +160,6 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
             neo_version            : neo_version,
-            geckolib_version       : geckolib_version,
             jei_version            : jei_version,
             mod_id                 : mod_id,
             mod_name               : mod_name,
@@ -192,7 +175,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
-// Compile le mod puis le copie, avec GeckoLib et JEI, dans le dossier mods de l'instance CurseForge.
+// Compile le mod puis le copie, avec JEI, dans le dossier mods de l'instance CurseForge.
 // Usage : gradlew deployCurseForge, puis lancer l'instance depuis l'application CurseForge.
 def curseforgeInstanceDir = providers.gradleProperty('curseforge_instance_dir')
         .orElse(providers.systemProperty('user.home').map { "${it}/curseforge/minecraft/Instances/Orbitalis" })

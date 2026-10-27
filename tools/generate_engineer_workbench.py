@@ -28,7 +28,7 @@ from model_kit import build_tiled, check_overlaps, display
 TEXTURES = {
     "top": "workbench_top", "alu": "workbench_alu", "light": "workbench_light", "plan": "workbench_blueprint",
     "sketch": "workbench_sketch", "tube": "workbench_tube", "screen": "workbench_screen", "accent": "workbench_accent",
-    "white": "workbench_white", "red": "workbench_red", "drawer": "workbench_drawer",
+    "white": "workbench_white", "red": "workbench_red",
 }
 EMISSIVE = {"light", "screen"}
 
@@ -122,15 +122,6 @@ def screen_frame(step):
     return img
 
 
-def drawer_texture():
-    """Façade du tiroir : le graphite du plateau, un filet clair en haut, un filet sombre en bas."""
-    img = flat("#2A2F36", speck="#30363E", seed=823)
-    for x in range(SIZE):
-        img[0][x] = rgb("#454C56")
-        img[SIZE - 1][x] = rgb("#1B1F24")
-    return img
-
-
 def write_textures():
     gm.write_texture("workbench_top", [flat("#2A2F36", speck="#31373F", seed=821)])
     gm.write_texture("workbench_alu", [brushed(822)])
@@ -142,7 +133,6 @@ def write_textures():
     gm.write_texture("workbench_accent", [flat("#E8872A", speck="#F2A04A", seed=824, amount=0.1)])
     gm.write_texture("workbench_white", [flat("#ECEFF2", speck="#DCE1E6", seed=825)])
     gm.write_texture("workbench_red", [flat("#C8402F", speck="#D85642", seed=826)])
-    gm.write_texture("workbench_drawer", [drawer_texture()])
 
 
 # ---------------------------------------------------------------------------

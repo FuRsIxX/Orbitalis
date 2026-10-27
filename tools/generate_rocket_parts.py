@@ -31,7 +31,7 @@ TEXTURES = {
     "alloy": "rocket_alloy", "composite": "rocket_composite", "rdark": "rocket_dark", "fairing": "rocket_fairing",
     "nozzle": "rocket_nozzle", "nozzlec": "rocket_nozzle_copper", "checker": "rocket_checker",
     "casing": "pad_casing", "brass": "pad_brass", "cable": "pad_cable", "hazard": "pad_hazard", "plate": "pad_tread",
-    "screen": "machine_console_screen", "keys": "machine_keys", "window": "capsule_glass", "led": "pad_led",
+    "window": "capsule_glass", "led": "pad_led",
     "display": "capsule_screen", "side": "capsule_side",
     "titanium": "rocket_titanium", "stainless": "rocket_stainless", "foil": "robotic_lander_foil", "ionglow": "rocket_ion_glow",
     "sailfoil": "rocket_sail",

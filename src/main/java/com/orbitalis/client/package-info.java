@@ -1,4 +1,4 @@
 /**
- * Code réservé au client : rendus, écrans, modèles GeckoLib, particules.
+ * Code réservé au client : rendus, écrans, particules.
  */
 package com.orbitalis.client;

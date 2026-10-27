@@ -29,14 +29,6 @@ From the first steel ingot to the moons of Jupiter: build a space industry, a sp
     ordering="NONE"
     side="BOTH"
 
-# GeckoLib (obligatoire) : modèles et animations des entités et blocs animés
-[[dependencies.${mod_id}]]
-    modId="geckolib"
-    type="required"
-    versionRange="[${geckolib_version},)"
-    ordering="AFTER"
-    side="BOTH"
-
 # JEI (optionnel) : affichage des recettes
 [[dependencies.${mod_id}]]
     modId="jei"

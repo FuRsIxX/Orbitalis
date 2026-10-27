@@ -342,78 +342,6 @@ ldddddddddddddde
 eeeeeeeeeeeeeeee
 """
 
-MACHINE_TOP = """
-llllllllllllllle
-lsmmmmmmmmmmmsde
-lmmmmmmmmmmmmmde
-lmmddddddddddmde
-lmmdllllllllemde
-lmmdlmmmmmmdemde
-lmmdlmmmmmmdemde
-lmmdlmmmmmmdemde
-lmmdlmmmmmmdemde
-lmmdlmmmmmmdemde
-lmmdlmmmmmmdemde
-lmmdldddddddemde
-lmmdeeeeeeeeemde
-lsmmmmmmmmmmmsde
-ldddddddddddddde
-eeeeeeeeeeeeeeee
-"""
-
-
-def machine_port(color):
-    """Côté d'une machine percé d'une sortie de fluide, cerclée de la couleur du fluide."""
-    palette = dict(MACHINE_PALETTE)
-    palette["p"] = rgb(color)
-    return from_mask("""
-llllllllllllllle
-lsmmmmmmmmmmmmde
-lmmmmmmmmmmmmmde
-lmmmddddddddmmde
-lmmdppppppppdmde
-lmmdpkkkkkkpdmde
-lmmdpkkkkkkpdmde
-lmmdpkkkkkkpdmde
-lmmdpkkkkkkpdmde
-lmmdpkkkkkkpdmde
-lmmdppppppppdmde
-lmmmddddddddmmde
-lmmmmmmmmmmmmmde
-lmsmmmmmmmmsmmde
-ldddddddddddddde
-eeeeeeeeeeeeeeee
-""", palette)
-
-
-def conduit(dark, mid, light, core, glow=None, level=0):
-    """
-    Texture d'un conduit, lue par morceaux par les modèles :
-    centre (5..10, 5..10) = face du cœur et extrémité des bras ;
-    bande du haut (5..10, 0..4) et bande de gauche (0..4, 5..10) = flancs des bras, rayés dans le sens de la longueur.
-
-    glow / level : couleur de la lueur et intensité (0 à 3) quand quelque chose circule dans le conduit.
-    Le filet central et le cœur virent vers cette couleur, et le reste du conduit en prend un léger reflet.
-    """
-    amount = level / 3.0
-    if glow is not None and level > 0:
-        light = mix(light, glow, 0.35 + 0.65 * amount)
-        core = mix(core, glow, 0.45 + 0.55 * amount)
-        mid = mix(mid, glow, 0.10 * amount)
-    stripe = [rgb(dark), rgb(mid), rgb(light), rgb(light), rgb(mid), rgb(dark)]
-    img = [[rgb(mid) for _ in range(SIZE)] for _ in range(SIZE)]
-    for i in range(6):
-        for j in range(5):
-            img[j][5 + i] = stripe[i]       # bande du haut : rayures verticales
-            img[5 + i][j] = stripe[i]       # bande de gauche : rayures horizontales
-    for y in range(5, 11):
-        for x in range(5, 11):
-            edge = x in (5, 10) or y in (5, 10)
-            img[y][x] = rgb(dark) if edge else rgb(core)
-    img[6][6] = rgb(mix(light, "#FFFFFF", 0.5 * amount))  # petit reflet
-    return img
-
-
 def mix(a, b, t):
     """Mélange deux couleurs « #RRGGBB » (t = 0 : la première, t = 1 : la seconde)."""
     ca, cb = rgb(a), rgb(b)
@@ -458,8 +386,6 @@ LIQUEFIER_ON = ["kkkkkkkk", "kcccccwk", "kkkkkkck", "kwccccck", "kckkkkkk", "kcc
 # Raffinerie : colonne de distillation, chauffée par le bas.
 REFINERY_OFF = ["kkdmmdkk", "kkdmmdkk", "kkdmmdkk", "kdmmmmdk", "kdmmmmdk", "kdkkkkdk", "kdkkkkdk"]
 REFINERY_ON = ["kkdmmdkk", "kkdmmdkk", "kkdmmdkk", "kdmmmmdk", "kdmmmmdk", "kdoyyodk", "kdyooydk"]
-# Terminal de recherche : un écran qui affiche un arbre de technologies, au-dessus d'une rangée de voyants.
-TERMINAL_SCREEN = ["bbbbbbbb", "bwcbwcbb", "bbbbbcbb", "bwccbwcw", "bbbbbbbb", "kkkkkkkk", "kykskckk"]
 # Réservoir cryogénique : hublot de niveau, bleuté quand le refroidissement est actif.
 TANK_OFF = ["dddddddd", "dkkkkkkd", "dkkkkkkd", "dkkkkkkd", "dkkkkkkd", "dkkkkkkd", "dddddddd"]
 TANK_ON = ["dddddddd", "dkkkkkkd", "dwwwwwwd", "dccccccd", "dccccccd", "dccccccd", "dddddddd"]
@@ -787,10 +713,6 @@ def mission_tablet_item():
     return img
 
 
-# Pupitre de lancement : un écran vert de télémétrie au-dessus d'une rangée de voyants.
-CONSOLE_SCREEN = ["kkkkkkkk", "kgggkggk", "kkkkkkkk", "kggkgggk", "kkkkkkkk", "kykgkrkk", "kkkkkkkk"]
-
-
 # ---------------------------------------------------------------------------
 # Pièces de fusée : corps cylindriques vus de côté, éclairés par la gauche
 # ---------------------------------------------------------------------------
@@ -1090,19 +1012,6 @@ def station_window_texture():
     return img
 
 
-def docking_port_texture():
-    """Sas d'amarrage : un collier sombre autour d'une écoutille ronde, avec son verrou central."""
-    img = station_hull_texture()
-    for y in range(SIZE):
-        for x in range(SIZE):
-            distance = ((x - 7.5) ** 2 + (y - 7.5) ** 2) ** 0.5
-            if distance <= 6.2:
-                img[y][x] = rgb("#3A4048") if distance > 4.8 else rgb("#6B747F") if distance > 1.6 else rgb("#E8872A")
-    for k in range(4, 12):
-        img[k][7] = img[7][k] = rgb("#4A515A")
-    return img
-
-
 def solar_panel_top_texture():
     """Dessus du panneau solaire : des cellules bleu nuit, séparées par des conducteurs argentés."""
     img = [[rgb("#1F3F8F") for _ in range(SIZE)] for _ in range(SIZE)]
@@ -1129,63 +1038,6 @@ def shade(color, factor):
     """Éclaircit (au-dessus de 1) ou assombrit (en dessous) une couleur, sans toucher à son opacité."""
     r, g, b, a = color
     return (min(255, max(0, round(r * factor))), min(255, max(0, round(g * factor))), min(255, max(0, round(b * factor))), a)
-
-
-def life_support_texture(active):
-    """
-    Générateur d'air, sur ses six faces : un panneau blanc en relief (éclairé en haut et à gauche, ombré en bas et à
-    droite), la grille de son ventilateur en creux (une lèvre éclairée d'un côté, dans l'ombre de l'autre, des pales
-    au fond, le moyeu), et sous la grille, bien à l'écart des bords, la petite fenêtre de l'afficheur et son voyant :
-    rouge à l'arrêt, vert quand la pièce est pressurisée.
-    """
-    img = [[rgb("#E6E9EC") for _ in range(SIZE)] for _ in range(SIZE)]
-    rnd = random.Random(1109)
-    for y in range(SIZE):
-        for x in range(SIZE):
-            img[y][x] = shade(img[y][x], 1.0 + rnd.uniform(-0.018, 0.018))
-    # Le joint du panneau, puis son relief.
-    for k in range(SIZE):
-        img[0][k] = img[15][k] = img[k][0] = img[k][15] = rgb("#A9B0B8")
-    for k in range(1, 15):
-        img[1][k] = shade(img[1][k], 1.06)
-        img[k][1] = shade(img[k][1], 1.05)
-        img[14][k] = shade(img[14][k], 0.84)
-        img[k][14] = shade(img[k][14], 0.86)
-    # La grille du ventilateur, en creux.
-    cx, cy = 7.5, 6.5
-    for y in range(SIZE):
-        for x in range(SIZE):
-            dx, dy = x - cx, y - cy
-            d = math.hypot(dx, dy)
-            if d <= 4.9:
-                if d > 4.1:
-                    # La lèvre : éclairée en haut à gauche, dans l'ombre en bas à droite.
-                    light = -(dx + dy) / (d or 1.0)
-                    img[y][x] = shade(rgb("#B9C0C7"), 1.0 + 0.18 * light)
-                else:
-                    depth = 0.55 + 0.1 * (d / 4.1)
-                    angle = math.atan2(dy, dx)
-                    blade = (math.sin(angle * 4 + d * 0.6) > 0.35)
-                    base = rgb("#5A626C") if blade else rgb("#22272C")
-                    img[y][x] = shade(base, depth / 0.6)
-                    if (x + y) % 2 == 0 and not blade:
-                        img[y][x] = rgb("#2E343A")
-            if d <= 1.1:
-                img[y][x] = rgb("#C9CED4") if dx + dy < 0 else rgb("#8C949E")
-    # L'ombre portée de la lèvre, sous la grille.
-    for x in range(5, 11):
-        img[11][x] = shade(img[11][x], 0.9)
-    # L'afficheur et le voyant, dans leur cadre en creux, à trois pixels des bords.
-    for x in range(4, 12):
-        img[12][x] = rgb("#5A626C")
-    for x in range(4, 12):
-        img[13][x] = rgb("#C9CED4") if x in (4, 11) else rgb("#0E1A20")
-    if active:
-        img[13][5] = rgb("#39B5C9")
-        img[13][6] = rgb("#39B5C9")
-    img[13][9] = rgb("#5BC27A") if active else rgb("#7A2A26")
-    img[13][10] = rgb("#B6FFC9") if active else rgb("#B5443C")
-    return img
 
 
 def station_core_item():
@@ -1384,10 +1236,7 @@ def build_all():
         "steel_block": metal_block(41, STEEL, "rivets"),
         "aluminum_block": metal_block(42, ALUMINUM, "brushed"),
         "titanium_block": metal_block(43, TITANIUM, "cross"),
-        # Machines : carcasse commune et faces avant (éteinte / allumée).
-        "machine_side": from_mask(MACHINE_SIDE, MACHINE_PALETTE),
-        "machine_top": from_mask(MACHINE_TOP, MACHINE_PALETTE),
-        "machine_bottom": metal_block(51, ("#1E2126", "#2E3238", "#4A5058", "#5A626B", "#6B737D"), "plain"),
+        # Machines : faces avant (éteinte / allumée).
         "combustion_generator_front": machine_front(GENERATOR_OFF),
         "combustion_generator_front_on": machine_front(GENERATOR_ON),
         "arc_foundry_front": machine_front(FOUNDRY_OFF),
@@ -1400,7 +1249,6 @@ def build_all():
         "cryogenic_liquefier_front_on": machine_front(LIQUEFIER_ON),
         "refinery_front": machine_front(REFINERY_OFF),
         "refinery_front_on": machine_front(REFINERY_ON),
-        "research_terminal_front": machine_front(TERMINAL_SCREEN),
         # Tronçons de fusée : peinture blanche, mousse orange, moteur à poudre, interétage en carbone, coiffe, tuyère.
         "rocket_white": rocket_skin(81, ["#EEF0F2", "#E2E5E8", "#F8F9FA"], [5, 3, 2], [0, 8]),
         "rocket_orange": rocket_skin(82, ["#C8742A", "#B5651F", "#D98A3F", "#A85A1C"], [5, 3, 2, 1], [0]),
@@ -1431,25 +1279,11 @@ def build_all():
         # Stations spatiales.
         "station_hull": station_hull_texture(),
         "station_window": station_window_texture(),
-        "docking_port": docking_port_texture(),
-        "life_support": life_support_texture(False),
-        "life_support_on": life_support_texture(True),
         "creative_energy_source": creative_source_texture(ENERGY_SYMBOL, "#FFD75A", "#FFF6C9"),
         "creative_fluid_source": creative_source_texture(FLUID_SYMBOL, "#5FB0F5", "#CFEAFF"),
-        "launch_console_front": machine_front(CONSOLE_SCREEN),
         "cryogenic_tank_front": machine_front(TANK_OFF),
         "cryogenic_tank_front_on": machine_front(TANK_ON),
-        # Sorties de l'électrolyseur : hydrogène (rouge) d'un côté, oxygène (bleu) de l'autre.
-        "electrolyzer_side_hydrogen": machine_port("#D96A6A"),
-        "electrolyzer_side_oxygen": machine_port("#5FB0F5"),
-        # Conduits : câble (gaine sombre, âme cuivrée) et tuyau (acier clair).
-        "energy_cable": conduit("#1F2023", "#33363B", "#C8672A", "#E08A3C"),
-        "fluid_pipe": conduit("#5A626B", "#8C949E", "#C3CAD2", "#3A4046"),
     }
-    # Conduits en service : trois niveaux de lueur, de plus en plus vifs.
-    for level in (1, 2, 3):
-        blocks["energy_cable_glow%d" % level] = conduit("#1F2023", "#33363B", "#C8672A", "#E08A3C", "#FFE08A", level)
-        blocks["fluid_pipe_glow%d" % level] = conduit("#5A626B", "#8C949E", "#C3CAD2", "#3A4046", "#8FE4FF", level)
     items = {
         "raw_bauxite": item(RAW_MASK, RAW_BAUXITE),
         "raw_titanium": item(flip_h(RAW_MASK), RAW_TITANIUM),

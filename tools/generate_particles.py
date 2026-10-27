@@ -283,6 +283,9 @@ if __name__ == "__main__":
         with open(os.path.join(PARTICLE_DIR, alias + ".json"), "w", newline=chr(10)) as f:
             json.dump({"textures": ["orbitalis:%s_%d" % (source, k) for k in range(len(PARTICLES[source]))]}, f, indent=2)
     write_png(os.path.join(TEXTURE_DIR, "planet.png"), planet_texture())
+    # Les images de Jupiter et de Proxima sont dessinées par generate_europa.py et generate_proxima.py.
     with open(os.path.join(PARTICLE_DIR, "planet.json"), "w", newline=chr(10)) as f:
-        json.dump({"textures": ["orbitalis:planet"]}, f, indent=2)
+        json.dump({"textures": ["orbitalis:planet", "orbitalis:jupiter", "orbitalis:proxima_b",
+                                "orbitalis:proxima_star"]}, f, indent=2)
+
     print(f"{len(PARTICLES) + 1} particules, {count + 1} images écrites.")

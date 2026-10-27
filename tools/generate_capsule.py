@@ -118,20 +118,6 @@ def accent_texture():
     return img
 
 
-def rcs_texture():
-    """Propulseurs d'attitude, à fleur de coque : une plaque graphite et ses deux tuyères."""
-    img = smooth(85, "#2B2F35", 0.02)
-    for y in range(SIZE):
-        for x in range(SIZE):
-            for cx in (4.5, 11.5):
-                d = (x - cx) ** 2 + (y - 7.5) ** 2
-                if d < 4:
-                    img[y][x] = rgb("#08090B")
-                elif d < 9:
-                    img[y][x] = rgb("#7F8893")
-    return img
-
-
 def dock_texture():
     """Collier d'amarrage : un anneau d'acier satiné, une gorge sombre à mi-hauteur."""
     img = smooth(91, "#A7AFB8", 0.02)
@@ -447,7 +433,6 @@ def write_textures():
     gm.write_texture("pod_shield", [shield_texture()])
     gm.write_texture("pod_glass", [glass_texture()])
     gm.write_texture("pod_accent", [accent_texture()])
-    gm.write_texture("pod_rcs", [rcs_texture()])
     gm.write_texture("pod_dock", [dock_texture()])
     gm.write_texture("pod_hatch", [hatch_texture()])
     gm.write_texture("pod_liner", [liner_texture()])
@@ -609,7 +594,7 @@ CAPSULE = [
 
 TEXTURES = {
     "hull": "pod_hull", "hull_low": "pod_hull_low", "shield": "pod_shield", "glass": "pod_glass", "accent": "pod_accent",
-    "rcs": "pod_rcs", "dock": "pod_dock", "hatch": "pod_hatch", "liner": "pod_liner", "floor": "pod_floor", "seat": "pod_seat",
+    "dock": "pod_dock", "hatch": "pod_hatch", "liner": "pod_liner", "floor": "pod_floor", "seat": "pod_seat",
     "trim": "pod_trim", "grip": "capsule_grip", "strap": "capsule_strap", "led": "capsule_led", "screen": "capsule_screen",
     "touch": "capsule_touch", "side": "capsule_side",
     "panel": "pod_panel", "bezel": "pod_bezel", "dial": "pod_dial", "globe": "pod_globe", "switches": "pod_switches",
