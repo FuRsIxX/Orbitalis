@@ -1,4 +1,6 @@
-# Orbitalis — prochaine version
+# Orbitalis — 0.9.2 (bêta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
 
 ## Recettes
 - Les conduits se fabriquent en une ligne de trois :
@@ -71,7 +73,9 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 ---
 
-# Orbitalis — next version
+# Orbitalis — 0.9.2 (beta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommended*
 
 ## Recipes
 - Conduits are now crafted in a single row of three:

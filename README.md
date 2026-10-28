@@ -2,7 +2,7 @@
 
 **From the first steel ingot to the moons of Jupiter.** Orbitalis is a NeoForge mod for Minecraft: build a space industry, a spaceport and modular rockets, launch satellites and probes, assemble stations in orbit, and land on the Moon, Mars, Titan and Europa.
 
-*Version 0.9.1 (beta)*
+*Version 0.9.2 (beta)*
 
 ## At a glance
 
@@ -51,7 +51,7 @@ Tested with Sodium and Iris (shaders).
 ## Installation
 
 1. Install NeoForge 26.2.0.88 or newer for Minecraft 26.2.
-2. Drop `orbitalis-0.9.1.jar` into your `mods` folder.
+2. Drop `orbitalis-0.9.2.jar` into your `mods` folder.
 3. Optional: add JEI to browse recipes.
 
 In game, open the Orbitalis manual: it walks you from the first ore all the way to orbit. The research tree opens with the **K** key.
