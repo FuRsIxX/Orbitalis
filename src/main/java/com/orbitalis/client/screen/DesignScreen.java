@@ -55,7 +55,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * plan, la rangée des moteurs ou des réservoirs, les boosters, la charge utile), ce qui est à surveiller en orange. Le
  * bandeau du bas donne chaque problème et son remède ; un clic mène au suivant.
  */
-public class DesignScreen extends Screen {
+public class DesignScreen extends Screen implements BlockScreen {
     private static final int WIDTH = 420;
     private static final int HEIGHT = 248;
     /** Hauteur des deux panneaux du haut : la fusée, et l'étage choisi. */

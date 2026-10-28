@@ -22,7 +22,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * laboratoire, serre, équipage, logistique). L'en-tête montre l'orbite : la part passée au soleil, l'éclipse, et
  * où en est la station. L'écran s'actualise chaque seconde.
  */
-public class StationScreen extends Screen {
+public class StationScreen extends Screen implements BlockScreen {
     private static final int HEADER = 30;
     private static final int GAP = 6;
     private static final int REFRESH_TICKS = 20;

@@ -31,7 +31,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * À droite, la fiche de l'étude choisie : la technologie qu'elle demande, les études à faire d'abord, les matériaux
  * de son prototype (ce que le joueur a sur lui, sur ce qu'il faut), et le bouton qui la lance.
  */
-public class EngineerScreen extends Screen {
+public class EngineerScreen extends Screen implements BlockScreen {
     private static final int HEADER = 30;
     private static final int TAB_WIDTH = 96;
     private static final int TAB_HEIGHT = 20;

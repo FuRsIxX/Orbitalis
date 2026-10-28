@@ -35,7 +35,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * raccords de ravitaillement qui manquent et la charge utile à bord. Deux boutons posent, avec ce que le joueur a sur
  * lui, la couche suivante ou tout ce qu'il peut.
  */
-public class ConstructionScreen extends Screen {
+public class ConstructionScreen extends Screen implements BlockScreen {
     private static final int WIDTH = 420;
     private static final int HEIGHT = 236;
     private static final int LINE = 11;

@@ -7,6 +7,10 @@
   - tuyau à liquides : tôle d'acier, verre, tôle d'acier.
 - Le verre teinté convient aussi. Chaque recette donne toujours 6 conduits.
 
+## Interfaces
+- En multijoueur, si un joueur casse un pupitre, un ordinateur ou un terminal pendant qu'un autre s'en sert, l'écran de ce dernier se ferme.
+- La touche d'inventaire (E par défaut) ferme les écrans du mod, comme Échap, sauf quand on tape un nom.
+
 # Orbitalis — 0.9.1 (bêta)
 
 *Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
@@ -75,6 +79,10 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
   - gas pipe: glass, copper, glass;
   - liquid pipe: steel plate, glass, steel plate.
 - Stained glass works too. Each recipe still makes 6 conduits.
+
+## Screens
+- In multiplayer, if a player breaks a console, computer or terminal while someone else is using it, that player's screen closes.
+- The inventory key (E by default) closes the mod's screens, like Escape, except while you're typing a name.
 
 # Orbitalis — 0.9.1 (beta)
 

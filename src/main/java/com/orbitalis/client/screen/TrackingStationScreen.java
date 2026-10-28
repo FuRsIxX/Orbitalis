@@ -38,7 +38,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * station, tronçon par tronçon, avec les minerais qu'il contient. On choisit un minerai dans la liste pour ne voir
  * que lui ; la case sous la souris donne ses coordonnées et son contenu.
  */
-public class TrackingStationScreen extends Screen {
+public class TrackingStationScreen extends Screen implements BlockScreen {
     /** Hauteur de la fiche d'un satellite quand elle a toute sa place. */
     private static final int DETAIL_HEIGHT = 112;
     private static final int HEADER = 30;

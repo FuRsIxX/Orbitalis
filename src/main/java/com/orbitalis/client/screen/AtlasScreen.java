@@ -64,7 +64,7 @@ import org.joml.Matrix3x2f;
  * L'atlas s'ouvre depuis le pupitre d'un centre de contrôle, ou depuis la tablette de mission, partout à la surface,
  * tant qu'un satellite de télécommunications de l'agence relaie : il est alors centré sur l'endroit où l'on est.
  */
-public class AtlasScreen extends Screen {
+public class AtlasScreen extends Screen implements BlockScreen {
     private static final float ZOOM_NEAR = 2.0F;
     private static final float ZOOM_FAR = 0.02F;
     /** Largeur à l'écran, en pixels, en dessous de laquelle une case est trop petite : on passe à l'échelle suivante. */

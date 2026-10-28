@@ -19,7 +19,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * Panneau de commande de l'ascenseur de la tour : la liste des arrêts, du plus haut au plus bas comme sur un vrai
  * tableau d'ascenseur. Un clic envoie la cabine à l'arrêt choisi et referme le panneau.
  */
-public class ElevatorScreen extends Screen {
+public class ElevatorScreen extends Screen implements BlockScreen {
 
     private static final int WIDTH = 170;
     private static final int ROW = 22;

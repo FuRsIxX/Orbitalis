@@ -35,7 +35,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * <p>
  * Tout se lit dans le monde, côté client : l'écran suit la construction à mesure, sans rien demander au serveur.
  */
-public class ShipyardScreen extends Screen {
+public class ShipyardScreen extends Screen implements BlockScreen {
     private static final int WIDTH = 420;
     private static final int HEIGHT = 236;
     private static final int LINE = 11;

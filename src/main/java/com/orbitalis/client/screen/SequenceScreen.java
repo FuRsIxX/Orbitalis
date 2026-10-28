@@ -25,7 +25,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * En tête, l'horloge de mission en grand, la phase et le niveau d'aide de l'ordinateur de bord ; en pied, ce qu'il
  * faut savoir maintenant, et l'arrêt.
  */
-public class SequenceScreen extends Screen {
+public class SequenceScreen extends Screen implements BlockScreen {
     private static final int WIDTH = 330;
     private static final int HEADER = 46;
     private static final int FOOTER = 36;

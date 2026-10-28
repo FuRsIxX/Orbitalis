@@ -33,7 +33,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * à gauche, la fiche à droite, et pour une planète ou une lune, comment s'y rendre et ce qu'il faut emporter.</li>
  * </ul>
  */
-public class ObservatoryScreen extends Screen {
+public class ObservatoryScreen extends Screen implements BlockScreen {
     private static final int HEADER = 30;
     private static final int TAB_HEIGHT = 13;
     private static final int ROW = 16;

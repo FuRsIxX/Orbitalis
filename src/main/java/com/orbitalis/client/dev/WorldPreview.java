@@ -277,6 +277,18 @@ public final class WorldPreview {
         level.getServer().getCommands().performPrefixedCommand(level.getServer().createCommandSourceStack().withSuppressedOutput(), command);
     }
 
+    /** Un vrai clic droit du joueur sur le pupitre d'essai de la carte de test (en -20 -60 50). */
+    private static void clickTestConsole() {
+        net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
+        minecraft.execute(() -> {
+            if (minecraft.player != null && minecraft.gameMode != null) {
+                BlockPos console = new BlockPos(-20, -60, 50);
+                minecraft.gameMode.useItemOn(minecraft.player, net.minecraft.world.InteractionHand.MAIN_HAND,
+                        new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(console), Direction.SOUTH, console, false));
+            }
+        });
+    }
+
     /** Pose un bloc de la scène, à une position relative à son origine. */
     private static void set(ServerLevel level, int x, int y, int z, String block) {
         run(level, "setblock %d %d %d %s".formatted(origin.getX() + x, origin.getY() + y, origin.getZ() + z, block));
@@ -2074,6 +2086,23 @@ public final class WorldPreview {
         }, -20.5, -58.4, 53.5, 180.0F, 10.0F, 40));
         SHOTS.add(new Shot("tm_test_kit", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance()
                 .gui.setScreen(new com.orbitalis.client.screen.PadKitScreen(null, Direction.NORTH, 1, false))), -20.5, -58.4, 53.5, 180.0F, 10.0F, 30));
+        // Garde des écrans : un clic ouvre le pupitre d'essai ; le pupitre cassé, l'écran se ferme ; rouvert, la touche
+        // d'inventaire le ferme aussi.
+        SHOTS.add(new Shot("tm_guard_open", level -> {
+            run(level, "gamemode creative @a");
+            clickTestConsole();
+        }, -20.5, -59.0, 52.5, 180.0F, 30.0F, 40));
+        SHOTS.add(new Shot("tm_guard_broken", level -> run(level, "setblock -20 -60 50 air"), -20.5, -59.0, 52.5, 180.0F, 30.0F, 20));
+        SHOTS.add(new Shot("tm_guard_restored", level -> run(level, "setblock -20 -60 50 orbitalis:test_console[facing=south]"),
+                -20.5, -59.0, 52.5, 180.0F, 30.0F, 20));
+        SHOTS.add(new Shot("tm_guard_reopen", level -> clickTestConsole(), -20.5, -59.0, 52.5, 180.0F, 30.0F, 40));
+        SHOTS.add(new Shot("tm_guard_key", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            var screen = net.minecraft.client.Minecraft.getInstance().gui.screen();
+            if (screen != null) {
+                net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.ScreenEvent.KeyPressed.Pre(screen,
+                        new net.minecraft.client.input.KeyEvent(org.lwjgl.glfw.GLFW.GLFW_KEY_E, 0, 0)));
+            }
+        }), -20.5, -59.0, 52.5, 180.0F, 30.0F, 20));
         SHOTS.add(new Shot("tm_test_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
                 () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), -20.5, -58.4, 53.5, 180.0F, 10.0F, 10));
         // Le chantier naval, au bout du module logistique : le pupitre est en 12 99 -4, le vaisseau part vers l'est. Pour

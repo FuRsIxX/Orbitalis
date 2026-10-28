@@ -43,7 +43,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * La fenêtre « Go / No-Go » rassemble les postes du centre de contrôle, le tour de table et les essais du pas de tir.
  * L'écran redemande l'état au serveur cinq fois par seconde : il reste à jour tant qu'il est ouvert.
  */
-public class LaunchConsoleScreen extends Screen {
+public class LaunchConsoleScreen extends Screen implements BlockScreen {
     private static final int COLOR_BORDER = 0xFF04060A;
     private static final int COLOR_EDGE = Ui.LINE;
     private static final int COLOR_ACCENT = Ui.ACCENT;

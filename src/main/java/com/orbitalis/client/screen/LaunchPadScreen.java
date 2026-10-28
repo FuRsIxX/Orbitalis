@@ -21,7 +21,7 @@ import net.minecraft.network.chat.Component;
  * À droite, la fusée posée dessus : ce qu'elle peut atteindre, sa masse, sa hauteur, le delta-v de chaque étage
  * et le chargement de ses ergols. L'écran montre l'état relevé à son ouverture.
  */
-public class LaunchPadScreen extends Screen {
+public class LaunchPadScreen extends Screen implements BlockScreen {
     private static final int COLOR_TEXT = Ui.TEXT;
     private static final int COLOR_MUTED = Ui.MUTED;
     private static final int COLOR_OK = Ui.OK;
