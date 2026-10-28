@@ -1718,30 +1718,26 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
 
     /** Câbles et tuyaux, fabriqués par six. */
     private void buildConduits() {
+        // Les conduits se font en une ligne de trois : le câble, du cuivre de part et d'autre d'une redstone.
         shaped(RecipeCategory.MISC, ModBlocks.ENERGY_CABLE, 6)
-                .pattern("WWW")
                 .pattern("CRC")
-                .pattern("WWW")
-                .define('W', ItemTags.WOOL)
                 .define('C', Tags.Items.INGOTS_COPPER)
                 .define('R', Tags.Items.DUSTS_REDSTONE)
                 .unlockedBy("has_copper_ingot", has(Tags.Items.INGOTS_COPPER))
                 .save(output, key("energy_cable"));
 
+        // Tuyau à liquides : un tube de verre entre deux tôles d'acier. Tout verre convient, teinté compris.
         shaped(RecipeCategory.MISC, ModBlocks.FLUID_PIPE, 6)
-                .pattern("PPP")
-                .pattern("   ")
-                .pattern("PPP")
+                .pattern("PGP")
                 .define('P', ModTags.Items.PLATES_STEEL)
+                .define('G', Tags.Items.GLASS_BLOCKS)
                 .unlockedBy("has_steel_plate", has(ModTags.Items.PLATES_STEEL))
                 .save(output, key("fluid_pipe"));
 
-        // Tuyau à gaz : un tube de verre cerclé de cuivre.
+        // Tuyau à gaz : un tube de verre cerclé de cuivre. Tout verre convient, teinté compris.
         shaped(RecipeCategory.MISC, ModBlocks.GAS_PIPE, 6)
-                .pattern("GGG")
-                .pattern("C C")
-                .pattern("GGG")
-                .define('G', Tags.Items.GLASS_PANES)
+                .pattern("GCG")
+                .define('G', Tags.Items.GLASS_BLOCKS)
                 .define('C', Tags.Items.INGOTS_COPPER)
                 .unlockedBy("has_copper_ingot", has(Tags.Items.INGOTS_COPPER))
                 .save(output, key("gas_pipe"));

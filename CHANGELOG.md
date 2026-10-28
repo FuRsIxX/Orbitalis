@@ -1,3 +1,12 @@
+# Orbitalis — prochaine version
+
+## Recettes
+- Les conduits se fabriquent en une ligne de trois :
+  - câble électrique : cuivre, redstone, cuivre ;
+  - tuyau à gaz : verre, cuivre, verre ;
+  - tuyau à liquides : tôle d'acier, verre, tôle d'acier.
+- Le verre teinté convient aussi. Chaque recette donne toujours 6 conduits.
+
 # Orbitalis — 0.9.1 (bêta)
 
 *Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
@@ -57,6 +66,15 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Les réglages de jeu (réalisme, pannes, évaporation des ergols, dégâts des accidents…) sont dans la configuration serveur du monde.
 
 ---
+
+# Orbitalis — next version
+
+## Recipes
+- Conduits are now crafted in a single row of three:
+  - energy cable: copper, redstone, copper;
+  - gas pipe: glass, copper, glass;
+  - liquid pipe: steel plate, glass, steel plate.
+- Stained glass works too. Each recipe still makes 6 conduits.
 
 # Orbitalis — 0.9.1 (beta)
 

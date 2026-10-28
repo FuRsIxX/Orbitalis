@@ -1,12 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
+    "G": "#c:glass_blocks",
     "P": "#c:plates/steel"
   },
   "pattern": [
-    "PPP",
-    "   ",
-    "PPP"
+    "PGP"
   ],
   "result": {
     "count": 6,
