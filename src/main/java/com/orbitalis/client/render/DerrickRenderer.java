@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.orbitalis.core.registry.ModBlocks;
 import com.orbitalis.phase1.quarry.DerrickBlockEntity;
 import com.orbitalis.phase1.quarry.DerrickPlan;
+import com.orbitalis.phase1.quarry.DrillTowerBlock;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -17,10 +18,12 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
@@ -48,6 +51,9 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         float centreZ;
         float bottom;
         float spin;
+        /** La lumière là où sont la flèche et les tiges, à l'air libre (pas dans la tour, où le jour n'entre pas). */
+        int boomLight;
+        int rodLight;
     }
 
     public DerrickRenderer(BlockEntityRendererProvider.Context context) {
@@ -84,6 +90,11 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         boolean drilling = derrick.getBlockState().getValue(BlockStateProperties.LIT);
         long time = derrick.getLevel() == null ? 0 : derrick.getLevel().getGameTime();
         state.spin = drilling ? ((time % 16) + partialTicks) / 16.0F : 0.0F;
+        if (derrick.getLevel() != null) {
+            state.boomLight = LightCoordsUtil.getLightCoords(derrick.getLevel(), pos.above(derrick.levels() + 1));
+            state.rodLight = LightCoordsUtil.getLightCoords(derrick.getLevel(),
+                    BlockPos.containing(pos.getX() + state.centreX, pos.getY() + 1, pos.getZ() + state.centreZ));
+        }
     }
 
     @Override
@@ -94,23 +105,25 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         if (!state.formed) {
             return;
         }
+        // La flèche et les tiges ont leurs textures : celles des particules des cœurs de la tour (voir write_machines.py).
         TextureAtlasSprite steel = Minecraft.getInstance().getModelManager().getBlockStateModelSet()
-                .getParticleMaterial(ModBlocks.STEEL_BLOCK.get().defaultBlockState()).sprite();
+                .getParticleMaterial(ModBlocks.DRILL_BASE.get().defaultBlockState()
+                        .setValue(DrillTowerBlock.PART, DrillTowerBlock.Part.CENTER)).sprite();
         TextureAtlasSprite mast = Minecraft.getInstance().getModelManager().getBlockStateModelSet()
-                .getParticleMaterial(ModBlocks.DRILL_MAST.get().defaultBlockState()).sprite();
-        int light = state.lightCoords;
-        collector.submitCustomGeometry(poseStack, RenderTypes.text(TextureAtlas.LOCATION_BLOCKS), (pose, buffer) -> {
+                .getParticleMaterial(ModBlocks.DRILL_MAST.get().defaultBlockState()
+                        .setValue(DrillTowerBlock.PART, DrillTowerBlock.Part.CENTER)).sprite();
+        collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(TextureAtlas.LOCATION_BLOCKS), (pose, buffer) -> {
             float y0 = state.boomY;
             float y1 = state.boomY + 2 * BOOM;
             // La flèche : d'abord dans l'axe de la tour, puis, pour un tronçon décalé, de côté jusqu'au milieu de la zone.
             float midX = Math.abs(state.centreX - state.towerX) > Math.abs(state.centreZ - state.towerZ) ? state.centreX : state.towerX;
             float midZ = midX == state.centreX ? state.towerZ : state.centreZ;
-            beam(buffer, pose, mast, light, state.towerX, state.towerZ, midX, midZ, y0, y1);
-            beam(buffer, pose, mast, light, midX, midZ, state.centreX, state.centreZ, y0, y1);
+            beam(buffer, pose, mast, state.boomLight, state.towerX, state.towerZ, midX, midZ, y0, y1);
+            beam(buffer, pose, mast, state.boomLight, midX, midZ, state.centreX, state.centreZ, y0, y1);
             // Le train de tiges, de la flèche à la couche en cours, tronçon par tronçon : la texture défile, la tige tourne.
             for (float top = y0; top > state.bottom; top -= 1.0F) {
                 float low = Math.max(state.bottom, top - 1.0F);
-                rod(buffer, pose, steel, light, state.spin, state.centreX, state.centreZ, low, top);
+                rod(buffer, pose, steel, state.rodLight, state.spin, state.centreX, state.centreZ, low, top);
             }
         });
     }
@@ -150,11 +163,13 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
                 {{x0, y0, z1}, {x0, y1, z1}, {x0, y1, z0}, {x0, y0, z0}},
                 {{x1, y0, z0}, {x1, y1, z0}, {x1, y1, z1}, {x1, y0, z1}}};
         float[][] uv = {{u0, v1}, {u0, v0}, {u1, v0}, {u1, v1}};
+        // Normales des faces, dans l'ordre : dessus, dessous, nord, sud, ouest, est (l'éclairage les ombre).
+        float[][] normals = {{0, 1, 0}, {0, -1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
         for (int face = 0; face < faces.length; face++) {
-            int shade = face == 0 ? 0xFFFFFFFF : face == 1 ? 0xFF7F7F7F : face < 4 ? 0xFFCCCCCC : 0xFF999999;
             for (int k = 0; k < 4; k++) {
                 float[] c = faces[face][k];
-                buffer.addVertex(pose, c[0], c[1], c[2]).setColor(shade).setUv(uv[k][0], uv[k][1]).setLight(light);
+                buffer.addVertex(pose, c[0], c[1], c[2]).setColor(0xFFFFFFFF).setUv(uv[k][0], uv[k][1])
+                        .setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, normals[face][0], normals[face][1], normals[face][2]);
             }
         }
     }
@@ -165,17 +180,22 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         float lo = -ROD;
         float hi = ROD;
         float[][] sides = {{lo, lo, hi, lo}, {hi, hi, lo, hi}, {lo, hi, lo, lo}, {hi, lo, hi, hi}};
+        float[][] normals = {{0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
+        int side = 0;
         float u0 = sprite.getU(spin * 0.5F);
-        float u1 = sprite.getU(spin * 0.5F + 0.3F);
+        float u1 = sprite.getU(spin * 0.5F + 0.35F);
         float v0 = sprite.getV(0.0F);
         float v1 = sprite.getV(high - low);
         for (float[] s : sides) {
+            float[] n = normals[side++];
             float[][] corners = {{cx + s[0], low, cz + s[1], u0, v1}, {cx + s[2], low, cz + s[3], u1, v1},
                     {cx + s[2], high, cz + s[3], u1, v0}, {cx + s[0], high, cz + s[1], u0, v0}};
             for (int pass = 0; pass < 2; pass++) {
                 for (int k = 0; k < 4; k++) {
                     float[] c = corners[pass == 0 ? k : 3 - k];
-                    buffer.addVertex(pose, c[0], c[1], c[2]).setColor(0xFFB8C0C8).setUv(c[3], c[4]).setLight(light);
+                    float flip = pass == 0 ? 1.0F : -1.0F;
+                    buffer.addVertex(pose, c[0], c[1], c[2]).setColor(0xFFFFFFFF).setUv(c[3], c[4]).setOverlay(OverlayTexture.NO_OVERLAY)
+                            .setLight(light).setNormal(pose, n[0] * flip, n[1] * flip, n[2] * flip);
                 }
             }
         }

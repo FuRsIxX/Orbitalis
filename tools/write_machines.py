@@ -653,142 +653,210 @@ def piece(img, x0, y0):
     return [row[x0:x0 + SIZE] for row in img[y0:y0 + SIZE]]
 
 
-def tower_legs(img, y0, y1):
-    """Les deux jambes jaunes, aux deux bords, en miroir l'une de l'autre, boulonnées."""
-    w = len(img[0])
-    tones = (shade(DRILL_YELLOW, 0.5), light(DRILL_YELLOW, 0.3), DRILL_YELLOW, DRILL_YELLOW, shade(DRILL_YELLOW, 0.25),
-             shade(TOWER_STEEL, 0.45))
+GRAPHITE = "#2A3037"
+PANEL = "#3D4752"
+ALLOY = "#9AA4AE"
+SEAM = "#161A1F"
+CYAN = "#3FD8F2"
+
+
+def both(img, x, y, color):
+    """Un pixel et son reflet de l'autre côté de la tour."""
+    dot(img, x, y, color)
+    dot(img, len(img[0]) - 1 - x, y, color)
+
+
+def plate(img, x0, y0, x1, y1, base=PANEL):
+    """Une plaque d'habillage : éclairée en haut à gauche, ombrée en bas à droite, coins chanfreinés, rivetée."""
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            color = base
+            if y == y0 or x == x0:
+                color = light(base, 0.18)
+            if y == y1 or x == x1:
+                color = shade(base, 0.35)
+            dot(img, x, y, color)
+    for x, y in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
+        dot(img, x, y, GRAPHITE)
+    for x, y in ((x0 + 1, y0 + 1), (x1 - 1, y0 + 1), (x0 + 1, y1 - 1), (x1 - 1, y1 - 1)):
+        dot(img, x, y, light(base, 0.4))
+
+
+def pillars(img, y0, y1, lamp=False):
+    """Les piliers d'angle en alliage clair, chacun parcouru d'une bande lumineuse cyan, boulonnés ; un feu rouge en
+    tête pour la couronne."""
+    tones = (SEAM, light(ALLOY, 0.35), ALLOY, ALLOY, shade(ALLOY, 0.3), None, SEAM)
     for y in range(y0, y1 + 1):
         for k, color in enumerate(tones):
-            dot(img, k, y, color)
-            dot(img, w - 1 - k, y, color)
-    for y in (y0 + 3, y1 - 3):
-        for x in (2, 3):
-            dot(img, x, y, light(DRILL_YELLOW, 0.55))
-            dot(img, w - 1 - x, y, light(DRILL_YELLOW, 0.55))
+            if color is None:
+                color = light(CYAN, 0.6) if y % 4 == 1 else CYAN
+            both(img, k, y, color)
+        both(img, 3, y, shade(ALLOY, 0.12) if y % 8 == 7 else ALLOY)
+    for y in (y0 + 2, y1 - 2):
+        both(img, 3, y, light(ALLOY, 0.55))
+        both(img, 3, y + 1, shade(ALLOY, 0.45))
+    if lamp:
+        for x in (2, 3, 4):
+            both(img, x, y0 + 1, LAMP)
+            both(img, x, y0 + 2, shade(LAMP, 0.3))
+        both(img, 3, y0 + 1, light(LAMP, 0.55))
 
 
-def brace(img, apex, bottom):
-    """Le contreventement : un triangle de poutrelles d'une jambe à l'autre, pointe en haut au milieu."""
-    w = len(img[0])
-    span = (w // 2 - 1) - 6
-    for y in range(apex, bottom + 1):
-        x = 6 + round((bottom - y) * span / max(1, bottom - apex))
-        for xx, color in ((x, light(DRILL_YELLOW, 0.15)), (x + 1, DRILL_YELLOW), (x + 2, shade(DRILL_YELLOW, 0.35))):
-            dot(img, xx, y, color)
-            dot(img, w - 1 - xx, y, color if xx != x + 2 else shade(DRILL_YELLOW, 0.2))
-        dot(img, x - 1, y, shade(TOWER_STEEL, 0.3))
-        dot(img, w - x, y, shade(TOWER_STEEL, 0.3))
-
-
-def chords(img, top=True):
-    """Les membrures : une poutrelle haute (claire) et basse (ombrée), qui se rejoignent d'un étage à l'autre."""
-    for x in range(len(img[0])):
-        if top:
-            dot(img, x, 0, light(DRILL_YELLOW, 0.2))
-        dot(img, x, 15, shade(DRILL_YELLOW, 0.3))
-        dot(img, x, 14, shade(DRILL_YELLOW, 0.05) if x < 6 or x > len(img[0]) - 7 else shade(TOWER_STEEL, 0.3))
+def cladding(img, y0, y1):
+    """L'habillage entre les piliers : deux plaques à évents et à onglet de couleur, et au milieu le module de
+    ventilation et ses voyants."""
+    for x0, x1 in ((8, 19), (28, 39)):
+        plate(img, x0, y0, x1, y1)
+        mid = (y0 + y1) // 2
+        for x in range(x0 + 3, x1 - 2):
+            if x % 2 == 0:
+                dot(img, x, mid - 2, SEAM)
+                dot(img, x, mid - 1, shade(PANEL, 0.2))
+        for k in range(4):
+            tab = x0 + 3 + k if x0 < 24 else x1 - 3 - k
+            dot(img, tab, y1 - 2, DRILL_YELLOW if k % 2 == 0 else DARK)
+    for y in range(y0, y1 + 1):
+        for x in range(20, 28):
+            dot(img, x, y, SEAM if x in (20, 27) or y in (y0, y1) else (DARK if (y - y0) % 2 == 1 else "#46505B"))
+    for x, color in ((22, "#5BE37D"), (23, light("#5BE37D", 0.5)), (24, CYAN), (25, light(CYAN, 0.5))):
+        dot(img, x, y1 - 2, color)
+        dot(img, x, y1 - 1, SEAM)
 
 
 def tower_side(crown):
     """Un étage vu de côté, sur toute la largeur de la tour (48 pixels) ; en couronne pour l'étage du haut."""
-    img = sheet(48, SIZE, TOWER_STEEL, 71)
-    # Panneaux d'habillage : un joint discret à mi-hauteur, et une petite grille d'aération sous la pointe.
-    for x in range(6, 42):
-        dot(img, x, 8, shade(TOWER_STEEL, 0.18))
-    for y in range(10, 14):
-        for x in range(19, 29):
-            dot(img, x, y, DARK if y % 2 == 0 else TOWER_PALE)
-    chords(img, top=not crown)
-    tower_legs(img, 0, 15)
+    img = sheet(48, SIZE, GRAPHITE, 71, 0.06)
+    for x in range(48):
+        dot(img, x, 15, SEAM)
+        dot(img, x, 0, light(GRAPHITE, 0.12))
     if crown:
-        for y in range(0, 4):
-            for x in range(48):
-                dot(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
         for x in range(48):
-            dot(img, x, 4, shade(DRILL_YELLOW, 0.45))
-        for x in (2, 3, 44, 45):
-            for y in (1, 2):
-                dot(img, x, y, LAMP if y == 2 else light(LAMP, 0.45))
-        brace(img, 5, 13)
+            dot(img, x, 0, light(ALLOY, 0.35))
+            dot(img, x, 1, ALLOY)
+            dot(img, x, 2, SEAM)
+            dot(img, x, 3, (light(CYAN, 0.6) if x % 6 < 3 else CYAN) if 8 <= x <= 39 else SEAM)
+            dot(img, x, 4, SEAM)
+            dot(img, x, 5, shade(ALLOY, 0.3))
+        cladding(img, 7, 13)
+        pillars(img, 6, 15)
+        pillars(img, 0, 5, lamp=True)
+        for y in (0, 1):
+            both(img, 6, y, ALLOY)
     else:
-        brace(img, 1, 13)
+        cladding(img, 2, 13)
+        pillars(img, 0, 15)
     return img
 
 
 def tower_plinth():
-    """Le pied de la tour, vu de côté sur toute sa largeur : lèvre jaune, bande de danger, tôle, grilles, pieds."""
-    img = sheet(48, SIZE, "#4A5058", 72)
+    """Le pied de la tour, vu de côté sur toute sa largeur : lèvre d'alliage, bande de danger, caisson sombre à grandes
+    grilles, voyant d'état, et les pieds des piliers."""
+    img = sheet(48, SIZE, "#232830", 72, 0.05)
     for x in range(48):
-        dot(img, x, 0, light(DRILL_YELLOW, 0.2))
-        dot(img, x, 1, shade(DRILL_YELLOW, 0.3))
+        dot(img, x, 0, light(ALLOY, 0.35))
+        dot(img, x, 1, shade(ALLOY, 0.3))
         for y in (2, 3, 4):
             dot(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
-        dot(img, x, 5, EDGE)
-        dot(img, x, 15, EDGE)
-    for y in range(8, 13):
-        for x in list(range(10, 20)) + list(range(28, 38)):
-            dot(img, x, y, DARK if y % 2 == 0 else "#5A626C")
+        dot(img, x, 5, SEAM)
+        dot(img, x, 15, SEAM)
+    for x0, x1 in ((9, 20), (27, 38)):
+        plate(img, x0, 7, x1, 13, "#323A44")
+        for y in range(9, 12):
+            for x in range(x0 + 2, x1 - 1):
+                dot(img, x, y, SEAM if y % 2 == 1 else "#4A545F")
     for x in range(21, 27):
-        for y in range(8, 13):
-            dot(img, x, y, "#2E3238")
-    dot(img, 23, 10, "#5BE37D")
-    dot(img, 24, 10, "#5BE37D")
-    for x, y in ((8, 7), (39, 7), (8, 13), (39, 13)):
-        dot(img, x, y, BOLT)
-    tower_legs(img, 6, 14)
-    for x in range(7):
-        dot(img, x, 14, shade(DRILL_YELLOW, 0.4))
-        dot(img, 47 - x, 14, shade(DRILL_YELLOW, 0.4))
+        for y in range(7, 14):
+            dot(img, x, y, SEAM if x in (21, 26) or y in (7, 13) else "#1B2026")
+    for y in (9, 10):
+        dot(img, 23, y, "#5BE37D")
+        dot(img, 24, y, light("#5BE37D", 0.5) if y == 9 else "#5BE37D")
+    pillars(img, 6, 14)
+    for x in range(8):
+        both(img, x, 13, shade(ALLOY, 0.35))
+        both(img, x, 14, shade(ALLOY, 0.55))
     return img
 
 
 def tower_cap():
-    """Le sommet, vu d'en haut sur toute la tour (48×48), symétrique dans les quatre sens : platelage, poutres de
-    rive, chapeaux des jambes, et au milieu le plateau tournant d'où part la flèche."""
+    """Le sommet, vu d'en haut sur toute la tour (48×48), symétrique dans les quatre sens : platelage graphite, cadre
+    d'alliage souligné d'un filet lumineux, chapeaux des piliers, et au milieu le plateau tournant de la flèche."""
     n = 48
-    img = sheet(n, n, "#2E3339", 73, 0.0)
+    img = sheet(n, n, GRAPHITE, 73, 0.05)
     for y in range(n):
         for x in range(n):
-            if (x + y) % 4 == 0 or (x - y) % 4 == 0:
-                dot(img, x, y, "#3A4047")
+            if x % 3 == 0 and y % 3 == 0:
+                dot(img, x, y, light(GRAPHITE, 0.2))
     c = (n - 1) / 2.0
-    # Les poutres qui relient le plateau aux poutres de rive.
     for k in range(n):
-        for at, tone in ((22, shade(DRILL_YELLOW, 0.35)), (23, DRILL_YELLOW), (24, DRILL_YELLOW), (25, shade(DRILL_YELLOW, 0.35))):
+        for at, tone in ((22, shade(ALLOY, 0.35)), (23, ALLOY), (24, ALLOY), (25, shade(ALLOY, 0.35))):
             dot(img, k, at, tone)
             dot(img, at, k, tone)
-    # Les poutres de rive.
     for k in range(n):
-        for d, tone in ((0, shade(DRILL_YELLOW, 0.45)), (1, light(DRILL_YELLOW, 0.25)), (2, DRILL_YELLOW), (3, shade(DRILL_YELLOW, 0.3))):
+        for d, tone in ((0, SEAM), (1, light(ALLOY, 0.35)), (2, ALLOY), (3, shade(ALLOY, 0.3)), (4, SEAM),
+                        (5, light(CYAN, 0.5) if k % 6 < 3 else CYAN), (6, SEAM)):
+            if 5 <= d and not (7 <= k <= n - 8):
+                continue
             dot(img, k, d, tone)
             dot(img, k, n - 1 - d, tone)
             dot(img, d, k, tone)
             dot(img, n - 1 - d, k, tone)
-    # Les chapeaux des jambes : une coupe de poutre en H, sombre sur jaune.
-    for cx, cy in ((0, 0), (n - 7, 0), (0, n - 7), (n - 7, n - 7)):
-        for y in range(7):
-            for x in range(7):
-                rim = x in (0, 6) or y in (0, 6)
-                dot(img, cx + x, cy + y, shade(DRILL_YELLOW, 0.45) if rim else light(DRILL_YELLOW, 0.1))
-        for y in range(1, 6):
-            dot(img, cx + 3, cy + y, DARK)
-        for x in range(1, 6):
-            dot(img, cx + x, cy + 1, DARK)
-            dot(img, cx + x, cy + 5, DARK)
-    # Le plateau tournant.
+    for cx, cy in ((0, 0), (n - 8, 0), (0, n - 8), (n - 8, n - 8)):
+        for y in range(8):
+            for x in range(8):
+                rim = x in (0, 7) or y in (0, 7)
+                dot(img, cx + x, cy + y, SEAM if rim else (light(ALLOY, 0.2) if x + y < 7 else ALLOY))
+        for x, y in ((3, 3), (4, 3), (3, 4), (4, 4)):
+            dot(img, cx + x, cy + y, light(CYAN, 0.5) if (x, y) == (3, 3) else CYAN)
+        for x, y in ((2, 3), (5, 4), (3, 5), (4, 2)):
+            dot(img, cx + x, cy + y, SEAM)
     for y in range(n):
         for x in range(n):
             r = math.hypot(x - c, y - c)
-            if r <= 3.2:
-                dot(img, x, y, DARK if r > 1.6 else BOLT)
-            elif r <= 7.6:
-                dot(img, x, y, light(TOWER_PALE, 0.08) if (x + y) % 3 else TOWER_PALE)
-            elif r <= 9.6:
-                dot(img, x, y, DRILL_YELLOW if r <= 8.8 else shade(DRILL_YELLOW, 0.45))
+            if r <= 2.6:
+                dot(img, x, y, light(ALLOY, 0.4) if r < 1.2 else SEAM)
+            elif r <= 6.2:
+                dot(img, x, y, ALLOY if (x + y) % 2 else shade(ALLOY, 0.15))
+            elif r <= 7.4:
+                dot(img, x, y, light(CYAN, 0.55) if r <= 6.8 else CYAN)
+            elif r <= 9.0:
+                dot(img, x, y, "#3A434D")
+            elif r <= 10.0:
+                dot(img, x, y, SEAM)
     for a in range(8):
-        ang = a * math.pi / 4
-        dot(img, int(round(c + 5.5 * math.cos(ang))), int(round(c + 5.5 * math.sin(ang))), BOLT)
+        ang = a * math.pi / 4 + math.pi / 8
+        dot(img, int(round(c + 4.4 * math.cos(ang))), int(round(c + 4.4 * math.sin(ang))), SEAM)
+    return img
+
+
+def tower_boom():
+    """La flèche : une poutre d'alliage évidée, parcourue d'une bande lumineuse cyan."""
+    img = sheet(SIZE, SIZE, ALLOY, 77, 0.05)
+    for x in range(SIZE):
+        for y, tone in ((0, SEAM), (1, light(ALLOY, 0.35)), (6, shade(ALLOY, 0.35)), (7, light(CYAN, 0.55) if x % 4 < 2 else CYAN),
+                        (8, CYAN), (9, shade(ALLOY, 0.35)), (14, shade(ALLOY, 0.35)), (15, SEAM)):
+            dot(img, x, y, tone)
+    for hx in (2, 10):
+        for y0 in (2, 10):
+            for x in range(hx, hx + 4):
+                for y in range(y0 + 1, y0 + 3):
+                    dot(img, x, y, SEAM if y == y0 + 1 else "#20252B")
+    return img
+
+
+def tower_rod():
+    """Le train de tiges : de l'acier poli à reflets verticaux (on le voit tourner), un raccord sombre à chaque tige."""
+    img = sheet(SIZE, SIZE, "#B7C0C9", 78, 0.04)
+    for y in range(SIZE):
+        for x in range(SIZE):
+            if x % 5 == 1:
+                dot(img, x, y, light("#B7C0C9", 0.45))
+            elif x % 5 == 3:
+                dot(img, x, y, shade("#B7C0C9", 0.3))
+    for y in (0, 1, 2):
+        for x in range(SIZE):
+            dot(img, x, y, "#4A525B" if y != 1 else ("#6B747E" if x % 2 else "#3A4048"))
+    for x in range(SIZE):
+        dot(img, x, 3, CYAN if x % 4 < 2 else light(CYAN, 0.5))
     return img
 
 
@@ -853,7 +921,7 @@ def drill_mast_top():
     return img
 
 
-def tower_cube(textures, mirror_east=False):
+def tower_cube(textures, mirror_east=False, particle=None):
     """Un bloc plein de la tour : une texture par face, la face est en miroir pour un angle (sa jambe à droite)."""
     faces = {}
     for face in ("north", "south", "east", "west", "up", "down"):
@@ -862,7 +930,7 @@ def tower_cube(textures, mirror_east=False):
             entry["uv"] = [16, 0, 0, 16]
         faces[face] = entry
     model = {"parent": "minecraft:block/block",
-             "textures": dict({"particle": textures["north"]}, **textures),
+             "textures": dict({"particle": particle or textures["north"]}, **textures),
              "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": faces}]}
     return model
 
@@ -889,6 +957,10 @@ def write_drill_tower():
     gm.write_texture("drill_tower_cap_edge", [piece(cap, 16, 0)])
     gm.write_texture("drill_tower_cap_center", [piece(cap, 16, 16)])
     gm.write_texture("drill_tower_inner", [sheet(SIZE, SIZE, TOWER_DEEP, 76)])
+    # La flèche et le train de tiges, dessinés par la foreuse : leurs textures sont les images de particules des cœurs
+    # (toujours cachés dans la tour), que le dessin retrouve par l'état du bloc.
+    gm.write_texture("drill_tower_boom", [tower_boom()])
+    gm.write_texture("drill_tower_rod", [tower_rod()])
 
     def tex(name):
         return "orbitalis:block/" + name
@@ -913,7 +985,8 @@ def write_drill_tower():
             write_tower_model(block + "_edge" + sfx, tower_cube(
                 {"north": e, "east": inner, "south": inner, "west": inner, "up": up("drill_tower_cap_edge"), "down": inner}))
             write_tower_model(block + "_center" + sfx, tower_cube(
-                {"north": inner, "east": inner, "south": inner, "west": inner, "up": up("drill_tower_cap_center"), "down": inner}))
+                {"north": inner, "east": inner, "south": inner, "west": inner, "up": up("drill_tower_cap_center"), "down": inner},
+                particle=tex("drill_tower_boom" if block == "drill_mast" else "drill_tower_rod")))
 
 
 def write_pump():
