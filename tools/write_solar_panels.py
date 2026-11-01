@@ -5,8 +5,10 @@ qui les écrit.
 
 Chaque panneau est une nappe de cellules posée sur un mât : une platine boulonnée, le mât, sa tête, le tube porteur et
 deux rails, le boîtier de raccordement sous la nappe. La nappe occupe tout le bloc, pour se raccorder sans joint à ses
-voisines ; un cadre la borde sur chaque côté libre (modèle « solar_edge », que le jeu tourne pour chaque côté). Les
-quatre cadres d'un panneau isolé tournent en moulinet : aucun ne recouvre un autre.
+voisines ; un cadre la borde sur chaque côté libre (modèle « solar_edge », que le jeu tourne pour chaque côté) : un
+profilé d'aluminium et son joint de vitrage noir. Le bout de chaque profilé dépend du voisin : un angle (« solar_corner »)
+s'il n'y a pas de panneau de ce côté-là, sinon un raccord (« solar_end_cw », « solar_end_ccw ») qui va jusqu'au bord du
+bloc, où il rejoint celui du voisin : une rangée de panneaux a un seul cadre continu, sans écart.
 
 Les cellules sont centrées sur le bloc : quatre cellules par bloc, séparées par un joint d'un pixel sur chaque bord et
 de deux au milieu. Deux blocs voisins forment donc un joint de deux pixels, comme au milieu d'un bloc : la nappe est
@@ -158,21 +160,23 @@ def frame_rows(rows):
     return img
 
 
-FRAME_BASIC = {0: "#E2E8EE", 15: "#7A838E", "base": "#AEB7C2"}
-FRAME_ADVANCED = {0: "#5A6370", 6: "#38D6F0", 7: "#38D6F0", 15: "#15181D", "base": "#2B3038"}
-FRAME_PEROVSKITE = {0: "#3A3B42", 5: "#D4AF37", 6: "#F0CF6A", 15: "#08090B", "base": "#15171C"}
-FRAME_QUANTUM = {0: "#FFFFFF", 6: "#7FF3FF", 7: "#D8FFFF", 8: "#7FF3FF", 15: "#9AA6B3", "base": "#DDE3EA"}
+# Le cadre est un profilé : chaque face prend sa bande de la texture (voir PROFILE) ; 0 le dessus, 1 à 3 la face
+# extérieure (arête vive, milieu, pied), 4 la face intérieure, 5 le joint de vitrage, 15 le dessous.
+FRAME_BASIC = {0: "#F1F5F9", 1: "#D9E0E7", 2: "#B2BBC6", 3: "#8C96A1", 4: "#A2ABB6", 5: "#111418", 15: "#6E7782", "base": "#AEB7C2"}
+FRAME_ADVANCED = {0: "#6E7884", 1: "#4C5560", 2: "#38D6F0", 3: "#22272E", 4: "#2B3038", 5: "#07090C", 15: "#15181D", "base": "#2B3038"}
+FRAME_PEROVSKITE = {0: "#55565E", 1: "#2C2D34", 2: "#D4AF37", 3: "#121317", 4: "#1A1B20", 5: "#060708", 15: "#08090B", "base": "#15171C"}
+FRAME_QUANTUM = {0: "#FFFFFF", 1: "#E6EDF3", 2: "#7FF3FF", 3: "#AEB9C4", 4: "#C8D0D8", 5: "#16263A", 15: "#9AA6B3", "base": "#DDE3EA"}
 
 
-def frame_basic():
-    """Cadre d'aluminium anodisé : gris clair brossé, une arête vive en haut, l'ombre en bas."""
-    img = [[rgb("#AEB7C2") for _ in range(SIZE)] for _ in range(SIZE)]
-    for y in range(SIZE):
+def frame_texture(rows, brushed=False):
+    """Les bandes du profilé ; l'aluminium brut a un léger brossage sur sa face extérieure."""
+    img = frame_rows(rows)
+    if brushed:
         for x in range(SIZE):
-            if (y * 7 + x // 5) % 3 == 0:
-                img[y][x] = mix("#AEB7C2", "#000000", 0.06)
-        img[0][y] = rgb("#E2E8EE")
-        img[SIZE - 1][y] = rgb("#7A838E")
+            if x % 5 == 2:
+                img[2][x] = mix(rows[2], "#000000", 0.07)
+            if x % 7 == 4:
+                img[1][x] = mix(rows[1], "#FFFFFF", 0.25)
     return img
 
 
@@ -239,15 +243,55 @@ def body(tier):
     return parts
 
 
-EDGE = box(-0.25, 11.6, -0.25, 15.5, 13.5, 0.5, "alu")
+# Bande de la texture du cadre que prend chaque face : [u0, v0, u1, v1] selon la largeur de la face.
+def profile(width):
+    u = min(16, max(1, round(width)))
+    return {"up": [0, 0, u, 1], "north": [0, 1, u, 4], "south": [0, 4, u, 5], "down": [0, 15, u, 16],
+            "east": [0, 1, 1, 4], "west": [0, 1, 1, 4]}
+
+
+def frame_part(x0, x1, z0, z1, y0, y1, omit, uv):
+    return {**box(x0, y0, z0, x1, y1, z1, "alu"), "stretch": True, "uv": uv, "omit": list(omit),
+            "only": [face for face in ("north", "south", "east", "west", "up", "down") if face not in omit]}
+
+
+def rail(x0, x1, omit):
+    """Le profilé du côté nord, de x0 à x1 : il déborde du bloc d'un quart de pixel vers l'extérieur."""
+    return frame_part(x0, x1, -0.25, 0.5, 11.6, 13.5, omit, profile(x1 - x0))
+
+
+def seal(x0, x1, omit):
+    """Le joint de vitrage, noir, posé sur la nappe le long du profilé."""
+    band = {face: [0, 5, 16, 6] for face in ("up", "north", "south", "east", "west", "down")}
+    return frame_part(x0, x1, 0.5, 1.0, 13.0, 13.25, set(omit) | {"down", "north"}, band)
+
+
+# Le côté nord : le profilé entre les deux bouts, et son joint, qui s'arrête où commence celui du côté est (en moulinet).
+EDGE = [rail(0.5, 15.5, ("east", "west")), seal(0.5, 15.0, ("east", "west"))]
+# L'angle nord-est, sans voisin au nord ni à l'est : il ferme le cadre.
+CORNER = [rail(15.5, 16.25, ("west", "south"))]
+# Les raccords : le profilé et son joint vont jusqu'au bord du bloc, vers le panneau voisin.
+END_CW = [rail(15.5, 16.0, ("west",)), seal(15.0, 16.0, ("west",))]
+END_CCW = [rail(0.0, 0.5, ("east",)), seal(0.0, 0.5, ("east",))]
+
+
+TURN = {"north": "east", "east": "south", "south": "west", "west": "north", "up": "up", "down": "down"}
 
 
 def rotate(part, quarter):
-    """Tourne une pièce d'un quart de tour (ou plus) autour du centre du bloc, dans le sens du jeu (nord vers est)."""
+    """Tourne une pièce d'un quart de tour (ou plus) autour du centre du bloc, dans le sens du jeu (nord vers est),
+    avec ses faces : celles qu'on omet et les bandes de texture qu'elles prennent."""
     (x0, y0, z0), (x1, y1, z1) = part["from"], part["to"]
+    omit = list(part.get("omit", []))
+    uv = dict(part.get("uv", {}))
     for _ in range(quarter % 4):
         x0, z0, x1, z1 = 16 - z1, x0, 16 - z0, x1
-    return {**part, "from": [x0, y0, z0], "to": [x1, y1, z1]}
+        omit = [TURN[face] for face in omit]
+        uv = {TURN[face]: value for face, value in uv.items()}
+    turned = {**part, "from": [x0, y0, z0], "to": [x1, y1, z1], "omit": omit, "uv": uv}
+    if "only" in part:
+        turned["only"] = [face for face in ("north", "south", "east", "west", "up", "down") if face not in omit]
+    return turned
 
 
 TIERS = {
@@ -265,6 +309,10 @@ TIERS = {
 def write_model(name, parts, textures, emissive=(), item=False):
     model = gm.build_extra(parts, textures, set(emissive))
     model["textures"]["particle"] = "orbitalis:block/" + textures["alu"]
+    # Les faces collées à une autre pièce du cadre ou posées sur la nappe ne se dessinent pas.
+    for part, element in zip(parts, model["elements"]):
+        for face in part.get("omit", []):
+            element["faces"].pop(face, None)
     if item:
         model["display"] = display((-0.25, 0, -0.25), (16.25, 13.5, 16.25), gui_rotation=(35, 225, 0))
     with open(os.path.join(gm.MODEL_DIR, name + ".json"), "w", newline="\n") as f:
@@ -273,19 +321,19 @@ def write_model(name, parts, textures, emissive=(), item=False):
 
 def main():
     gm.write_texture("solar_panel_top", [cells_basic()])
-    gm.write_texture("solar_frame", [frame_basic()])
+    gm.write_texture("solar_frame", [frame_texture(FRAME_BASIC, brushed=True)])
     gm.write_texture("solar_back", [back("#2A3038")])
     gm.write_texture("solar_panel_advanced_top", [cells_advanced()])
-    gm.write_texture("solar_panel_advanced_frame", [frame_rows(FRAME_ADVANCED)])
+    gm.write_texture("solar_panel_advanced_frame", [frame_texture(FRAME_ADVANCED)])
     gm.write_texture("solar_panel_advanced_back", [back("#1E232A", "#38D6F0")])
     gm.write_texture("solar_panel_advanced_mast", [mast("#3A4048", "#38D6F0")])
     gm.write_texture("solar_panel_perovskite_top", [cells_perovskite()])
-    gm.write_texture("solar_panel_perovskite_frame", [frame_rows(FRAME_PEROVSKITE)])
+    gm.write_texture("solar_panel_perovskite_frame", [frame_texture(FRAME_PEROVSKITE)])
     gm.write_texture("solar_panel_perovskite_back", [back("#1A1820", "#D4AF37")])
     gm.write_texture("solar_panel_perovskite_mast", [mast("#2A2B30", "#D4AF37")])
     frames = 8
     gm.write_texture("solar_panel_quantum_top", [cells_quantum(k, frames) for k in range(frames)], 3)
-    gm.write_texture("solar_panel_quantum_frame", [frame_rows(FRAME_QUANTUM)])
+    gm.write_texture("solar_panel_quantum_frame", [frame_texture(FRAME_QUANTUM)])
     gm.write_texture("solar_panel_quantum_back", [back("#2A2F3A", "#7FF3FF")])
     gm.write_texture("solar_panel_quantum_mast", [mast("#C9D2DC", "#7FF3FF")])
     gm.write_texture("solar_panel_quantum_glow", [glow()])
@@ -297,8 +345,14 @@ def main():
         parts = separate(body(tier))
         overlaps += check_overlaps("solar_panel" + suffix, parts)
         write_model("solar_panel" + suffix, parts, textures, emissive)
-        write_model("solar_edge" + suffix, [EDGE], textures, ("alu",) if tier == "quantum" else ())
-        item = separate(body(tier) + [rotate(EDGE, k) for k in range(4)])
+        glowing = ("alu",) if tier == "quantum" else ()
+        write_model("solar_edge" + suffix, EDGE, textures, glowing)
+        write_model("solar_corner" + suffix, CORNER, textures, glowing)
+        write_model("solar_end_cw" + suffix, END_CW, textures, glowing)
+        write_model("solar_end_ccw" + suffix, END_CCW, textures, glowing)
+        frame = [rotate(part, k) for k in range(4) for part in EDGE + CORNER]
+        overlaps += check_overlaps("solar_frame" + suffix, frame)
+        item = separate(body(tier) + frame)
         overlaps += check_overlaps("solar_panel" + suffix + "_item", item)
         write_model("solar_panel" + suffix + "_item", item, textures, emissive, item=True)
     print("Panneaux solaires : %d générations écrites, %d chevauchement(s)." % (len(TIERS), overlaps))

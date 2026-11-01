@@ -654,6 +654,7 @@ def piece(img, x0, y0):
 
 
 GRAPHITE = "#2A3037"
+PIPE = "#AEB8C2"
 PANEL = "#3D4752"
 ALLOY = "#9AA4AE"
 SEAM = "#161A1F"
@@ -715,12 +716,21 @@ def cladding(img, y0, y1):
         for k in range(4):
             tab = x0 + 3 + k if x0 < 24 else x1 - 3 - k
             dot(img, tab, y1 - 2, DRILL_YELLOW if k % 2 == 0 else DARK)
+    pipe_rack(img, 0, 15)
+
+
+def pipe_rack(img, y0, y1):
+    """Le râtelier : deux tiges de forage d'acier poli, rangées debout derrière une fente, avec leurs raccords ; d'un
+    étage à l'autre, elles forment des colonnes continues sur toute la hauteur de la tour."""
     for y in range(y0, y1 + 1):
         for x in range(20, 28):
-            dot(img, x, y, SEAM if x in (20, 27) or y in (y0, y1) else (DARK if (y - y0) % 2 == 1 else "#46505B"))
-    for x, color in ((22, "#5BE37D"), (23, light("#5BE37D", 0.5)), (24, CYAN), (25, light(CYAN, 0.5))):
-        dot(img, x, y1 - 2, color)
-        dot(img, x, y1 - 1, SEAM)
+            dot(img, x, y, SEAM if x in (20, 27) else "#12161A")
+        for x0 in (21, 25):
+            joint = y % 16 in (5, 6)
+            dot(img, x0, y, light(PIPE, 0.45) if not joint else PIPE)
+            dot(img, x0 + 1, y, shade(PIPE, 0.25) if not joint else shade(PIPE, 0.5))
+            if joint:
+                dot(img, x0 - 1 if x0 == 21 else x0 + 2, y, shade(PIPE, 0.35))
 
 
 def tower_side(crown):
@@ -738,6 +748,9 @@ def tower_side(crown):
             dot(img, x, 4, SEAM)
             dot(img, x, 5, shade(ALLOY, 0.3))
         cladding(img, 7, 13)
+        pipe_rack(img, 6, 15)
+        for x in range(20, 28):
+            dot(img, x, 6, shade(ALLOY, 0.3))
         pillars(img, 6, 15)
         pillars(img, 0, 5, lamp=True)
         for y in (0, 1):
@@ -828,36 +841,68 @@ def tower_cap():
     return img
 
 
-def tower_boom():
-    """La flèche : une poutre d'alliage évidée, parcourue d'une bande lumineuse cyan."""
-    img = sheet(SIZE, SIZE, ALLOY, 77, 0.05)
-    for x in range(SIZE):
-        for y, tone in ((0, SEAM), (1, light(ALLOY, 0.35)), (6, shade(ALLOY, 0.35)), (7, light(CYAN, 0.55) if x % 4 < 2 else CYAN),
-                        (8, CYAN), (9, shade(ALLOY, 0.35)), (14, shade(ALLOY, 0.35)), (15, SEAM)):
-            dot(img, x, y, tone)
-    for hx in (2, 10):
-        for y0 in (2, 10):
-            for x in range(hx, hx + 4):
-                for y in range(y0 + 1, y0 + 3):
-                    dot(img, x, y, SEAM if y == y0 + 1 else "#20252B")
+def top_drive_texture():
+    """La tête d'entraînement, par régions : flanc du moteur (0-7, 0-7), son dessus et son ventilateur (0-7, 8-15), la
+    tige (8-11, 0-5), le bouchon pivotant (12-15, 0-4), la platine boulonnée (8-15, 8-15)."""
+    img = sheet(SIZE, SIZE, GRAPHITE, 79, 0.0)
+    for x in range(8):
+        dot(img, x, 0, light(ALLOY, 0.35))
+        dot(img, x, 1, ALLOY)
+        dot(img, x, 2, light(CYAN, 0.5) if x % 3 == 1 else CYAN)
+        for y in (3, 4, 5):
+            dot(img, x, y, "#3A434D" if x % 2 == 0 else SEAM)
+        dot(img, x, 6, "#F2C14E" if x % 2 == 0 else DARK)
+        dot(img, x, 7, SEAM)
+    dot(img, 6, 4, "#5BE37D")
+    for y in range(8, 16):
+        for x in range(8):
+            r = math.hypot(x - 3.5, y - 11.5)
+            if r > 3.6:
+                dot(img, x, y, ALLOY if (x + y) % 2 else light(ALLOY, 0.2))
+            elif r > 1.5:
+                dot(img, x, y, SEAM if (x + y) % 2 else "#3A434D")
+            else:
+                dot(img, x, y, shade(PIPE, 0.4))
+    for y in range(6):
+        joint = y in (0, 5)
+        for x, tone in ((8, light(PIPE, 0.45)), (9, PIPE), (10, shade(PIPE, 0.15)), (11, shade(PIPE, 0.35))):
+            dot(img, x, y, shade(tone, 0.4) if joint else tone)
+    for y in range(4):
+        for x in range(12, 16):
+            dot(img, x, y, shade(PIPE, 0.55) if x in (12, 15) or y in (0, 3) else shade(PIPE, 0.3))
+    for x in range(12, 16):
+        dot(img, x, 4, shade(PIPE, 0.45))
+    for y in range(8, 16):
+        for x in range(8, 16):
+            rim = x in (8, 15) or y in (8, 15)
+            dot(img, x, y, ("#F2C14E" if (x + y) % 2 == 0 else DARK) if rim else ALLOY)
+    for x, y in ((9, 9), (14, 9), (9, 14), (14, 14)):
+        dot(img, x, y, light(ALLOY, 0.5))
     return img
 
 
-def tower_rod():
-    """Le train de tiges : de l'acier poli à reflets verticaux (on le voit tourner), un raccord sombre à chaque tige."""
-    img = sheet(SIZE, SIZE, "#B7C0C9", 78, 0.04)
-    for y in range(SIZE):
-        for x in range(SIZE):
-            if x % 5 == 1:
-                dot(img, x, y, light("#B7C0C9", 0.45))
-            elif x % 5 == 3:
-                dot(img, x, y, shade("#B7C0C9", 0.3))
-    for y in (0, 1, 2):
-        for x in range(SIZE):
-            dot(img, x, y, "#4A525B" if y != 1 else ("#6B747E" if x % 2 else "#3A4048"))
-    for x in range(SIZE):
-        dot(img, x, 3, CYAN if x % 4 < 2 else light(CYAN, 0.5))
-    return img
+def top_drive():
+    """Les pièces de la tête d'entraînement, posées sur le plateau tournant du cœur de la couronne : la platine, le
+    moteur, la tige qui en sort et son bouchon pivotant. Aucune face ne se dessine contre une autre pièce."""
+    def element(x0, y0, z0, x1, y1, z1, faces):
+        return {"from": [x0, y0, z0], "to": [x1, y1, z1],
+                "faces": {face: {"texture": "#drive", "uv": uv} for face, uv in faces.items()}}
+
+    def sides(uv):
+        return {face: uv for face in ("north", "south", "east", "west")}
+
+    return [
+        element(3, 16, 3, 13, 17, 13, {**sides([8, 8, 16, 9]), "up": [8, 8, 16, 16]}),
+        element(4, 17, 4, 12, 25, 12, {**sides([0, 0, 8, 8]), "up": [0, 8, 8, 16]}),
+        element(6, 25, 6, 10, 31, 10, sides([8, 0, 12, 6])),
+        element(5, 31, 5, 11, 32, 11, {**sides([12, 4, 16, 5]), "up": [12, 0, 16, 4]}),
+    ]
+
+
+def preview_texture():
+    """La lumière de l'aperçu de la zone : du blanc (la foreuse le teinte en cyan), barré de fines lignes de balayage
+    comme un hologramme."""
+    return [[(255, 255, 255, 150 if y % 4 == 3 else 255) for _ in range(SIZE)] for y in range(SIZE)]
 
 
 def drill_base_top():
@@ -921,7 +966,7 @@ def drill_mast_top():
     return img
 
 
-def tower_cube(textures, mirror_east=False, particle=None):
+def tower_cube(textures, mirror_east=False):
     """Un bloc plein de la tour : une texture par face, la face est en miroir pour un angle (sa jambe à droite)."""
     faces = {}
     for face in ("north", "south", "east", "west", "up", "down"):
@@ -930,7 +975,7 @@ def tower_cube(textures, mirror_east=False, particle=None):
             entry["uv"] = [16, 0, 0, 16]
         faces[face] = entry
     model = {"parent": "minecraft:block/block",
-             "textures": dict({"particle": particle or textures["north"]}, **textures),
+             "textures": dict({"particle": textures["north"]}, **textures),
              "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": faces}]}
     return model
 
@@ -957,10 +1002,8 @@ def write_drill_tower():
     gm.write_texture("drill_tower_cap_edge", [piece(cap, 16, 0)])
     gm.write_texture("drill_tower_cap_center", [piece(cap, 16, 16)])
     gm.write_texture("drill_tower_inner", [sheet(SIZE, SIZE, TOWER_DEEP, 76)])
-    # La flèche et le train de tiges, dessinés par la foreuse : leurs textures sont les images de particules des cœurs
-    # (toujours cachés dans la tour), que le dessin retrouve par l'état du bloc.
-    gm.write_texture("drill_tower_boom", [tower_boom()])
-    gm.write_texture("drill_tower_rod", [tower_rod()])
+    gm.write_png(os.path.join(gm.BLOCK_DIR, "..", "entity", "drill_preview.png"), preview_texture())
+    gm.write_texture("drill_top_drive", [top_drive_texture()])
 
     def tex(name):
         return "orbitalis:block/" + name
@@ -984,9 +1027,13 @@ def write_drill_tower():
                 {"north": c, "east": c, "south": inner, "west": inner, "up": up("drill_tower_cap_corner"), "down": inner}, True))
             write_tower_model(block + "_edge" + sfx, tower_cube(
                 {"north": e, "east": inner, "south": inner, "west": inner, "up": up("drill_tower_cap_edge"), "down": inner}))
-            write_tower_model(block + "_center" + sfx, tower_cube(
-                {"north": inner, "east": inner, "south": inner, "west": inner, "up": up("drill_tower_cap_center"), "down": inner},
-                particle=tex("drill_tower_boom" if block == "drill_mast" else "drill_tower_rod")))
+            center = tower_cube(
+                {"north": inner, "east": inner, "south": inner, "west": inner, "up": up("drill_tower_cap_center"), "down": inner})
+            if top:
+                # Au sommet, au cœur de la couronne : la tête d'entraînement de la foreuse.
+                center["textures"]["drive"] = tex("drill_top_drive")
+                center["elements"] += top_drive()
+            write_tower_model(block + "_center" + sfx, center)
 
 
 def write_pump():

@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "Estrae ogni blocco dell'area, strato per strato, tranne i fluidi e i blocchi con un contenuto (bauli, macchine). I tipi spuntati non contano in questo modo.",
   "derrick.orbitalis.mode.ores": "Modo: filoni",
   "derrick.orbitalis.mode.ores.detail": "Estrae solo i tipi spuntati e lascia tutto il resto al suo posto. Al centro dell'area si scava un pozzo per la batteria di aste.",
+  "derrick.orbitalis.preview.detail": "Anteprima dell'area: mostra nel mondo l'area trivellata, tracciata con la luce a livello del suolo e fino al fondo che la torre permette. Clicca per accenderla o spegnerla.",
   "derrick.orbitalis.replace.detail": "Ogni blocco estratto è sostituito dal blocco nello slot di rimpiazzo, o dalla roccia intorno se lo slot è vuoto. Costa %s FE in più per blocco.",
   "derrick.orbitalis.replace.off": "Rimpiazzo: no",
   "derrick.orbitalis.replace.on": "Rimpiazzo: sì",

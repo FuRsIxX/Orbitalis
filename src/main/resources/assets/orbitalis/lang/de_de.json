@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "Baut jeden Block des Felds Schicht für Schicht ab, außer Flüssigkeiten und Blöcken mit Inhalt (Truhen, Maschinen). Die angehakten Sorten zählen in diesem Modus nicht.",
   "derrick.orbitalis.mode.ores": "Modus: Erze",
   "derrick.orbitalis.mode.ores.detail": "Baut nur die angehakten Sorten ab und lässt alles andere stehen. In der Mitte des Felds wird ein Schacht für das Bohrgestänge gebohrt.",
+  "derrick.orbitalis.preview.detail": "Feldvorschau: Zeigt das Bohrfeld in der Welt, in Licht nachgezogen auf Bodenhöhe und bis zum Grund, den der Turm erreicht. Klicke, um sie ein- oder auszuschalten.",
   "derrick.orbitalis.replace.detail": "Jeder abgebaute Block wird durch den Block im Ersatzfeld ersetzt, oder durch das umgebende Gestein, wenn das Feld leer ist. Kostet %s FE mehr pro Block.",
   "derrick.orbitalis.replace.off": "Ersetzen: aus",
   "derrick.orbitalis.replace.on": "Ersetzen: an",

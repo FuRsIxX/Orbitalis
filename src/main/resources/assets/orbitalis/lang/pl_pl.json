@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "Wydobywa każdy blok obszaru, warstwa po warstwie, poza płynami i blokami z zawartością (skrzynie, maszyny). Zaznaczone rodzaje nie mają w tym trybie znaczenia.",
   "derrick.orbitalis.mode.ores": "Tryb: żyły",
   "derrick.orbitalis.mode.ores.detail": "Wydobywa tylko zaznaczone rodzaje, a resztę zostawia na miejscu. Na środku obszaru wierci się szyb dla przewodu wiertniczego.",
+  "derrick.orbitalis.preview.detail": "Podgląd obszaru: pokazuje w świecie wiercony obszar, obrysowany światłem przy ziemi i aż do dna, jakie pozwala wieża. Kliknij, aby go włączyć lub wyłączyć.",
   "derrick.orbitalis.replace.detail": "Każdy wydobyty blok jest zastępowany blokiem z miejsca zastępowania albo, gdy jest puste, okoliczną skałą. Kosztuje %s FE więcej na blok.",
   "derrick.orbitalis.replace.off": "Zastępuj: wył.",
   "derrick.orbitalis.replace.on": "Zastępuj: wł.",

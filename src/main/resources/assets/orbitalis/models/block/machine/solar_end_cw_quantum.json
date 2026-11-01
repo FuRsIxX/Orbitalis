@@ -1,0 +1,111 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "alu": "orbitalis:block/solar_panel_quantum_frame",
+    "particle": "orbitalis:block/solar_panel_quantum_frame"
+  },
+  "elements": [
+    {
+      "from": [
+        15.5,
+        11.6,
+        -0.25
+      ],
+      "to": [
+        16.0,
+        13.5,
+        0.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            1,
+            1,
+            4
+          ]
+        },
+        "south": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            4,
+            1,
+            5
+          ]
+        },
+        "east": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            1,
+            1,
+            4
+          ]
+        },
+        "up": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            0,
+            1,
+            1
+          ]
+        },
+        "down": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            15,
+            1,
+            16
+          ]
+        }
+      },
+      "light_emission": 15
+    },
+    {
+      "from": [
+        15.0,
+        13.0,
+        0.5
+      ],
+      "to": [
+        16.0,
+        13.25,
+        1.0
+      ],
+      "faces": {
+        "south": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            5,
+            16,
+            6
+          ]
+        },
+        "east": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            5,
+            16,
+            6
+          ]
+        },
+        "up": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            5,
+            16,
+            6
+          ]
+        }
+      },
+      "light_emission": 15
+    }
+  ]
+}

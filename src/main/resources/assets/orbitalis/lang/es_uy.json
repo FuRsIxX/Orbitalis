@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "Extrae cada bloque de la zona, capa a capa, salvo los fluidos y los bloques con contenido (cofres, máquinas). Los tipos marcados no cuentan en este modo.",
   "derrick.orbitalis.mode.ores": "Modo: vetas",
   "derrick.orbitalis.mode.ores.detail": "Solo extrae los tipos marcados y deja todo lo demás en su sitio. Se perfora un pozo en el centro de la zona para la sarta de perforación.",
+  "derrick.orbitalis.preview.detail": "Vista previa de la zona: muestra en el mundo la zona perforada, trazada con luz a ras de suelo y hasta el fondo que permite la torre. Haz clic para encenderla o apagarla.",
   "derrick.orbitalis.replace.detail": "Cada bloque extraído se sustituye por el bloque de la casilla de reposición, o por la roca de alrededor si la casilla está vacía. Cuesta %s FE más por bloque.",
   "derrick.orbitalis.replace.off": "Reponer: no",
   "derrick.orbitalis.replace.on": "Reponer: sí",

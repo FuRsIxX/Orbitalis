@@ -1,13 +1,14 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "orbitalis:block/drill_tower_boom",
+    "particle": "orbitalis:block/drill_tower_inner",
     "north": "orbitalis:block/drill_tower_inner",
     "east": "orbitalis:block/drill_tower_inner",
     "south": "orbitalis:block/drill_tower_inner",
     "west": "orbitalis:block/drill_tower_inner",
     "up": "orbitalis:block/drill_tower_cap_center",
-    "down": "orbitalis:block/drill_tower_inner"
+    "down": "orbitalis:block/drill_tower_inner",
+    "drive": "orbitalis:block/drill_top_drive"
   },
   "elements": [
     {
@@ -80,6 +81,233 @@
             0,
             16,
             16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        16,
+        3
+      ],
+      "to": [
+        13,
+        17,
+        13
+      ],
+      "faces": {
+        "north": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            8,
+            16,
+            9
+          ]
+        },
+        "south": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            8,
+            16,
+            9
+          ]
+        },
+        "east": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            8,
+            16,
+            9
+          ]
+        },
+        "west": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            8,
+            16,
+            9
+          ]
+        },
+        "up": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            8,
+            16,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        17,
+        4
+      ],
+      "to": [
+        12,
+        25,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#drive",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "south": {
+          "texture": "#drive",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "east": {
+          "texture": "#drive",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "west": {
+          "texture": "#drive",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "up": {
+          "texture": "#drive",
+          "uv": [
+            0,
+            8,
+            8,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        25,
+        6
+      ],
+      "to": [
+        10,
+        31,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            0,
+            12,
+            6
+          ]
+        },
+        "south": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            0,
+            12,
+            6
+          ]
+        },
+        "east": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            0,
+            12,
+            6
+          ]
+        },
+        "west": {
+          "texture": "#drive",
+          "uv": [
+            8,
+            0,
+            12,
+            6
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        31,
+        5
+      ],
+      "to": [
+        11,
+        32,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#drive",
+          "uv": [
+            12,
+            4,
+            16,
+            5
+          ]
+        },
+        "south": {
+          "texture": "#drive",
+          "uv": [
+            12,
+            4,
+            16,
+            5
+          ]
+        },
+        "east": {
+          "texture": "#drive",
+          "uv": [
+            12,
+            4,
+            16,
+            5
+          ]
+        },
+        "west": {
+          "texture": "#drive",
+          "uv": [
+            12,
+            4,
+            16,
+            5
+          ]
+        },
+        "up": {
+          "texture": "#drive",
+          "uv": [
+            12,
+            0,
+            16,
+            4
           ]
         }
       }

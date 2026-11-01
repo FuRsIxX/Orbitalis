@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "Mines every block in the area, layer by layer, except fluids and blocks that hold something (chests, machines). The ticked kinds don't matter in this mode.",
   "derrick.orbitalis.mode.ores": "Mode: ores",
   "derrick.orbitalis.mode.ores.detail": "Only extracts the ticked kinds and leaves everything else in place. A shaft is bored in the middle of the area for the drill string.",
+  "derrick.orbitalis.preview.detail": "Area preview: shows the drilled area in the world, outlined in light at ground level and down to the bottom the tower can reach. Click to turn it on or off.",
   "derrick.orbitalis.replace.detail": "Each block extracted is replaced by the block in the replacement slot, or by the surrounding rock if the slot is empty. Costs %s FE more per block.",
   "derrick.orbitalis.replace.off": "Replace: off",
   "derrick.orbitalis.replace.on": "Replace: on",

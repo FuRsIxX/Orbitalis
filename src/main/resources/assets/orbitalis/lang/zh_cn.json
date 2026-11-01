@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "逐层开采区域内的每个方块，液体和装有东西的方块（箱子、机器）除外。此模式下勾选的种类不起作用。",
   "derrick.orbitalis.mode.ores": "模式：矿脉",
   "derrick.orbitalis.mode.ores.detail": "只开采勾选的种类，其余原样保留。会在区域中央钻一口竖井，供钻杆下降。",
+  "derrick.orbitalis.preview.detail": "区域预览：在世界中用光勾勒出钻探区域，从地面一直到塔能达到的底部。点击开启或关闭。",
   "derrick.orbitalis.replace.detail": "每个被采走的方块都会换成替换栏里的方块，替换栏为空时换成周围的岩石。每个方块多耗%s FE。",
   "derrick.orbitalis.replace.off": "替换：关",
   "derrick.orbitalis.replace.on": "替换：开",

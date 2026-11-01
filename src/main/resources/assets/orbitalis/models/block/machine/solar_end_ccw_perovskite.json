@@ -1,0 +1,109 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "alu": "orbitalis:block/solar_panel_perovskite_frame",
+    "particle": "orbitalis:block/solar_panel_perovskite_frame"
+  },
+  "elements": [
+    {
+      "from": [
+        0.0,
+        11.6,
+        -0.25
+      ],
+      "to": [
+        0.5,
+        13.5,
+        0.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            1,
+            1,
+            4
+          ]
+        },
+        "south": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            4,
+            1,
+            5
+          ]
+        },
+        "west": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            1,
+            1,
+            4
+          ]
+        },
+        "up": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            0,
+            1,
+            1
+          ]
+        },
+        "down": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            15,
+            1,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        0.0,
+        13.0,
+        0.5
+      ],
+      "to": [
+        0.5,
+        13.25,
+        1.0
+      ],
+      "faces": {
+        "south": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            5,
+            16,
+            6
+          ]
+        },
+        "west": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            5,
+            16,
+            6
+          ]
+        },
+        "up": {
+          "texture": "#alu",
+          "uv": [
+            0,
+            5,
+            16,
+            6
+          ]
+        }
+      }
+    }
+  ]
+}

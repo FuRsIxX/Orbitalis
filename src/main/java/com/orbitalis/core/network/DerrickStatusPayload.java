@@ -21,6 +21,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * @param maxSide      côté le plus grand que permet la tour
  * @param depth        profondeur que permet la tour, en blocs ; 0 : jusqu'au fond du monde
  * @param replace      vrai si les blocs extraits sont remplacés
+ * @param preview      vrai si l'aperçu de la zone est allumé
  * @param filter       sortes à extraire en mode filons, un bit par sorte ({@code QuarryKinds})
  * @param layer        couche en cours ; {@code top} la surface, {@code bottom} le fond foré
  * @param mined        blocs extraits depuis la pose
@@ -33,7 +34,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * @param surveyCounts blocs de chaque sorte sous toute la zone
  */
 public record DerrickStatusPayload(BlockPos pos, int status, int missing, boolean running, int mode, boolean chunk, int levels, int side,
-        int maxSide, int depth, boolean replace, int filter, int layer, int top, int bottom, int mined, int stored, int core, int[] coreBands,
+        int maxSide, int depth, boolean replace, boolean preview, int filter, int layer, int top, int bottom, int mined, int stored, int core, int[] coreBands,
         int observers, int surveyWidth, int[] surveyCells, int[] surveyCounts) implements CustomPacketPayload {
     public static final Type<DerrickStatusPayload> TYPE = new Type<>(Orbitalis.id("derrick_status"));
 
@@ -50,6 +51,7 @@ public record DerrickStatusPayload(BlockPos pos, int status, int missing, boolea
                 buffer.writeVarInt(payload.maxSide);
                 buffer.writeVarInt(payload.depth);
                 buffer.writeBoolean(payload.replace);
+                buffer.writeBoolean(payload.preview);
                 buffer.writeVarInt(payload.filter);
                 buffer.writeInt(payload.layer);
                 buffer.writeInt(payload.top);
@@ -65,7 +67,7 @@ public record DerrickStatusPayload(BlockPos pos, int status, int missing, boolea
             },
             buffer -> new DerrickStatusPayload(buffer.readBlockPos(), buffer.readVarInt(), buffer.readVarInt(), buffer.readBoolean(),
                     buffer.readVarInt(), buffer.readBoolean(), buffer.readVarInt(), buffer.readVarInt(), buffer.readVarInt(), buffer.readVarInt(),
-                    buffer.readBoolean(), buffer.readVarInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readVarInt(),
+                    buffer.readBoolean(), buffer.readBoolean(), buffer.readVarInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readVarInt(),
                     buffer.readVarInt(), buffer.readInt(), buffer.readVarIntArray(), buffer.readVarInt(), buffer.readVarInt(),
                     buffer.readVarIntArray(), buffer.readVarIntArray()));
 

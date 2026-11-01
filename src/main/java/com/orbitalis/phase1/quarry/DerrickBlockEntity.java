@@ -122,6 +122,8 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
     private int mode = MODE_ORES;
     private boolean replace;
     private boolean chunk;
+    /** Aperçu de la zone : le volume foré dessiné dans le monde, en lumière. */
+    private boolean preview;
     private int filter = QuarryKinds.ALL_ORES;
     /** Côté du carré foré, impair ; borné par la tour. */
     private int side = 9;
@@ -183,9 +185,19 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
         return state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
     }
 
-    /** Couche en cours, pour le train de tiges ; la surface si la foreuse n'a pas commencé. */
+    /** Couche en cours ; la surface si la foreuse n'a pas commencé. */
     public int boreBottom() {
         return layer == Integer.MIN_VALUE ? worldPosition.getY() - 1 : layer;
+    }
+
+    /** Vrai si l'aperçu de la zone est allumé. */
+    public boolean isPreviewing() {
+        return preview;
+    }
+
+    /** Le fond de la zone que permet la tour, côté client comme côté serveur. */
+    public int floor() {
+        return level == null ? worldPosition.getY() - 1 : bottom(level);
     }
 
     // ------------------------------------------------------------------
@@ -214,7 +226,7 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     /** Fond de la zone : la profondeur que permet la tour, ou le fond du monde. */
-    private int bottom(ServerLevel level) {
+    private int bottom(Level level) {
         int depth = DerrickPlan.depth(levels);
         int floor = level.getMinY() + 1;
         return depth == 0 ? floor : Math.max(floor, worldPosition.getY() - depth);
@@ -751,6 +763,7 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
     public static final int ACTION_CORE = 5;
     public static final int ACTION_MODE = 6;
     public static final int ACTION_CHUNK = 7;
+    public static final int ACTION_PREVIEW = 8;
 
     /** Valeurs synchronisées vers l'écran à chaque tick : énergie (en deux moitiés), capacité, marche, eau, chaleur, état. */
     private final ContainerData data = new ContainerData() {
@@ -833,6 +846,7 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
                 cursor = 0;
             }
             case ACTION_REPLACE -> replace = !replace;
+            case ACTION_PREVIEW -> preview = !preview;
             case ACTION_FILTER -> {
                 if (argument >= 0 && argument < QuarryKinds.COUNT) {
                     filter ^= 1 << argument;
@@ -864,7 +878,7 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
         int[] area = area();
         boolean chunked = chunk && DerrickPlan.maxSide(levels) > CHUNK;
         return new DerrickStatusPayload(worldPosition, status().ordinal(), missing, running, mode, chunked, levels,
-                chunked ? CHUNK : effectiveSide(), DerrickPlan.maxSide(levels), DerrickPlan.depth(levels), replace, filter, boreBottom(),
+                chunked ? CHUNK : effectiveSide(), DerrickPlan.maxSide(levels), DerrickPlan.depth(levels), replace, preview, filter, boreBottom(),
                 worldPosition.getY() - 1, bottom(serverLevel), mined, stored, core, coreBands, surveyObservers,
                 surveyCells.length == 0 ? 0 : area[2] - area[0] + 1, surveyCells, surveyCounts);
     }
@@ -933,6 +947,7 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
         out.putInt("mode", mode);
         out.putBoolean("replace", replace);
         out.putBoolean("chunk", chunk);
+        out.putBoolean("preview", preview);
         out.putInt("filter", filter);
         out.putInt("side", side);
         out.putInt("heat", heat);
@@ -961,6 +976,7 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
         mode = in.getIntOr("mode", MODE_ORES);
         replace = in.getBooleanOr("replace", false);
         chunk = in.getBooleanOr("chunk", false);
+        preview = in.getBooleanOr("preview", false);
         filter = in.getIntOr("filter", QuarryKinds.ALL_ORES);
         side = in.getIntOr("side", 9);
         heat = in.getIntOr("heat", 0);
@@ -993,6 +1009,11 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
     public void setSide(int side) {
         this.side = side;
         this.chunk = false;
+    }
+
+    public void setPreview(boolean preview) {
+        this.preview = preview;
+        sync();
     }
 
     public void setChunk(boolean chunk) {

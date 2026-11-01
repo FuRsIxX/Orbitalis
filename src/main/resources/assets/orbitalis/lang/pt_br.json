@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "Extrai cada bloco da área, camada por camada, exceto fluidos e blocos com conteúdo (baús, máquinas). Os tipos marcados não contam neste modo.",
   "derrick.orbitalis.mode.ores": "Modo: veios",
   "derrick.orbitalis.mode.ores.detail": "Só extrai os tipos marcados e deixa todo o resto no lugar. Um poço é aberto no meio da área para a coluna de perfuração.",
+  "derrick.orbitalis.preview.detail": "Prévia da área: mostra no mundo a área perfurada, traçada em luz rente ao chão e até o fundo que a torre permite. Clique para ligar ou desligar.",
   "derrick.orbitalis.replace.detail": "Cada bloco extraído é trocado pelo bloco do espaço de reposição, ou pela rocha ao redor se o espaço estiver vazio. Custa %s FE a mais por bloco.",
   "derrick.orbitalis.replace.off": "Repor: não",
   "derrick.orbitalis.replace.on": "Repor: sim",

@@ -399,6 +399,7 @@ public final class WorldPreview {
                 derrick.setSide(7);
                 derrick.setMode(com.orbitalis.phase1.quarry.DerrickBlockEntity.MODE_ALL);
                 derrick.setReplace(false);
+                derrick.setPreview(true);
                 derrick.setRunning(true);
             }
         }, 33.0, 9.0, 1.0, -20.0F, 30.0F, 120));

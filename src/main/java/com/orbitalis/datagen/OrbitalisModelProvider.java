@@ -568,12 +568,28 @@ public class OrbitalisModelProvider extends ModelProvider {
     private static void solarPanel(BlockModelGenerators blockModels, Block panel, String suffix) {
         MultiVariant core = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_panel" + suffix));
         MultiVariant edge = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_edge" + suffix));
-        blockModels.blockStateOutput.accept(MultiPartGenerator.multiPart(panel)
-                .with(core)
-                .with(BlockModelGenerators.condition().term(BlockStateProperties.NORTH, false), edge)
-                .with(BlockModelGenerators.condition().term(BlockStateProperties.EAST, false), edge.with(BlockModelGenerators.Y_ROT_90))
-                .with(BlockModelGenerators.condition().term(BlockStateProperties.SOUTH, false), edge.with(BlockModelGenerators.Y_ROT_180))
-                .with(BlockModelGenerators.condition().term(BlockStateProperties.WEST, false), edge.with(BlockModelGenerators.Y_ROT_270)));
+        MultiVariant corner = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_corner" + suffix));
+        MultiVariant endCw = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_end_cw" + suffix));
+        MultiVariant endCcw = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_end_ccw" + suffix));
+        // Chaque côté libre a son cadre ; à son bout horaire, un angle si l'autre côté est libre aussi, sinon un raccord
+        // jusqu'au bord du bloc ; à son autre bout, un raccord si un panneau le prolonge (l'angle, lui, vient du côté
+        // voisin). Une rangée de panneaux a ainsi un cadre continu.
+        List<net.minecraft.world.level.block.state.properties.BooleanProperty> sides = List.of(BlockStateProperties.NORTH,
+                BlockStateProperties.EAST, BlockStateProperties.SOUTH, BlockStateProperties.WEST);
+        List<VariantMutator> turns = List.of(BlockModelGenerators.NOP, BlockModelGenerators.Y_ROT_90,
+                BlockModelGenerators.Y_ROT_180, BlockModelGenerators.Y_ROT_270);
+        MultiPartGenerator generator = MultiPartGenerator.multiPart(panel).with(core);
+        for (int k = 0; k < 4; k++) {
+            var side = sides.get(k);
+            var clockwise = sides.get((k + 1) % 4);
+            var counter = sides.get((k + 3) % 4);
+            var turn = turns.get(k);
+            generator.with(BlockModelGenerators.condition().term(side, false), edge.with(turn))
+                    .with(BlockModelGenerators.condition().term(side, false).term(clockwise, false), corner.with(turn))
+                    .with(BlockModelGenerators.condition().term(side, false).term(clockwise, true), endCw.with(turn))
+                    .with(BlockModelGenerators.condition().term(side, false).term(counter, true), endCcw.with(turn));
+        }
+        blockModels.blockStateOutput.accept(generator);
         blockModels.registerSimpleItemModel(panel, Orbitalis.id("block/machine/solar_panel" + suffix + "_item"));
     }
 

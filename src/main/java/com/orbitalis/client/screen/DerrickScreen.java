@@ -298,6 +298,28 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
         }
     }
 
+    /**
+     * L'aperçu de la zone : un petit bouton à pictogramme (le cadre de la zone, vu d'en haut), allumé en cyan quand le
+     * volume foré est dessiné dans le monde.
+     */
+    private void previewButton(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+        boolean on = status.preview();
+        boolean hovered = Ui.inside(mouseX, mouseY, x, y, 15, 15);
+        raised(graphics, x, y, 15, 15, on ? 0xFF9FD8E4 : hovered ? 0xFFD6DCE6 : 0xFFB5B5B5);
+        int ink = on ? 0xFF0E6F84 : 0xFF404040;
+        int glow = on ? 0xFF3FD8F2 : 0xFF6B6B6B;
+        // Les quatre coins du cadre, et la zone au milieu.
+        for (int[] corner : new int[][] {{3, 3, 1, 1}, {11, 3, -1, 1}, {3, 11, 1, -1}, {11, 11, -1, -1}}) {
+            rect(graphics, x + Math.min(corner[0], corner[0] + 2 * corner[2]), y + corner[1], 3, 1, ink);
+            rect(graphics, x + corner[0], y + Math.min(corner[1], corner[1] + 2 * corner[3]), 1, 3, ink);
+        }
+        rect(graphics, x + 6, y + 6, 3, 3, glow);
+        zones.add(new Zone(x, y, 15, 15, () -> send(DerrickBlockEntity.ACTION_PREVIEW, 0)));
+        if (hovered) {
+            hover = font.split(Component.translatable("derrick.orbitalis.preview.detail"), 220);
+        }
+    }
+
     private void extractSettings(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
         if (status == null) {
             return;
@@ -332,7 +354,8 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
                 () -> send(DerrickBlockEntity.ACTION_REPLACE, 0));
         y += 18;
         boolean coring = status.core() >= 0;
-        button(graphics, mouseX, mouseY, x, y, w, coring ? Component.literal(status.core() + " %") : Component.translatable("derrick.orbitalis.core"),
+        previewButton(graphics, mouseX, mouseY, x + w - 15, y);
+        button(graphics, mouseX, mouseY, x, y, w - 17, coring ? Component.literal(status.core() + " %") : Component.translatable("derrick.orbitalis.core"),
                 0xFF4FC3F7, formed && !coring, Component.translatable("derrick.orbitalis.core.detail", DerrickBlockEntity.CORE_ENERGY,
                         DerrickBlockEntity.CORE_POINTS), () -> send(DerrickBlockEntity.ACTION_CORE, 0));
         y = topPos + CARD_Y + 4;

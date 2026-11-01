@@ -1971,6 +1971,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("derrick.orbitalis.area", "Area %s×%s");
         add("derrick.orbitalis.map.none", "No observation satellite in service. Put one in orbit to see the ore map of the area.");
         add("derrick.orbitalis.map.detail", "Survey by %s observation satellite(s): the most common kind in each column. Unticked kinds are faded.");
+        add("derrick.orbitalis.preview.detail", "Area preview: shows the drilled area in the world, outlined in light at ground level and down to the bottom the tower can reach. Click to turn it on or off.");
         add("block.orbitalis.drill_base", "Drill Base");
         add("block.orbitalis.drill_mast", "Drill Mast");
         add("derrick.orbitalis.area.chunk", "Whole chunk");

@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "範囲内のブロックを層ごとにすべて掘る。ただし液体と、中身のあるブロック（チェスト、機械）は除く。このモードではチェックした種類は関係ない。",
   "derrick.orbitalis.mode.ores": "モード：鉱脈",
   "derrick.orbitalis.mode.ores.detail": "チェックした種類だけを掘り出し、ほかはそのまま残す。範囲の中央に、掘削ロッドを通す縦穴を掘る。",
+  "derrick.orbitalis.preview.detail": "範囲プレビュー：掘る範囲をワールドに光で描く。地面の高さから、タワーが届く底まで。クリックでオン・オフ。",
   "derrick.orbitalis.replace.detail": "掘り出したブロックはそれぞれ置き換えスロットのブロックに、スロットが空ならまわりの岩に置き換わる。1ブロックごとに%s FE多くかかる。",
   "derrick.orbitalis.replace.off": "置き換え：オフ",
   "derrick.orbitalis.replace.on": "置き換え：オン",

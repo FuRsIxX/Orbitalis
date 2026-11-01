@@ -1971,6 +1971,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("derrick.orbitalis.area", "Zone %s×%s");
         add("derrick.orbitalis.map.none", "Aucun satellite d'observation en service. Mettez-en un en orbite pour voir la carte des filons de la zone.");
         add("derrick.orbitalis.map.detail", "Relevé de %s satellite(s) d'observation : la sorte la plus abondante de chaque colonne. Les sortes décochées sont pâles.");
+        add("derrick.orbitalis.preview.detail", "Aperçu de la zone : montre dans le monde la zone forée, tracée en lumière à fleur de sol et jusqu'au fond que permet la tour. Cliquez pour l'allumer ou l'éteindre.");
         add("block.orbitalis.drill_base", "Socle de foreuse");
         add("block.orbitalis.drill_mast", "Mât de foreuse");
         add("derrick.orbitalis.area.chunk", "Tronçon entier");

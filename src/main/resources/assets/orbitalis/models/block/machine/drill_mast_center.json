@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "orbitalis:block/drill_tower_boom",
+    "particle": "orbitalis:block/drill_tower_inner",
     "north": "orbitalis:block/drill_tower_inner",
     "east": "orbitalis:block/drill_tower_inner",
     "south": "orbitalis:block/drill_tower_inner",

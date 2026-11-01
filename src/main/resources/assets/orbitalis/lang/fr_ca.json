@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "Extrait chaque bloc de la zone, couche par couche, sauf les fluides et les blocs qui ont un contenu (coffres, machines). Les sortes cochées ne comptent pas dans ce mode.",
   "derrick.orbitalis.mode.ores": "Mode : filons",
   "derrick.orbitalis.mode.ores.detail": "N'extrait que les sortes cochées et laisse tout le reste en place. Un puits est percé au milieu de la zone pour le train de tiges.",
+  "derrick.orbitalis.preview.detail": "Aperçu de la zone : montre dans le monde la zone forée, tracée en lumière à fleur de sol et jusqu'au fond que permet la tour. Cliquez pour l'allumer ou l'éteindre.",
   "derrick.orbitalis.replace.detail": "Chaque bloc extrait est remplacé par le bloc posé dans la case de remplacement, ou par la roche alentour si la case est vide. Coûte %s FE de plus par bloc.",
   "derrick.orbitalis.replace.off": "Remplacer : non",
   "derrick.orbitalis.replace.on": "Remplacer : oui",

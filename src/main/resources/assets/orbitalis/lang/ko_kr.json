@@ -452,6 +452,7 @@
   "derrick.orbitalis.mode.all.detail": "구역의 모든 블록을 층마다 캡니다. 다만 액체와 내용물이 있는 블록(상자, 기계)은 빼놓습니다. 이 모드에서는 체크한 종류가 상관없습니다.",
   "derrick.orbitalis.mode.ores": "모드: 광맥",
   "derrick.orbitalis.mode.ores.detail": "체크한 종류만 캐고 나머지는 그대로 둡니다. 구역 가운데에 시추관이 내려갈 수직갱을 뚫습니다.",
+  "derrick.orbitalis.preview.detail": "구역 미리 보기: 팔 구역을 세계에 빛으로 그려 보여 줍니다. 지면 높이에서 탑이 닿는 바닥까지. 클릭하면 켜거나 끕니다.",
   "derrick.orbitalis.replace.detail": "캐낸 블록마다 교체 칸의 블록으로, 칸이 비어 있으면 주변 암석으로 바꿉니다. 블록마다 %s FE가 더 듭니다.",
   "derrick.orbitalis.replace.off": "교체: 꺼짐",
   "derrick.orbitalis.replace.on": "교체: 켜짐",
