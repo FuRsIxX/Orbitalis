@@ -12,8 +12,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 /** Réserve d'une batterie de station, raccordée au réseau de sa station tant qu'elle est en place. */
 public class StationBatteryBlockEntity extends BlockEntity {
-    public static final int CAPACITY = 500_000;
-    private static final int TRANSFER = 2_000;
+    public static final int CAPACITY = 2_000_000;
+    private static final int TRANSFER = 8_000;
 
     private final MachineEnergyStorage energy = new MachineEnergyStorage(CAPACITY, TRANSFER, TRANSFER, this::setChanged);
     private final StationPower.Link link = new StationPower.Link();

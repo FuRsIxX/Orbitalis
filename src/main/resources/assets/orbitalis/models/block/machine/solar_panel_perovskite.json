@@ -374,18 +374,6 @@
         16
       ],
       "faces": {
-        "north": {
-          "texture": "#back"
-        },
-        "south": {
-          "texture": "#back"
-        },
-        "east": {
-          "texture": "#back"
-        },
-        "west": {
-          "texture": "#back"
-        },
         "up": {
           "texture": "#cells"
         },

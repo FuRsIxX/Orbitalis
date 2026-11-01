@@ -271,6 +271,8 @@ public class OrbitalisClient {
                 fogData.environmentalEnd = 7.0F;
             }
         }, ModFluids.LIQUID_METHANE.type().get());
+        // Réservoir modulable : ses éclats prennent la texture de son contenu quand on le casse.
+        event.registerBlock(com.orbitalis.client.render.TankParticles.INSTANCE, com.orbitalis.core.registry.ModBlocks.FLUID_TANK.get());
     }
 
     @SubscribeEvent

@@ -26,18 +26,17 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Dessine ce qui n'est pas un bloc autour d'une foreuse : tant que sa tour n'est pas debout, les blocs qui manquent, en
- * fantôme ; et, quand son aperçu est allumé, la zone qu'elle fore, en lumière : un voile et un liseré à fleur de sol sur
- * toute la zone, puis les arêtes du volume jusqu'au fond que permet la tour.
+ * fantôme ; et, quand son aperçu est allumé, la zone qu'elle fore : ses arêtes en tirets cyan d'un bloc, le cadre en
+ * surface, celui du fond que permet la tour, et les quatre angles qui les relient.
  */
 public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, DerrickRenderer.State> {
     private static final Identifier PREVIEW = Orbitalis.id("textures/entity/drill_preview.png");
-    /** Teinte de l'aperçu : le cyan des voyants de la tour. */
-    private static final int VEIL = 0x303FD8F2;
-    private static final int RIBBON = 0x803FD8F2;
-    private static final int EDGE = 0xE03FD8F2;
-    /** Épaisseur des arêtes et hauteur du liseré, en blocs. */
-    private static final float LINE = 1.5F / 16.0F;
-    private static final float FENCE = 0.4F;
+    /** Les deux cyans des tirets : celui des voyants de la tour, et un plus sombre. */
+    private static final int LIT = 0xFF3FD8F2;
+    private static final int DIM = 0xFF1C8FA8;
+    /** Épaisseur des arêtes, et hauteur des angles au-dessus du sol, en blocs. */
+    private static final float LINE = 2.0F / 16.0F;
+    private static final float POST = 1.0F;
 
     public static class State extends BlockEntityRenderState {
         final List<BlockPos> ghostOffsets = new ArrayList<>();
@@ -49,7 +48,6 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         float x1;
         float z1;
         float floor;
-        float pulse;
     }
 
     public DerrickRenderer(BlockEntityRendererProvider.Context context) {
@@ -81,8 +79,6 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
             state.x1 = area[2] + 1 - pos.getX();
             state.z1 = area[3] + 1 - pos.getZ();
             state.floor = derrick.floor() - pos.getY();
-            long time = derrick.getLevel() == null ? 0 : derrick.getLevel().getGameTime();
-            state.pulse = 0.75F + 0.25F * (float) Math.sin((time + partialTicks) * 0.15F);
         }
     }
 
@@ -96,32 +92,38 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         }
         collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(PREVIEW), (pose, buffer) -> {
             float top = 0.02F;
-            int edge = fade(EDGE, state.pulse);
-            int ribbon = fade(RIBBON, state.pulse);
-            // Le voile sur toute la zone, à fleur de sol, vu d'en haut comme d'en bas.
-            quad(buffer, pose, VEIL, state.x0, top, state.z0, state.x1, top, state.z0, state.x1, top, state.z1, state.x0, top, state.z1);
-            // Le liseré : un ruban de lumière dressé tout autour.
-            quad(buffer, pose, ribbon, state.x0, top, state.z0, state.x1, top, state.z0, state.x1, FENCE, state.z0, state.x0, FENCE, state.z0);
-            quad(buffer, pose, ribbon, state.x0, top, state.z1, state.x1, top, state.z1, state.x1, FENCE, state.z1, state.x0, FENCE, state.z1);
-            quad(buffer, pose, ribbon, state.x0, top, state.z0, state.x0, top, state.z1, state.x0, FENCE, state.z1, state.x0, FENCE, state.z0);
-            quad(buffer, pose, ribbon, state.x1, top, state.z0, state.x1, top, state.z1, state.x1, FENCE, state.z1, state.x1, FENCE, state.z0);
-            // Les arêtes du volume : le cadre en surface, celui du fond, et les quatre angles qui les relient.
+            // Le cadre en surface et celui du fond, en tirets d'un bloc.
             for (float y : new float[] {top, state.floor}) {
-                bar(buffer, pose, edge, state.x0, y, state.z0, state.x1, y + LINE, state.z0 + LINE);
-                bar(buffer, pose, edge, state.x0, y, state.z1 - LINE, state.x1, y + LINE, state.z1);
-                bar(buffer, pose, edge, state.x0, y, state.z0, state.x0 + LINE, y + LINE, state.z1);
-                bar(buffer, pose, edge, state.x1 - LINE, y, state.z0, state.x1, y + LINE, state.z1);
+                dashes(buffer, pose, state.x0, y, state.z0, state.x1, state.z0 + LINE);
+                dashes(buffer, pose, state.x0, y, state.z1 - LINE, state.x1, state.z1);
+                dashes(buffer, pose, state.x0, y, state.z0, state.x0 + LINE, state.z1);
+                dashes(buffer, pose, state.x1 - LINE, y, state.z0, state.x1, state.z1);
             }
+            // Les quatre angles, du fond jusqu'au-dessus du sol.
             for (float[] corner : new float[][] {{state.x0, state.z0}, {state.x1 - LINE, state.z0}, {state.x0, state.z1 - LINE},
                     {state.x1 - LINE, state.z1 - LINE}}) {
-                bar(buffer, pose, edge, corner[0], state.floor, corner[1], corner[0] + LINE, FENCE, corner[1] + LINE);
+                for (float y = state.floor; y < POST; y += 1.0F) {
+                    int color = ((int) Math.floor(y)) % 2 == 0 ? LIT : DIM;
+                    bar(buffer, pose, color, corner[0], y, corner[1], corner[0] + LINE, Math.min(POST, y + 1.0F), corner[1] + LINE);
+                }
             }
         });
     }
 
-    private static int fade(int color, float factor) {
-        int alpha = Math.round((color >>> 24) * factor);
-        return (alpha << 24) | (color & 0xFFFFFF);
+    /** Une arête horizontale, en tirets d'un bloc qui alternent deux cyans, posés sur la grille du monde. */
+    private static void dashes(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y, float z0, float x1, float z1) {
+        boolean alongX = x1 - x0 >= z1 - z0;
+        float start = alongX ? x0 : z0;
+        float end = alongX ? x1 : z1;
+        for (float from = start; from < end; from += 1.0F) {
+            float to = Math.min(end, from + 1.0F);
+            int color = Math.floorMod((int) Math.floor(from), 2) == 0 ? LIT : DIM;
+            if (alongX) {
+                bar(buffer, pose, color, from, y, z0, to, y + LINE, z1);
+            } else {
+                bar(buffer, pose, color, x0, y, from, x1, y + LINE, to);
+            }
+        }
     }
 
     /** Un quadrilatère de lumière, dessiné dans les deux sens. */

@@ -414,6 +414,13 @@ public final class WorldPreview {
                 () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), 33.0, 7.0, 3.0, 0.0F, 30.0F, 4));
         SHOTS.add(new Shot("solar_tiers", null, 57.5, 4.5, -3.0, 0.0F, 45.0F, 8));
         SHOTS.add(new Shot("solar_tiers_close", null, 53.0, 2.2, -0.5, 0.0F, 45.0F, 8));
+        // Deux générations côte à côte (elles ne se raccordent pas : chacune garde son cadre, dans son bloc), puis deux
+        // panneaux de la même génération raccordés.
+        SHOTS.add(new Shot("solar_mixed", level -> {
+            set(level, 60, 0, 8, "orbitalis:solar_panel_perovskite");
+            set(level, 61, 0, 8, "orbitalis:solar_panel_quantum[east=true]");
+            set(level, 62, 0, 8, "orbitalis:solar_panel_quantum[west=true]");
+        }, 61.0, 2.3, 10.2, 180.0F, 45.0F, 8));
         SHOTS.add(new Shot("solar_icons", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
             java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();
             for (var id : java.util.List.of("solar_panel", "solar_panel_advanced", "solar_panel_perovskite", "solar_panel_quantum", "water_pump",

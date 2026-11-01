@@ -230,7 +230,9 @@ def body(tier):
         box(0, 10.5, 7, 16, 11.5, 9, "alu"),
         box(2, 11.5, 0, 3, 12, 16, "back"), box(13, 11.5, 0, 14, 12, 16, "back"),
         box(9, 11, 10, 12, 12, 13, "dark"),
-        {**box(0, 12, 0, 16, 13, 16, "back"), "faces": {"up": "cells"}},
+        # La nappe : ses chants ne se dessinent pas, le cadre les couvre (et deux nappes voisines se touchent).
+        {**box(0, 12, 0, 16, 13, 16, "back"), "faces": {"up": "cells"}, "omit": ["north", "south", "east", "west"],
+         "only": ["up", "down"]},
     ]
     if tier == "perovskite":
         # Une tête de suivi du soleil sur deux axes, et un collier doré en haut du mât.
@@ -256,23 +258,25 @@ def frame_part(x0, x1, z0, z1, y0, y1, omit, uv):
 
 
 def rail(x0, x1, omit):
-    """Le profilé du côté nord, de x0 à x1 : il déborde du bloc d'un quart de pixel vers l'extérieur."""
-    return frame_part(x0, x1, -0.25, 0.5, 11.6, 13.5, omit, profile(x1 - x0))
+    """Le profilé du côté nord, de x0 à x1, tout entier dans le bloc : deux panneaux voisins qui ne se raccordent pas
+    (deux générations différentes) ont chacun le leur, dos à dos, sans se chevaucher. Il part du dessus des rails
+    porteurs, sans partager de plan avec eux."""
+    return frame_part(x0, x1, 0.0, 0.75, 12.0, 13.5, omit, profile(x1 - x0))
 
 
 def seal(x0, x1, omit):
     """Le joint de vitrage, noir, posé sur la nappe le long du profilé."""
     band = {face: [0, 5, 16, 6] for face in ("up", "north", "south", "east", "west", "down")}
-    return frame_part(x0, x1, 0.5, 1.0, 13.0, 13.25, set(omit) | {"down", "north"}, band)
+    return frame_part(x0, x1, 0.75, 1.25, 13.0, 13.25, set(omit) | {"down", "north"}, band)
 
 
 # Le côté nord : le profilé entre les deux bouts, et son joint, qui s'arrête où commence celui du côté est (en moulinet).
-EDGE = [rail(0.5, 15.5, ("east", "west")), seal(0.5, 15.0, ("east", "west"))]
+EDGE = [rail(0.75, 15.25, ("east", "west")), seal(0.75, 14.75, ("east", "west"))]
 # L'angle nord-est, sans voisin au nord ni à l'est : il ferme le cadre.
-CORNER = [rail(15.5, 16.25, ("west", "south"))]
+CORNER = [rail(15.25, 16.0, ("west", "south"))]
 # Les raccords : le profilé et son joint vont jusqu'au bord du bloc, vers le panneau voisin.
-END_CW = [rail(15.5, 16.0, ("west",)), seal(15.0, 16.0, ("west",))]
-END_CCW = [rail(0.0, 0.5, ("east",)), seal(0.0, 0.5, ("east",))]
+END_CW = [rail(15.25, 16.0, ("west",)), seal(14.75, 16.0, ("west",))]
+END_CCW = [rail(0.0, 0.75, ("east",)), seal(0.0, 0.75, ("east",))]
 
 
 TURN = {"north": "east", "east": "south", "south": "west", "west": "north", "up": "up", "down": "down"}
@@ -314,7 +318,7 @@ def write_model(name, parts, textures, emissive=(), item=False):
         for face in part.get("omit", []):
             element["faces"].pop(face, None)
     if item:
-        model["display"] = display((-0.25, 0, -0.25), (16.25, 13.5, 16.25), gui_rotation=(35, 225, 0))
+        model["display"] = display((0, 0, 0), (16, 13.5, 16), gui_rotation=(35, 225, 0))
     with open(os.path.join(gm.MODEL_DIR, name + ".json"), "w", newline="\n") as f:
         json.dump(model, f, indent=2)
 

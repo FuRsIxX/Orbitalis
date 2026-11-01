@@ -900,9 +900,8 @@ def top_drive():
 
 
 def preview_texture():
-    """La lumière de l'aperçu de la zone : du blanc (la foreuse le teinte en cyan), barré de fines lignes de balayage
-    comme un hologramme."""
-    return [[(255, 255, 255, 150 if y % 4 == 3 else 255) for _ in range(SIZE)] for y in range(SIZE)]
+    """La couleur de l'aperçu de la zone : un blanc plein, que la foreuse teinte de ses deux cyans."""
+    return [[(255, 255, 255, 255) for _ in range(SIZE)] for _ in range(SIZE)]
 
 
 def drill_base_top():

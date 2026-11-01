@@ -779,79 +779,55 @@ def mat_texture():
 
 def battery_texture():
     """
-    Flancs de la batterie : des panneaux blancs lisses, une grille de refroidissement à fentes verticales au milieu,
-    et la plaquette de la tension en haut.
+    Flancs de la batterie : un panneau blanc à peine biseauté, un filet gris en retrait, et une bande bleue sous la
+    platine des prises. Rien d'autre : la façade porte la fenêtre de charge.
     """
-    img = gm.plain(96, "#E6E9EC", "#F1F3F5", "#D8DCE0")
-    bevel(img, 1, 1, 14, 14, 1.04, 0.9)
-    rect(img, 4, 5, 11, 12, "#2A2F35")
-    for x in range(4, 12):
-        if x % 2 == 1:
-            for y in range(5, 13):
-                dot(img, x, y, "#5A626C")
-    outline(img, 3, 4, 12, 13, "#AEB6BF")
-    rect(img, 4, 2, 7, 2, "#3F76E4")
-    dot(img, 10, 2, "#E8C02A")
-    dot(img, 11, 2, "#2E3238")
+    img = gm.plain(96, "#E9ECEF", "#F2F4F6", "#DEE2E6")
+    bevel(img, 1, 1, 14, 14, 1.04, 0.92)
+    outline(img, 2, 2, 13, 13, "#C3CAD2")
+    for x in range(3, 13):
+        dot(img, x, 11, "#3F76E4")
+        dot(img, x, 12, "#2F5FC0")
     return img
 
 
 def battery_top_texture():
-    """Dessus de la batterie : le chapeau gris graphite, et la grille ronde de son ventilateur."""
-    img = gm.plain(103, "#4A515A", "#565E68", "#3F454D")
-    for y in range(SIZE):
-        for x in range(SIZE):
-            d = math.hypot(x - 7.5, y - 7.5)
-            if d <= 6.0:
-                ring = int(d) % 2 == 0
-                img[y][x] = rgb("#1C2024") if ring else rgb("#6B747F")
-            if d <= 1.5:
-                img[y][x] = rgb("#8C949E")
-    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
-        dot(img, x, y, "#2A2E33")
+    """Dessus de la batterie : le chapeau graphite, une grille d'aération à lamelles et quatre vis."""
+    img = gm.plain(103, "#4A515A", "#535B64", "#434A52")
+    for y in range(4, 12):
+        for x in range(4, 12):
+            corner = (x in (4, 11)) and (y in (4, 11))
+            if not corner:
+                img[y][x] = rgb("#1E2226") if y % 2 == 0 else rgb("#636C76")
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        dot(img, x, y, "#9AA3AD")
+        dot(img, x + 1, y + 1, "#30353B")
     return img
 
 
 def gauge_texture(level):
     """
-    Fenêtre de la batterie, une vitre fumée : derrière, quatre modules de cellules empilés. Chacun porte son voyant
-    de charge, allumé en vert (en ambre quand il n'en reste qu'un), et un filet bleu quand il est plein.
+    Fenêtre de charge : derrière une vitre sombre, quatre modules empilés, en barres pleines. Chargé, un module
+    s'allume en cyan (en ambre quand il n'en reste qu'un) ; vide, il reste gris.
     """
-    img = canvas("#0C1216")
-    for y in range(SIZE):
-        for x in range(SIZE):
-            img[y][x] = gm.blend(rgb("#16222A"), rgb("#0A0F12"), y / 15.0)
+    img = canvas("#10171C")
     for k in range(4):
-        y0 = 12 - k * 4
+        y0 = 12 - k * 3
         lit = k < level
-        rect(img, 1, y0, 14, y0 + 2, "#262D35")
-        for x in range(2, 11):
-            if x % 3 == 1:
-                dot(img, x, y0 + 1, "#1A1F25")
-        dot(img, 1, y0, "#3A434D")
-        color = ("#5BE08A" if level > 1 else "#FFB23E") if lit else "#1F2A24"
-        rect(img, 12, y0 + 1, 13, y0 + 1, color)
-        if lit:
-            for x in range(2, 11):
-                dot(img, x, y0, "#39B5C9" if level > 1 else "#B5822E")
-    # Le reflet de la vitre, en biais.
-    for k in range(4):
-        dot(img, 2 + k, 5 - k, shade(img[5 - k][2 + k], 1.6))
+        tone = ("#3FB8D4" if level > 1 else "#E8A23A") if lit else "#212A31"
+        top = ("#8BE3F2" if level > 1 else "#F6CF86") if lit else "#2A343C"
+        for x in range(2, 14):
+            dot(img, x, y0, top)
+            dot(img, x, y0 + 1, tone)
     return img
 
 
 def battery_label_texture():
-    """
-    Façade de la batterie : le blanc de la coque, le cadre sombre de sa fenêtre, une bande bleue au pied et, au
-    sommet, le petit filet jaune et noir des hautes tensions.
-    """
-    img = gm.plain(104, "#E6E9EC", "#F1F3F5", "#D8DCE0")
+    """Façade de la batterie : le blanc de la coque, le cadre sombre de sa fenêtre et une bande bleue au pied."""
+    img = gm.plain(104, "#E9ECEF", "#F2F4F6", "#DEE2E6")
     outline(img, 2, 2, 13, 13, "#2E3238")
-    for x in range(3, 12):
-        dot(img, x, 1, "#E8C02A" if x % 2 else "#2E3238")
     for x in range(2, 14):
         dot(img, x, 14, "#3F76E4")
-    dot(img, 12, 14, "#9FC4FF")
     return img
 
 
