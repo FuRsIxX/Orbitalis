@@ -11,7 +11,7 @@ It all starts on the ground, with ores and a foundry. Step by step, your industr
 **Industry**
 - Titanium, aluminum and lithium ores; steel and alloys.
 - Combustion generator, arc foundry, rolling mill; energy cables, pipes and data cables.
-- Drill derrick (ore drilling with backfill, water cooling, core samples and satellite prospecting), water pump, electrolyzer, cryogenic liquefier, RP-1 refinery, Sabatier reactor, helium-3 extractor; modular and cryogenic tanks.
+- Drill rig (a tower that grows to drill wider and deeper, ore or full-chunk mining with block replacement, water cooling, core samples and satellite prospecting), water pump, electrolyzer, cryogenic liquefier, RP-1 refinery, Sabatier reactor, helium-3 extractor; modular and cryogenic tanks.
 - Fusion reactor and Casimir chamber.
 
 **Spaceport and rockets**

@@ -20,24 +20,33 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Dessine ce qui n'est pas un bloc autour d'un derrick : tant que sa tour n'est pas complète, les blocs qui manquent,
- * en fantôme ; ensuite, le train de tiges qui descend du derrick jusqu'au fond de son puits, et qui tourne en forant.
+ * Dessine ce qui n'est pas un bloc autour d'une foreuse : tant que sa tour n'est pas debout, les blocs qui manquent, en
+ * fantôme ; ensuite, la flèche qui part du haut de la tour jusqu'au-dessus du milieu de la zone forée, et le train de
+ * tiges qui en descend jusqu'à la couche en cours, et qui tourne en forant.
  */
 public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, DerrickRenderer.State> {
-    /** Demi-largeur du train de tiges, en blocs. */
+    /** Demi-largeur du train de tiges, puis de la flèche, en blocs. */
     private static final float ROD = 2.5F / 16.0F;
+    private static final float BOOM = 3.0F / 16.0F;
 
     public static class State extends BlockEntityRenderState {
         final List<BlockPos> ghostOffsets = new ArrayList<>();
         final List<BlockState> ghostStates = new ArrayList<>();
-        int depth;
-        boolean drilling;
+        boolean formed;
+        /** Haut de la tour, milieu de la tour et milieu de la zone, dans le repère du bloc de commande. */
+        float boomY;
+        float towerX;
+        float towerZ;
+        float centreX;
+        float centreZ;
+        float bottom;
         float spin;
     }
 
@@ -55,16 +64,26 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         BlockEntityRenderer.super.extractRenderState(derrick, state, partialTicks, cameraPosition, breakProgress);
         state.ghostOffsets.clear();
         state.ghostStates.clear();
-        if (derrick.getLevel() != null && !derrick.isFormed()) {
-            for (DerrickPlan.Piece piece : DerrickPlan.missing(derrick.getLevel(), derrick.getBlockPos())) {
+        Direction facing = derrick.facing();
+        state.formed = derrick.isFormed();
+        if (derrick.getLevel() != null && !state.formed) {
+            for (DerrickPlan.Piece piece : DerrickPlan.missing(derrick.getLevel(), derrick.getBlockPos(), facing)) {
                 state.ghostOffsets.add(piece.offset());
                 state.ghostStates.add(piece.block().defaultBlockState());
             }
         }
-        state.depth = Math.max(0, derrick.getBlockPos().getY() - derrick.boreBottom());
-        state.drilling = derrick.getBlockState().getValue(BlockStateProperties.LIT);
+        BlockPos pos = derrick.getBlockPos();
+        BlockPos tower = BlockPos.ZERO.relative(facing.getOpposite());
+        state.towerX = tower.getX() + 0.5F;
+        state.towerZ = tower.getZ() + 0.5F;
+        int[] area = derrick.area();
+        state.centreX = (area[0] + area[2] + 1) / 2.0F - pos.getX();
+        state.centreZ = (area[1] + area[3] + 1) / 2.0F - pos.getZ();
+        state.boomY = derrick.levels() + 1.0F;
+        state.bottom = derrick.boreBottom() - pos.getY();
+        boolean drilling = derrick.getBlockState().getValue(BlockStateProperties.LIT);
         long time = derrick.getLevel() == null ? 0 : derrick.getLevel().getGameTime();
-        state.spin = state.drilling ? ((time % 16) + partialTicks) / 16.0F : 0.0F;
+        state.spin = drilling ? ((time % 16) + partialTicks) / 16.0F : 0.0F;
     }
 
     @Override
@@ -72,41 +91,92 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         if (!state.ghostOffsets.isEmpty()) {
             GhostBlocks.submit(state.ghostOffsets, state.ghostStates, poseStack, collector);
         }
-        if (state.depth <= 0) {
+        if (!state.formed) {
             return;
         }
-        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getBlockStateModelSet()
+        TextureAtlasSprite steel = Minecraft.getInstance().getModelManager().getBlockStateModelSet()
                 .getParticleMaterial(ModBlocks.STEEL_BLOCK.get().defaultBlockState()).sprite();
+        TextureAtlasSprite mast = Minecraft.getInstance().getModelManager().getBlockStateModelSet()
+                .getParticleMaterial(ModBlocks.DRILL_MAST.get().defaultBlockState()).sprite();
         int light = state.lightCoords;
-        float lo = 0.5F - ROD;
-        float hi = 0.5F + ROD;
-        float spin = state.spin;
-        int depth = state.depth;
         collector.submitCustomGeometry(poseStack, RenderTypes.text(TextureAtlas.LOCATION_BLOCKS), (pose, buffer) -> {
-            for (int k = 1; k <= depth; k++) {
-                float y0 = -k;
-                float y1 = -k + 1;
-                // Les quatre faces d'un tronçon ; la texture défile pendant le forage : la tige tourne.
-                side(buffer, pose, sprite, light, spin, lo, y0, lo, hi, y1, lo);
-                side(buffer, pose, sprite, light, spin, hi, y0, hi, lo, y1, hi);
-                side(buffer, pose, sprite, light, spin, lo, y0, hi, lo, y1, lo);
-                side(buffer, pose, sprite, light, spin, hi, y0, lo, hi, y1, hi);
+            float y0 = state.boomY;
+            float y1 = state.boomY + 2 * BOOM;
+            // La flèche : d'abord dans l'axe de la tour, puis, pour un tronçon décalé, de côté jusqu'au milieu de la zone.
+            float midX = Math.abs(state.centreX - state.towerX) > Math.abs(state.centreZ - state.towerZ) ? state.centreX : state.towerX;
+            float midZ = midX == state.centreX ? state.towerZ : state.centreZ;
+            beam(buffer, pose, mast, light, state.towerX, state.towerZ, midX, midZ, y0, y1);
+            beam(buffer, pose, mast, light, midX, midZ, state.centreX, state.centreZ, y0, y1);
+            // Le train de tiges, de la flèche à la couche en cours, tronçon par tronçon : la texture défile, la tige tourne.
+            for (float top = y0; top > state.bottom; top -= 1.0F) {
+                float low = Math.max(state.bottom, top - 1.0F);
+                rod(buffer, pose, steel, light, state.spin, state.centreX, state.centreZ, low, top);
             }
         });
     }
 
-    /** Une face verticale, de (x0, z0) à (x1, z1), dessinée dans les deux sens. */
-    private static void side(VertexConsumer buffer, PoseStack.Pose pose, TextureAtlasSprite sprite, int light, float spin,
+    /** Un tronçon droit de la flèche, d'un point à un autre dans l'axe, pavé par pavé d'un bloc : la texture ne s'étire pas. */
+    private static void beam(VertexConsumer buffer, PoseStack.Pose pose, TextureAtlasSprite sprite, int light, float ax, float az,
+            float bx, float bz, float y0, float y1) {
+        float length = Math.abs(bx - ax) + Math.abs(bz - az);
+        if (length <= 0.0F) {
+            return;
+        }
+        float dx = (bx - ax) / length;
+        float dz = (bz - az) / length;
+        for (float from = 0.0F; from < length; from += 1.0F) {
+            float to = Math.min(length, from + 1.0F);
+            float x0 = ax + dx * from;
+            float z0 = az + dz * from;
+            float x1 = ax + dx * to;
+            float z1 = az + dz * to;
+            box(buffer, pose, sprite, light, Math.min(x0, x1) - BOOM, y0, Math.min(z0, z1) - BOOM, Math.max(x0, x1) + BOOM, y1,
+                    Math.max(z0, z1) + BOOM);
+        }
+    }
+
+    /** Un pavé, ses six faces tournées vers l'extérieur, la texture plaquée entière sur chacune. */
+    private static void box(VertexConsumer buffer, PoseStack.Pose pose, TextureAtlasSprite sprite, int light,
             float x0, float y0, float z0, float x1, float y1, float z1) {
+        float u0 = sprite.getU0();
+        float u1 = sprite.getU1();
+        float v0 = sprite.getV0();
+        float v1 = sprite.getV1();
+        float[][][] faces = {
+                {{x0, y1, z0}, {x0, y1, z1}, {x1, y1, z1}, {x1, y1, z0}},
+                {{x0, y0, z0}, {x1, y0, z0}, {x1, y0, z1}, {x0, y0, z1}},
+                {{x0, y0, z0}, {x0, y1, z0}, {x1, y1, z0}, {x1, y0, z0}},
+                {{x1, y0, z1}, {x1, y1, z1}, {x0, y1, z1}, {x0, y0, z1}},
+                {{x0, y0, z1}, {x0, y1, z1}, {x0, y1, z0}, {x0, y0, z0}},
+                {{x1, y0, z0}, {x1, y1, z0}, {x1, y1, z1}, {x1, y0, z1}}};
+        float[][] uv = {{u0, v1}, {u0, v0}, {u1, v0}, {u1, v1}};
+        for (int face = 0; face < faces.length; face++) {
+            int shade = face == 0 ? 0xFFFFFFFF : face == 1 ? 0xFF7F7F7F : face < 4 ? 0xFFCCCCCC : 0xFF999999;
+            for (int k = 0; k < 4; k++) {
+                float[] c = faces[face][k];
+                buffer.addVertex(pose, c[0], c[1], c[2]).setColor(shade).setUv(uv[k][0], uv[k][1]).setLight(light);
+            }
+        }
+    }
+
+    /** Un tronçon du train de tiges, entre deux hauteurs, ses quatre faces dessinées dans les deux sens. */
+    private static void rod(VertexConsumer buffer, PoseStack.Pose pose, TextureAtlasSprite sprite, int light, float spin, float cx, float cz,
+            float low, float high) {
+        float lo = -ROD;
+        float hi = ROD;
+        float[][] sides = {{lo, lo, hi, lo}, {hi, hi, lo, hi}, {lo, hi, lo, lo}, {hi, lo, hi, hi}};
         float u0 = sprite.getU(spin * 0.5F);
         float u1 = sprite.getU(spin * 0.5F + 0.3F);
         float v0 = sprite.getV(0.0F);
-        float v1 = sprite.getV(1.0F);
-        float[][] corners = {{x0, y0, z0, u0, v1}, {x1, y0, z1, u1, v1}, {x1, y1, z1, u1, v0}, {x0, y1, z0, u0, v0}};
-        for (int pass = 0; pass < 2; pass++) {
-            for (int k = 0; k < 4; k++) {
-                float[] c = corners[pass == 0 ? k : 3 - k];
-                buffer.addVertex(pose, c[0], c[1], c[2]).setColor(0xFFB8C0C8).setUv(c[3], c[4]).setLight(light);
+        float v1 = sprite.getV(high - low);
+        for (float[] s : sides) {
+            float[][] corners = {{cx + s[0], low, cz + s[1], u0, v1}, {cx + s[2], low, cz + s[3], u1, v1},
+                    {cx + s[2], high, cz + s[3], u1, v0}, {cx + s[0], high, cz + s[1], u0, v0}};
+            for (int pass = 0; pass < 2; pass++) {
+                for (int k = 0; k < 4; k++) {
+                    float[] c = corners[pass == 0 ? k : 3 - k];
+                    buffer.addVertex(pose, c[0], c[1], c[2]).setColor(0xFFB8C0C8).setUv(c[3], c[4]).setLight(light);
+                }
             }
         }
     }
@@ -124,6 +194,8 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
     @Override
     public AABB getRenderBoundingBox(DerrickBlockEntity derrick) {
         BlockPos pos = derrick.getBlockPos();
-        return new AABB(pos.getX() - 1, derrick.boreBottom(), pos.getZ() - 1, pos.getX() + 2, pos.getY() + DerrickPlan.LEG_HEIGHT + 1, pos.getZ() + 2);
+        int[] area = derrick.area();
+        return new AABB(Math.min(area[0], pos.getX() - 2), derrick.boreBottom(), Math.min(area[1], pos.getZ() - 2),
+                Math.max(area[2] + 1, pos.getX() + 3), pos.getY() + DerrickPlan.MAX_LEVELS + 2, Math.max(area[3] + 1, pos.getZ() + 3));
     }
 }

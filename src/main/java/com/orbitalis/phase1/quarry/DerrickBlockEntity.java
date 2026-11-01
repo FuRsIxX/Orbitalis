@@ -18,14 +18,21 @@ import com.orbitalis.phase1.satellite.SatelliteType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -46,38 +53,39 @@ import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 /**
- * Le derrick au travail. Une fois sa tour complète ({@link DerrickPlan}), il fore le carré choisi sous lui, couche par
- * couche, de son pied jusqu'au fond du monde, et n'en extrait que les sortes choisies ({@link QuarryKinds}) :
+ * La foreuse au travail. Une fois sa tour debout ({@link DerrickPlan}), elle fore la zone qui est devant elle, centrée
+ * sur son axe, couche par couche, de la surface jusqu'à la profondeur que permet sa tour :
  * <ul>
- * <li>il perce d'abord un puits au centre, où descend son train de tiges, puis cherche dans chaque couche ;</li>
- * <li>chaque bloc extrait part dans sa réserve, puis dans les coffres et machines qui touchent le derrick ;</li>
- * <li>avec le remblai, un minerai extrait est remplacé par la roche qui l'entourait : le paysage reste intact, seuls
- * les minerais disparaissent ;</li>
- * <li>la tête chauffe à chaque bloc. L'eau qu'on lui envoie par tuyau la refroidit : bien refroidie, elle fore vite ;
- * trop chaude, elle ralentit, puis s'arrête le temps de redescendre ;</li>
- * <li>un carottage révèle, couche par couche, les sortes présentes sous le derrick. Le premier filon de chaque sorte
- * trouvé dans chaque monde rapporte des points de recherche ;</li>
- * <li>les satellites d'observation de l'agence dressent la carte des filons de tout le carré.</li>
+ * <li>en mode « Filons », elle n'extrait que les sortes cochées ({@link QuarryKinds}) ; elle perce un puits au milieu de
+ * la zone, où descend son train de tiges, suspendu à une flèche qui part du haut de la tour ;</li>
+ * <li>en mode « Tout miner », elle extrait tout ce qui se casse (sauf les fluides et les blocs qui ont un contenu, comme
+ * un coffre ou une machine) ;</li>
+ * <li>la zone est un carré dont on règle le côté, dans la limite de la tour, ou un tronçon entier du monde, celui qui
+ * est devant elle ;</li>
+ * <li>avec le remplacement, chaque bloc extrait est remplacé par le bloc posé dans la case prévue, sinon par la roche
+ * du monde. Cela coûte de l'électricité en plus ;</li>
+ * <li>la tête chauffe à chaque bloc ; l'eau la refroidit ;</li>
+ * <li>un carottage révèle les sortes présentes, couche par couche, et rapporte des points de recherche ;</li>
+ * <li>les satellites d'observation de l'agence dressent la carte des filons de la zone.</li>
  * </ul>
+ * Le butin attend dans la réserve (dix-huit cases) et part dans les coffres et machines qui touchent la tour.
  */
-public class DerrickBlockEntity extends BlockEntity {
+public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
     public static final int ENERGY_CAPACITY = 200_000;
     private static final int ENERGY_INPUT = 4_000;
-    /** Consommation en marche, puis par bloc extrait ou percé, en FE. */
+    /** Consommation en marche, par bloc extrait ou percé, et en plus par bloc remplacé, en FE. */
     public static final int RUN_DRAW = 40;
     public static final int BLOCK_ENERGY = 400;
+    public static final int REPLACE_ENERGY = 300;
     public static final int WATER_CAPACITY = 16_000;
     /** Eau consommée par tick pour refroidir la tête, en mB, et chaleur qu'elle retire. */
     public static final int COOLANT_PER_TICK = 10;
     private static final int COOLING = 15;
     private static final int PASSIVE_COOLING = 1;
-    /** Chaleur, en millièmes : ce qu'ajoute un bloc, le seuil où la tête s'arrête, et celui où elle repart. */
+    /** Chaleur, en millièmes : ce qu'ajoute un bloc, et le seuil où la tête repart après une surchauffe. */
     public static final int HEAT_MAX = 1000;
     private static final int HEAT_PER_BLOCK = 45;
     private static final int HEAT_RESUME = 600;
-    /** Côté du carré foré : de 5 à 33 blocs. */
-    public static final int MIN_RADIUS = 2;
-    public static final int MAX_RADIUS = 16;
     /** Cases examinées par tick. */
     private static final int SCAN_BUDGET = 512;
     /** Durée et coût d'un carottage. */
@@ -87,42 +95,50 @@ public class DerrickBlockEntity extends BlockEntity {
     public static final int BAND = 16;
     /** Points de recherche du premier filon de chaque sorte trouvé dans un monde (le double pour un minerai rare). */
     public static final int CORE_POINTS = 15;
-    /** Un relevé satellite se refait au plus toutes les dix secondes. */
     private static final int SURVEY_AGE = 200;
-    private static final int SLOTS = 18;
+    public static final int OUTPUT_SLOTS = 18;
+    /** Côté d'un tronçon du monde. */
+    public static final int CHUNK = 16;
 
     public enum Status {
         UNFORMED, STOPPED, WORKING, CORING, NO_POWER, OVERHEATED, FULL, FINISHED
     }
 
+    public static final int MODE_ORES = 0;
+    public static final int MODE_ALL = 1;
+
     private final MachineEnergyStorage energy = new MachineEnergyStorage(ENERGY_CAPACITY, ENERGY_INPUT, 0, this::setChanged);
     private final MachineTanks coolant = new MachineTanks(1, WATER_CAPACITY, (tank, fluid) -> fluid == Fluids.WATER, tank -> false, this::setChanged);
-    private final MachineInventory output = new MachineInventory(SLOTS, (slot, stack) -> false, slot -> true, this::setChanged);
+    private final MachineInventory output = new MachineInventory(OUTPUT_SLOTS, (slot, stack) -> false, slot -> true, this::setChanged);
+    /** La case du bloc de remplacement : seul un bloc y entre. */
+    private final MachineInventory replacement = new MachineInventory(1, (slot, stack) -> stack.getItem() instanceof BlockItem, slot -> true,
+            this::setChanged);
 
     private boolean formed;
     private int missing;
+    private int levels;
     private boolean running;
-    private boolean backfill = true;
+    private int mode = MODE_ORES;
+    private boolean replace;
+    private boolean chunk;
     private int filter = QuarryKinds.ALL_ORES;
-    private int radius = 8;
+    /** Côté du carré foré, impair ; borné par la tour. */
+    private int side = 9;
     private int heat;
     private boolean overheated;
-    /** Couche en cours et case suivante à examiner dans cette couche. */
     private int layer = Integer.MIN_VALUE;
     private int cursor;
     private int cooldown;
     private int mined;
     private boolean finished;
     private int ticks;
-    /** Carottage : tick de fin (0 sans carottage en cours), joueur qui l'a demandé, et résultat par couche. */
     private long coreUntil;
     private java.util.UUID coreBy;
     private int[] coreBands = new int[0];
-    /** Dernier relevé satellite. */
     private long surveyAt = Long.MIN_VALUE;
-    private int surveyRadius = -1;
+    private String surveyKey = "";
     private int surveyObservers;
-    private int[] surveyColumns = new int[0];
+    private int[] surveyCells = new int[0];
     private int[] surveyCounts = new int[0];
 
     public DerrickBlockEntity(BlockPos pos, BlockState state) {
@@ -141,8 +157,16 @@ public class DerrickBlockEntity extends BlockEntity {
         return output;
     }
 
+    public MachineInventory getReplacement() {
+        return replacement;
+    }
+
     public boolean isFormed() {
         return formed;
+    }
+
+    public int levels() {
+        return levels;
     }
 
     public int heat() {
@@ -153,9 +177,46 @@ public class DerrickBlockEntity extends BlockEntity {
         return mined;
     }
 
-    /** Fond actuel du puits central, pour le train de tiges ; le pied du derrick s'il n'a pas commencé. */
+    public Direction facing() {
+        BlockState state = getBlockState();
+        return state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
+    }
+
+    /** Couche en cours, pour le train de tiges ; la surface si la foreuse n'a pas commencé. */
     public int boreBottom() {
-        return layer == Integer.MIN_VALUE ? worldPosition.getY() : layer;
+        return layer == Integer.MIN_VALUE ? worldPosition.getY() - 1 : layer;
+    }
+
+    // ------------------------------------------------------------------
+    // La zone forée
+    // ------------------------------------------------------------------
+
+    /** La zone forée : {x0, z0, x1, z1}, bornes comprises. */
+    public int[] area() {
+        Direction facing = facing();
+        if (chunk && DerrickPlan.maxSide(levels) > CHUNK) {
+            // Le tronçon du monde qui est devant la tour, à mi-chemin d'un tronçon de profondeur.
+            BlockPos ahead = worldPosition.relative(facing, DerrickPlan.GAP + CHUNK / 2);
+            int x0 = (ahead.getX() >> 4) << 4;
+            int z0 = (ahead.getZ() >> 4) << 4;
+            return new int[] {x0, z0, x0 + CHUNK - 1, z0 + CHUNK - 1};
+        }
+        int size = effectiveSide();
+        BlockPos centre = worldPosition.relative(facing, DerrickPlan.GAP + size / 2);
+        return new int[] {centre.getX() - size / 2, centre.getZ() - size / 2, centre.getX() + size / 2, centre.getZ() + size / 2};
+    }
+
+    /** Côté réellement foré : celui demandé, dans la limite de la tour. */
+    public int effectiveSide() {
+        int max = Math.max(3, DerrickPlan.maxSide(levels));
+        return Math.clamp(side, 3, max) | 1;
+    }
+
+    /** Fond de la zone : la profondeur que permet la tour, ou le fond du monde. */
+    private int bottom(ServerLevel level) {
+        int depth = DerrickPlan.depth(levels);
+        int floor = level.getMinY() + 1;
+        return depth == 0 ? floor : Math.max(floor, worldPosition.getY() - depth);
     }
 
     public Status status() {
@@ -186,18 +247,8 @@ public class DerrickBlockEntity extends BlockEntity {
 
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (ticks++ % 20 == 0) {
-            List<DerrickPlan.Piece> gaps = DerrickPlan.missing(level, pos);
-            boolean nowFormed = gaps.isEmpty();
-            if (nowFormed != formed || gaps.size() != missing) {
-                formed = nowFormed;
-                missing = gaps.size();
-                if (!formed) {
-                    running = false;
-                }
-                sync();
-            }
+            checkStructure();
         }
-        // La tête refroidit : vite avec de l'eau, lentement sans.
         if (heat > 0) {
             FluidStack water = coolant.getFluid(0);
             if (water.getAmount() >= COOLANT_PER_TICK) {
@@ -217,7 +268,7 @@ public class DerrickBlockEntity extends BlockEntity {
                 finishCore(level);
             }
         } else if (formed && running && !overheated) {
-            working = dig(level, pos);
+            working = dig(level);
         }
         if (state.getValue(BlockStateProperties.LIT) != working) {
             level.setBlock(pos, state.setValue(BlockStateProperties.LIT, working), Block.UPDATE_ALL);
@@ -227,46 +278,73 @@ public class DerrickBlockEntity extends BlockEntity {
         }
     }
 
+    /** Relève la tour : son socle, ses étages. */
+    public void checkStructure() {
+        if (level == null) {
+            return;
+        }
+        Direction facing = facing();
+        int nowMissing = DerrickPlan.missing(level, worldPosition, facing).size();
+        int nowLevels = DerrickPlan.levels(level, worldPosition, facing);
+        boolean nowFormed = nowMissing == 0 && nowLevels >= DerrickPlan.MIN_LEVELS;
+        if (nowFormed != formed || nowMissing != missing || nowLevels != levels) {
+            formed = nowFormed;
+            missing = nowMissing;
+            levels = nowLevels;
+            if (!formed) {
+                running = false;
+            }
+            sync();
+        }
+    }
+
     /** Un tick de forage. Renvoie vrai si la tête a travaillé. */
-    private boolean dig(ServerLevel level, BlockPos pos) {
+    private boolean dig(ServerLevel level) {
         if (!energy.consume(RUN_DRAW) || isFull()) {
             return false;
         }
+        int[] area = area();
+        int width = area[2] - area[0] + 1;
+        int cells = width * (area[3] - area[1] + 1);
         if (layer == Integer.MIN_VALUE) {
-            layer = pos.getY() - 1;
+            layer = worldPosition.getY() - 1;
             cursor = 0;
-            bore(level, pos);
+            bore(level, area);
         }
         if (cooldown > 0) {
             cooldown--;
             return true;
         }
-        int side = 2 * radius + 1;
-        int cells = side * side;
+        Direction facing = facing();
         for (int scanned = 0; scanned < SCAN_BUDGET; scanned++) {
             if (cursor >= cells) {
-                // Couche suivante, jusqu'au fond du monde.
                 layer--;
                 cursor = 0;
-                if (layer <= level.getMinY()) {
+                if (layer < bottom(level)) {
                     running = false;
                     finished = true;
-                    layer = level.getMinY() + 1;
+                    layer = bottom(level);
                     sync();
                     return false;
                 }
-                bore(level, pos);
+                bore(level, area);
                 sync();
                 return true;
             }
-            BlockPos target = new BlockPos(pos.getX() - radius + cursor % side, layer, pos.getZ() - radius + cursor / side);
-            BlockState state = level.getBlockState(target);
-            int kind = QuarryKinds.of(state);
-            if (kind < 0 || (filter & (1 << kind)) == 0 || state.getDestroySpeed(level, target) < 0) {
+            int x = area[0] + cursor % width;
+            int z = area[1] + cursor / width;
+            BlockPos target = new BlockPos(x, layer, z);
+            if (DerrickPlan.inFootprint(worldPosition, facing, x, z)) {
                 cursor++;
                 continue;
             }
-            if (energy.getEnergy() < BLOCK_ENERGY) {
+            BlockState state = level.getBlockState(target);
+            int kind = QuarryKinds.of(state);
+            if (!wanted(level, target, state, kind)) {
+                cursor++;
+                continue;
+            }
+            if (energy.getEnergy() < BLOCK_ENERGY + (replace ? REPLACE_ENERGY : 0)) {
                 return false;
             }
             if (!extract(level, target, state, kind)) {
@@ -278,17 +356,34 @@ public class DerrickBlockEntity extends BlockEntity {
         return true;
     }
 
-    /** Perce le puits central à la couche en cours : ce qu'il traverse n'est pas gardé, sauf un minerai voulu. */
-    private void bore(ServerLevel level, BlockPos pos) {
-        BlockPos shaft = new BlockPos(pos.getX(), layer, pos.getZ());
+    /** Vrai si ce bloc est à extraire, selon le mode. */
+    private boolean wanted(ServerLevel level, BlockPos target, BlockState state, int kind) {
+        if (state.isAir() || !state.getFluidState().isEmpty() || state.getDestroySpeed(level, target) < 0) {
+            return false;
+        }
+        if (mode == MODE_ALL) {
+            // Un coffre, une machine : on ne les casse pas, leur contenu serait perdu.
+            return !state.hasBlockEntity() && !state.is(ModBlocks.DRILL_BASE.get()) && !state.is(ModBlocks.DRILL_MAST.get());
+        }
+        return kind >= 0 && (filter & (1 << kind)) != 0;
+    }
+
+    /** En mode « Filons », perce le puits au milieu de la zone : ce qu'il traverse n'est pas gardé, sauf un minerai voulu. */
+    private void bore(ServerLevel level, int[] area) {
+        if (mode != MODE_ORES) {
+            return;
+        }
+        BlockPos shaft = new BlockPos((area[0] + area[2]) / 2, layer, (area[1] + area[3]) / 2);
         BlockState state = level.getBlockState(shaft);
-        if (state.isAir() || !state.getFluidState().isEmpty() || state.getDestroySpeed(level, shaft) < 0) {
+        if (state.isAir() || !state.getFluidState().isEmpty() || state.getDestroySpeed(level, shaft) < 0 || state.hasBlockEntity()) {
             return;
         }
         int kind = QuarryKinds.of(state);
         if (kind >= 0 && (filter & (1 << kind)) != 0) {
+            boolean wasReplacing = replace;
+            replace = false;
             extract(level, shaft, state, kind);
-            level.setBlock(shaft, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            replace = wasReplacing;
             return;
         }
         if (energy.consume(BLOCK_ENERGY)) {
@@ -297,7 +392,7 @@ public class DerrickBlockEntity extends BlockEntity {
         }
     }
 
-    /** Extrait un bloc : son butin dans la réserve, le remblai ou l'air à sa place, et la tête qui chauffe. */
+    /** Extrait un bloc : son butin dans la réserve, son remplaçant ou l'air à sa place, et la tête qui chauffe. */
     private boolean extract(ServerLevel level, BlockPos target, BlockState state, int kind) {
         List<ItemStack> drops = Block.getDrops(state, level, target, level.getBlockEntity(target), null, new ItemStack(Items.NETHERITE_PICKAXE));
         if (!fits(drops)) {
@@ -306,7 +401,12 @@ public class DerrickBlockEntity extends BlockEntity {
         drops.forEach(this::store);
         energy.consume(BLOCK_ENERGY);
         level.levelEvent(2001, target, Block.getId(state));
-        level.setBlock(target, backfill ? filler(level, state, kind) : Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        BlockState after = Blocks.AIR.defaultBlockState();
+        if (replace) {
+            energy.consume(REPLACE_ENERGY);
+            after = replacementFor(level, state, kind);
+        }
+        level.setBlock(target, after, Block.UPDATE_ALL);
         mined++;
         heat = Math.min(HEAT_MAX, heat + HEAT_PER_BLOCK);
         if (heat >= HEAT_MAX) {
@@ -317,7 +417,33 @@ public class DerrickBlockEntity extends BlockEntity {
         return true;
     }
 
-    /** La roche qui entourait le minerai : celle du monde, et l'ardoise des profondeurs ou la netherrack s'il le faut. */
+    /**
+     * Le bloc remis à la place d'un bloc extrait : celui de la case de remplacement, qu'on regarnit avec ce que la réserve
+     * en contient ; la case vide, la roche du monde.
+     */
+    private BlockState replacementFor(ServerLevel level, BlockState mined, int kind) {
+        ItemStack held = replacement.getStack(0);
+        if (!held.isEmpty() && held.getItem() instanceof BlockItem blockItem) {
+            Block block = blockItem.getBlock();
+            held.shrink(1);
+            if (held.isEmpty()) {
+                // La réserve regarnit la case, si elle en a : de la pierre extraite pour remettre de la pierre.
+                for (int slot = 0; slot < OUTPUT_SLOTS; slot++) {
+                    ItemStack stored = output.getStack(slot);
+                    if (stored.is(blockItem)) {
+                        held = stored.copy();
+                        output.setStack(slot, ItemStack.EMPTY);
+                        break;
+                    }
+                }
+            }
+            replacement.setStack(0, held);
+            return block.defaultBlockState();
+        }
+        return filler(level, mined, kind);
+    }
+
+    /** La roche du monde : celle de la Lune, de Mars, de Titan ou d'Europe, sinon la pierre, l'ardoise ou la netherrack. */
     static BlockState filler(ServerLevel level, BlockState state, int kind) {
         String dimension = level.dimension().identifier().getPath();
         if (dimension.contains("moon")) {
@@ -332,17 +458,17 @@ public class DerrickBlockEntity extends BlockEntity {
         if (dimension.contains("europa")) {
             return ModBlocks.EUROPA_ICE.get().defaultBlockState();
         }
-        if (state.is(Tags.Blocks.ORES_IN_GROUND_NETHERRACK)) {
+        if (state.is(Tags.Blocks.ORES_IN_GROUND_NETHERRACK) || state.is(Blocks.NETHERRACK)) {
             return Blocks.NETHERRACK.defaultBlockState();
         }
-        if (state.is(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE)) {
+        if (state.is(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE) || state.is(Blocks.DEEPSLATE)) {
             return Blocks.DEEPSLATE.defaultBlockState();
         }
         return Blocks.STONE.defaultBlockState();
     }
 
     private boolean isFull() {
-        for (int slot = 0; slot < SLOTS; slot++) {
+        for (int slot = 0; slot < OUTPUT_SLOTS; slot++) {
             if (output.getStack(slot).isEmpty()) {
                 return false;
             }
@@ -353,7 +479,7 @@ public class DerrickBlockEntity extends BlockEntity {
     /** Vrai si tout ce butin trouve sa place dans la réserve. */
     private boolean fits(List<ItemStack> drops) {
         int free = 0;
-        for (int slot = 0; slot < SLOTS; slot++) {
+        for (int slot = 0; slot < OUTPUT_SLOTS; slot++) {
             if (output.getStack(slot).isEmpty()) {
                 free++;
             }
@@ -362,7 +488,7 @@ public class DerrickBlockEntity extends BlockEntity {
     }
 
     private void store(ItemStack stack) {
-        for (int slot = 0; slot < SLOTS && !stack.isEmpty(); slot++) {
+        for (int slot = 0; slot < OUTPUT_SLOTS && !stack.isEmpty(); slot++) {
             ItemStack held = output.getStack(slot);
             if (!held.isEmpty() && ItemStack.isSameItemSameComponents(held, stack) && held.getCount() < held.getMaxStackSize()) {
                 int moved = Math.min(stack.getCount(), held.getMaxStackSize() - held.getCount());
@@ -371,7 +497,7 @@ public class DerrickBlockEntity extends BlockEntity {
                 output.setStack(slot, held);
             }
         }
-        for (int slot = 0; slot < SLOTS && !stack.isEmpty(); slot++) {
+        for (int slot = 0; slot < OUTPUT_SLOTS && !stack.isEmpty(); slot++) {
             if (output.getStack(slot).isEmpty()) {
                 output.setStack(slot, stack.copy());
                 stack.setCount(0);
@@ -379,24 +505,45 @@ public class DerrickBlockEntity extends BlockEntity {
         }
     }
 
-    /** Le butin part dans les coffres et machines qui touchent le derrick (sauf par le dessous, où est le puits). */
+    /** Le butin part dans les coffres et machines qui touchent le bloc de commande ou le socle. */
     private void pushOutput(ServerLevel level, BlockPos pos) {
-        for (Direction direction : Direction.values()) {
-            if (direction == Direction.DOWN) {
-                continue;
-            }
-            ResourceHandler<ItemResource> target = level.getCapability(Capabilities.Item.BLOCK, pos.relative(direction), direction.getOpposite());
-            if (target != null) {
-                ResourceHandlerUtil.move(output.automationView(), target, resource -> true, 64, null);
+        List<BlockPos> sources = new ArrayList<>();
+        sources.add(pos);
+        for (BlockPos cell : DerrickPlan.base(facing())) {
+            sources.add(pos.offset(cell));
+        }
+        for (BlockPos source : sources) {
+            for (Direction direction : Direction.values()) {
+                BlockPos neighbour = source.relative(direction);
+                BlockState state = level.getBlockState(neighbour);
+                if (neighbour.equals(pos) || state.is(ModBlocks.DRILL_BASE.get()) || state.is(ModBlocks.DRILL_MAST.get())) {
+                    continue;
+                }
+                ResourceHandler<ItemResource> target = level.getCapability(Capabilities.Item.BLOCK, neighbour, direction.getOpposite());
+                if (target != null) {
+                    ResourceHandlerUtil.move(output.automationView(), target, resource -> true, 64, null);
+                }
             }
         }
+    }
+
+    /** La foreuse dont ce bloc de socle fait partie, ou {@code null}. */
+    public static DerrickBlockEntity ownerOfBase(net.minecraft.world.level.Level level, BlockPos basePos) {
+        for (Direction facing : Direction.Plane.HORIZONTAL) {
+            for (BlockPos cell : DerrickPlan.base(facing)) {
+                BlockPos origin = basePos.subtract(cell);
+                if (level.getBlockEntity(origin) instanceof DerrickBlockEntity derrick && derrick.facing() == facing) {
+                    return derrick;
+                }
+            }
+        }
+        return null;
     }
 
     // ------------------------------------------------------------------
     // Carottage et relevé satellite
     // ------------------------------------------------------------------
 
-    /** Lance un carottage, demandé par ce joueur. Renvoie ce qui l'empêche, ou {@code null}. */
     private Component startCore(ServerLevel level, ServerPlayer player) {
         if (!formed) {
             return Component.translatable("derrick.orbitalis.status.unformed");
@@ -414,13 +561,13 @@ public class DerrickBlockEntity extends BlockEntity {
     }
 
     /**
-     * Fin du carottage : les sortes présentes dans chaque couche de seize blocs, sous tout le carré. Le premier filon de
+     * Fin du carottage : les sortes présentes dans chaque couche de seize blocs, sous toute la zone. Le premier filon de
      * chaque sorte trouvé dans ce monde rapporte des points de recherche à l'agence de celui qui l'a demandé.
      */
     private void finishCore(ServerLevel level) {
         coreUntil = 0;
         int top = worldPosition.getY() - 1;
-        int bands = Math.max(1, (top - level.getMinY()) / BAND + 1);
+        int bands = Math.max(1, (top - bottom(level)) / BAND + 1);
         int[] result = new int[bands];
         scan(level, (x, y, z, kind) -> result[Math.min(bands - 1, (top - y) / BAND)] |= 1 << kind);
         coreBands = result;
@@ -454,40 +601,38 @@ public class DerrickBlockEntity extends BlockEntity {
         void visit(int x, int y, int z, int kind);
     }
 
-    /** Parcourt toutes les sortes reconnues sous le carré, du pied du derrick au fond du monde. */
+    /** Parcourt toutes les sortes reconnues sous la zone, de la surface au fond foré. */
     private void scan(ServerLevel level, Visitor visitor) {
-        int x0 = worldPosition.getX() - radius;
-        int x1 = worldPosition.getX() + radius;
-        int z0 = worldPosition.getZ() - radius;
-        int z1 = worldPosition.getZ() + radius;
+        int[] area = area();
         int top = worldPosition.getY() - 1;
-        for (int cx = x0 >> 4; cx <= x1 >> 4; cx++) {
-            for (int cz = z0 >> 4; cz <= z1 >> 4; cz++) {
-                LevelChunk chunk = level.getChunkSource().getChunkNow(cx, cz);
-                if (chunk == null) {
+        int floor = bottom(level);
+        for (int cx = area[0] >> 4; cx <= area[2] >> 4; cx++) {
+            for (int cz = area[1] >> 4; cz <= area[3] >> 4; cz++) {
+                LevelChunk chunkAt = level.getChunkSource().getChunkNow(cx, cz);
+                if (chunkAt == null) {
                     continue;
                 }
-                LevelChunkSection[] sections = chunk.getSections();
+                LevelChunkSection[] sections = chunkAt.getSections();
                 for (int index = 0; index < sections.length; index++) {
                     LevelChunkSection section = sections[index];
-                    int baseY = chunk.getSectionYFromSectionIndex(index) << 4;
+                    int baseY = chunkAt.getSectionYFromSectionIndex(index) << 4;
                     // La plupart des tranches n'ont rien à extraire : leur palette le dit sans les parcourir.
-                    if (baseY > top || section.hasOnlyAir() || !section.maybeHas(state -> QuarryKinds.of(state) >= 0)) {
+                    if (baseY > top || baseY + 15 < floor || section.hasOnlyAir() || !section.maybeHas(state -> QuarryKinds.of(state) >= 0)) {
                         continue;
                     }
                     for (int y = 0; y < 16; y++) {
                         int worldY = baseY + y;
-                        if (worldY > top) {
-                            break;
+                        if (worldY > top || worldY < floor) {
+                            continue;
                         }
                         for (int z = 0; z < 16; z++) {
                             int worldZ = (cz << 4) + z;
-                            if (worldZ < z0 || worldZ > z1) {
+                            if (worldZ < area[1] || worldZ > area[3]) {
                                 continue;
                             }
                             for (int x = 0; x < 16; x++) {
                                 int worldX = (cx << 4) + x;
-                                if (worldX < x0 || worldX > x1) {
+                                if (worldX < area[0] || worldX > area[2]) {
                                     continue;
                                 }
                                 int kind = QuarryKinds.of(section.getBlockState(x, y, z));
@@ -502,32 +647,33 @@ public class DerrickBlockEntity extends BlockEntity {
         }
     }
 
-    /** Refait le relevé satellite s'il est trop ancien, ou si le carré a changé. */
+    /** Refait le relevé satellite s'il est trop ancien, ou si la zone a changé. */
     private void survey(ServerLevel level, ServerPlayer player) {
         long now = level.getGameTime();
-        if (surveyRadius == radius && now - surveyAt < SURVEY_AGE) {
+        int[] area = area();
+        String key = area[0] + "," + area[1] + "," + area[2] + "," + area[3] + "," + levels;
+        if (key.equals(surveyKey) && now - surveyAt < SURVEY_AGE) {
             return;
         }
         surveyObservers = SatelliteManager.of(level.getServer(), ResearchManager.agencyKey(player))
                 .active(SatelliteType.OBSERVATION, SatelliteManager.now(level.getServer()), SatelliteManager.limited());
         surveyAt = now;
-        surveyRadius = radius;
-        if (surveyObservers <= 0) {
-            surveyColumns = new int[0];
+        surveyKey = key;
+        if (surveyObservers <= 0 || !formed) {
+            surveyCells = new int[0];
             surveyCounts = new int[0];
             return;
         }
-        int side = 2 * radius + 1;
-        int[][] perColumn = new int[side * side][QuarryKinds.COUNT];
+        int width = area[2] - area[0] + 1;
+        int depth = area[3] - area[1] + 1;
+        int[][] perColumn = new int[width * depth][QuarryKinds.COUNT];
         int[] counts = new int[QuarryKinds.COUNT];
-        int x0 = worldPosition.getX() - radius;
-        int z0 = worldPosition.getZ() - radius;
         scan(level, (x, y, z, kind) -> {
-            perColumn[(z - z0) * side + (x - x0)][kind]++;
+            perColumn[(z - area[1]) * width + (x - area[0])][kind]++;
             counts[kind]++;
         });
-        int[] columns = new int[side * side];
-        for (int cell = 0; cell < columns.length; cell++) {
+        int[] cells = new int[width * depth];
+        for (int cell = 0; cell < cells.length; cell++) {
             int best = -1;
             int bestCount = 0;
             for (int kind = 0; kind < QuarryKinds.COUNT; kind++) {
@@ -538,26 +684,67 @@ public class DerrickBlockEntity extends BlockEntity {
                     bestCount = weight;
                 }
             }
-            columns[cell] = best + 1;
+            cells[cell] = best + 1;
         }
-        surveyColumns = columns;
+        surveyCells = cells;
         surveyCounts = counts;
     }
 
     // ------------------------------------------------------------------
-    // Écran
+    // Interface
     // ------------------------------------------------------------------
 
     public static final int ACTION_REFRESH = 0;
     public static final int ACTION_RUN = 1;
-    public static final int ACTION_RADIUS = 2;
-    public static final int ACTION_BACKFILL = 3;
+    public static final int ACTION_SIDE = 2;
+    public static final int ACTION_REPLACE = 3;
     public static final int ACTION_FILTER = 4;
     public static final int ACTION_CORE = 5;
+    public static final int ACTION_MODE = 6;
+    public static final int ACTION_CHUNK = 7;
 
-    /** Ouvre l'écran du joueur. */
+    /** Valeurs synchronisées vers l'écran à chaque tick : énergie (en deux moitiés), capacité, marche, eau, chaleur, état. */
+    private final ContainerData data = new ContainerData() {
+        @Override
+        public int get(int index) {
+            return switch (index) {
+                case 0 -> energy.getEnergy() & 0xFFFF;
+                case 1 -> energy.getEnergy() >>> 16;
+                case 2 -> ENERGY_CAPACITY & 0xFFFF;
+                case 3 -> ENERGY_CAPACITY >>> 16;
+                case 4 -> getBlockState().getValue(BlockStateProperties.LIT) ? 1 : 0;
+                case 5 -> coolant.getFluid(0).getAmount();
+                case 6 -> heat;
+                case 7 -> status().ordinal();
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+        }
+
+        @Override
+        public int getCount() {
+            return DerrickMenu.DATA_COUNT;
+        }
+    };
+
+    @Override
+    public Component getDisplayName() {
+        return getBlockState().getBlock().getName();
+    }
+
+    @Override
+    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+        return new DerrickMenu(containerId, playerInventory, this, output, replacement, data);
+    }
+
+    /** Ouvre l'écran du joueur, puis lui envoie l'état complet (carte, carottage, réglages). */
     public void open(ServerPlayer player) {
-        ModNetwork.send(player, status(player, true));
+        checkStructure();
+        player.openMenu(this, (RegistryFriendlyByteBuf buffer) -> buffer.writeBlockPos(worldPosition));
+        ModNetwork.send(player, status(player));
     }
 
     /** Une commande de l'écran ; la réponse est l'état à jour, et, s'il y en a, ce qui a empêché la commande. */
@@ -573,21 +760,30 @@ public class DerrickBlockEntity extends BlockEntity {
                 } else {
                     running = !running;
                     if (running && finished) {
-                        // Un nouveau départ reprend tout le carré, du haut.
                         finished = false;
                         layer = Integer.MIN_VALUE;
                     }
                 }
             }
-            case ACTION_RADIUS -> {
-                int wanted = Math.clamp(radius + Integer.signum(argument), MIN_RADIUS, MAX_RADIUS);
-                if (wanted != radius) {
-                    radius = wanted;
-                    // Un autre carré : on reprend la couche en cours depuis son début.
+            case ACTION_SIDE -> {
+                int max = Math.max(3, DerrickPlan.maxSide(levels));
+                side = Math.clamp(effectiveSide() + 2 * Integer.signum(argument), 3, max);
+                chunk = false;
+                cursor = 0;
+            }
+            case ACTION_CHUNK -> {
+                if (DerrickPlan.maxSide(levels) > CHUNK) {
+                    chunk = !chunk;
                     cursor = 0;
+                } else {
+                    refused = Component.translatable("derrick.orbitalis.chunk.too_small");
                 }
             }
-            case ACTION_BACKFILL -> backfill = !backfill;
+            case ACTION_MODE -> {
+                mode = mode == MODE_ORES ? MODE_ALL : MODE_ORES;
+                cursor = 0;
+            }
+            case ACTION_REPLACE -> replace = !replace;
             case ACTION_FILTER -> {
                 if (argument >= 0 && argument < QuarryKinds.COUNT) {
                     filter ^= 1 << argument;
@@ -604,22 +800,24 @@ public class DerrickBlockEntity extends BlockEntity {
         if (refused != null) {
             player.sendSystemMessage(refused.copy().withStyle(ChatFormatting.GOLD), true);
         }
-        ModNetwork.send(player, status(player, false));
+        ModNetwork.send(player, status(player));
     }
 
-    private DerrickStatusPayload status(ServerPlayer player, boolean open) {
+    private DerrickStatusPayload status(ServerPlayer player) {
         ServerLevel serverLevel = (ServerLevel) level;
         survey(serverLevel, player);
         int stored = 0;
-        for (int slot = 0; slot < SLOTS; slot++) {
+        for (int slot = 0; slot < OUTPUT_SLOTS; slot++) {
             stored += output.getStack(slot).getCount();
         }
         long now = serverLevel.getGameTime();
         int core = coreUntil <= 0 ? -1 : (int) Math.clamp(100 - (coreUntil - now) * 100 / CORE_TICKS, 0, 100);
-        return new DerrickStatusPayload(worldPosition, open, status().ordinal(), missing, running, energy.getEnergy(), ENERGY_CAPACITY,
-                coolant.getFluid(0).getAmount(), WATER_CAPACITY, heat, radius, backfill, filter, boreBottom(), worldPosition.getY() - 1,
-                serverLevel.getMinY(), mined, stored, core, coreBands, surveyObservers, surveyColumns.length == 0 ? 0 : 2 * surveyRadius + 1,
-                surveyColumns, surveyCounts);
+        int[] area = area();
+        boolean chunked = chunk && DerrickPlan.maxSide(levels) > CHUNK;
+        return new DerrickStatusPayload(worldPosition, status().ordinal(), missing, running, mode, chunked, levels,
+                chunked ? CHUNK : effectiveSide(), DerrickPlan.maxSide(levels), DerrickPlan.depth(levels), replace, filter, boreBottom(),
+                worldPosition.getY() - 1, bottom(serverLevel), mined, stored, core, coreBands, surveyObservers,
+                surveyCells.length == 0 ? 0 : area[2] - area[0] + 1, surveyCells, surveyCounts);
     }
 
     // ------------------------------------------------------------------
@@ -643,13 +841,18 @@ public class DerrickBlockEntity extends BlockEntity {
         return saveWithoutMetadata(registries);
     }
 
-    /** Cassé, le derrick garde son énergie, son eau et son butin sur son objet ; reposé, il les retrouve. */
+    /** Cassée, la foreuse garde son énergie, son eau, son butin et son bloc de remplacement sur son objet. */
     @Override
     protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         energy.storeIn(components);
         coolant.storeIn(components);
-        output.storeIn(components);
+        List<ItemStack> all = new ArrayList<>(output.copyToList());
+        all.add(replacement.getStack(0).copy());
+        if (all.stream().anyMatch(stack -> !stack.isEmpty())) {
+            components.set(net.minecraft.core.component.DataComponents.CONTAINER,
+                    net.minecraft.world.item.component.ItemContainerContents.fromItems(all));
+        }
     }
 
     @Override
@@ -657,7 +860,15 @@ public class DerrickBlockEntity extends BlockEntity {
         super.applyImplicitComponents(components);
         energy.restoreFrom(components);
         coolant.restoreFrom(components);
-        output.restoreFrom(components);
+        var contents = components.get(net.minecraft.core.component.DataComponents.CONTAINER);
+        if (contents != null) {
+            net.minecraft.core.NonNullList<ItemStack> stacks = net.minecraft.core.NonNullList.withSize(OUTPUT_SLOTS + 1, ItemStack.EMPTY);
+            contents.copyInto(stacks);
+            for (int slot = 0; slot < OUTPUT_SLOTS; slot++) {
+                output.setStack(slot, stacks.get(slot));
+            }
+            replacement.setStack(0, stacks.get(OUTPUT_SLOTS));
+        }
     }
 
     @Override
@@ -666,11 +877,15 @@ public class DerrickBlockEntity extends BlockEntity {
         energy.serialize(out.child("energy"));
         coolant.serialize(out.child("coolant"));
         output.serialize(out.child("output"));
+        replacement.serialize(out.child("replacement"));
         out.putBoolean("formed", formed);
+        out.putInt("levels", levels);
         out.putBoolean("running", running);
-        out.putBoolean("backfill", backfill);
+        out.putInt("mode", mode);
+        out.putBoolean("replace", replace);
+        out.putBoolean("chunk", chunk);
         out.putInt("filter", filter);
-        out.putInt("radius", radius);
+        out.putInt("side", side);
         out.putInt("heat", heat);
         out.putBoolean("overheated", overheated);
         out.putInt("layer", layer);
@@ -690,11 +905,15 @@ public class DerrickBlockEntity extends BlockEntity {
         energy.deserialize(in.childOrEmpty("energy"));
         coolant.deserialize(in.childOrEmpty("coolant"));
         output.deserialize(in.childOrEmpty("output"));
+        replacement.deserialize(in.childOrEmpty("replacement"));
         formed = in.getBooleanOr("formed", false);
+        levels = in.getIntOr("levels", 0);
         running = in.getBooleanOr("running", false);
-        backfill = in.getBooleanOr("backfill", true);
+        mode = in.getIntOr("mode", MODE_ORES);
+        replace = in.getBooleanOr("replace", false);
+        chunk = in.getBooleanOr("chunk", false);
         filter = in.getIntOr("filter", QuarryKinds.ALL_ORES);
-        radius = Math.clamp(in.getIntOr("radius", 8), MIN_RADIUS, MAX_RADIUS);
+        side = in.getIntOr("side", 9);
         heat = in.getIntOr("heat", 0);
         overheated = in.getBooleanOr("overheated", false);
         layer = in.getIntOr("layer", Integer.MIN_VALUE);
@@ -706,47 +925,39 @@ public class DerrickBlockEntity extends BlockEntity {
         coreBands = in.getIntArray("core_bands").orElse(new int[0]);
     }
 
-    /** Pour les tests : le derrick a fini de se relever, sans attendre son tick. */
-    public void checkStructure() {
-        if (level != null) {
-            List<DerrickPlan.Piece> gaps = DerrickPlan.missing(level, worldPosition);
-            formed = gaps.isEmpty();
-            missing = gaps.size();
-        }
-    }
+    // ------------------------------------------------------------------
+    // Pour les tests et les bâtisseurs
+    // ------------------------------------------------------------------
 
-    /** Pour les tests : lance ou arrête le forage. */
     public void setRunning(boolean running) {
         this.running = running && formed;
     }
 
-    public void setBackfill(boolean backfill) {
-        this.backfill = backfill;
+    public void setReplace(boolean replace) {
+        this.replace = replace;
     }
 
-    public void setRadius(int radius) {
-        this.radius = Math.clamp(radius, MIN_RADIUS, MAX_RADIUS);
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    public void setSide(int side) {
+        this.side = side;
+        this.chunk = false;
+    }
+
+    public void setChunk(boolean chunk) {
+        this.chunk = chunk;
     }
 
     public int[] coreBands() {
         return coreBands;
     }
 
-    /** Pour les tests : lance un carottage et le termine aussitôt. */
+    /** Lance un carottage et le termine aussitôt. */
     public void coreNow(ServerPlayer player) {
         if (level instanceof ServerLevel serverLevel && startCore(serverLevel, player) == null) {
             finishCore(serverLevel);
         }
-    }
-
-    /** Liste des sortes qu'on voit sur la carte du relevé, pour les tests. */
-    public List<Integer> surveyedKinds() {
-        List<Integer> kinds = new ArrayList<>();
-        for (int kind = 0; kind < surveyCounts.length; kind++) {
-            if (surveyCounts[kind] > 0) {
-                kinds.add(kind);
-            }
-        }
-        return kinds;
     }
 }

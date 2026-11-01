@@ -349,19 +349,19 @@ public final class TestMap {
             sign(level, at.south(3), tiers.get(k).getName(), null, null);
         }
 
-        // Le derrick, plus loin à l'est : sa tour complète, une source d'énergie et un réservoir d'eau créatifs contre
-        // ses flancs, et un coffre où part son butin.
+        // La foreuse, plus loin à l'est, tournée vers le sud : sa tour la plus haute (3×3×9), une source d'énergie et un
+        // réservoir d'eau créatifs contre les flancs du socle, et un coffre derrière, où part son butin.
         BlockPos derrick = new BlockPos(px + 22, Y, z0 + 1);
         level.setBlock(derrick, ModBlocks.DRILL_DERRICK.get().defaultBlockState()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH), Block.UPDATE_ALL);
-        for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces()) {
+        for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces(Direction.SOUTH, com.orbitalis.phase1.quarry.DerrickPlan.MAX_LEVELS)) {
             level.setBlock(derrick.offset(piece.offset()), piece.block().defaultBlockState(), Block.UPDATE_ALL);
         }
-        level.setBlock(derrick.west(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
-        level.setBlock(derrick.east(), net.minecraft.core.registries.BuiltInRegistries.BLOCK
+        level.setBlock(derrick.north().west(2), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(derrick.north().east(2), net.minecraft.core.registries.BuiltInRegistries.BLOCK
                 .getValue(com.orbitalis.Orbitalis.id("creative_tank_water")).defaultBlockState(), Block.UPDATE_ALL);
-        level.setBlock(derrick.north(), net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
-        sign(level, derrick.south(3), ModBlocks.DRILL_DERRICK.get().getName(), null, null);
+        level.setBlock(derrick.north(3), net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
+        sign(level, derrick.south().west(2), ModBlocks.DRILL_DERRICK.get().getName(), null, null);
     }
 
     /**

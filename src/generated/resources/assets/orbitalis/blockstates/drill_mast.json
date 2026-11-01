@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "orbitalis:block/drill_mast",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "orbitalis:block/drill_mast"
+    },
+    "axis=z": {
+      "model": "orbitalis:block/drill_mast",
+      "x": 90
+    }
+  }
+}

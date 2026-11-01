@@ -611,6 +611,94 @@ def pump_model(lit):
     return {"parent": "minecraft:block/block", "textures": textures, "elements": elements(pump_parts(), lit)}
 
 
+# ---------------------------------------------------------------------------
+# La tour de la foreuse : son socle et ses mâts
+# ---------------------------------------------------------------------------
+DRILL_YELLOW = "#E2B132"
+
+
+def hazard_row(img, y0, y1):
+    for y in range(y0, y1 + 1):
+        for x in range(SIZE):
+            put(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
+
+
+def drill_base_top():
+    """Dessus du socle : une tôle striée d'acier sombre, bordée d'une bande de danger, et ses boulons."""
+    img = canvas("#4A5058")
+    for y in range(SIZE):
+        for x in range(SIZE):
+            if (x + y) % 4 == 0 or (x - y) % 4 == 0:
+                put(img, x, y, "#59616A")
+            if x in (0, 15) or y in (0, 15):
+                put(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
+    bolts(img, ((2, 2), (13, 2), (2, 13), (13, 13)))
+    return img
+
+
+def drill_base_side():
+    """Flanc du socle : une bande de danger en haut, une tôle d'acier, une grille d'aération et ses rivets."""
+    img = shell(31, "#5A616A")
+    hazard_row(img, 1, 3)
+    for x in range(SIZE):
+        put(img, x, 0, EDGE)
+        put(img, x, 4, shade("#5A616A", 0.35))
+    slats(img, 4, 11, 9, 12)
+    bolts(img, ((2, 6), (13, 6), (2, 13), (13, 13)))
+    return img
+
+
+def drill_mast_side():
+    """Flanc d'un mât : un treillis d'acier, deux montants jaunes, une traverse à chaque bout et une croix de
+    contreventement, sur un fond d'acier sombre ; empilés, les mâts forment une tour en treillis."""
+    back = "#30353B"
+    img = canvas(back)
+    for y in range(SIZE):
+        for x in range(SIZE):
+            if (x + y) % 2 == 0 and 3 <= x <= 12:
+                put(img, x, y, shade(back, 0.12))
+    for y in range(SIZE):
+        for x in range(2, 14):
+            if abs(x - y) <= 0 or abs(x - (15 - y)) <= 0:
+                put(img, x, y, DRILL_YELLOW)
+            elif abs(x - y) == 1 or abs(x - (15 - y)) == 1:
+                put(img, x, y, shade(DRILL_YELLOW, 0.35))
+    for y in range(SIZE):
+        put(img, 0, y, shade(DRILL_YELLOW, 0.45))
+        put(img, 1, y, light(DRILL_YELLOW, 0.2))
+        put(img, 2, y, DRILL_YELLOW)
+        put(img, 13, y, DRILL_YELLOW)
+        put(img, 14, y, shade(DRILL_YELLOW, 0.2))
+        put(img, 15, y, shade(DRILL_YELLOW, 0.45))
+    for x in range(SIZE):
+        put(img, x, 0, light(DRILL_YELLOW, 0.15))
+        put(img, x, 1, shade(DRILL_YELLOW, 0.3))
+        put(img, x, 14, DRILL_YELLOW)
+        put(img, x, 15, shade(DRILL_YELLOW, 0.45))
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13), (7, 7), (8, 8), (7, 8), (8, 7)):
+        put(img, x, y, light(DRILL_YELLOW, 0.4))
+    return img
+
+
+def drill_mast_top():
+    """Bout d'un mât : la coupe de la poutre en H, jaune sur fond sombre."""
+    img = canvas("#2A2E33")
+    for y in range(SIZE):
+        for x in range(SIZE):
+            flange = y <= 3 or y >= 12
+            web = 6 <= x <= 9
+            if flange or web:
+                put(img, x, y, DRILL_YELLOW if not (x in (0, 15) or y in (0, 15)) else shade(DRILL_YELLOW, 0.4))
+    return img
+
+
+def write_drill_tower():
+    gm.write_texture("drill_base_top", [drill_base_top()])
+    gm.write_texture("drill_base_side", [drill_base_side()])
+    gm.write_texture("drill_mast_side", [drill_mast_side()])
+    gm.write_texture("drill_mast_top", [drill_mast_top()])
+
+
 def write_pump():
     gm.write_texture("water_pump_paint", [pump_paint_texture()])
     gm.write_texture("water_pump_motor", [pump_motor_texture()])
@@ -647,6 +735,7 @@ def main():
             with open(os.path.join(gm.MODEL_DIR, name + ("_on" if lit else "") + ".json"), "w", newline="\n") as f:
                 json.dump(model(name, lit), f, indent=2)
     pump = write_pump()
+    write_drill_tower()
     print("Machines : %d modèles et leurs textures écrits, %d chevauchement(s) ; pompe : %d chevauchement(s)."
           % (len(MACHINES), overlaps, pump))
 

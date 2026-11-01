@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "#c:ingots/steel",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "I I",
+    "IPI",
+    "I I"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:drill_mast"
+  }
+}

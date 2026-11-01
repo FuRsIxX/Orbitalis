@@ -87,6 +87,9 @@ public class OrbitalisModelProvider extends ModelProvider {
         machine(blockModels, ModBlocks.CRYOGENIC_TANK.get());
         machine(blockModels, ModBlocks.WATER_PUMP.get());
         machine(blockModels, ModBlocks.DRILL_DERRICK.get());
+        // La tour de la foreuse : un socle d'acier strié, des mâts en poutre jaune (textures de tools/write_machines.py).
+        blockModels.createTrivialBlock(ModBlocks.DRILL_BASE.get(), net.minecraft.client.data.models.model.TexturedModel.COLUMN);
+        blockModels.createAxisAlignedPillarBlock(ModBlocks.DRILL_MAST.get(), net.minecraft.client.data.models.model.TexturedModel.COLUMN);
 
         // Terminal de recherche : même carcasse que les machines, avec un écran toujours allumé.
 

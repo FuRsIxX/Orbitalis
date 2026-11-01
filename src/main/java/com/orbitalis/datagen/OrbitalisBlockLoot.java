@@ -51,6 +51,8 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
                 com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get(), net.minecraft.core.component.DataComponents.CONTAINER));
         add(ModBlocks.WATER_PUMP.get(), this::keepingEnergy);
         add(ModBlocks.DRILL_DERRICK.get(), this::keepingEnergy);
+        dropSelf(ModBlocks.DRILL_BASE.get());
+        dropSelf(ModBlocks.DRILL_MAST.get());
 
         // Terminal de recherche et atelier d'assemblage (ses pièces tombent séparément).
 

@@ -669,6 +669,25 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_steel_plate", has(ModTags.Items.PLATES_STEEL))
                 .save(output, key("drill_derrick"));
 
+        // La tour de la foreuse : un socle de plaques d'acier sur un bloc d'acier, des mâts d'acier.
+        shaped(RecipeCategory.MISC, ModBlocks.DRILL_BASE, 4)
+                .pattern("PPP")
+                .pattern("IBI")
+                .pattern("PPP")
+                .define('P', ModTags.Items.PLATES_STEEL)
+                .define('I', ModTags.Items.INGOTS_STEEL)
+                .define('B', ModBlocks.STEEL_BLOCK)
+                .unlockedBy("has_steel_plate", has(ModTags.Items.PLATES_STEEL))
+                .save(output, key("drill_base"));
+        shaped(RecipeCategory.MISC, ModBlocks.DRILL_MAST, 4)
+                .pattern("I I")
+                .pattern("IPI")
+                .pattern("I I")
+                .define('I', ModTags.Items.INGOTS_STEEL)
+                .define('P', ModTags.Items.PLATES_STEEL)
+                .unlockedBy("has_steel_ingot", has(ModTags.Items.INGOTS_STEEL))
+                .save(output, key("drill_mast"));
+
         // Les générations suivantes de panneaux : deux panneaux de la précédente, et des matériaux de plus en plus rares.
         shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PANEL_ADVANCED)
                 .pattern("GGG")

@@ -383,29 +383,32 @@ public final class WorldPreview {
             }
         }, 44.5, 3.2, -2.6, 0.0F, 45.0F, 20));
         SHOTS.add(new Shot("solar_lone", null, 40.5, 1.9, -1.2, 0.0F, 50.0F, 8));
-        // Le derrick : un complet qui fore, un autre dont la tour manque encore, puis son écran.
+        // La foreuse : une à sa taille maximale qui fore tout devant elle, une autre dont la tour manque encore, puis son
+        // écran.
         SHOTS.add(new Shot("derrick", level -> {
-            set(level, 30, 0, 12, "orbitalis:drill_derrick[facing=north]");
-            for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces()) {
+            set(level, 30, 0, 12, "orbitalis:drill_derrick[facing=south]");
+            for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces(net.minecraft.core.Direction.SOUTH,
+                    com.orbitalis.phase1.quarry.DerrickPlan.MAX_LEVELS)) {
                 level.setBlockAndUpdate(at(30, 0, 12).offset(piece.offset()), piece.block().defaultBlockState());
             }
-            set(level, 36, 0, 12, "orbitalis:drill_derrick[facing=north]");
-            set(level, 36, 0, 11, "minecraft:chest");
+            set(level, 36, 0, 12, "orbitalis:drill_derrick[facing=south]");
             if (level.getBlockEntity(at(30, 0, 12)) instanceof com.orbitalis.phase1.quarry.DerrickBlockEntity derrick) {
                 derrick.getEnergy().generate(com.orbitalis.phase1.quarry.DerrickBlockEntity.ENERGY_CAPACITY);
                 derrick.getCoolant().setFluid(0, new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 16000));
-                derrick.setRadius(4);
                 derrick.checkStructure();
+                derrick.setSide(7);
+                derrick.setMode(com.orbitalis.phase1.quarry.DerrickBlockEntity.MODE_ALL);
+                derrick.setReplace(false);
                 derrick.setRunning(true);
             }
-        }, 33.0, 7.0, 3.0, 0.0F, 30.0F, 120));
-        SHOTS.add(new Shot("derrick_close", null, 30.5, 2.5, 8.6, 0.0F, 20.0F, 20));
+        }, 33.0, 9.0, 1.0, -20.0F, 30.0F, 120));
+        SHOTS.add(new Shot("derrick_close", null, 34.5, 3.5, 20.5, 160.0F, 15.0F, 20));
         SHOTS.add(new Shot("derrick_screen", level -> {
             var players = level.getServer().getPlayerList().getPlayers();
             if (!players.isEmpty() && level.getBlockEntity(at(30, 0, 12)) instanceof com.orbitalis.phase1.quarry.DerrickBlockEntity derrick) {
                 derrick.open(players.get(0));
             }
-        }, 33.0, 7.0, 3.0, 0.0F, 30.0F, 20));
+        }, 30.5, 2.0, 15.5, 180.0F, 20.0F, 20));
         SHOTS.add(new Shot("derrick_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
                 () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), 33.0, 7.0, 3.0, 0.0F, 30.0F, 4));
         SHOTS.add(new Shot("solar_tiers", null, 57.5, 4.5, -3.0, 0.0F, 45.0F, 8));

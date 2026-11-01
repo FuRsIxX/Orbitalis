@@ -61,8 +61,8 @@ public class OrbitalisBlockTagsProvider extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.ROCKET_ENGINE_BOOSTER.getKey(), ModBlocks.ROCKET_ENGINE_HYPERGOLIC.getKey(), ModBlocks.ROCKET_ENGINE_VACUUM.getKey(), ModBlocks.ROCKET_ION_THRUSTER.getKey(), ModBlocks.ROCKET_SOLAR_SAIL.getKey(), ModBlocks.ROCKET_TANK_TITANIUM.getKey(), ModBlocks.ROCKET_TANK_STAINLESS.getKey(), ModBlocks.ROCKET_ENGINE_FUSION.getKey(), ModBlocks.ROCKET_ENGINE_NUCLEAR.getKey());
         tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.ROCKET_ENGINE_BOOSTER.getKey(), ModBlocks.ROCKET_ENGINE_HYPERGOLIC.getKey(), ModBlocks.ROCKET_ENGINE_VACUUM.getKey(), ModBlocks.ROCKET_ION_THRUSTER.getKey(), ModBlocks.ROCKET_SOLAR_SAIL.getKey(), ModBlocks.ROCKET_TANK_TITANIUM.getKey(), ModBlocks.ROCKET_TANK_STAINLESS.getKey(), ModBlocks.ROCKET_ENGINE_FUSION.getKey(), ModBlocks.ROCKET_ENGINE_NUCLEAR.getKey());
         // Le derrick : comme les machines.
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DRILL_DERRICK.getKey());
-        tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.DRILL_DERRICK.getKey());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DRILL_DERRICK.getKey(), ModBlocks.DRILL_BASE.getKey(), ModBlocks.DRILL_MAST.getKey());
+        tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.DRILL_DERRICK.getKey(), ModBlocks.DRILL_BASE.getKey(), ModBlocks.DRILL_MAST.getKey());
         // Panneaux solaires des générations suivantes : comme le premier.
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.SOLAR_PANEL_ADVANCED.getKey(), ModBlocks.SOLAR_PANEL_PEROVSKITE.getKey(), ModBlocks.SOLAR_PANEL_QUANTUM.getKey());
         tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.SOLAR_PANEL_ADVANCED.getKey(), ModBlocks.SOLAR_PANEL_PEROVSKITE.getKey(), ModBlocks.SOLAR_PANEL_QUANTUM.getKey());

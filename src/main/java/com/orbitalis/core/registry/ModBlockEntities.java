@@ -253,10 +253,19 @@ public final class ModBlockEntities {
         event.registerBlock(Capabilities.Fluid.BLOCK,
                 (level, pos, state, blockEntity, side) -> new UmbilicalFluidHandler(level, pos),
                 ModBlocks.FUEL_PORT.get());
-        // Derrick : il prend l'électricité et l'eau de refroidissement par ses côtés, et on lui prend son butin.
+        // Foreuse : elle prend l'électricité et l'eau de refroidissement, et on lui prend son butin, par son bloc de
+        // commande comme par n'importe quel bloc de son socle.
         event.registerBlockEntity(Capabilities.Energy.BLOCK, DRILL_DERRICK.get(), (derrick, side) -> derrick.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, DRILL_DERRICK.get(), (derrick, side) -> derrick.getCoolant());
         event.registerBlockEntity(Capabilities.Item.BLOCK, DRILL_DERRICK.get(), (derrick, side) -> derrick.getOutput().automationView());
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, blockEntity, side) -> {
+            var derrick = com.orbitalis.phase1.quarry.DerrickBlockEntity.ownerOfBase(level, pos);
+            return derrick == null ? null : derrick.getEnergy();
+        }, ModBlocks.DRILL_BASE.get());
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, blockEntity, side) -> {
+            var derrick = com.orbitalis.phase1.quarry.DerrickBlockEntity.ownerOfBase(level, pos);
+            return derrick == null ? null : derrick.getCoolant();
+        }, ModBlocks.DRILL_BASE.get());
         // L'électricité du pas de tir : un câble se branche sur la table, sur une dalle du tablier ou sur un bloc de
         // ravitaillement, et charge la réserve de la table la plus proche.
         event.registerBlockEntity(Capabilities.Energy.BLOCK, LAUNCH_TABLE.get(), (table, side) -> table.getPower());

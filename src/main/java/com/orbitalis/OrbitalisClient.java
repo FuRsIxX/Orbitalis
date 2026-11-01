@@ -98,6 +98,7 @@ public class OrbitalisClient {
         event.register(ModMenus.FLUID_MACHINE.get(), FluidMachineScreen::new);
         event.register(ModMenus.CRYOGENIC_TANK.get(), CryogenicTankScreen::new);
         event.register(ModMenus.SUIT_WORKBENCH.get(), com.orbitalis.client.screen.SuitWorkbenchScreen::new);
+        event.register(ModMenus.DRILL_DERRICK.get(), com.orbitalis.client.screen.DerrickScreen::new);
     }
 
     /** Le ciel de l'espace, celui de l'orbite et de la Lune : entièrement dessiné par le mod (voir SpaceSky). */
@@ -131,12 +132,9 @@ public class OrbitalisClient {
     @SubscribeEvent
     static void registerPayloadHandlers(RegisterClientPayloadHandlersEvent event) {
         event.register(ResearchSyncPayload.TYPE, (payload, context) -> ClientResearch.receive(payload));
-        // Derrick : son écran s'ouvre sur son état, puis s'actualise.
+        // Foreuse : l'état complet (réglages, carte, carottage) arrive à l'ouverture puis à chaque commande.
         event.register(com.orbitalis.core.network.DerrickStatusPayload.TYPE, (payload, context) -> {
-            Minecraft minecraft = Minecraft.getInstance();
-            if (payload.open()) {
-                minecraft.gui.setScreen(new com.orbitalis.client.screen.DerrickScreen(payload));
-            } else if (minecraft.gui.screen() instanceof com.orbitalis.client.screen.DerrickScreen screen) {
+            if (Minecraft.getInstance().gui.screen() instanceof com.orbitalis.client.screen.DerrickScreen screen) {
                 screen.receive(payload);
             }
         });

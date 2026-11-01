@@ -531,7 +531,24 @@ public final class ModBlocks {
                     .strength(3.0F, 6.0F)
                     .sound(SoundType.METAL)
                     .noOcclusion().lightLevel(state -> 4)));
-    /** Derrick : le bloc de commande d'une tour de forage, qui extrait les minerais choisis sous elle. */
+    /** Socle de foreuse : les huit blocs autour du bloc de commande ; l'électricité, l'eau et le butin passent par eux. */
+    public static final DeferredBlock<Block> DRILL_BASE = withItem(BLOCKS.registerSimpleBlock("drill_base",
+            properties -> properties
+                    .mapColor(MapColor.COLOR_GRAY)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)));
+    /** Mât de foreuse : les colonnes d'angle de la tour ; plus elles sont hautes, plus la foreuse va loin. */
+    public static final DeferredBlock<net.minecraft.world.level.block.RotatedPillarBlock> DRILL_MAST = withItem(BLOCKS.registerBlock("drill_mast",
+            net.minecraft.world.level.block.RotatedPillarBlock::new,
+            properties -> properties
+                    .mapColor(MapColor.COLOR_YELLOW)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)));
+    /** Foreuse : le bloc de commande d'une tour de forage, qui extrait ce qu'on veut dans la zone devant elle. */
     public static final DeferredBlock<com.orbitalis.phase1.quarry.DerrickBlock> DRILL_DERRICK = withItem(BLOCKS.registerBlock("drill_derrick",
             com.orbitalis.phase1.quarry.DerrickBlock::new,
             properties -> properties

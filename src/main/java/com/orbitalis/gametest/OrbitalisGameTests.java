@@ -3879,30 +3879,46 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
     }
 
     /**
-     * Derrick : il ne fore qu'une fois sa tour complète ; il extrait le minerai voulu et le remplace par de la roche (le
-     * remblai), chauffe et boit son eau de refroidissement ; un carottage trouve les minerais sous lui et rapporte des
-     * points de recherche la première fois.
+     * Foreuse : elle ne fore qu'une fois son socle et ses deux premiers étages posés, et une tour plus haute fore plus
+     * large ; elle extrait le minerai voulu devant elle, jamais sous sa tour, et le remplace par le bloc de la case de
+     * remplacement, puis, la case vide, par de la roche ; elle chauffe et boit son eau ; un carottage trouve les minerais
+     * de la zone et rapporte des points de recherche la première fois. Une seconde foreuse, à sa taille maximale, fore
+     * un tronçon entier du monde, puis, en mode « Tout miner », extrait la terre comme le reste.
      */
     private static void drillDerrick(GameTestHelper helper) {
-        BlockPos pos = new BlockPos(3, 6, 3);
-        helper.setBlock(pos, ModBlocks.DRILL_DERRICK.get());
+
+        BlockPos pos = new BlockPos(3, 6, 8);
+        helper.setBlock(pos, ModBlocks.DRILL_DERRICK.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
         var derrick = helper.getBlockEntity(pos, com.orbitalis.phase1.quarry.DerrickBlockEntity.class);
         derrick.checkStructure();
-        helper.assertTrue(!derrick.isFormed(), "sans sa tour, le derrick ne doit pas être formé");
-        for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces()) {
+        helper.assertTrue(!derrick.isFormed(), "sans sa tour, la foreuse ne doit pas être formée");
+        for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces(Direction.NORTH, 1)) {
             helper.setBlock(pos.offset(piece.offset()), piece.block());
         }
         derrick.checkStructure();
-        helper.assertTrue(derrick.isFormed(), "la tour complète aurait dû former le derrick");
+        helper.assertTrue(!derrick.isFormed(), "avec un seul étage, la foreuse ne doit pas être formée");
+        for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces(Direction.NORTH, 2)) {
+            helper.setBlock(pos.offset(piece.offset()), piece.block());
+        }
+        derrick.checkStructure();
+        helper.assertTrue(derrick.isFormed() && derrick.levels() == 2, "le socle et deux étages auraient dû former la foreuse");
+        derrick.setSide(99);
+        helper.assertTrue(derrick.effectiveSide() == com.orbitalis.phase1.quarry.DerrickPlan.maxSide(2),
+                "la zone aurait dû être bornée par la tour : " + derrick.effectiveSide());
+        derrick.setSide(3);
 
-        // Sous lui, un minerai de fer à la première couche, du charbon à la deuxième.
-        BlockPos iron = pos.offset(1, -1, 1);
-        BlockPos coal = pos.offset(-2, -2, 0);
+        // Devant elle (au nord), dans la zone de 3×3 : du fer à la première couche, du charbon à la deuxième. Sous sa
+        // tour, un minerai qu'elle ne doit pas toucher.
+        BlockPos iron = pos.offset(1, -1, -3);
+        BlockPos coal = pos.offset(-1, -2, -4);
+        BlockPos under = pos.offset(0, -1, 1);
         helper.setBlock(iron, Blocks.IRON_ORE);
         helper.setBlock(coal, Blocks.COAL_ORE);
+        helper.setBlock(under, Blocks.GOLD_ORE);
         derrick.getEnergy().generate(com.orbitalis.phase1.quarry.DerrickBlockEntity.ENERGY_CAPACITY);
         derrick.getCoolant().setFluid(0, new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 8000));
-        derrick.setRadius(2);
+        derrick.setReplace(true);
+        derrick.getReplacement().setStack(0, new ItemStack(Items.GLASS));
 
         // Le carottage d'abord : il trouve le fer et le charbon, et la première découverte rapporte des points.
         @SuppressWarnings("removal")
@@ -3922,16 +3938,49 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         derrick.coreNow(player);
         helper.assertTrue(research.points() == afterFirst, "un second carottage des mêmes filons ne doit rien rapporter");
 
+        // La seconde foreuse, à sa taille maximale : en tronçon, elle fore les seize sur seize du tronçon devant elle ;
+        // en mode « Tout miner », elle extrait la terre posée dans sa zone.
+        BlockPos big = new BlockPos(12, 6, 8);
+        helper.setBlock(big, ModBlocks.DRILL_DERRICK.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+        var tall = helper.getBlockEntity(big, com.orbitalis.phase1.quarry.DerrickBlockEntity.class);
+        for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces(Direction.NORTH, com.orbitalis.phase1.quarry.DerrickPlan.MAX_LEVELS)) {
+            helper.setBlock(big.offset(piece.offset()), piece.block());
+        }
+        tall.checkStructure();
+        helper.assertTrue(tall.levels() == com.orbitalis.phase1.quarry.DerrickPlan.MAX_LEVELS, "la tour aurait dû compter huit étages : " + tall.levels());
+        tall.setChunk(true);
+        int[] chunkArea = tall.area();
+        helper.assertTrue(chunkArea[2] - chunkArea[0] == 15 && chunkArea[3] - chunkArea[1] == 15 && (chunkArea[0] & 15) == 0
+                && (chunkArea[1] & 15) == 0, "en tronçon, la zone aurait dû être un tronçon entier du monde");
+        BlockPos front = helper.absolutePos(big).relative(Direction.NORTH, com.orbitalis.phase1.quarry.DerrickPlan.GAP + 8);
+        helper.assertTrue(front.getX() >= chunkArea[0] && front.getX() <= chunkArea[2] && front.getZ() >= chunkArea[1]
+                && front.getZ() <= chunkArea[3], "le tronçon foré aurait dû être devant la foreuse");
+        tall.setChunk(false);
+        tall.setSide(3);
+        tall.setMode(com.orbitalis.phase1.quarry.DerrickBlockEntity.MODE_ALL);
+        BlockPos dirt = big.offset(0, -1, -3);
+        helper.setBlock(dirt, Blocks.DIRT);
+        tall.getEnergy().generate(com.orbitalis.phase1.quarry.DerrickBlockEntity.ENERGY_CAPACITY);
+        tall.getCoolant().setFluid(0, new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 8000));
+
         derrick.setRunning(true);
+        tall.setRunning(true);
         helper.succeedWhen(() -> {
-            helper.assertTrue(helper.getBlockState(iron).is(Blocks.STONE), "le fer extrait aurait dû être remplacé par de la roche");
-            helper.assertTrue(helper.getBlockState(coal).is(Blocks.STONE), "le charbon extrait aurait dû être remplacé par de la roche");
+            helper.assertTrue(helper.getBlockState(iron).is(Blocks.GLASS), "le fer extrait aurait dû être remplacé par le verre de la case");
+            helper.assertTrue(helper.getBlockState(coal).is(Blocks.STONE), "la case vide, le charbon aurait dû être remplacé par de la roche");
+            helper.assertTrue(helper.getBlockState(under).is(Blocks.GOLD_ORE), "la foreuse n'aurait pas dû forer sous sa tour");
             boolean rawIron = false;
-            for (int slot = 0; slot < 18; slot++) {
+            for (int slot = 0; slot < com.orbitalis.phase1.quarry.DerrickBlockEntity.OUTPUT_SLOTS; slot++) {
                 rawIron |= derrick.getOutput().getStack(slot).is(Items.RAW_IRON);
             }
             helper.assertTrue(rawIron, "le fer brut aurait dû arriver dans la réserve");
             helper.assertTrue(derrick.getCoolant().getFluid(0).getAmount() < 8000, "la tête aurait dû boire de l'eau en chauffant");
+            helper.assertTrue(helper.getBlockState(dirt).isAir(), "en mode « Tout miner », la terre aurait dû être extraite");
+            boolean gotDirt = false;
+            for (int slot = 0; slot < com.orbitalis.phase1.quarry.DerrickBlockEntity.OUTPUT_SLOTS; slot++) {
+                gotDirt |= tall.getOutput().getStack(slot).is(Items.DIRT);
+            }
+            helper.assertTrue(gotDirt, "la terre aurait dû arriver dans la réserve");
         });
     }
 

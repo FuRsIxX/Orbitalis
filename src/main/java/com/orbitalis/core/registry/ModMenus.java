@@ -38,6 +38,10 @@ public final class ModMenus {
             MENUS.register("suit_workbench", () -> IMenuTypeExtension.create(
                     (id, inventory, data) -> new com.orbitalis.phase2.survival.SuitWorkbenchMenu(id, inventory)));
 
+    /** Foreuse : le butin, le bloc de remplacement, les jauges. */
+    public static final DeferredHolder<MenuType<?>, MenuType<com.orbitalis.phase1.quarry.DerrickMenu>> DRILL_DERRICK =
+            MENUS.register("drill_derrick", () -> IMenuTypeExtension.create(com.orbitalis.phase1.quarry.DerrickMenu::fromNetwork));
+
     private ModMenus() {
     }
 

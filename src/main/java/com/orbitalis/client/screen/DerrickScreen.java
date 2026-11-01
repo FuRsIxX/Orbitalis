@@ -7,266 +7,369 @@ import java.util.Locale;
 import com.orbitalis.core.network.DerrickCommandPayload;
 import com.orbitalis.core.network.DerrickStatusPayload;
 import com.orbitalis.phase1.quarry.DerrickBlockEntity;
+import com.orbitalis.phase1.quarry.DerrickMenu;
 import com.orbitalis.phase1.quarry.QuarryKinds;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 /**
- * Écran d'un derrick. À gauche, l'état de la tour et ses commandes : énergie, eau de refroidissement, chaleur de la
- * tête, avancement, lancer ou arrêter, carotter, la taille du carré et le remblai. Au milieu, la carte des filons que
- * dressent les satellites d'observation de l'agence. À droite, les sortes à extraire : un clic les coche ou les
- * décoche ; on y lit combien le relevé en a vu, et à quelles profondeurs le carottage les a trouvées.
+ * Écran de la foreuse, dans le style des machines : un panneau gris en relief, des cases en creux, des jauges dans
+ * leurs cadres sombres et l'écran d'état. À gauche, comme une machine : l'eau, la chaleur et l'énergie, les dix-huit
+ * cases du butin, la case du bloc de remplacement, l'état, et l'inventaire du joueur. Au milieu, les réglages : lancer,
+ * le mode, la taille de la zone ou le tronçon entier, le remplacement, le carottage, puis ce que permet la tour. À
+ * droite, la carte des filons que dressent les satellites, et les sortes à extraire, qu'un clic coche ou décoche.
  */
-public class DerrickScreen extends Screen implements BlockScreen {
-    private static final int WIDTH = 430;
-    private static final int HEIGHT = 242;
-    private static final int ROW = 11;
+public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implements BlockScreen {
+    // Couleurs des écrans de machines (voir tools/generate_textures.py, gui_panel et gui_slot).
+    private static final int FILL = 0xFFC6C6C6;
+    private static final int DARK = 0xFF373737;
+    private static final int SHADOW = 0xFF555555;
+    private static final int WHITE = 0xFFFFFFFF;
+    private static final int SLOT = 0xFF8B8B8B;
+    private static final int SCREEN = 0xFF18221C;
+    private static final int GAUGE = 0xFF222426;
+    private static final int LABEL = 0xFF404040;
+    private static final int OK = 0xFF7CE08A;
+    private static final int IDLE = 0xFF9DB5A4;
+    private static final int WARN = 0xFFFFC857;
+    private static final int BAD = 0xFFFF6B6B;
+
+    private static final int WIDTH = 400;
+    private static final int HEIGHT = 194;
+    /** Volet des réglages, puis volet de la carte et des sortes. */
+    private static final int SETTINGS_X = 182;
+    private static final int SETTINGS_W = 100;
+    private static final int KINDS_X = 290;
+    private static final int KINDS_W = 102;
+    private static final int MAP = 66;
+    private static final int ROW = 9;
 
     private DerrickStatusPayload status;
-    private int left;
-    private int top;
     private int ticks;
     private final List<Zone> zones = new ArrayList<>();
-    private List<FormattedCharSequence> tooltip;
+    private List<FormattedCharSequence> hover;
 
     private record Zone(int x, int y, int w, int h, Runnable action) {
     }
 
-    public DerrickScreen(DerrickStatusPayload status) {
-        super(Component.translatable("block.orbitalis.drill_derrick"));
-        this.status = status;
+    public DerrickScreen(DerrickMenu menu, Inventory inventory, Component title) {
+        super(menu, inventory, title, WIDTH, HEIGHT);
+        inventoryLabelY = DerrickMenu.PLAYER_Y - 10;
     }
 
+    /** L'état complet de la foreuse, envoyé à l'ouverture puis à chaque commande. */
     public void receive(DerrickStatusPayload payload) {
-        if (payload.pos().equals(status.pos())) {
+        if (payload.pos().equals(menu.pos())) {
             status = payload;
         }
     }
 
     @Override
-    protected void init() {
-        left = (width - WIDTH) / 2;
-        top = (height - HEIGHT) / 2;
-    }
-
-    /** L'état se rafraîchit chaque seconde tant que l'écran est ouvert. */
-    @Override
-    public void tick() {
-        super.tick();
+    protected void containerTick() {
+        super.containerTick();
         if (++ticks % 20 == 0) {
             send(DerrickBlockEntity.ACTION_REFRESH, 0);
         }
     }
 
     private void send(int action, int argument) {
-        ClientPacketDistributor.sendToServer(new DerrickCommandPayload(status.pos(), action, argument));
+        if (menu.pos() != null) {
+            ClientPacketDistributor.sendToServer(new DerrickCommandPayload(menu.pos(), action, argument));
+        }
     }
 
     private DerrickBlockEntity.Status state() {
         DerrickBlockEntity.Status[] values = DerrickBlockEntity.Status.values();
-        return values[Math.clamp(status.status(), 0, values.length - 1)];
+        return values[Math.clamp(menu.getStatus(), 0, values.length - 1)];
     }
 
     private int stateColor() {
         return switch (state()) {
-            case WORKING, CORING -> Ui.OK;
-            case STOPPED, FINISHED -> Ui.MUTED;
-            case FULL, OVERHEATED -> Ui.WARN;
-            case UNFORMED, NO_POWER -> Ui.BAD;
+            case WORKING, CORING -> OK;
+            case STOPPED, FINISHED -> IDLE;
+            case FULL, OVERHEATED -> WARN;
+            case UNFORMED, NO_POWER -> BAD;
         };
+    }
+
+    // ------------------------------------------------------------------
+    // Dessin du panneau
+    // ------------------------------------------------------------------
+
+    private static void rect(GuiGraphicsExtractor graphics, int x, int y, int w, int h, int color) {
+        graphics.fill(x, y, x + w, y + h, color);
+    }
+
+    /** Un cadre en creux : bord sombre en haut à gauche, bord clair en bas à droite. */
+    private static void inset(GuiGraphicsExtractor graphics, int x, int y, int w, int h, int inner) {
+        rect(graphics, x, y, w, h, inner);
+        rect(graphics, x, y, w - 1, 1, DARK);
+        rect(graphics, x, y, 1, h - 1, DARK);
+        rect(graphics, x + 1, y + h - 1, w - 1, 1, WHITE);
+        rect(graphics, x + w - 1, y + 1, 1, h - 1, WHITE);
+    }
+
+    /** Un relief : bord clair en haut à gauche, ombre en bas à droite (les boutons). */
+    private static void raised(GuiGraphicsExtractor graphics, int x, int y, int w, int h, int inner) {
+        rect(graphics, x, y, w, h, inner);
+        rect(graphics, x, y, w - 1, 1, WHITE);
+        rect(graphics, x, y, 1, h - 1, WHITE);
+        rect(graphics, x + 1, y + h - 1, w - 1, 1, SHADOW);
+        rect(graphics, x + w - 1, y + 1, 1, h - 1, SHADOW);
     }
 
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(graphics, mouseX, mouseY, partialTick);
-        Ui.panel(graphics, left, top, WIDTH, HEIGHT);
+        int x = leftPos;
+        int y = topPos;
+        // Le panneau des machines : bord noir, reflet, ombre.
+        rect(graphics, x + 1, y, WIDTH - 2, HEIGHT, 0xFF000000);
+        rect(graphics, x, y + 1, WIDTH, HEIGHT - 2, 0xFF000000);
+        rect(graphics, x + 1, y + 1, WIDTH - 2, HEIGHT - 2, SHADOW);
+        rect(graphics, x + 1, y + 1, WIDTH - 4, HEIGHT - 4, WHITE);
+        rect(graphics, x + 3, y + 3, WIDTH - 6, HEIGHT - 6, FILL);
+        // Séparation entre la partie machine et les volets.
+        rect(graphics, x + 176, y + 6, 1, HEIGHT - 12, SHADOW);
+        rect(graphics, x + 177, y + 6, 1, HEIGHT - 12, WHITE);
+
+        // Jauges : l'eau, la chaleur, l'énergie.
+        int gaugeTop = y + DerrickMenu.OUTPUT_Y - 1;
+        inset(graphics, x + 7, gaugeTop, 14, 56, GAUGE);
+        new FluidGauge(8, DerrickMenu.OUTPUT_Y, 12, 54).extract(graphics, x, y, Fluids.WATER, menu.getWater(), DerrickBlockEntity.WATER_CAPACITY);
+        inset(graphics, x + 24, gaugeTop, 10, 56, GAUGE);
+        int heat = Math.clamp(menu.getHeat() * 54 / DerrickBlockEntity.HEAT_MAX, 0, 54);
+        int heatColor = menu.getHeat() < 500 ? 0xFF6FD08C : menu.getHeat() < 800 ? 0xFFFFB347 : 0xFFE5533D;
+        rect(graphics, x + 25, y + DerrickMenu.OUTPUT_Y + 54 - heat, 8, heat, heatColor);
+        inset(graphics, x + 37, gaugeTop, 10, 56, GAUGE);
+        int capacity = Math.max(1, menu.getEnergyCapacity());
+        int power = Math.clamp((int) ((long) menu.getEnergy() * 54 / capacity), 0, 54);
+        for (int k = 0; k < power; k++) {
+            if ((54 - 1 - k) % 4 != 3) {
+                rect(graphics, x + 38, y + DerrickMenu.OUTPUT_Y + 53 - k, 8, 1, k % 4 < 2 ? 0xFF7CE08A : 0xFF4FA866);
+            }
+        }
+
+        // Les cases : le butin, en orange comme les sorties des machines ; le bloc de remplacement, en bleu.
+        for (int slot = 0; slot < DerrickBlockEntity.OUTPUT_SLOTS; slot++) {
+            int sx = x + DerrickMenu.OUTPUT_X - 1 + (slot % 6) * 18;
+            int sy = y + DerrickMenu.OUTPUT_Y - 1 + (slot / 6) * 18;
+            inset(graphics, sx, sy, 18, 18, SLOT);
+        }
+        rect(graphics, x + DerrickMenu.OUTPUT_X - 2, y + DerrickMenu.OUTPUT_Y - 2, 6 * 18 + 2, 1, 0xFFE8872A);
+        rect(graphics, x + DerrickMenu.REPLACE_X - 2, y + DerrickMenu.REPLACE_Y - 2, 20, 20, 0xFF4F86D6);
+        inset(graphics, x + DerrickMenu.REPLACE_X - 1, y + DerrickMenu.REPLACE_Y - 1, 18, 18, SLOT);
+        // L'écran d'état.
+        inset(graphics, x + 47, y + 77, 123, 21, SCREEN);
+        // L'inventaire du joueur.
+        for (int row = 0; row < 4; row++) {
+            for (int column = 0; column < 9; column++) {
+                int sy = row < 3 ? DerrickMenu.PLAYER_Y + row * 18 : DerrickMenu.PLAYER_Y + 58;
+                inset(graphics, x + 7 + column * 18, y + sy - 1, 18, 18, SLOT);
+            }
+        }
+        // La carte.
+        inset(graphics, x + KINDS_X - 1, y + 17, MAP + 2, MAP + 2, GAUGE);
+    }
+
+    @Override
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(font, Ui.fit(font, title.getString(), 168), 8, 6, LABEL, false);
+        graphics.text(font, playerInventoryTitle, 8, inventoryLabelY, LABEL, false);
+        // L'écran d'état : l'état en couleur, puis la couche et ce qui a été extrait.
+        String stateName = Component.translatable("derrick.orbitalis.state." + state().name().toLowerCase(Locale.ROOT)).getString();
+        graphics.text(font, Ui.fit(font, stateName, 117), 50, 80, stateColor(), false);
+        if (status != null) {
+            String detail = state() == DerrickBlockEntity.Status.UNFORMED
+                    ? Component.translatable("derrick.orbitalis.band.missing", status.missing()).getString()
+                    : Component.translatable("derrick.orbitalis.band.layer", status.layer(), status.mined()).getString();
+            graphics.text(font, Ui.fit(font, detail, 117), 50, 89, IDLE, false);
+        }
+        graphics.text(font, Component.translatable("derrick.orbitalis.section.settings"), SETTINGS_X, 6, LABEL, false);
+        graphics.text(font, Ui.fit(font, Component.translatable("derrick.orbitalis.section.map").getString(), KINDS_W), KINDS_X, 6, LABEL, false);
     }
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         zones.clear();
-        tooltip = null;
-        String key = state().name().toLowerCase(Locale.ROOT);
-        // En trois temps : l'état en un mot, la phrase qui dit quoi faire, le détail au survol.
-        graphics.text(font, title.copy().withStyle(ChatFormatting.BOLD), left + 12, top + 9, Ui.TEXT, false);
-        Ui.pillRight(graphics, font, Component.translatable("derrick.orbitalis.state." + key).getString().toUpperCase(Locale.ROOT),
-                left + WIDTH - 12, top + 7, stateColor());
-        Component hint = state() == DerrickBlockEntity.Status.UNFORMED
-                ? Component.translatable("derrick.orbitalis.hint.unformed", status.missing())
-                : Component.translatable("derrick.orbitalis.hint." + key);
-        // La phrase tient sur deux lignes au plus, quelle que soit la langue.
-        int hintY = top + 24;
-        for (String line : Ui.lines(font, hint, WIDTH - 24, 2)) {
-            graphics.text(font, line, left + 12, hintY, Ui.MUTED, false);
-            hintY += 10;
+        hover = null;
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        extractSettings(graphics, mouseX, mouseY, leftPos + SETTINGS_X, topPos + 17);
+        extractMap(graphics, mouseX, mouseY, leftPos + KINDS_X, topPos + 18);
+        extractKinds(graphics, mouseX, mouseY, leftPos + KINDS_X, topPos + 18 + MAP + 6);
+        gaugeTooltips(mouseX, mouseY);
+        if (hover != null) {
+            graphics.setTooltipForNextFrame(font, hover, mouseX, mouseY);
         }
-        Ui.hline(graphics, left + 1, top + 46, WIDTH - 2);
+    }
 
-        extractStatus(graphics, mouseX, mouseY, left + 12, top + 54, 140);
-        extractMap(graphics, mouseX, mouseY, left + 164, top + 54, 130);
-        extractKinds(graphics, mouseX, mouseY, left + 306, top + 54, 112);
-
-        if (tooltip != null) {
-            graphics.setTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+    private void gaugeTooltips(int mouseX, int mouseY) {
+        int y = topPos + DerrickMenu.OUTPUT_Y;
+        if (Ui.inside(mouseX, mouseY, leftPos + 7, y - 1, 14, 56)) {
+            hover = font.split(Component.translatable("derrick.orbitalis.water.detail", menu.getWater(), DerrickBlockEntity.WATER_CAPACITY,
+                    DerrickBlockEntity.COOLANT_PER_TICK), 220);
+        } else if (Ui.inside(mouseX, mouseY, leftPos + 24, y - 1, 10, 56)) {
+            hover = font.split(Component.translatable("derrick.orbitalis.heat.detail"), 220);
+        } else if (Ui.inside(mouseX, mouseY, leftPos + 37, y - 1, 10, 56)) {
+            hover = font.split(Component.translatable("derrick.orbitalis.energy.detail", menu.getEnergy(), menu.getEnergyCapacity(),
+                    DerrickBlockEntity.RUN_DRAW, DerrickBlockEntity.BLOCK_ENERGY), 220);
+        } else if (Ui.inside(mouseX, mouseY, leftPos + DerrickMenu.REPLACE_X - 2, topPos + DerrickMenu.REPLACE_Y - 2, 20, 20)
+                && menu.getCarried().isEmpty() && !menu.slots.get(DerrickBlockEntity.OUTPUT_SLOTS).hasItem()) {
+            hover = font.split(Component.translatable("derrick.orbitalis.replace.slot", DerrickBlockEntity.REPLACE_ENERGY), 220);
+        } else if (Ui.inside(mouseX, mouseY, leftPos + 47, topPos + 77, 123, 21)) {
+            String key = state().name().toLowerCase(Locale.ROOT);
+            hover = font.split(state() == DerrickBlockEntity.Status.UNFORMED && status != null
+                    ? Component.translatable("derrick.orbitalis.hint.unformed", status.missing())
+                    : Component.translatable("derrick.orbitalis.hint." + key), 220);
         }
     }
 
     // ------------------------------------------------------------------
-    // Colonne de gauche : état et commandes
+    // Les réglages
     // ------------------------------------------------------------------
 
-    private void extractStatus(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int w) {
-        Ui.heading(graphics, font, Component.literal(Ui.fit(font, Component.translatable("derrick.orbitalis.section.tower").getString()
-                .toUpperCase(Locale.ROOT), w)), x, y);
-        y += 13;
-        y = gauge(graphics, mouseX, mouseY, x, y, w, "derrick.orbitalis.energy", status.energy(), status.energyCapacity(), Ui.WARN,
-                Component.translatable("derrick.orbitalis.energy.detail", status.energy(), status.energyCapacity(),
-                        DerrickBlockEntity.RUN_DRAW, DerrickBlockEntity.BLOCK_ENERGY));
-        y = gauge(graphics, mouseX, mouseY, x, y, w, "derrick.orbitalis.water", status.water(), status.waterCapacity(), Ui.ACCENT,
-                Component.translatable("derrick.orbitalis.water.detail", status.water(), status.waterCapacity(), DerrickBlockEntity.COOLANT_PER_TICK));
-        int heatColor = status.heat() < 500 ? Ui.OK : status.heat() < 800 ? Ui.WARN : Ui.BAD;
-        y = gauge(graphics, mouseX, mouseY, x, y, w, "derrick.orbitalis.heat", status.heat(), DerrickBlockEntity.HEAT_MAX, heatColor,
-                Component.translatable("derrick.orbitalis.heat.detail"));
-        y += 2;
-        int depth = Math.max(1, status.top() - status.bottom());
-        float progress = status.layer() >= status.top() ? 0.0F : (status.top() - status.layer()) / (float) depth;
-        Ui.row(graphics, font, Component.translatable("derrick.orbitalis.layer"), "y " + status.layer(), x, y, w, Ui.TEXT);
-        y += ROW;
-        Ui.bar(graphics, x, y, w, 2, progress, Ui.ACCENT);
-        y += 6;
-        Ui.row(graphics, font, Component.translatable("derrick.orbitalis.mined"), Integer.toString(status.mined()), x, y, w, Ui.TEXT);
-        y += ROW;
-        Ui.row(graphics, font, Component.translatable("derrick.orbitalis.stored"), Integer.toString(status.stored()), x, y, w, Ui.TEXT);
-        y += ROW + 4;
-
-        // Commandes : lancer ou arrêter, carotter, puis le carré et le remblai.
-        boolean formed = state() != DerrickBlockEntity.Status.UNFORMED;
-        int half = (w - 4) / 2;
-        button(graphics, mouseX, mouseY, Component.translatable(status.running() ? "derrick.orbitalis.stop" : "derrick.orbitalis.start"),
-                x, y, half, 16, formed, !status.running(), status.running() ? Ui.BAD : Ui.OK, () -> send(DerrickBlockEntity.ACTION_RUN, 0));
-        boolean coring = status.core() >= 0;
-        button(graphics, mouseX, mouseY, coring ? Component.literal(status.core() + " %")
-                : Component.translatable("derrick.orbitalis.core"), x + half + 4, y, half, 16, formed && !coring, false, Ui.ACCENT,
-                () -> send(DerrickBlockEntity.ACTION_CORE, 0));
-        if (Ui.inside(mouseX, mouseY, x + half + 4, y, half, 16)) {
-            tooltip = font.split(Component.translatable("derrick.orbitalis.core.detail", DerrickBlockEntity.CORE_ENERGY,
-                    DerrickBlockEntity.CORE_POINTS), 220);
-        }
-        y += 20;
-        int side = 2 * status.radius() + 1;
-        button(graphics, mouseX, mouseY, Component.literal("-"), x, y, 16, 16, status.radius() > DerrickBlockEntity.MIN_RADIUS, false, Ui.ACCENT,
-                () -> send(DerrickBlockEntity.ACTION_RADIUS, -1));
-        String area = Ui.fit(font, Component.translatable("derrick.orbitalis.area", side, side).getString(), w - 40);
-        graphics.text(font, area, x + (w - font.width(area)) / 2, y + 4, Ui.TEXT, false);
-        button(graphics, mouseX, mouseY, Component.literal("+"), x + w - 16, y, 16, 16, status.radius() < DerrickBlockEntity.MAX_RADIUS, false,
-                Ui.ACCENT, () -> send(DerrickBlockEntity.ACTION_RADIUS, 1));
-        y += 20;
-        button(graphics, mouseX, mouseY, Component.translatable(status.backfill() ? "derrick.orbitalis.backfill.on" : "derrick.orbitalis.backfill.off"),
-                x, y, w, 16, true, false, status.backfill() ? Ui.OK : Ui.MUTED, () -> send(DerrickBlockEntity.ACTION_BACKFILL, 0));
-        if (Ui.inside(mouseX, mouseY, x, y, w, 16)) {
-            tooltip = font.split(Component.translatable("derrick.orbitalis.backfill.detail"), 220);
-        }
-    }
-
-    private int gauge(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int w, String label, int value, int capacity, int color,
-            Component detail) {
-        String percent = (capacity <= 0 ? 0 : (int) (100L * value / capacity)) + " %";
-        Ui.row(graphics, font, Component.translatable(label), percent, x, y, w, color);
-        Ui.bar(graphics, x, y + 10, w, 3, capacity <= 0 ? 0 : value / (float) capacity, color);
-        if (Ui.inside(mouseX, mouseY, x, y, w, 14)) {
-            tooltip = font.split(detail, 220);
-        }
-        return y + 17;
-    }
-
-    private void button(GuiGraphicsExtractor graphics, int mouseX, int mouseY, Component label, int x, int y, int w, int h, boolean enabled,
-            boolean primary, int color, Runnable action) {
-        boolean hovered = enabled && Ui.inside(mouseX, mouseY, x, y, w, h);
-        Ui.button(graphics, font, label, x, y, w, h, hovered, enabled, primary, color);
+    private void button(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int w, Component label, int accent, boolean enabled,
+            Component detail, Runnable action) {
+        boolean hovered = enabled && Ui.inside(mouseX, mouseY, x, y, w, 15);
+        raised(graphics, x, y, w, 15, !enabled ? 0xFFA9A9A9 : hovered ? 0xFFD6DCE6 : 0xFFB5B5B5);
+        rect(graphics, x + 2, y + 2, 2, 11, enabled ? accent : 0xFF8B8B8B);
+        // Un petit bouton (moins, plus) garde son signe entier, centré à droite de sa bande de couleur.
+        String text = w < 20 ? label.getString() : Ui.fit(font, label.getString(), w - 10);
+        int textX = w < 20 ? x + (w - font.width(text) + 4) / 2 : x + 7 + (w - 10 - font.width(text)) / 2;
+        graphics.text(font, text, textX, y + 4, enabled ? 0xFF202020 : 0xFF6B6B6B, false);
         if (enabled) {
-            zones.add(new Zone(x, y, w, h, action));
+            zones.add(new Zone(x, y, w, 15, action));
+        }
+        if (detail != null && Ui.inside(mouseX, mouseY, x, y, w, 15)) {
+            hover = font.split(detail, 220);
+        }
+    }
+
+    private void extractSettings(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+        if (status == null) {
+            return;
+        }
+        int w = SETTINGS_W;
+        boolean formed = state() != DerrickBlockEntity.Status.UNFORMED;
+        button(graphics, mouseX, mouseY, x, y, w, Component.translatable(status.running() ? "derrick.orbitalis.stop" : "derrick.orbitalis.start"),
+                status.running() ? BAD : OK, formed, null, () -> send(DerrickBlockEntity.ACTION_RUN, 0));
+        y += 18;
+        boolean all = status.mode() == DerrickBlockEntity.MODE_ALL;
+        button(graphics, mouseX, mouseY, x, y, w, Component.translatable(all ? "derrick.orbitalis.mode.all" : "derrick.orbitalis.mode.ores"),
+                all ? WARN : 0xFF6FA8DC, true, Component.translatable(all ? "derrick.orbitalis.mode.all.detail" : "derrick.orbitalis.mode.ores.detail"),
+                () -> send(DerrickBlockEntity.ACTION_MODE, 0));
+        y += 18;
+        // La taille : moins, le côté, plus.
+        button(graphics, mouseX, mouseY, x, y, 15, Component.literal("-"), 0xFF6FA8DC, !status.chunk() && status.side() > 3, null,
+                () -> send(DerrickBlockEntity.ACTION_SIDE, -1));
+        String area = status.chunk() ? Component.translatable("derrick.orbitalis.area.chunk").getString()
+                : Component.translatable("derrick.orbitalis.area", status.side(), status.side()).getString();
+        area = Ui.fit(font, area, w - 34);
+        graphics.text(font, area, x + (w - font.width(area)) / 2, y + 4, LABEL, false);
+        button(graphics, mouseX, mouseY, x + w - 15, y, 15, Component.literal("+"), 0xFF6FA8DC, !status.chunk() && status.side() < status.maxSide(),
+                null, () -> send(DerrickBlockEntity.ACTION_SIDE, 1));
+        y += 18;
+        boolean chunkPossible = status.maxSide() > DerrickBlockEntity.CHUNK;
+        button(graphics, mouseX, mouseY, x, y, w, Component.translatable(status.chunk() ? "derrick.orbitalis.chunk.on" : "derrick.orbitalis.chunk.off"),
+                status.chunk() ? OK : 0xFF8B8B8B, chunkPossible, Component.translatable(chunkPossible ? "derrick.orbitalis.chunk.detail"
+                        : "derrick.orbitalis.chunk.too_small"), () -> send(DerrickBlockEntity.ACTION_CHUNK, 0));
+        y += 18;
+        button(graphics, mouseX, mouseY, x, y, w, Component.translatable(status.replace() ? "derrick.orbitalis.replace.on" : "derrick.orbitalis.replace.off"),
+                status.replace() ? OK : 0xFF8B8B8B, true, Component.translatable("derrick.orbitalis.replace.detail", DerrickBlockEntity.REPLACE_ENERGY),
+                () -> send(DerrickBlockEntity.ACTION_REPLACE, 0));
+        y += 18;
+        boolean coring = status.core() >= 0;
+        button(graphics, mouseX, mouseY, x, y, w, coring ? Component.literal(status.core() + " %") : Component.translatable("derrick.orbitalis.core"),
+                0xFF4FC3F7, formed && !coring, Component.translatable("derrick.orbitalis.core.detail", DerrickBlockEntity.CORE_ENERGY,
+                        DerrickBlockEntity.CORE_POINTS), () -> send(DerrickBlockEntity.ACTION_CORE, 0));
+        y += 22;
+        // Ce que permet la tour, puis ce qui a été fait.
+        String depth = status.depth() == 0 ? Component.translatable("derrick.orbitalis.depth.bottom").getString()
+                : Component.translatable("derrick.orbitalis.depth", status.depth()).getString();
+        String[] lines = {
+                Component.translatable("derrick.orbitalis.tower", status.levels() + 1).getString(),
+                Component.translatable("derrick.orbitalis.tower.max", status.maxSide(), status.maxSide()).getString(),
+                depth,
+                Component.translatable("derrick.orbitalis.stored.short", status.stored()).getString()};
+        for (String line : lines) {
+            graphics.text(font, Ui.fit(font, line, w), x, y, LABEL, false);
+            y += 10;
         }
     }
 
     // ------------------------------------------------------------------
-    // Colonne du milieu : la carte des filons
+    // La carte et les sortes
     // ------------------------------------------------------------------
 
-    private void extractMap(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int w) {
-        Ui.heading(graphics, font, Component.literal(Ui.fit(font, Component.translatable("derrick.orbitalis.section.map").getString()
-                .toUpperCase(Locale.ROOT), w)), x, y);
-        y += 13;
-        int side = status.surveySide();
-        if (side <= 0 || status.surveyCells().length != side * side) {
-            Ui.card(graphics, x, y, w, w, false);
-            int textY = y + 10;
-            for (String line : Ui.lines(font, Component.translatable("derrick.orbitalis.map.none"), w - 12, 8)) {
-                graphics.text(font, line, x + 6, textY, Ui.MUTED, false);
-                textY += 10;
+    private void extractMap(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+        if (status == null) {
+            return;
+        }
+        int width = status.surveyWidth();
+        int[] cells = status.surveyCells();
+        if (width <= 0 || cells.length % width != 0) {
+            int textY = y + 4;
+            for (String line : Ui.lines(font, Component.translatable("derrick.orbitalis.map.none.short"), MAP - 4, 6)) {
+                graphics.text(font, line, x + 2, textY, IDLE, false);
+                textY += 9;
+            }
+            if (Ui.inside(mouseX, mouseY, x, y, MAP, MAP)) {
+                hover = font.split(Component.translatable("derrick.orbitalis.map.none"), 220);
             }
             return;
         }
-        int cell = Math.max(1, w / side);
-        int size = cell * side;
-        int ox = x + (w - size) / 2;
-        Ui.card(graphics, x, y, w, w, false);
-        int oy = y + (w - size) / 2;
-        for (int row = 0; row < side; row++) {
-            for (int column = 0; column < side; column++) {
-                int kind = status.surveyCells()[row * side + column] - 1;
-                int color = kind < 0 ? Ui.SURFACE_HI : QuarryKinds.color(kind);
-                if (kind >= 0 && (status.filter() & (1 << kind)) == 0) {
+        int depth = cells.length / width;
+        int cell = Math.max(1, MAP / Math.max(width, depth));
+        int ox = x + (MAP - cell * width) / 2;
+        int oy = y + (MAP - cell * depth) / 2;
+        for (int row = 0; row < depth; row++) {
+            for (int column = 0; column < width; column++) {
+                int kind = cells[row * width + column] - 1;
+                int color = kind < 0 ? 0xFF2E3236 : QuarryKinds.color(kind);
+                if (kind >= 0 && status.mode() == DerrickBlockEntity.MODE_ORES && (status.filter() & (1 << kind)) == 0) {
                     color = Ui.alpha(color, 0.3F);
                 }
                 graphics.fill(ox + column * cell, oy + row * cell, ox + (column + 1) * cell, oy + (row + 1) * cell, color);
             }
         }
-        // Le derrick, au centre.
-        int centre = side / 2;
-        Ui.frame(graphics, ox + centre * cell - 1, oy + centre * cell - 1, cell + 2, cell + 2, Ui.TEXT);
-        if (Ui.inside(mouseX, mouseY, x, y, w, w)) {
-            tooltip = font.split(Component.translatable("derrick.orbitalis.map.detail", status.observers()), 220);
+        if (Ui.inside(mouseX, mouseY, x, y, MAP, MAP)) {
+            hover = font.split(Component.translatable("derrick.orbitalis.map.detail", status.observers()), 220);
         }
     }
 
-    // ------------------------------------------------------------------
-    // Colonne de droite : les sortes à extraire
-    // ------------------------------------------------------------------
-
-    private void extractKinds(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int w) {
-        Ui.heading(graphics, font, Component.literal(Ui.fit(font, Component.translatable("derrick.orbitalis.section.kinds").getString()
-                .toUpperCase(Locale.ROOT), w)), x, y);
-        y += 13;
+    private void extractKinds(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+        if (status == null) {
+            return;
+        }
+        boolean all = status.mode() == DerrickBlockEntity.MODE_ALL;
         int[] counts = status.surveyCounts();
         int[] bands = status.coreBands();
         for (int kind = 0; kind < QuarryKinds.COUNT; kind++) {
-            boolean on = (status.filter() & (1 << kind)) != 0;
-            boolean hovered = Ui.inside(mouseX, mouseY, x, y - 1, w, ROW);
-            if (hovered) {
-                graphics.fill(x - 2, y - 1, x + w + 2, y + ROW - 1, Ui.SURFACE_HI);
+            boolean on = all || (status.filter() & (1 << kind)) != 0;
+            boolean hovered = Ui.inside(mouseX, mouseY, x - 1, y - 1, KINDS_W + 2, ROW);
+            if (hovered && !all) {
+                rect(graphics, x - 1, y - 1, KINDS_W + 2, ROW, 0xFFB5B5B5);
             }
             int color = QuarryKinds.color(kind);
-            Ui.frame(graphics, x, y + 1, 7, 7, on ? color : Ui.LINE_HI);
-            if (on) {
-                graphics.fill(x + 2, y + 3, x + 5, y + 6, color);
-            }
-            // À droite : ce que le relevé en a vu ; sinon, si le carottage l'a trouvée, un repère.
-            String value = counts.length > kind && counts[kind] > 0 ? Integer.toString(counts[kind]) : found(bands, kind) ? "●" : "";
+            inset(graphics, x, y, 7, 7, on ? color : SLOT);
+            String value = counts.length > kind && counts[kind] > 0 ? Integer.toString(counts[kind]) : found(bands, kind) ? "*" : "";
             int valueWidth = font.width(value);
-            graphics.text(font, value, x + w - valueWidth, y, on ? Ui.TEXT : Ui.DIM, false);
-            graphics.text(font, Ui.fit(font, Component.translatable(QuarryKinds.nameKey(kind)).getString(), w - 14 - valueWidth), x + 11, y,
-                    on ? Ui.TEXT : Ui.DIM, false);
+            graphics.text(font, value, x + KINDS_W - valueWidth, y, on ? LABEL : 0xFF8B8B8B, false);
+            graphics.text(font, Ui.fit(font, Component.translatable(QuarryKinds.nameKey(kind)).getString(), KINDS_W - 13 - valueWidth), x + 10, y,
+                    on ? LABEL : 0xFF8B8B8B, false);
             int kindIndex = kind;
-            zones.add(new Zone(x - 2, y - 1, w + 4, ROW, () -> send(DerrickBlockEntity.ACTION_FILTER, kindIndex)));
+            if (!all) {
+                zones.add(new Zone(x - 1, y - 1, KINDS_W + 2, ROW, () -> send(DerrickBlockEntity.ACTION_FILTER, kindIndex)));
+            }
             if (hovered) {
-                tooltip = font.split(depths(bands, kind), 220);
+                hover = font.split(all ? Component.translatable("derrick.orbitalis.mode.all.detail") : depths(bands, kind), 220);
             }
             y += ROW;
         }
@@ -316,10 +419,5 @@ public class DerrickScreen extends Screen implements BlockScreen {
             }
         }
         return super.mouseClicked(event, doubleClick);
-    }
-
-    @Override
-    public boolean isPauseScreen() {
-        return false;
     }
 }
