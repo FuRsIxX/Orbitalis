@@ -18,6 +18,7 @@
 - Nouveaux jalons pour les premières pièces fabriquées : carte électronique, moteur à poudre, charge utile de fusée-sonde, kit de pas de tir, moteurs à ergols, émetteur radio, centrale de navigation.
 
 ## Corrections
+- Le câble électrique et le câble de données ont la même carrure que les tuyaux : même tube, même platine et même collier contre les machines.
 - Le motif des panneaux solaires est centré sur le bloc : un panneau seul est symétrique, et son icône, désormais encadrée, aussi. Une rangée de panneaux reste une seule nappe régulière.
 - L'eau et les autres fluides des jauges des machines, du réservoir cryogénique et des réservoirs modulables ont la texture de l'eau de Minecraft, teintée, comme dans le monde : ils n'ont plus une couleur à part.
 - Le bandeau d'état des machines ne fait plus chevaucher l'état et la consommation. S'ils ne tiennent pas ensemble, l'état reste entier et le reste s'affiche au survol.
@@ -125,6 +126,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - New milestones for the first parts you craft: circuit board, solid motor, sounding rocket payload, pad kit, liquid-fuel engines, radio transmitter, navigation unit.
 
 ## Fixes
+- The energy cable and the data cable now have the same size as the pipes: same tube, same plate and same collar against machines.
 - The solar panel pattern is now centred on the block: a lone panel is symmetrical, and so is its icon, which now shows the frame. A row of panels is still one even sheet.
 - Water and other fluids in machine gauges, the cryogenic tank and modular tanks now use Minecraft's water texture, tinted, like in the world, instead of a flat colour of their own.
 - The machine status line no longer overlaps the status and the power use. If they don't fit together, the status stays whole and the rest shows on hover.

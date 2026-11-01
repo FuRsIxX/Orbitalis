@@ -126,9 +126,8 @@ public class ConduitBlock extends Block {
         }
         registerDefaultState(withDefaults(state));
 
-        // Forme de chaque état : un cœur central, plus un bras par raccordement. Les câbles sont un peu plus fins
-        // que les tuyaux.
-        double lo = kind.isFluid() ? 5.0 : 6.0;
+        // Forme de chaque état : un cœur central, plus un bras par raccordement. Câbles et tuyaux ont la même carrure.
+        double lo = 5.0;
         Map<Integer, VoxelShape> byLinks = new HashMap<>();
         for (BlockState possible : stateDefinition.getPossibleStates()) {
             int mask = 0;

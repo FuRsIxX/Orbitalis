@@ -44,10 +44,9 @@ LIQUIDS = [("#3F76E4", "#8FB6FF"), ("#C98A3A", "#E8B76A"), ("#5FB0F5", "#C7E6FF"
 GASES = [("#F0A6A6", "#FFE7E7"), ("#BFE4FF", "#F4FBFF")]
 MAX_GLOW = 3
 
-# Tube : de TUBE_MIN à 16 - TUBE_MIN, avec des arêtes d'un pixel. Les deux câbles (électrique, données) sont un
-# peu plus fins que les tuyaux.
+# Tube : de TUBE_MIN à 16 - TUBE_MIN, avec des arêtes d'un pixel. Les quatre conduits ont la même carrure : câbles et
+# tuyaux ont le même tube, la même platine et le même collier.
 TUBE_MIN = 5
-CABLE_MIN = 6
 # Raccord à une machine : la platine fait un pixel d'épaisseur, le collier un pixel et demi.
 PLATE = 1
 COLLAR = 2.5
@@ -270,7 +269,7 @@ def tube(light, inner, lo=TUBE_MIN):  # noqa: C901
 
 def cable(glow):
     """Câble : flancs sombres à filet lumineux, nœuds et raccords de cuivre."""
-    return tube(2 * glow, 0, CABLE_MIN), {"frame": "conduit_frame", "corner": "conduit_corner_cable", "panel": "cable_panel_%d" % glow,
+    return tube(2 * glow, 0), {"frame": "conduit_frame", "corner": "conduit_corner_cable", "panel": "cable_panel_%d" % glow,
                                "panel_v": "cable_panel_%d_v" % glow, "panel_h": "cable_panel_%d_h" % glow,
                                "particle": "conduit_frame"}
 
@@ -296,8 +295,8 @@ def gas_pipe(content):
 
 
 def data_cable(_):
-    """Câble de données : la carrure du câble électrique, gaine noire à fibre lumineuse, nœuds et raccords turquoise."""
-    return tube(3, 0, CABLE_MIN), {"frame": "conduit_frame", "corner": "conduit_corner_data", "panel": "data_panel", "panel_v": "data_panel_v",
+    """Câble de données : la carrure des autres conduits, gaine noire à fibre lumineuse, nœuds et raccords turquoise."""
+    return tube(3, 0), {"frame": "conduit_frame", "corner": "conduit_corner_data", "panel": "data_panel", "panel_v": "data_panel_v",
                          "panel_h": "data_panel_h", "particle": "conduit_frame"}
 
 
