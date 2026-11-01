@@ -1,4 +1,6 @@
-# Orbitalis — prochaine version
+# Orbitalis — 0.10.0 (bêta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
 
 ## Nouveautés
 - **Accumulateurs** : un stockage d'électricité sans réglage, qu'on pose et qu'on branche. Sa jauge de cinq crans regarde le joueur qui le pose ; l'énergie entre par cette face et les quatre autres, et ressort par le dos. Il garde son énergie quand on le casse. Les quatre générations partagent le même châssis, qui gagne à chacune un signe de son amélioration : coiffes d'angle, filet lumineux, puis fenêtre de jauge cerclée de lumière. Des détails simples habillent le châssis : graduation et voyant de marche à côté de la jauge, repères de polarité et bande de danger à la sortie, flèche d'entrée sur les flancs, plaque signalétique sur le dessus. Un clic droit ouvre un écran épuré, dans le style salle de contrôle : la charge en grand, une barre graduée sur toute la largeur, une ligne d'état avec le temps avant qu'il soit plein ou vide, puis l'entrée et la sortie côte à côte. Quatre générations, chacune fabriquée autour de la précédente : 1, 4, 16 et 64 millions de FE, pour 1 000, 4 000, 16 000 et 64 000 FE par tick. Un chapitre du guide les présente.
@@ -120,7 +122,9 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 ---
 
-# Orbitalis — next version
+# Orbitalis — 0.10.0 (beta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommended*
 
 ## New
 - **Accumulators**: plug-and-play electricity storage with nothing to set up. Its five-step gauge faces the player who places it; power comes in through that face and the four others, and leaves through the back. It keeps its energy when broken. All four generations share one chassis that gains a visible upgrade each time: corner caps, a light trim, then a gauge window ringed with light. Simple details dress the chassis: a scale and a power light by the gauge, polarity marks and a hazard stripe at the output, an input arrow on the sides, a nameplate on top. Right-click opens a clean control-room style screen: the charge in large figures, a graduated full-width bar, a status line with the time until full or empty, then input and output side by side. Four generations, each crafted around the one before: 1, 4, 16 and 64 million FE, moving 1,000, 4,000, 16,000 and 64,000 FE per tick. A guide chapter covers them.
