@@ -2399,6 +2399,7 @@ public final class WorldPreview {
         }
         PadPlan plan = new PadPlan(radius, radius >= 2, Direction.EAST);
         table.setPlan(plan);
+        table.getPower().generate(LaunchTableBlockEntity.POWER_CAPACITY);
         // Le tablier se pose sur le sol : la scène, dallée deux blocs sous la table, est rehaussée d'un bloc dessous.
         fill(level, x - radius - 7, y - 1, z - radius - 2, x + radius + 1, y - 1, z + radius + 2, "minecraft:smooth_stone");
         for (PadPlan.Piece piece : plan.pieces()) {

@@ -248,6 +248,13 @@ public final class ModBlockEntities {
         event.registerBlock(Capabilities.Fluid.BLOCK,
                 (level, pos, state, blockEntity, side) -> new UmbilicalFluidHandler(level, pos),
                 ModBlocks.FUEL_PORT.get());
+        // L'électricité du pas de tir : un câble se branche sur la table, sur une dalle du tablier ou sur un bloc de
+        // ravitaillement, et charge la réserve de la table la plus proche.
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, LAUNCH_TABLE.get(), (table, side) -> table.getPower());
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, blockEntity, side) -> {
+            LaunchTableBlockEntity table = LaunchTableBlockEntity.nearest(level, pos, com.orbitalis.phase1.spaceport.LaunchComplex.REACH + 2);
+            return table == null ? null : table.getPower();
+        }, ModBlocks.LAUNCH_PAD.get(), ModBlocks.FLAME_TRENCH.get(), ModBlocks.FUEL_PORT.get());
 
         // Conduits : ils n'ont pas d'entité de bloc ; ce qu'on leur envoie est livré au réseau auquel ils appartiennent.
         event.registerBlock(Capabilities.Energy.BLOCK,

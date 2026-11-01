@@ -160,6 +160,18 @@ public class LaunchTableBlockEntity extends BlockEntity {
     // Séquence de lancement (voir LaunchStep) : ce que l'équipe a fait, et jusqu'à quand cela tient.
     /** Vrai si les vannes de remplissage sont ouvertes : sans cela, aucun ergol n'entre dans la fusée. */
     private boolean valvesOpen;
+
+    /**
+     * Électricité du pas de tir : pompes, vérins des bras, vannes, déluge, éclairage et électronique du compte à rebours.
+     * Elle arrive par un câble branché sur une dalle du tablier, sur un bloc de ravitaillement ou sur la table. Sans elle,
+     * aucune étape ne démarre, le remplissage s'arrête, et une panne reporte le compte à rebours.
+     */
+    public static final int POWER_CAPACITY = 200_000;
+    private static final int POWER_INPUT = 4_000;
+    private final com.orbitalis.core.energy.MachineEnergyStorage power =
+            new com.orbitalis.core.energy.MachineEnergyStorage(POWER_CAPACITY, POWER_INPUT, 0, this::setChanged);
+    /** Vrai pendant une panne : le message ne part qu'une fois. */
+    private boolean blackout;
     /** Heure du monde jusqu'à laquelle les réservoirs restent sous pression ; 0 s'ils ne le sont pas. */
     private long pressureUntil;
     /** Vrai si le bras ombilical et la passerelle sont retirés. */
@@ -1948,6 +1960,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
         tickBeacons(level);
         tickFarSurvey(level);
         tickSequence(level);
+        tickPower(level);
         if (breakup != null && breakup.tick(level)) {
             breakup = null;
         }
@@ -2476,8 +2489,8 @@ public class LaunchTableBlockEntity extends BlockEntity {
             }
             return room;
         }
-        // Les ergols ne passent que vannes ouvertes, bras branché, et jamais moteurs allumés.
-        if (!hasRocket() || phase != Phase.IDLE || usableArms() == 0 || amount <= 0 || !valvesOpen || retracted) {
+        // Les ergols ne passent que vannes ouvertes, bras branché, pompes alimentées, et jamais moteurs allumés.
+        if (!hasRocket() || phase != Phase.IDLE || usableArms() == 0 || amount <= 0 || !valvesOpen || retracted || !isPowered()) {
             return 0;
         }
         RocketFuel required = requiredFuel();
@@ -2618,7 +2631,52 @@ public class LaunchTableBlockEntity extends BlockEntity {
     public boolean isGoForLaunch() {
         return isOperational() && hasRocket() && rocketStats().isFlightReady() && isMassAllowed() && testPadProblem(rocket) == null
                 && (!needsArm() || usableArms() > 0) && usableTowerHeight() >= requiredTowerHeight()
-                && isFuelled() && isWeatherGo();
+                && isFuelled() && isWeatherGo() && isPowered();
+    }
+
+    public com.orbitalis.core.energy.MachineEnergyStorage getPower() {
+        return power;
+    }
+
+    /** Consommation du pas de tir quand il travaille, en FE par tick : 20 par bloc de côté du tablier. */
+    public int powerDraw() {
+        return 20 * (plan == null ? 3 : plan.deckSize());
+    }
+
+    /** Vrai si la réserve tient encore une seconde de travail. */
+    public boolean isPowered() {
+        return power.getEnergy() >= powerDraw() * 20;
+    }
+
+    /** Vrai pendant que le pas de tir travaille : il consomme alors de l'électricité. */
+    private boolean isWorking() {
+        return phase == Phase.COUNTDOWN || valvesOpen || busyStep() >= 0 || isDelugeOn() || armTestUntil > 0 || alarmTestUntil > 0;
+    }
+
+    /**
+     * Chaque tick de travail coûte de l'électricité. Quand la réserve est à sec : les vannes se ferment, le compte à
+     * rebours est reporté, et tout le monde est prévenu une fois.
+     */
+    private void tickPower(ServerLevel level) {
+        if (!isWorking()) {
+            blackout = false;
+            return;
+        }
+        if (power.consume(powerDraw())) {
+            blackout = false;
+            return;
+        }
+        if (blackout) {
+            return;
+        }
+        blackout = true;
+        valvesOpen = false;
+        if (phase == Phase.COUNTDOWN) {
+            endCountdown(Result.SCRUBBED, Component.translatable("launch.orbitalis.power_lost").withStyle(ChatFormatting.GOLD));
+        } else {
+            announce(Component.translatable("launch.orbitalis.power_lost").withStyle(ChatFormatting.GOLD));
+            sync();
+        }
     }
 
     // ------------------------------------------------------------------
@@ -2997,6 +3055,9 @@ public class LaunchTableBlockEntity extends BlockEntity {
      * @return ce qui empêche l'étape, ou {@code null} si elle est lancée
      */
     public Component request(LaunchStep step, String agency) {
+        if (phase == Phase.IDLE && step != LaunchStep.ASSIST && !isPowered()) {
+            return Component.translatable("sequence.orbitalis.no_power", powerDraw());
+        }
         boolean ground = step.ordinal() <= LaunchStep.IGNITE.ordinal() || step == LaunchStep.POLL || step == LaunchStep.CHILL
                 || step == LaunchStep.INTERNAL || step.isTest();
         if (level == null || !ground || phase != Phase.IDLE) {
@@ -4666,6 +4727,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
             output.putBoolean("plan_compact", plan.compact());
             output.putBoolean("plan_raised", plan.raised());
         }
+        power.serialize(output.child("power"));
         output.putInt("pad_missing", complex.missing());
         output.putInt("pad_radius", complex.radius());
         output.putBoolean("pad_sky", complex.skyClear());
@@ -4750,6 +4812,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
         lastResult = Result.values()[Math.floorMod(input.getIntOr("last_result", 0), Result.values().length)];
         lastPoints = input.getIntOr("last_points", 0);
         phaseStart = input.getLongOr("phase_start", 0L);
+        power.deserialize(input.childOrEmpty("power"));
         int[] packed = input.getIntArray("tower_arms").orElse(new int[0]);
         List<BlockPos> arms = new ArrayList<>();
         for (int i = 0; i + 1 < packed.length; i += 2) {

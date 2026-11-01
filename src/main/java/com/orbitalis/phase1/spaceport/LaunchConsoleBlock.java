@@ -179,7 +179,8 @@ public class LaunchConsoleBlock extends HorizontalDirectionalBlock implements Wo
                 table.delugeNeed() <= 0 ? 0 : Math.min(100, 100 * table.getWater() / table.delugeNeed()), table.thrustPercent(),
                 table.holdSeconds(), table.flightBits(), table.flightWindowSeconds(), table.getAssist(),
                 complex.capacityRadius(), table.busyStep(), table.busyPercent(), table.pollState(), forecast[0], forecast[1],
-                table.chillSeconds(), table.internalState(), table.overpressurePercent(), table.isTestPad());
+                table.chillSeconds(), table.internalState(), table.overpressurePercent(), table.isTestPad(), table.isPowered(),
+                (int) (100L * table.getPower().getEnergy() / LaunchTableBlockEntity.POWER_CAPACITY));
     }
 
     /**

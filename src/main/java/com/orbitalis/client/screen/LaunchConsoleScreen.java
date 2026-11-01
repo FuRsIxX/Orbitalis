@@ -255,7 +255,7 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
     private List<Station> stations() {
         List<Station> stations = new ArrayList<>();
         boolean rocket = status.hasRocket();
-        stations.add(new Station("pad", status.linked() && status.commissioned() && status.radius() > 0, true));
+        stations.add(new Station("pad", status.linked() && status.commissioned() && status.radius() > 0 && status.powered(), true));
         stations.add(new Station("range", status.linked() && safe() && status.skyClear(), true));
         stations.add(new Station("weather", status.weatherGo(), true));
         stations.add(new Station("ground", armOk(), status.needsFuel()));
@@ -798,6 +798,8 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         y += 12;
         // Les voyants : vert si c'est en ordre, ambre si c'est à faire, gris s'il n'y a rien à faire.
         String[][] lights = {
+                {"launch.orbitalis.console.sys.power", status.powered() ? "launch.orbitalis.console.state.powered" : "launch.orbitalis.console.state.unpowered",
+                        status.powered() ? status.power() < 25 ? "warn" : "ok" : "bad"},
                 {"launch.orbitalis.console.sys.arms", status.retracted() ? "launch.orbitalis.console.state.retracted" : "launch.orbitalis.console.state.connected",
                         status.retracted() ? "ok" : "warn"},
                 {"launch.orbitalis.console.sys.pressure", status.pressure() > 0 ? "launch.orbitalis.console.state.on" : "launch.orbitalis.console.state.off",

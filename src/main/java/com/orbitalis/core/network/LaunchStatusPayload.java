@@ -58,6 +58,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * @param internal        alimentation du lanceur : -1 s'il n'a pas à en changer, 0 sur le sol, 1 sur ses batteries
  * @param overpressure    surpression des réservoirs, de 0 à 100 : vannes restées ouvertes après le plein
  * @param testPad         vrai pour le pas de tir d'essai : ni bras à retirer, ni déluge
+ * @param powered         vrai si le pas de tir a de quoi travailler : sa réserve d'électricité tient encore
+ * @param power           réserve d'électricité du pas de tir, de 0 à 100
  */
 public record LaunchStatusPayload(BlockPos console, boolean open, boolean linked, int distance, boolean commissioned,
         int radius, int missingPads, boolean skyClear, int towerHeight, int arms, boolean towerAuthorized, int requiredTower,
@@ -65,7 +67,7 @@ public record LaunchStatusPayload(BlockPos console, boolean open, boolean linked
         int phase, int seconds, float altitudeKm, float speed, int result, int points, boolean liquid, boolean valvesOpen,
         int pressure, boolean retracted, boolean hasDeluge, int deluge, int water, int thrust, int hold, int flightBits, int flightWindow, int assist, int capacityRadius,
         int busyStep, int busyPercent, int poll, int forecast, int forecastTicks, int chill, int internal, int overpressure,
-        boolean testPad)
+        boolean testPad, boolean powered, int power)
         implements CustomPacketPayload {
     public static final Type<LaunchStatusPayload> TYPE = new Type<>(Orbitalis.id("launch_status"));
 
@@ -117,6 +119,8 @@ public record LaunchStatusPayload(BlockPos console, boolean open, boolean linked
                 buffer.writeInt(payload.internal);
                 buffer.writeInt(payload.overpressure);
                 buffer.writeBoolean(payload.testPad);
+                buffer.writeBoolean(payload.powered);
+                buffer.writeInt(payload.power);
             },
             buffer -> new LaunchStatusPayload(BlockPos.STREAM_CODEC.decode(buffer), buffer.readBoolean(), buffer.readBoolean(),
                     buffer.readInt(), buffer.readBoolean(), buffer.readInt(), buffer.readInt(), buffer.readBoolean(), buffer.readInt(),
@@ -126,12 +130,12 @@ public record LaunchStatusPayload(BlockPos console, boolean open, boolean linked
                     buffer.readInt(), buffer.readBoolean(), buffer.readBoolean(), buffer.readInt(), buffer.readInt(), buffer.readInt(),
                     buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(),
                     buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(),
-                    buffer.readInt(), buffer.readBoolean()));
+                    buffer.readInt(), buffer.readBoolean(), buffer.readBoolean(), buffer.readInt()));
 
     /** Aucun complexe relié. */
     public static LaunchStatusPayload notLinked(BlockPos console, boolean open) {
         return new LaunchStatusPayload(console, open, false, 0, false, 0, 0, false, 0, 0, false, 0,
-                false, 0, 0, false, 0, true, 0, 0, 0, 0, 0, 0, false, false, 0, false, false, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, -1, -1, 0, false);
+                false, 0, 0, false, 0, true, 0, 0, 0, 0, 0, 0, false, false, 0, false, false, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -1, 0, -1, -1, 0, false, false, 0);
     }
 
     @Override

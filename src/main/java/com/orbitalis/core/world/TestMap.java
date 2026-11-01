@@ -414,6 +414,9 @@ public final class TestMap {
         }
         var plan = com.orbitalis.phase1.spaceport.PadPlan.test(Direction.NORTH);
         table.setPlan(plan);
+        // Le pas de tir travaille à l'électricité : une source créative, contre le flanc ouest du tablier, l'alimente.
+        level.setBlock(tablePos.west(2), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+        table.getPower().generate(com.orbitalis.phase1.spaceport.LaunchTableBlockEntity.POWER_CAPACITY);
         for (var piece : plan.pieces()) {
             level.setBlock(tablePos.offset(piece.offset()), piece.display(), Block.UPDATE_ALL);
         }

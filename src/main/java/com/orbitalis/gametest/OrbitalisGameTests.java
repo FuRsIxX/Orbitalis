@@ -509,6 +509,8 @@ public final class OrbitalisGameTests {
         helper.setBlock(tablePos, ModBlocks.LAUNCH_TABLE.get());
         PadPlan plan = new PadPlan(radius, elevator, Direction.EAST);
         helper.getBlockEntity(tablePos, LaunchTableBlockEntity.class).setPlan(plan);
+        // Le pas de tir est branché : sa réserve d'électricité est pleine.
+        helper.getBlockEntity(tablePos, LaunchTableBlockEntity.class).getPower().generate(LaunchTableBlockEntity.POWER_CAPACITY);
         BlockPos origin = helper.absolutePos(tablePos);
         for (PadPlan.Piece piece : plan.pieces()) {
             helper.getLevel().setBlockAndUpdate(origin.offset(piece.offset()), piece.display());
@@ -1115,6 +1117,19 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.getLevel().setBlockAndUpdate(helper.absolutePos(tablePos).offset(piece.offset()), piece.display());
         }
         table.commission(true);
+        // Sans électricité, le pas de tir ne fait rien. Un câble branché sur une dalle du tablier charge la table.
+        helper.assertTrue(!table.isPowered() && table.request(LaunchStep.TEST_ALARM, "test:test_pad") != null,
+                "un pas de tir sans électricité ne devrait rien faire");
+        var deckPower = helper.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK,
+                helper.absolutePos(tablePos.offset(0, 0, 1)), Direction.SOUTH);
+        helper.assertTrue(deckPower != null, "une dalle du tablier devrait prendre l'électricité pour sa table");
+        try (Transaction transaction = Transaction.openRoot()) {
+            for (int k = 0; k < 50; k++) {
+                deckPower.insert(LaunchTableBlockEntity.POWER_CAPACITY, transaction);
+            }
+            transaction.commit();
+        }
+        helper.assertTrue(table.isPowered(), "l'électricité reçue par la dalle aurait dû charger la table");
         LaunchComplex complex = table.getComplex();
         helper.assertTrue(complex.compact() && complex.isComplete() && table.isOperational() && !table.isRetiredSize(),
                 "le pas de tir d'essai complet devrait être en service : il manque " + complex.missing() + " bloc(s)");

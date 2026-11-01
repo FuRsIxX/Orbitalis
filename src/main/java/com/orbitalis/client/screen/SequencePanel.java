@@ -354,6 +354,10 @@ final class SequencePanel {
             }
             return Component.translatable("sequence.orbitalis.alert.poll_again").withStyle(ChatFormatting.GOLD);
         }
+        // Sans électricité, le pas de tir ne fait rien : c'est la première chose à régler.
+        if (!status.powered() && status.phase() == 0) {
+            return Component.translatable("sequence.orbitalis.alert.no_power").withStyle(ChatFormatting.RED);
+        }
         // Un satellite météo de l'agence voit le temps tourner : mieux vaut le savoir avant de mettre sous pression.
         if (status.forecast() == 0 && status.forecastTicks() < 1800) {
             return Component.translatable("sequence.orbitalis.alert.window", Math.max(1, status.forecastTicks() / 20)).withStyle(ChatFormatting.GOLD);
