@@ -2,11 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
@@ -14,7 +9,9 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "orbitalis:stored_energy"
+                "orbitalis:stored_energy",
+                "minecraft:container",
+                "orbitalis:machine_fluids"
               ],
               "source": "block_entity"
             }

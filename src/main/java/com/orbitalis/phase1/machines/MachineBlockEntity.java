@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -94,17 +93,19 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         }
     }
 
-    /** Cassée, la machine garde son énergie sur son objet ; reposée, elle la retrouve. */
+    /** Cassée, la machine garde son énergie et son contenu sur son objet ; reposée, elle les retrouve. */
     @Override
     protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         energy.storeIn(components);
+        inventory.storeIn(components);
     }
 
     @Override
     protected void applyImplicitComponents(net.minecraft.core.component.DataComponentGetter components) {
         super.applyImplicitComponents(components);
         energy.restoreFrom(components);
+        inventory.restoreFrom(components);
     }
 
     @Override
@@ -121,11 +122,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         inventory.deserialize(input.childOrEmpty("inventory"));
     }
 
-    /** Quand le bloc est cassé, son contenu tombe au sol. */
+    /**
+     * Le contenu ne tombe plus au sol quand le bloc disparaît : il part avec l'objet de la machine (voir
+     * {@link MachineDrops}). Le lâcher en plus le doublerait.
+     */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        if (level != null) {
-            Containers.dropContents(level, pos, inventory.copyToList());
-        }
     }
 }

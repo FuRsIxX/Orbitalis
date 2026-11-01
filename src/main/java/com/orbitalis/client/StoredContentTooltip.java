@@ -11,7 +11,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 
-/** Un réservoir ou une machine cassés disent, au survol, le fluide et l'énergie qu'ils emportent. */
+/** Un réservoir ou une machine cassés disent, au survol, les fluides et l'énergie qu'ils emportent (les objets, Minecraft les montre). */
 @EventBusSubscriber(modid = Orbitalis.MODID, value = Dist.CLIENT)
 public final class StoredContentTooltip {
     private StoredContentTooltip() {
@@ -24,6 +24,15 @@ public final class StoredContentTooltip {
         if (content != null && !content.isEmpty()) {
             event.getToolTip().add(line++, Component.translatable("tank.orbitalis.tooltip", content.getFluidType().getDescription(), content.getAmount())
                     .withStyle(ChatFormatting.AQUA));
+        }
+        var fluids = event.getItemStack().get(ModDataComponents.MACHINE_FLUIDS.get());
+        if (fluids != null) {
+            for (SimpleFluidContent fluid : fluids) {
+                if (!fluid.isEmpty()) {
+                    event.getToolTip().add(line++, Component.translatable("tank.orbitalis.tooltip", fluid.getFluidType().getDescription(), fluid.getAmount())
+                            .withStyle(ChatFormatting.AQUA));
+                }
+            }
         }
         Integer energy = event.getItemStack().get(ModDataComponents.STORED_ENERGY.get());
         if (energy != null && energy > 0) {

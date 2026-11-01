@@ -53,6 +53,28 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
     /** Eau pompée par tick au contact d'une source d'eau, en mB. */
     private static final int WATER_INTAKE_PER_TICK = 100;
     private static final int INPUT_TANK = 0;
+    /** Débit de la purge, en mB par tick : plus que ne produit aucune recette, pour que le niveau tienne. */
+    public static final int PURGE_PER_TICK = 250;
+    /** Intervalle entre deux bouffées de la purge, en ticks. */
+    private static final int PURGE_PUFF_INTERVAL = 8;
+
+    /**
+     * Purge d'un réservoir de sortie : quand l'une des sorties est pleine, la machine s'arrête, même si l'autre a de la
+     * place. La purge rejette à l'air ce qui gêne.
+     */
+    public enum Purge {
+        /** Rien n'est rejeté. */
+        OFF,
+        /** Le réservoir ne dépasse jamais la moitié : le surplus est rejeté. */
+        HALF,
+        /** Tout ce qui arrive est rejeté : le réservoir reste vide. */
+        FULL;
+
+        /** Le mode suivant, au clic gauche : arrêt, moitié, totale, puis arrêt. */
+        public Purge next() {
+            return values()[(ordinal() + 1) % values().length];
+        }
+    }
 
     private final FluidMachineLayout layout;
     private final Supplier<RecipeType<FluidRecipe>> recipeType;
@@ -60,6 +82,9 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
 
     private int progress;
     private int maxProgress;
+    /** Purge de chaque réservoir (celle de l'entrée reste arrêtée). */
+    private final Purge[] purge = {Purge.OFF, Purge.OFF, Purge.OFF};
+    private int purgeTicks;
     /** Recette en cours ; recherchée à nouveau dès que les entrées changent. */
     private RecipeHolder<FluidRecipe> currentRecipe;
     private boolean inputsChanged = true;
@@ -76,6 +101,9 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
                 case 0 -> progress;
                 case 1 -> maxProgress;
                 case 2 -> currentRecipe == null ? 0 : currentRecipe.value().energyPerTick();
+                // Après les réservoirs : la purge des deux sorties.
+                case 3 + TANK_COUNT * 2 -> purge[1].ordinal();
+                case 4 + TANK_COUNT * 2 -> purge[2].ordinal();
                 default -> {
                     // Pour chaque réservoir : identifiant du fluide, puis quantité.
                     int tank = (local - 3) / 2;
@@ -198,6 +226,42 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
         setLit(working);
 
         pushOutputs(level, pos);
+        purge(level, pos);
+    }
+
+    public Purge getPurge(int tank) {
+        return purge[tank];
+    }
+
+    /** Change la purge d'un réservoir de sortie : clic gauche, le mode suivant ; clic droit, l'arrêt. */
+    public void setPurge(int tank, Purge mode) {
+        if (tank > INPUT_TANK && tank <= layout.outputCount()) {
+            purge[tank] = mode;
+            setChanged();
+        }
+    }
+
+    /** Rejette à l'air ce que les purges des sorties demandent, avec une bouffée de vapeur de temps en temps. */
+    private void purge(ServerLevel level, BlockPos pos) {
+        boolean vented = false;
+        for (int tank = 1; tank <= layout.outputCount(); tank++) {
+            FluidStack content = tanks.getFluid(tank);
+            int keep = switch (purge[tank]) {
+                case OFF -> content.getAmount();
+                case HALF -> TANK_CAPACITY / 2;
+                case FULL -> 0;
+            };
+            int vent = Math.min(PURGE_PER_TICK, content.getAmount() - keep);
+            if (vent > 0) {
+                int left = content.getAmount() - vent;
+                tanks.setFluid(tank, left <= 0 ? FluidStack.EMPTY : new FluidStack(content.getFluid(), left));
+                vented = true;
+            }
+        }
+        if (vented && purgeTicks++ % PURGE_PUFF_INTERVAL == 0) {
+            level.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, pos.getX() + 0.5, pos.getY() + 1.05, pos.getZ() + 0.5,
+                    3, 0.2, 0.05, 0.2, 0.02);
+        }
     }
 
     /** Remplit le réservoir d'entrée au contact d'une source d'eau (qui n'est pas consommée). */
@@ -308,6 +372,21 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
         super.saveAdditional(output);
         tanks.serialize(output.child("tanks"));
         output.putInt("progress", progress);
+        output.putInt("purge_1", purge[1].ordinal());
+        output.putInt("purge_2", purge[2].ordinal());
+    }
+
+    /** Cassée, la machine garde aussi ses fluides sur son objet. */
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        tanks.storeIn(components);
+    }
+
+    @Override
+    protected void applyImplicitComponents(net.minecraft.core.component.DataComponentGetter components) {
+        super.applyImplicitComponents(components);
+        tanks.restoreFrom(components);
     }
 
     @Override
@@ -315,6 +394,8 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
         super.loadAdditional(input);
         tanks.deserialize(input.childOrEmpty("tanks"));
         progress = input.getIntOr("progress", 0);
+        purge[1] = Purge.values()[Math.clamp(input.getIntOr("purge_1", 0), 0, Purge.values().length - 1)];
+        purge[2] = Purge.values()[Math.clamp(input.getIntOr("purge_2", 0), 0, Purge.values().length - 1)];
         inputsChanged = true;
     }
 }

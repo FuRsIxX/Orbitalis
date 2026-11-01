@@ -136,6 +136,12 @@ public final class OrbitalisGameTests {
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> DESIGN_MEMORY =
             FUNCTIONS.register("design_memory", () -> OrbitalisGameTests::designMemory);
 
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> MACHINES_KEEP_CONTENTS =
+            FUNCTIONS.register("machines_keep_contents", () -> OrbitalisGameTests::machinesKeepContents);
+
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FLUID_PURGE =
+            FUNCTIONS.register("fluid_purge", () -> OrbitalisGameTests::fluidPurge);
+
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
 
@@ -298,6 +304,12 @@ public final class OrbitalisGameTests {
         // Cassées, les machines gardent leur énergie ; reposées, elles la retrouvent.
         event.registerTest(Orbitalis.id("machines_keep_energy"), new FunctionGameTestInstance(
                 MACHINES_KEEP_ENERGY.getKey(), spaced(environment, emptyStructure, 20)));
+        // Cassées, les machines gardent leurs objets et leurs fluides, sans rien lâcher en double, même en créatif.
+        event.registerTest(Orbitalis.id("machines_keep_contents"), new FunctionGameTestInstance(
+                MACHINES_KEEP_CONTENTS.getKey(), spaced(environment, emptyStructure, 20)));
+        // La purge d'une sortie tient le réservoir à moitié, ou le vide.
+        event.registerTest(Orbitalis.id("fluid_purge"), new FunctionGameTestInstance(
+                FLUID_PURGE.getKey(), spaced(environment, emptyStructure, 200)));
         // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
         event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
                 WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
@@ -3738,6 +3750,99 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         placed.applyComponentsFromItemStack(foundryItem);
         helper.assertTrue(placed.getEnergy().getEnergy() == 5000, "la fonderie reposée aurait dû retrouver son énergie : " + placed.getEnergy().getEnergy());
         helper.succeed();
+    }
+
+    /**
+     * Contenu des machines : une fonderie cassée emporte ses lingots sur son objet, sans en lâcher un seul au sol (sinon
+     * ils seraient en double) ; un électrolyseur emporte ses fluides ; reposés, ils les retrouvent. En mode créatif, une
+     * machine pleine tombe quand même, avec son contenu.
+     */
+    private static void machinesKeepContents(GameTestHelper helper) {
+        BlockPos foundryPos = new BlockPos(1, 1, 1);
+        helper.setBlock(foundryPos, ModBlocks.ARC_FOUNDRY.get());
+        helper.getBlockEntity(foundryPos, com.orbitalis.phase1.machines.MachineBlockEntity.class).getInventory()
+                .setStack(0, new ItemStack(Items.IRON_INGOT, 12));
+        BlockPos electrolyzerPos = new BlockPos(4, 1, 1);
+        helper.setBlock(electrolyzerPos, ModBlocks.ELECTROLYZER.get());
+        var electrolyzer = helper.getBlockEntity(electrolyzerPos, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.class);
+        electrolyzer.getTanks().setFluid(0, new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 3000));
+        electrolyzer.getTanks().setFluid(1, new FluidStack(ModFluids.HYDROGEN.get(), 2000));
+
+        helper.getLevel().destroyBlock(helper.absolutePos(foundryPos), true);
+        helper.getLevel().destroyBlock(helper.absolutePos(electrolyzerPos), true);
+        ItemStack foundryItem = ItemStack.EMPTY;
+        ItemStack electrolyzerItem = ItemStack.EMPTY;
+        int looseIngots = 0;
+        for (net.minecraft.world.entity.item.ItemEntity item : helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(helper.absolutePos(BlockPos.ZERO)).inflate(8.0))) {
+            if (item.getItem().is(ModBlocks.ARC_FOUNDRY.get().asItem())) {
+                foundryItem = item.getItem().copy();
+            } else if (item.getItem().is(ModBlocks.ELECTROLYZER.get().asItem())) {
+                electrolyzerItem = item.getItem().copy();
+            } else if (item.getItem().is(Items.IRON_INGOT)) {
+                looseIngots += item.getItem().getCount();
+            }
+            item.discard();
+        }
+        helper.assertTrue(looseIngots == 0, "la fonderie ne doit plus lâcher ses lingots : ils sont sur son objet (" + looseIngots + " au sol)");
+        var contents = foundryItem.get(net.minecraft.core.component.DataComponents.CONTAINER);
+        helper.assertTrue(contents != null && contents.nonEmptyItemCopyStream().mapToInt(ItemStack::getCount).sum() == 12,
+                "la fonderie cassée aurait dû emporter ses 12 lingots");
+        var fluids = electrolyzerItem.get(com.orbitalis.core.registry.ModDataComponents.MACHINE_FLUIDS.get());
+        helper.assertTrue(fluids != null && fluids.get(0).getAmount() == 3000 && fluids.get(1).getAmount() == 2000,
+                "l'électrolyseur cassé aurait dû emporter son eau et son hydrogène");
+
+        helper.setBlock(foundryPos, ModBlocks.ARC_FOUNDRY.get());
+        var foundry = helper.getBlockEntity(foundryPos, com.orbitalis.phase1.machines.MachineBlockEntity.class);
+        foundry.applyComponentsFromItemStack(foundryItem);
+        helper.assertTrue(foundry.getInventory().getStack(0).getCount() == 12, "la fonderie reposée aurait dû retrouver ses lingots");
+        helper.setBlock(electrolyzerPos, ModBlocks.ELECTROLYZER.get());
+        var placed = helper.getBlockEntity(electrolyzerPos, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.class);
+        placed.applyComponentsFromItemStack(electrolyzerItem);
+        helper.assertTrue(placed.getTanks().getFluid(1).getAmount() == 2000 && placed.getTanks().getFluid(1).is(ModFluids.HYDROGEN.get()),
+                "l'électrolyseur reposé aurait dû retrouver son hydrogène");
+
+        // En créatif : la fonderie pleine tombe quand même, avec ses lingots.
+        @SuppressWarnings("removal")
+        net.minecraft.server.level.ServerPlayer creative = helper.makeMockServerPlayerInLevel();
+        creative.setGameMode(net.minecraft.world.level.GameType.CREATIVE);
+        creative.gameMode.destroyBlock(helper.absolutePos(foundryPos));
+        boolean kept = !helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(helper.absolutePos(foundryPos)).inflate(3.0),
+                item -> item.getItem().is(ModBlocks.ARC_FOUNDRY.get().asItem()) && item.getItem().has(net.minecraft.core.component.DataComponents.CONTAINER))
+                .isEmpty();
+        helper.assertTrue(kept, "en créatif, une machine pleine aurait dû tomber avec son contenu");
+        helper.succeed();
+    }
+
+    /**
+     * Purge : un électrolyseur dont la sortie d'hydrogène est pleine la ramène à moitié en purge à 50 %, puis la vide en
+     * purge totale, et la laisse telle quelle une fois la purge arrêtée.
+     */
+    private static void fluidPurge(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, ModBlocks.ELECTROLYZER.get());
+        var machine = helper.getBlockEntity(pos, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.class);
+        int capacity = com.orbitalis.phase1.fuel.FluidMachineBlockEntity.TANK_CAPACITY;
+        machine.getTanks().setFluid(1, new FluidStack(ModFluids.HYDROGEN.get(), capacity));
+        machine.setPurge(1, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.HALF);
+        helper.assertTrue(machine.getPurge(0) == com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.OFF, "l'entrée ne se purge pas");
+        int[] stage = {0};
+        helper.onEachTick(() -> {
+            int amount = machine.getTanks().getFluid(1).getAmount();
+            if (stage[0] == 0 && amount == capacity / 2) {
+                stage[0] = 1;
+                machine.setPurge(1, machine.getPurge(1).next());
+            } else if (stage[0] == 1 && amount == 0) {
+                stage[0] = 2;
+                machine.setPurge(1, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.OFF);
+                machine.getTanks().setFluid(1, new FluidStack(ModFluids.HYDROGEN.get(), 1000));
+            }
+        });
+        helper.succeedWhen(() -> {
+            helper.assertTrue(stage[0] == 2, "la purge n'a pas tenu le réservoir à moitié puis ne l'a pas vidé");
+            helper.assertTrue(machine.getTanks().getFluid(1).getAmount() == 1000, "purge arrêtée, le réservoir ne doit plus se vider");
+        });
     }
 
     /**

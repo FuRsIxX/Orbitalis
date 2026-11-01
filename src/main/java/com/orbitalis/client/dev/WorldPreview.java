@@ -1416,6 +1416,35 @@ public final class WorldPreview {
             set(level, 45, 1, -10, "orbitalis:mission_display[facing=south]");
         }, 33.5, 5.0, -11.5, 180.0F, 14.0F, 70));
         SHOTS.add(new Shot("depot_tank_close", null, 31.5, 1.8, -17.6, 180.0F, 8.0F, 12));
+        // L'eau d'un réservoir à côté d'une vraie eau, dans un trou du dallage : même texture, même teinte.
+        SHOTS.add(new Shot("depot_water", level -> set(level, 27, -1, -19, "minecraft:water"), 27.5, 1.6, -16.4, 180.0F, 30.0F, 20));
+        // L'écran de l'électrolyseur : sorties pleines, purges à 50 % et totale, et un état long à côté de la consommation.
+        SHOTS.add(new Shot("purge_screen", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            var minecraft = net.minecraft.client.Minecraft.getInstance();
+            var data = new net.minecraft.world.inventory.SimpleContainerData(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT);
+            int base = com.orbitalis.phase1.machines.MachineMenu.BASE_DATA_COUNT;
+            data.set(0, 300);
+            data.set(2, 20_000);
+            data.set(base + 1, 100);
+            data.set(base + 2, 400);
+            int[][] tanks = {{net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(net.minecraft.world.level.material.Fluids.WATER), 6000},
+                    {net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(ModFluids.HYDROGEN.get()), 4000},
+                    {net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(ModFluids.OXYGEN.get()), 8000}};
+            for (int tank = 0; tank < 3; tank++) {
+                data.set(base + 3 + tank * 2, tanks[tank][0]);
+                data.set(base + 4 + tank * 2, tanks[tank][1]);
+            }
+            data.set(base + 9, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.HALF.ordinal());
+            data.set(base + 10, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.FULL.ordinal());
+            var inventory = minecraft.player.getInventory();
+            var menu = new com.orbitalis.phase1.fuel.FluidMachineMenu(0, inventory, null,
+                    new com.orbitalis.phase1.machines.MachineInventory(1, (slot, stack) -> true, slot -> true, () -> {
+                    }), data, com.orbitalis.phase1.fuel.FluidMachineLayout.ELECTROLYZER);
+            minecraft.gui.setScreen(new com.orbitalis.client.screen.FluidMachineScreen(menu, inventory,
+                    net.minecraft.network.chat.Component.translatable("block.orbitalis.electrolyzer")));
+        }), 27.5, 1.6, -16.4, 180.0F, 30.0F, 20));
+        SHOTS.add(new Shot("purge_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
+                () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), 27.5, 1.6, -16.4, 180.0F, 30.0F, 6));
         // Les réservoirs créatifs, de près : chacun doit montrer la couleur de son fluide.
         SHOTS.add(new Shot("depot_creative", null, 47.5, 1.4, -15.5, 180.0F, 12.0F, 20));
         SHOTS.add(new Shot("depot_creative", null, 44.5, 1.6, -17.0, 180.0F, 16.0F, 12));

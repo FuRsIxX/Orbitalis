@@ -48,7 +48,7 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         add(ModBlocks.REFINERY.get(), this::keepingEnergy);
         // Le réservoir cryogénique tombe avec son contenu et son énergie.
         add(ModBlocks.CRYOGENIC_TANK.get(), block -> keeping(block, com.orbitalis.core.registry.ModDataComponents.FLUID_CONTENT.get(),
-                com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get()));
+                com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get(), net.minecraft.core.component.DataComponents.CONTAINER));
         add(ModBlocks.WATER_PUMP.get(), this::keepingEnergy);
 
         // Terminal de recherche et atelier d'assemblage (ses pièces tombent séparément).
@@ -182,22 +182,25 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         ModBlocks.CREATIVE_TANKS.forEach(tank -> dropSelf(tank.get()));
     }
 
-    /** Le bloc lui-même, qui garde l'énergie de sa réserve (voir ModDataComponents.STORED_ENERGY). */
+    /** Le bloc lui-même, qui garde son énergie, ses objets et ses fluides (voir MachineDrops). */
     private net.minecraft.world.level.storage.loot.LootTable.Builder keepingEnergy(Block block) {
-        return keeping(block, com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get());
+        return keeping(block, com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get(),
+                net.minecraft.core.component.DataComponents.CONTAINER, com.orbitalis.core.registry.ModDataComponents.MACHINE_FLUIDS.get());
     }
 
-    /** Le bloc lui-même, qui emporte ces données de son entité (le fluide d'un réservoir, l'énergie d'une machine...). */
+    /**
+     * Le bloc lui-même, qui emporte ces données de son entité (le fluide d'un réservoir, l'énergie d'une machine...).
+     * Il tombe toujours, même soufflé par une explosion : son contenu ne tombe plus à part, il se perdrait avec lui.
+     */
     private net.minecraft.world.level.storage.loot.LootTable.Builder keeping(Block block, net.minecraft.core.component.DataComponentType<?>... kept) {
         var copy = net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction
                 .copyComponentsFromBlockEntity(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_ENTITY);
         for (var type : kept) {
             copy.include(type);
         }
-        return net.minecraft.world.level.storage.loot.LootTable.lootTable().withPool(applyExplosionCondition(block,
-                net.minecraft.world.level.storage.loot.LootPool.lootPool()
-                        .setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1.0F))
-                        .add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(block).apply(copy))));
+        return net.minecraft.world.level.storage.loot.LootTable.lootTable().withPool(net.minecraft.world.level.storage.loot.LootPool.lootPool()
+                .setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1.0F))
+                .add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(block).apply(copy)));
     }
 
     /** Limite la vérification aux blocs d'Orbitalis : chaque bloc du mod doit avoir une loot table. */

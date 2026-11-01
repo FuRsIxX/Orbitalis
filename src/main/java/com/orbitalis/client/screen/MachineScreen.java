@@ -45,6 +45,8 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     private static final int STATUS_Y = 58;
 
     private final Identifier texture;
+    /** Vrai si le bandeau n'a pas tout montré (état coupé ou détail effacé) : tout s'affiche alors au survol. */
+    private boolean statusCut;
 
     protected MachineScreen(T menu, Inventory inventory, Component title, Identifier texture) {
         super(menu, inventory, title);
@@ -102,14 +104,29 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractLabels(graphics, mouseX, mouseY);
-        graphics.text(font, getStatus(), STATUS_LEFT, STATUS_Y, getStatusColor(), false);
+        // L'état et le détail partagent le bandeau, sans jamais se chevaucher. L'état passe d'abord : s'ils ne tiennent
+        // pas ensemble, le détail s'efface (il reste au survol du bandeau), et l'état n'est coupé qu'en dernier recours.
         Component detail = getStatusDetail();
-        graphics.text(font, detail, STATUS_RIGHT - font.width(detail), STATUS_Y, COLOR_IDLE, false);
+        int detailWidth = font.width(detail);
+        String status = getStatus().getString();
+        int full = STATUS_RIGHT - STATUS_LEFT;
+        boolean both = detailWidth == 0 || font.width(status) + 6 + detailWidth <= full;
+        String shown = Ui.fit(font, status, full);
+        statusCut = !both || !shown.equals(status);
+        graphics.text(font, shown, STATUS_LEFT, STATUS_Y, getStatusColor(), false);
+        if (both) {
+            graphics.text(font, detail, STATUS_RIGHT - detailWidth, STATUS_Y, COLOR_IDLE, false);
+        }
     }
 
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
+        if (statusCut && isHovering(STATUS_LEFT, STATUS_Y - 2, STATUS_RIGHT - STATUS_LEFT, 12, mouseX, mouseY)) {
+            Component detail = getStatusDetail();
+            graphics.setComponentTooltipForNextFrame(font, detail.getString().isEmpty() ? java.util.List.of(getStatus())
+                    : java.util.List.of(getStatus(), detail.copy().withStyle(net.minecraft.ChatFormatting.GRAY)), mouseX, mouseY);
+        }
         if (isHovering(ENERGY_X, ENERGY_Y, ENERGY_WIDTH, ENERGY_HEIGHT, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font,
                     Component.translatable("gui.orbitalis.energy", menu.getEnergy(), menu.getEnergyCapacity()),

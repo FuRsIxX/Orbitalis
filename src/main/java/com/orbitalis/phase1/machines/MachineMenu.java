@@ -37,6 +37,11 @@ public abstract class MachineMenu extends AbstractContainerMenu {
         addDataSlots(data);
     }
 
+    /** Entité de bloc de la machine, côté serveur ; {@code null} côté client. */
+    protected BlockEntity blockEntity() {
+        return blockEntity;
+    }
+
     /** Ajoute un emplacement de la machine. Les règles de dépôt viennent de l'inventaire de la machine. */
     protected void addMachineSlot(MachineInventory inventory, int index, int x, int y) {
         addSlot(new ResourceHandlerSlot(inventory, inventory::set, index, x, y));

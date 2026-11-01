@@ -17,8 +17,8 @@ import net.minecraft.world.level.material.Fluid;
  * Interface d'une machine à fluides (électrolyseur, liquéfacteur cryogénique, raffinerie).
  */
 public class FluidMachineMenu extends MachineMenu {
-    /** Données communes + progression, durée, consommation + (fluide, quantité) pour chaque réservoir. */
-    public static final int DATA_COUNT = BASE_DATA_COUNT + 3 + FluidMachineBlockEntity.TANK_COUNT * 2;
+    /** Données communes + progression, durée, consommation + (fluide, quantité) pour chaque réservoir + purge des deux sorties. */
+    public static final int DATA_COUNT = BASE_DATA_COUNT + 3 + FluidMachineBlockEntity.TANK_COUNT * 2 + 2;
     private static final int TANK_DATA = BASE_DATA_COUNT + 3;
 
     private final FluidMachineLayout layout;
@@ -72,6 +72,28 @@ public class FluidMachineMenu extends MachineMenu {
     /** Fluide contenu dans un réservoir (0 = entrée, 1 et 2 = sorties). */
     public Fluid getFluid(int tank) {
         return BuiltInRegistries.FLUID.byId(data.get(TANK_DATA + tank * 2));
+    }
+
+    /** Purge d'un réservoir de sortie (1 ou 2). */
+    public FluidMachineBlockEntity.Purge getPurge(int tank) {
+        int ordinal = data.get(TANK_DATA + FluidMachineBlockEntity.TANK_COUNT * 2 + tank - 1);
+        return FluidMachineBlockEntity.Purge.values()[Math.clamp(ordinal, 0, FluidMachineBlockEntity.Purge.values().length - 1)];
+    }
+
+    /** Numéro du bouton de purge d'une sortie, envoyé au serveur : deux par sortie, clic gauche puis clic droit. */
+    public static int purgeButton(int tank, boolean stop) {
+        return (tank - 1) * 2 + (stop ? 1 : 0);
+    }
+
+    /** Un joueur a cliqué sur un bouton de purge : le serveur change le mode de la sortie. */
+    @Override
+    public boolean clickMenuButton(net.minecraft.world.entity.player.Player player, int id) {
+        int tank = 1 + id / 2;
+        if (id < 0 || tank > layout.outputCount() || !(blockEntity() instanceof FluidMachineBlockEntity machine)) {
+            return false;
+        }
+        machine.setPurge(tank, id % 2 == 1 ? FluidMachineBlockEntity.Purge.OFF : machine.getPurge(tank).next());
+        return true;
     }
 
     /** Quantité contenue dans un réservoir, en mB. */

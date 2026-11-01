@@ -58,6 +58,27 @@ public class MachineInventory extends ItemStacksResourceHandler {
     }
 
     /** Vue de l'inventaire exposée aux autres blocs : le retrait y est limité aux emplacements de sortie. */
+    /** Garde le contenu sur l'objet de la machine cassée, comme une boîte de Shulker ; rien si elle est vide. */
+    public void storeIn(net.minecraft.core.component.DataComponentMap.Builder components) {
+        java.util.List<ItemStack> stacks = copyToList();
+        if (stacks.stream().anyMatch(stack -> !stack.isEmpty())) {
+            components.set(net.minecraft.core.component.DataComponents.CONTAINER,
+                    net.minecraft.world.item.component.ItemContainerContents.fromItems(stacks));
+        }
+    }
+
+    /** Rend le contenu que l'objet avait gardé, une fois la machine reposée. */
+    public void restoreFrom(net.minecraft.core.component.DataComponentGetter components) {
+        var contents = components.get(net.minecraft.core.component.DataComponents.CONTAINER);
+        if (contents != null) {
+            net.minecraft.core.NonNullList<ItemStack> stacks = net.minecraft.core.NonNullList.withSize(size(), ItemStack.EMPTY);
+            contents.copyInto(stacks);
+            for (int i = 0; i < stacks.size(); i++) {
+                setStack(i, stacks.get(i));
+            }
+        }
+    }
+
     public ResourceHandler<ItemResource> automationView() {
         return automationView;
     }

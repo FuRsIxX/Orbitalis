@@ -61,6 +61,35 @@ public class MachineTanks extends FluidStacksResourceHandler {
         set(index, FluidResource.of(stack), stack.getAmount());
     }
 
+    /** Garde les fluides sur l'objet de la machine cassée, réservoir par réservoir ; rien s'ils sont tous vides. */
+    public void storeIn(net.minecraft.core.component.DataComponentMap.Builder components) {
+        java.util.List<net.neoforged.neoforge.fluids.SimpleFluidContent> contents = new java.util.ArrayList<>();
+        boolean any = false;
+        for (int i = 0; i < size(); i++) {
+            FluidStack stack = getFluid(i);
+            any |= !stack.isEmpty();
+            contents.add(net.neoforged.neoforge.fluids.SimpleFluidContent.copyOf(stack));
+        }
+        if (any) {
+            components.set(com.orbitalis.core.registry.ModDataComponents.MACHINE_FLUIDS.get(), contents);
+        }
+    }
+
+    /** Rend les fluides que l'objet avait gardés, une fois la machine reposée (jamais plus que la capacité). */
+    public void restoreFrom(net.minecraft.core.component.DataComponentGetter components) {
+        var contents = components.get(com.orbitalis.core.registry.ModDataComponents.MACHINE_FLUIDS.get());
+        if (contents == null) {
+            return;
+        }
+        for (int i = 0; i < Math.min(size(), contents.size()); i++) {
+            FluidStack stack = contents.get(i).copy();
+            if (stack.getAmount() > capacity) {
+                stack.setAmount(capacity);
+            }
+            setFluid(i, stack);
+        }
+    }
+
     /** Vue exposée aux autres blocs : le retrait y est limité aux réservoirs de sortie. */
     public ResourceHandler<FluidResource> automationView() {
         return automationView;

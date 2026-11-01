@@ -49,6 +49,13 @@ public class WaterPumpBlock extends HorizontalDirectionalBlock implements Entity
         return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
+    /** En mode créatif, une machine qui contient quelque chose tombe quand même, avec son contenu. */
+    @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        com.orbitalis.phase1.machines.MachineDrops.keepInCreative(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (player instanceof ServerPlayer serverPlayer && level.getBlockEntity(pos) instanceof WaterPumpBlockEntity pump) {

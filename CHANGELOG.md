@@ -5,7 +5,8 @@
 - Cassés, les réservoirs gardent leur contenu : l'objet l'emporte et le rend une fois reposé. Un bloc de réservoir modulable emporte sa part.
 - Le réservoir modulable ravitaille aussi la fusée, collé à un bloc de ravitaillement ou relié par un tuyau.
 - En multijoueur, tous les joueurs à moins de 64 blocs du pas de tir au décollage reçoivent les points de recherche du vol, pour leur agence.
-- Cassées, toutes les machines gardent leur énergie (générateurs, machines de raffinage, panneaux solaires, batteries, réacteur à fusion...). L'info-bulle de l'objet l'affiche.
+- Cassées, toutes les machines gardent leur énergie et leur contenu, objets comme fluides (générateurs, fonderie, laminoir, machines à fluides, pompe, panneaux solaires, batteries, réacteur à fusion...). L'info-bulle de l'objet les affiche. Rien ne tombe plus au sol à part : tout part avec l'objet, qui tombe toujours, même soufflé par une explosion. En mode créatif, une machine qui contient quelque chose tombe quand même, pour ne rien perdre.
+- **Purge des machines à fluides** : quand une sortie est pleine, la machine s'arrête, même si l'autre a de la place. Sous chaque jauge de sortie, un bouton règle sa purge. Un clic gauche passe à la purge à 50 % (le surplus au-delà de la moitié est rejeté à l'air), puis à la purge totale (tout est rejeté). Un clic droit l'arrête.
 - L'ordinateur de conception garde le brouillon en cours : on le retrouve en revenant, et en multijoueur tous les joueurs voient le même, réglage après réglage.
 - Panneaux solaires : 80 FE par tick en orbite (au lieu de 40) et 20 au sol de jour (au lieu de 8). Quatre panneaux raccordés en carré produisent chacun un quart de plus.
 
@@ -14,6 +15,8 @@
 - Nouveaux jalons pour les premières pièces fabriquées : carte électronique, moteur à poudre, charge utile de fusée-sonde, kit de pas de tir, moteurs à ergols, émetteur radio, centrale de navigation.
 
 ## Corrections
+- L'eau et les autres fluides des jauges des machines, du réservoir cryogénique et des réservoirs modulables ont la texture de l'eau de Minecraft, teintée, comme dans le monde : ils n'ont plus une couleur à part.
+- Le bandeau d'état des machines ne fait plus chevaucher l'état et la consommation. S'ils ne tiennent pas ensemble, l'état reste entier et le reste s'affiche au survol.
 - Les points de recherche s'actualisent aussitôt chez tous les joueurs, sans se reconnecter : les gains des satellites, sondes, échantillons ou coéquipiers n'arrivaient parfois qu'à la connexion suivante.
 - Les grands meubles (établi d'ingénieur, ordinateur de conception, pupitre de lancement, station de poursuite) se cassent par n'importe laquelle de leurs cases, aussi vite que par leur bloc principal, avec les fissures visibles.
 - Neuf pièces de fusée (propulseurs d'appoint, moteurs hypergolique, à vide, ionique, à fusion et nucléaire, voile solaire, réservoirs en titane et inox) mettaient une douzaine de secondes à casser, même à la pioche : elles se cassent maintenant aussi vite que les autres.
@@ -105,7 +108,8 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Broken tanks keep their contents: the item carries them and gives them back once placed again. A modular tank block takes its share.
 - The modular tank fuels rockets too, placed against a fuel port or connected to one by a pipe.
 - In multiplayer, every player within 64 blocks of the pad at liftoff earns the flight's research points for their agency.
-- Every machine keeps its power when broken (generators, processing machines, solar panels, batteries, fusion reactor...). The item's tooltip shows it.
+- Every machine keeps its power and its contents when broken, items and fluids alike (generators, arc foundry, rolling mill, fluid machines, pump, solar panels, batteries, fusion reactor...). The item's tooltip shows them. Nothing spills on the ground anymore: everything goes with the item, which always drops, even when blown up. In creative mode, a machine that holds something still drops, so nothing is lost.
+- **Fluid machine purge**: when one output is full, the machine stops, even if the other has room. Under each output gauge, a button sets its purge. Left-click switches to the 50% purge (anything above half is vented into the air), then to the full purge (everything is vented). Right-click stops it.
 - The design computer remembers the draft you were working on: it's still there when you come back, and in multiplayer everyone sees the same one, change by change.
 - Solar panels: 80 FE per tick in orbit (up from 40) and 20 on the ground in daylight (up from 8). Four panels joined in a square each produce a quarter more.
 
@@ -114,6 +118,8 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - New milestones for the first parts you craft: circuit board, solid motor, sounding rocket payload, pad kit, liquid-fuel engines, radio transmitter, navigation unit.
 
 ## Fixes
+- Water and other fluids in machine gauges, the cryogenic tank and modular tanks now use Minecraft's water texture, tinted, like in the world, instead of a flat colour of their own.
+- The machine status line no longer overlaps the status and the power use. If they don't fit together, the status stays whole and the rest shows on hover.
 - Research points update right away for every player, with no need to reconnect: points from satellites, probes, samples or teammates sometimes only showed up on the next login.
 - Large furniture (engineer's workbench, design computer, launch console, tracking station) can be broken from any of its blocks, as fast as from its main block, with the cracks showing.
 - Nine rocket parts (side boosters, hypergolic, vacuum, ion, fusion and nuclear engines, solar sail, titanium and stainless tanks) took about twelve seconds to break, even with a pickaxe: they now break as fast as the others.
