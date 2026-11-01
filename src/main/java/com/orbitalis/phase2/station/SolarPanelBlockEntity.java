@@ -29,11 +29,8 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
  * et, s'il a de quoi, livrer.
  */
 public class SolarPanelBlockEntity extends BlockEntity {
-    private static final int ENERGY_CAPACITY = 10_000;
-    private static final int ENERGY_TRANSFER = 200;
-    /** Production en orbite, puis au sol en plein jour, en FE par tick. */
-    public static final int ORBIT_OUTPUT = 80;
-    public static final int GROUND_OUTPUT = 20;
+    /** Réserve d'un élément, en ticks de sa production en orbite. */
+    private static final int BUFFER_TICKS = 125;
     /** Un élément pris dans un carré de quatre produit un quart de plus. */
     private static final int GROUPED_BONUS_PERCENT = 25;
     /** Intervalle entre deux relevés des prises du grand panneau, et de l'ensoleillement, en ticks. */
@@ -43,13 +40,23 @@ public class SolarPanelBlockEntity extends BlockEntity {
     private record Outlet(BlockPos pos, Direction side) {
     }
 
-    private final MachineEnergyStorage energy = new MachineEnergyStorage(ENERGY_CAPACITY, 0, ENERGY_TRANSFER, this::setChanged);
+    private final SolarPanelBlock.Tier tier;
+    private final int transfer;
+    private final MachineEnergyStorage energy;
     private final List<Outlet> outlets = new ArrayList<>();
     private int output;
     private int ticks;
 
     public SolarPanelBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.SOLAR_PANEL.get(), pos, state);
+        this.tier = state.getBlock() instanceof SolarPanelBlock panel ? panel.tier() : SolarPanelBlock.Tier.BASIC;
+        // De quoi tout livrer, même avec la prime du carré de quatre.
+        this.transfer = Math.max(200, tier.orbit * 2);
+        this.energy = new MachineEnergyStorage(tier.orbit * BUFFER_TICKS, 0, transfer, this::setChanged);
+    }
+
+    public SolarPanelBlock.Tier tier() {
+        return tier;
     }
 
     public MachineEnergyStorage getEnergy() {
@@ -65,9 +72,9 @@ public class SolarPanelBlockEntity extends BlockEntity {
         }
         int base;
         if (SpaceRules.isVacuum(level)) {
-            base = StationPower.sunlit(level) ? ORBIT_OUTPUT : 0;
+            base = StationPower.sunlit(level) ? tier.orbit : 0;
         } else {
-            base = level.isBrightOutside() && !level.isRaining() ? GROUND_OUTPUT : 0;
+            base = level.isBrightOutside() && !level.isRaining() ? tier.ground : 0;
         }
         return grouped(level, pos) ? base * (100 + GROUPED_BONUS_PERCENT) / 100 : base;
     }
@@ -78,6 +85,7 @@ public class SolarPanelBlockEntity extends BlockEntity {
         if (!(state.getBlock() instanceof SolarPanelBlock)) {
             return false;
         }
+        // Le carré ne compte que des éléments de la même génération.
         for (Direction alongX : new Direction[] {Direction.EAST, Direction.WEST}) {
             for (Direction alongZ : new Direction[] {Direction.NORTH, Direction.SOUTH}) {
                 if (!state.getValue(SolarPanelBlock.CONNECTIONS.get(alongX)) || !state.getValue(SolarPanelBlock.CONNECTIONS.get(alongZ))) {
@@ -85,7 +93,7 @@ public class SolarPanelBlockEntity extends BlockEntity {
                 }
                 // Le coin opposé doit être raccordé aux deux autres éléments du carré.
                 BlockState corner = level.getBlockState(pos.relative(alongX).relative(alongZ));
-                if (corner.getBlock() instanceof SolarPanelBlock && corner.getValue(SolarPanelBlock.CONNECTIONS.get(alongX.getOpposite()))
+                if (corner.getBlock() == state.getBlock() && corner.getValue(SolarPanelBlock.CONNECTIONS.get(alongX.getOpposite()))
                         && corner.getValue(SolarPanelBlock.CONNECTIONS.get(alongZ.getOpposite()))) {
                     return true;
                 }
@@ -106,13 +114,13 @@ public class SolarPanelBlockEntity extends BlockEntity {
         for (Outlet outlet : outlets) {
             EnergyHandler target = level.getCapability(Capabilities.Energy.BLOCK, outlet.pos(), outlet.side());
             if (target != null) {
-                EnergyHandlerUtil.move(energy, target, ENERGY_TRANSFER, null);
+                EnergyHandlerUtil.move(energy, target, transfer, null);
             }
         }
         // Ce que les voisins n'ont pas pris part sur le réseau de la station, vers ses batteries et ses équipements.
         StationPower.Bus bus = link.bus(level, pos);
         if (bus != null && energy.getEnergy() > 0) {
-            int sent = bus.offer(level, Math.min(energy.getEnergy(), ENERGY_TRANSFER));
+            int sent = bus.offer(level, Math.min(energy.getEnergy(), transfer));
             energy.consume(sent);
         }
     }

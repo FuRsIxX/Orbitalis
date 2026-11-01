@@ -340,6 +340,14 @@ public final class TestMap {
             }
         }
         sign(level, new BlockPos(sx, Y, z0 + 3), ModBlocks.SOLAR_PANEL.get().getName(), null, null);
+        // Les quatre générations de panneaux, côte à côte, chacune avec son nom.
+        java.util.List<Block> tiers = java.util.List.of(ModBlocks.SOLAR_PANEL.get(), ModBlocks.SOLAR_PANEL_ADVANCED.get(),
+                ModBlocks.SOLAR_PANEL_PEROVSKITE.get(), ModBlocks.SOLAR_PANEL_QUANTUM.get());
+        for (int k = 0; k < tiers.size(); k++) {
+            BlockPos at = new BlockPos(sx + 4 + 2 * k, Y, z0);
+            level.setBlock(at, tiers.get(k).defaultBlockState(), Block.UPDATE_ALL);
+            sign(level, at.south(3), tiers.get(k).getName(), null, null);
+        }
     }
 
     /**

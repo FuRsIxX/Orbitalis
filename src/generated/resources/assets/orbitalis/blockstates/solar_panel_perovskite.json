@@ -1,0 +1,44 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_panel_perovskite"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_edge_perovskite"
+      },
+      "when": {
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_edge_perovskite",
+        "y": 90
+      },
+      "when": {
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_edge_perovskite",
+        "y": 180
+      },
+      "when": {
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_edge_perovskite",
+        "y": 270
+      },
+      "when": {
+        "west": "false"
+      }
+    }
+  ]
+}

@@ -60,6 +60,9 @@ public class OrbitalisBlockTagsProvider extends BlockTagsProvider {
         // Pièces de fusée venues plus tard : à la pioche en pierre, comme les autres, sans quoi elles ne tombaient jamais.
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.ROCKET_ENGINE_BOOSTER.getKey(), ModBlocks.ROCKET_ENGINE_HYPERGOLIC.getKey(), ModBlocks.ROCKET_ENGINE_VACUUM.getKey(), ModBlocks.ROCKET_ION_THRUSTER.getKey(), ModBlocks.ROCKET_SOLAR_SAIL.getKey(), ModBlocks.ROCKET_TANK_TITANIUM.getKey(), ModBlocks.ROCKET_TANK_STAINLESS.getKey(), ModBlocks.ROCKET_ENGINE_FUSION.getKey(), ModBlocks.ROCKET_ENGINE_NUCLEAR.getKey());
         tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.ROCKET_ENGINE_BOOSTER.getKey(), ModBlocks.ROCKET_ENGINE_HYPERGOLIC.getKey(), ModBlocks.ROCKET_ENGINE_VACUUM.getKey(), ModBlocks.ROCKET_ION_THRUSTER.getKey(), ModBlocks.ROCKET_SOLAR_SAIL.getKey(), ModBlocks.ROCKET_TANK_TITANIUM.getKey(), ModBlocks.ROCKET_TANK_STAINLESS.getKey(), ModBlocks.ROCKET_ENGINE_FUSION.getKey(), ModBlocks.ROCKET_ENGINE_NUCLEAR.getKey());
+        // Panneaux solaires des générations suivantes : comme le premier.
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.SOLAR_PANEL_ADVANCED.getKey(), ModBlocks.SOLAR_PANEL_PEROVSKITE.getKey(), ModBlocks.SOLAR_PANEL_QUANTUM.getKey());
+        tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.SOLAR_PANEL_ADVANCED.getKey(), ModBlocks.SOLAR_PANEL_PEROVSKITE.getKey(), ModBlocks.SOLAR_PANEL_QUANTUM.getKey());
         // Cases invisibles des grands meubles et flancs des fusées : la pioche les casse aussi vite que le reste.
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.WORKSTATION_PART.getKey(), ModBlocks.ROCKET_HULL.getKey(), ModBlocks.ROCKET.getKey());
 

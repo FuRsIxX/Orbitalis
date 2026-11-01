@@ -3907,6 +3907,17 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         }
         helper.assertTrue(!com.orbitalis.phase2.station.SolarPanelBlockEntity.grouped(helper.getLevel(), helper.absolutePos(new BlockPos(5, 1, 1))),
                 "deux panneaux en ligne n'ont pas la prime");
+        // Les générations : chacune produit deux fois et demie plus que la précédente, et garde une réserve à sa mesure.
+        SolarPanelBlock.Tier[] tiers = SolarPanelBlock.Tier.values();
+        for (int k = 1; k < tiers.length; k++) {
+            helper.assertTrue(tiers[k].ground * 5 >= tiers[k - 1].ground * 12 && tiers[k].orbit == tiers[k].ground * 4,
+                    "la génération " + tiers[k] + " devrait produire deux fois et demie plus que la précédente");
+        }
+        helper.setBlock(new BlockPos(1, 1, 5), ModBlocks.SOLAR_PANEL_QUANTUM.get());
+        var quantum = helper.getBlockEntity(new BlockPos(1, 1, 5), com.orbitalis.phase2.station.SolarPanelBlockEntity.class);
+        var basic = helper.getBlockEntity(new BlockPos(1, 1, 1), com.orbitalis.phase2.station.SolarPanelBlockEntity.class);
+        helper.assertTrue(quantum.tier() == SolarPanelBlock.Tier.QUANTUM && quantum.getEnergy().getCapacity() == 15 * basic.getEnergy().getCapacity(),
+                "le panneau quantique devrait garder une réserve quinze fois plus grande");
         helper.succeed();
     }
 

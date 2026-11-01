@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "orbitalis:block/machine/solar_panel"
+    "model": "orbitalis:block/machine/solar_panel_item"
   }
 }

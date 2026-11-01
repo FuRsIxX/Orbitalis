@@ -1,0 +1,44 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_panel_advanced"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_edge_advanced"
+      },
+      "when": {
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_edge_advanced",
+        "y": 90
+      },
+      "when": {
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_edge_advanced",
+        "y": 180
+      },
+      "when": {
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "orbitalis:block/machine/solar_edge_advanced",
+        "y": 270
+      },
+      "when": {
+        "west": "false"
+      }
+    }
+  ]
+}

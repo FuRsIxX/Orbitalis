@@ -360,6 +360,44 @@ public final class WorldPreview {
         }, 14.5, 1.9, -3.4, 0.0F, 28.0F, 20));
         SHOTS.add(new Shot("machines_d", null, 22.5, 1.6, -2.6, 0.0F, 30.0F, 12));
         SHOTS.add(new Shot("machines_tops", null, 5.5, 4.5, -2.0, 0.0F, 62.0F, 12));
+        // Panneaux solaires : un seul, un carré de quatre et une rangée de trois, de près, puis leurs icônes.
+        SHOTS.add(new Shot("solar_close", level -> {
+            set(level, 40, 0, 0, "orbitalis:solar_panel");
+            set(level, 43, 0, 0, "orbitalis:solar_panel[east=true,south=true]");
+            set(level, 44, 0, 0, "orbitalis:solar_panel[west=true,south=true]");
+            set(level, 43, 0, 1, "orbitalis:solar_panel[east=true,north=true]");
+            set(level, 44, 0, 1, "orbitalis:solar_panel[west=true,north=true]");
+            set(level, 47, 0, 0, "orbitalis:solar_panel[east=true]");
+            set(level, 48, 0, 0, "orbitalis:solar_panel[east=true,west=true]");
+            set(level, 49, 0, 0, "orbitalis:solar_panel[west=true]");
+            fill(level, 38, -1, -4, 62, -1, 8, "minecraft:smooth_stone");
+            // Les générations suivantes : chacune seule, puis en carré de quatre.
+            String[] tiers = {"solar_panel_advanced", "solar_panel_perovskite", "solar_panel_quantum"};
+            for (int k = 0; k < tiers.length; k++) {
+                int x = 52 + 4 * k;
+                set(level, x, 0, 0, "orbitalis:" + tiers[k]);
+                set(level, x, 0, 3, "orbitalis:" + tiers[k] + "[east=true,south=true]");
+                set(level, x + 1, 0, 3, "orbitalis:" + tiers[k] + "[west=true,south=true]");
+                set(level, x, 0, 4, "orbitalis:" + tiers[k] + "[east=true,north=true]");
+                set(level, x + 1, 0, 4, "orbitalis:" + tiers[k] + "[west=true,north=true]");
+            }
+        }, 44.5, 3.2, -2.6, 0.0F, 45.0F, 20));
+        SHOTS.add(new Shot("solar_lone", null, 40.5, 1.9, -1.2, 0.0F, 50.0F, 8));
+        SHOTS.add(new Shot("solar_tiers", null, 57.5, 4.5, -3.0, 0.0F, 45.0F, 8));
+        SHOTS.add(new Shot("solar_tiers_close", null, 53.0, 2.2, -0.5, 0.0F, 45.0F, 8));
+        SHOTS.add(new Shot("solar_icons", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();
+            for (var id : java.util.List.of("solar_panel", "solar_panel_advanced", "solar_panel_perovskite", "solar_panel_quantum", "water_pump",
+                    "electrolyzer", "arc_foundry", "combustion_generator")) {
+                var item = net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(com.orbitalis.Orbitalis.id(id));
+                if (item != net.minecraft.world.item.Items.AIR) {
+                    stacks.add(new net.minecraft.world.item.ItemStack(item));
+                }
+            }
+            net.minecraft.client.Minecraft.getInstance().gui.setScreen(new ItemSheetScreen(stacks));
+        }), 44.5, 3.2, -2.6, 0.0F, 45.0F, 10));
+        SHOTS.add(new Shot("solar_icons_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
+                () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), 44.5, 3.2, -2.6, 0.0F, 45.0F, 4));
 
         // Grand pas de tir 5×5 bâti selon le plan complet, avec le lanceur orbital.
         SHOTS.add(new Shot("large_pad", level -> {

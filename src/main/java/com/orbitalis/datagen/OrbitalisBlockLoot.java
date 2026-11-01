@@ -133,6 +133,9 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.DRAFTING_TABLE.get());
         dropSelf(ModBlocks.DOCKING_PORT.get());
         add(ModBlocks.SOLAR_PANEL.get(), this::keepingEnergy);
+        add(ModBlocks.SOLAR_PANEL_ADVANCED.get(), this::keepingEnergy);
+        add(ModBlocks.SOLAR_PANEL_PEROVSKITE.get(), this::keepingEnergy);
+        add(ModBlocks.SOLAR_PANEL_QUANTUM.get(), this::keepingEnergy);
         add(ModBlocks.LIFE_SUPPORT.get(), this::keepingEnergy);
         // Aménagement des stations.
         dropSelf(ModBlocks.STATION_PANEL.get());

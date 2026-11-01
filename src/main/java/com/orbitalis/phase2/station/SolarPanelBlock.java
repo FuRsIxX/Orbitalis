@@ -42,6 +42,29 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * de ses éléments. Un clic droit affiche la taille du panneau et sa production.
  */
 public class SolarPanelBlock extends Block implements EntityBlock {
+    /**
+     * Les quatre générations de panneaux. Chacune se fabrique avec deux panneaux de la précédente, et produit deux fois
+     * et demie plus : au sol en plein jour, puis en orbite, en FE par tick.
+     */
+    public enum Tier {
+        /** Cellules monocristallines bleues, cadre d'aluminium. */
+        BASIC(20, 80),
+        /** Cellules noires à contacts arrière, cadre graphite et liseré cyan. */
+        ADVANCED(50, 200),
+        /** Cellules irisées de pérovskite sur silicium, contacts dorés. */
+        PEROVSKITE(125, 500),
+        /** Cellules quantiques, qui chatoient, dans un cadre de chrome lumineux. */
+        QUANTUM(300, 1200);
+
+        public final int ground;
+        public final int orbit;
+
+        Tier(int ground, int orbit) {
+            this.ground = ground;
+            this.orbit = orbit;
+        }
+    }
+
     /** Plus grand panneau possible : six éléments sur trois. */
     public static final int MAX_LENGTH = 6;
     public static final int MAX_WIDTH = 3;
@@ -53,13 +76,24 @@ public class SolarPanelBlock extends Block implements EntityBlock {
 
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 14, 16);
 
+    private final Tier tier;
+
     public SolarPanelBlock(BlockBehaviour.Properties properties) {
+        this(properties, Tier.BASIC);
+    }
+
+    public SolarPanelBlock(BlockBehaviour.Properties properties, Tier tier) {
         super(properties);
+        this.tier = tier;
         BlockState state = stateDefinition.any();
         for (BooleanProperty connection : CONNECTIONS.values()) {
             state = state.setValue(connection, false);
         }
         registerDefaultState(state);
+    }
+
+    public Tier tier() {
+        return tier;
     }
 
     @Override
@@ -128,7 +162,7 @@ public class SolarPanelBlock extends Block implements EntityBlock {
         while (!queue.isEmpty() && array.size() <= MAX_LENGTH * MAX_WIDTH) {
             BlockPos pos = queue.poll();
             BlockState state = level.getBlockState(pos);
-            if (!(state.getBlock() instanceof SolarPanelBlock)) {
+            if (!(state.getBlock() instanceof SolarPanelBlock) || state.getBlock() != level.getBlockState(start).getBlock()) {
                 continue;
             }
             for (Map.Entry<Direction, BooleanProperty> side : CONNECTIONS.entrySet()) {

@@ -656,6 +656,40 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_aluminum_plate", has(ModTags.Items.PLATES_ALUMINUM))
                 .save(output, key("solar_panel"));
 
+        // Les générations suivantes de panneaux : deux panneaux de la précédente, et des matériaux de plus en plus rares.
+        shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PANEL_ADVANCED)
+                .pattern("GGG")
+                .pattern("PCP")
+                .pattern("LLL")
+                .define('G', ModItems.REINFORCED_GLASS)
+                .define('P', ModBlocks.SOLAR_PANEL)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .define('L', ModTags.Items.PLATES_ALUMINUM_LITHIUM)
+                .unlockedBy("has_solar_panel", has(ModBlocks.SOLAR_PANEL))
+                .save(output, key("solar_panel_advanced"));
+        shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PANEL_PEROVSKITE)
+                .pattern("DFD")
+                .pattern("PBP")
+                .pattern("TTT")
+                .define('D', ModItems.SOLAR_CELL)
+                .define('F', ModItems.FLIGHT_PROCESSOR)
+                .define('P', ModBlocks.SOLAR_PANEL_ADVANCED)
+                .define('B', ModItems.BATTERY_CELL)
+                .define('T', ModTags.Items.PLATES_TITANIUM)
+                .unlockedBy("has_advanced_solar_panel", has(ModBlocks.SOLAR_PANEL_ADVANCED))
+                .save(output, key("solar_panel_perovskite"));
+        shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PANEL_QUANTUM)
+                .pattern("ORO")
+                .pattern("PSP")
+                .pattern("TTT")
+                .define('O', ModItems.OPTICAL_SENSOR)
+                .define('R', ModItems.REACTOR_CORE)
+                .define('P', ModBlocks.SOLAR_PANEL_PEROVSKITE)
+                .define('S', ModItems.SOLAR_SAIL)
+                .define('T', ModBlocks.TITANIUM_BLOCK)
+                .unlockedBy("has_perovskite_solar_panel", has(ModBlocks.SOLAR_PANEL_PEROVSKITE))
+                .save(output, key("solar_panel_quantum"));
+
         shaped(RecipeCategory.MISC, ModBlocks.LIFE_SUPPORT)
                 .pattern("ASA")
                 .pattern("CTC")

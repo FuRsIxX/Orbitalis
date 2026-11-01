@@ -287,17 +287,12 @@ public class OrbitalisModelProvider extends ModelProvider {
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.DOCKING_PORT.get(),
                 BlockModelGenerators.plainVariant(dock)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
         blockModels.registerSimpleItemModel(ModBlocks.DOCKING_PORT.get(), dock);
-        // Panneau solaire : la nappe sur son mât, plus un cadre sur chaque côté qui n'est pas raccordé à un voisin.
-        Block panel = ModBlocks.SOLAR_PANEL.get();
-        MultiVariant panelCore = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_panel"));
-        MultiVariant panelEdge = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_edge"));
-        blockModels.blockStateOutput.accept(MultiPartGenerator.multiPart(panel)
-                .with(panelCore)
-                .with(BlockModelGenerators.condition().term(BlockStateProperties.NORTH, false), panelEdge)
-                .with(BlockModelGenerators.condition().term(BlockStateProperties.EAST, false), panelEdge.with(BlockModelGenerators.Y_ROT_90))
-                .with(BlockModelGenerators.condition().term(BlockStateProperties.SOUTH, false), panelEdge.with(BlockModelGenerators.Y_ROT_180))
-                .with(BlockModelGenerators.condition().term(BlockStateProperties.WEST, false), panelEdge.with(BlockModelGenerators.Y_ROT_270)));
-        blockModels.registerSimpleItemModel(panel, Orbitalis.id("block/machine/solar_panel"));
+        // Panneaux solaires, des quatre générations : la nappe sur son mât, plus un cadre sur chaque côté qui n'est pas
+        // raccordé à un voisin. Modèles écrits par tools/write_solar_panels.py.
+        solarPanel(blockModels, ModBlocks.SOLAR_PANEL.get(), "");
+        solarPanel(blockModels, ModBlocks.SOLAR_PANEL_ADVANCED.get(), "_advanced");
+        solarPanel(blockModels, ModBlocks.SOLAR_PANEL_PEROVSKITE.get(), "_perovskite");
+        solarPanel(blockModels, ModBlocks.SOLAR_PANEL_QUANTUM.get(), "_quantum");
         // Générateur d'air : son modèle 3D, écrit par tools/generate_station.py ; en marche, ses ventilateurs tournent.
         Block air = ModBlocks.LIFE_SUPPORT.get();
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(air)
@@ -565,6 +560,19 @@ public class OrbitalisModelProvider extends ModelProvider {
      * Machine : deux modèles 3D propres à chaque machine, à l'arrêt et en marche, écrits par
      * {@code tools/generate_machine_models.py}. En marche, certaines pièces sont animées et lumineuses.
      */
+    /** Un panneau solaire : la nappe, ses cadres sur les côtés libres ; en objet, le panneau seul, encadré de partout. */
+    private static void solarPanel(BlockModelGenerators blockModels, Block panel, String suffix) {
+        MultiVariant core = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_panel" + suffix));
+        MultiVariant edge = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_edge" + suffix));
+        blockModels.blockStateOutput.accept(MultiPartGenerator.multiPart(panel)
+                .with(core)
+                .with(BlockModelGenerators.condition().term(BlockStateProperties.NORTH, false), edge)
+                .with(BlockModelGenerators.condition().term(BlockStateProperties.EAST, false), edge.with(BlockModelGenerators.Y_ROT_90))
+                .with(BlockModelGenerators.condition().term(BlockStateProperties.SOUTH, false), edge.with(BlockModelGenerators.Y_ROT_180))
+                .with(BlockModelGenerators.condition().term(BlockStateProperties.WEST, false), edge.with(BlockModelGenerators.Y_ROT_270)));
+        blockModels.registerSimpleItemModel(panel, Orbitalis.id("block/machine/solar_panel" + suffix + "_item"));
+    }
+
     private static void machine(BlockModelGenerators blockModels, Block block) {
         String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
         Identifier off = Orbitalis.id("block/machine/" + name);

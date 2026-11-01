@@ -65,67 +65,6 @@ def plain(seed, base, light, dark, lines=()):
 TEXTURES = {}
 
 
-def solar_cells_texture():
-    """
-    Dessus d'un panneau solaire moderne : quatre cellules monocristallines bleu nuit par bloc, séparées par un fin
-    joint sombre. Leurs coins coupés laissent voir le fond blanc du panneau, en petits losanges aux croisements ; deux
-    rubans conducteurs, à peine plus clairs, traversent chaque cellule ; un reflet de verre glisse en diagonale. Le
-    motif se répète d'un bloc à l'autre sans couture : une rangée de panneaux forme une seule nappe.
-    """
-    cell_low = rgb("#0B1730")
-    cell_high = rgb("#16305A")
-    joint = rgb("#0A0F18")
-    backsheet = rgb("#C9D3DE")
-    ribbon = rgb("#2C4670")
-    img = [[cell_low for _ in range(SIZE)] for _ in range(SIZE)]
-    for y in range(SIZE):
-        for x in range(SIZE):
-            cx, cy = x % 8, y % 8
-            if cx == 0 or cy == 0:
-                # Le joint entre deux cellules ; à leur croisement, le fond blanc du panneau.
-                img[y][x] = backsheet if cx == 0 and cy == 0 else joint
-                continue
-            # Les coins coupés des cellules : le fond blanc, en losange autour du croisement.
-            corner = min(cx, 8 - cx) + min(cy, 8 - cy)
-            if corner <= 2:
-                img[y][x] = blend(backsheet, joint, 0.35)
-                continue
-            # La cellule : un léger dégradé, plus clair vers le haut de la nappe.
-            color = blend(cell_high, cell_low, cy / 7.0)
-            if cx in (3, 5):
-                color = blend(color, ribbon, 0.6)
-            # Le reflet du verre : une bande en diagonale, à peine plus claire.
-            if (x + y) % 16 in (9, 10):
-                color = shade(color, 1.35)
-            img[y][x] = color
-    return img
-
-
-def solar_frame_texture():
-    """Cadre d'aluminium anodisé d'un panneau solaire : gris clair brossé, une arête vive en haut, l'ombre en bas."""
-    img = [[rgb("#AEB7C2") for _ in range(SIZE)] for _ in range(SIZE)]
-    for y in range(SIZE):
-        for x in range(SIZE):
-            color = rgb("#AEB7C2")
-            # Le brossage : des stries horizontales très légères.
-            if (y * 7 + x // 5) % 3 == 0:
-                color = shade(color, 0.94)
-            img[y][x] = color
-        img[0][y] = rgb("#E2E8EE")
-        img[SIZE - 1][y] = rgb("#7A838E")
-    return img
-
-
-def solar_back_texture():
-    """Dessous d'un panneau solaire : la face arrière gris anthracite, et le liseré du cadre sur ses bords."""
-    img = [[rgb("#2A3038") for _ in range(SIZE)] for _ in range(SIZE)]
-    for y in range(SIZE):
-        for x in range(SIZE):
-            if (x + 2 * y) % 11 == 0:
-                img[y][x] = rgb("#30363F")
-    return img
-
-
 def write_texture(name, frames, frametime=None, interpolate=True):
     """
     Écrit une texture ; avec plusieurs images, elles sont empilées et accompagnées de leur fichier d'animation.
@@ -407,10 +346,7 @@ def write_textures():
     # Voile des parachutes de la capsule habitée.
     write_texture("capsule_chute", [chute_texture()])
 
-    # Panneau solaire : ses cellules, son cadre d'aluminium et sa face arrière.
-    write_texture("solar_panel_top", [solar_cells_texture()])
-    write_texture("solar_frame", [solar_frame_texture()])
-    write_texture("solar_back", [solar_back_texture()])
+    # Les panneaux solaires : voir tools/write_solar_panels.py.
 
 
 
@@ -561,24 +497,7 @@ EXTRAS = {
         stretched(box(-1, 24.5, -1, 17, 26, 17, "chute")),
         box(5.5, 26, 5.5, 10.5, 26.4, 10.5, "trim"),
     ], {"chute": "capsule_chute", "trim": "capsule_trim"}, set()),
-    # Panneau solaire moderne : une platine boulonnée, un mât fin, sa tête, le tube porteur (d'est en ouest) et deux
-    # rails (du nord au sud), qui filent d'un bloc à l'autre, le boîtier de raccordement sous la nappe, et la nappe,
-    # fine, qui occupe tout le bloc pour se raccorder sans joint à ses voisines.
-    "solar_panel": ([
-        box(4, 0, 4, 12, 0.5, 12, "dark"),
-        box(4.5, 0.5, 4.5, 5.5, 1, 5.5, "frame"), box(10.5, 0.5, 4.5, 11.5, 1, 5.5, "frame"),
-        box(4.5, 0.5, 10.5, 5.5, 1, 11.5, "frame"), box(10.5, 0.5, 10.5, 11.5, 1, 11.5, "frame"),
-        box(7, 0.5, 7, 9, 9, 9, "frame"),
-        box(6, 9, 6.5, 10, 10.5, 9.5, "dark"),
-        box(0, 10.5, 7, 16, 11.5, 9, "alu"),
-        box(2, 11.5, 0, 3, 12, 16, "back"), box(13, 11.5, 0, 14, 12, 16, "back"),
-        box(9, 11, 10, 12, 12, 13, "dark"),
-        {**box(0, 12, 0, 16, 13, 16, "back"), "faces": {"up": "cells"}},
-    ], {"cells": "solar_panel_top", "alu": "solar_frame", "back": "solar_back"}, set()),
-    # Cadre d'aluminium d'un panneau, sur un côté sans voisin (ici le nord ; le jeu le tourne pour les autres). Il
-    # coiffe la tranche de la nappe et la dépasse d'un demi-pixel. Les quatre cadres d'un panneau isolé tournent en
-    # moulinet (chacun s'arrête où commence le suivant) : aucun ne recouvre un autre, aucune face ne se dédouble.
-    "solar_edge": ([box(-0.25, 11.6, -0.25, 15.5, 13.5, 0.5, "alu")], {"alu": "solar_frame"}, set()),
+    # Les panneaux solaires sont écrits par tools/write_solar_panels.py.
     # Sas d'amarrage, collier tourné vers le nord (l'extérieur) : la paroi de coque en retrait, le collier
     # d'amarrage, ses quatre verrous, l'écoutille et son hublot, et un bandeau lumineux au-dessus.
     # Côté intérieur, la paroi porte l'écoutille vue de dedans.

@@ -2,7 +2,7 @@
   "parent": "minecraft:block/block",
   "textures": {
     "alu": "orbitalis:block/solar_frame",
-    "particle": "orbitalis:block/machine_metal"
+    "particle": "orbitalis:block/solar_frame"
   },
   "elements": [
     {

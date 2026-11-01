@@ -501,6 +501,36 @@ public final class ModBlocks {
                     .strength(3.0F, 6.0F)
                     .sound(SoundType.METAL)
                     .noOcclusion()));
+    /** Panneau solaire avancé : cellules noires à contacts arrière, deux fois et demie plus puissantes. */
+    public static final DeferredBlock<SolarPanelBlock> SOLAR_PANEL_ADVANCED = withItem(BLOCKS.registerBlock("solar_panel_advanced",
+            properties -> new SolarPanelBlock(properties, SolarPanelBlock.Tier.ADVANCED),
+            properties -> properties
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()));
+    /** Panneau solaire à pérovskite : des cellules irisées en tandem sur le silicium. */
+    public static final DeferredBlock<SolarPanelBlock> SOLAR_PANEL_PEROVSKITE = withItem(BLOCKS.registerBlock("solar_panel_perovskite",
+            properties -> new SolarPanelBlock(properties, SolarPanelBlock.Tier.PEROVSKITE),
+            properties -> properties
+                    .mapColor(MapColor.COLOR_CYAN)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()));
+    /** Panneau solaire quantique : la dernière génération, qui chatoie dans son cadre de chrome. */
+    public static final DeferredBlock<SolarPanelBlock> SOLAR_PANEL_QUANTUM = withItem(BLOCKS.registerBlock("solar_panel_quantum",
+            properties -> new SolarPanelBlock(properties, SolarPanelBlock.Tier.QUANTUM),
+            properties -> properties
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion().lightLevel(state -> 4)));
     /** Bras d'assemblage : alimenté en électricité, il bâtit la fusée du pas de tir voisin avec les pièces d'un coffre. */
     /** Générateur d'air : alimenté en électricité, il pressurise la pièce close qui l'entoure. Il l'éclaire aussi. */
     public static final DeferredBlock<LifeSupportBlock> LIFE_SUPPORT = withItem(BLOCKS.registerBlock("life_support", LifeSupportBlock::new,

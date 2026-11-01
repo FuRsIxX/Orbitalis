@@ -122,7 +122,8 @@ public final class ModBlockEntities {
 
     /** Panneau solaire. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarPanelBlockEntity>> SOLAR_PANEL =
-            BLOCK_ENTITIES.register("solar_panel", () -> new BlockEntityType<>(SolarPanelBlockEntity::new, ModBlocks.SOLAR_PANEL.get()));
+            BLOCK_ENTITIES.register("solar_panel", () -> new BlockEntityType<>(SolarPanelBlockEntity::new, ModBlocks.SOLAR_PANEL.get(),
+                    ModBlocks.SOLAR_PANEL_ADVANCED.get(), ModBlocks.SOLAR_PANEL_PEROVSKITE.get(), ModBlocks.SOLAR_PANEL_QUANTUM.get()));
 
     /** Générateur d'air des stations. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LifeSupportBlockEntity>> LIFE_SUPPORT =

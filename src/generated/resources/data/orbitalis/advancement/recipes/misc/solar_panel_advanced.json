@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_solar_panel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:solar_panel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:solar_panel_advanced"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_solar_panel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:solar_panel_advanced"
+    ]
+  }
+}
