@@ -43,15 +43,6 @@
             14,
             1
           ]
-        },
-        "down": {
-          "texture": "#alu",
-          "uv": [
-            0,
-            15,
-            14,
-            16
-          ]
         }
       },
       "light_emission": 15

@@ -79,6 +79,10 @@ def chassis(t):
     if t["tier"] >= 3:
         for x in range(4, 12):
             dot(img, x, 1, mix(t["accent"], "#FFFFFF", 0.35))
+    # Des rivets à mi-hauteur du cadre, de chaque côté.
+    for x, y in ((1, 7), (14, 7)):
+        dot(img, x, y, mix(t["trim"], "#FFFFFF", 0.6))
+        dot(img, x, y + 1, mix(t["trim"], "#000000", 0.4))
     return img
 
 
@@ -100,6 +104,19 @@ def front(t, charge):
     for y in range(3, 13):
         if img[y][5] == rgb("#1C252C") or img[y][5] == rgb("#172027"):
             dot(img, 5, y, "#222D35")
+    # À gauche de la fenêtre, une graduation, un trait par cran ; à droite, le voyant de marche et une plaquette de
+    # danger.
+    for k in range(MAX_CHARGE):
+        y = 11 - 2 * k
+        dot(img, 3, y, mix(t["trim"], "#FFFFFF", 0.2) if k % 2 == 0 else mix(t["trim"], "#000000", 0.1))
+        if k % 2 == 0:
+            dot(img, 2, y, mix(t["trim"], "#000000", 0.2))
+    on = charge > 0
+    dot(img, 12, 5, mix(t["accent"], "#FFFFFF", 0.3) if on else "#3A1F1F")
+    dot(img, 13, 5, t["accent"] if on else "#2A1717")
+    for y in (8, 9, 10):
+        for x in (12, 13):
+            dot(img, x, y, "#F2C14E" if (x + y) % 2 == 0 else SEAM)
     return img
 
 
@@ -120,6 +137,13 @@ def back(t):
     """Le dos, la sortie : un grand connecteur orange."""
     img = chassis(t)
     connector(img, OUTPUT, 3.8, t)
+    # Les repères de polarité, et une bande de danger au pied : c'est par là que sort le courant.
+    for x, y in ((3, 4), (2, 4), (4, 4), (3, 3), (3, 5)):
+        dot(img, x, y, OUTPUT)
+    for x in (11, 12, 13):
+        dot(img, x, 4, mix(t["trim"], "#FFFFFF", 0.3))
+    for x in range(4, 12):
+        dot(img, x, 13, "#F2C14E" if x % 2 == 0 else SEAM)
     return img
 
 
@@ -130,12 +154,24 @@ def side(t):
         for x in range(5, 11):
             dot(img, x, y, SEAM if y % 2 == 1 else mix(t["body"], "#FFFFFF", 0.15))
     connector(img, INPUT, 2.6, t)
+    # Une flèche vers l'intérieur, au-dessus de la prise : c'est par là qu'entre le courant.
+    for x, y in ((7, 5), (8, 5), (6, 4), (9, 4)):
+        dot(img, x, y, INPUT)
+    for x in (2, 13):
+        for y in (5, 6, 9, 10):
+            dot(img, x, y, mix(t["body"], "#000000", 0.25))
     return img
 
 
 def top(t):
     """Le dessus : une grille d'aération, et quatre crans allumés jusqu'à la génération."""
     img = chassis(t)
+    # La plaque signalétique : une étiquette claire et deux lignes d'écriture.
+    for y in (13, 14):
+        for x in range(5, 11):
+            dot(img, x, y - 11, mix(t["trim"], "#FFFFFF", 0.55))
+    for x in (6, 7, 9):
+        dot(img, x, 2, mix(t["body"], "#000000", 0.35))
     for y in (4, 6):
         for x in range(4, 12):
             dot(img, x, y, SEAM)

@@ -261,7 +261,9 @@ def rail(x0, x1, omit):
     """Le profilé du côté nord, de x0 à x1, tout entier dans le bloc : deux panneaux voisins qui ne se raccordent pas
     (deux générations différentes) ont chacun le leur, dos à dos, sans se chevaucher. Il part du dessus des rails
     porteurs, sans partager de plan avec eux."""
-    return frame_part(x0, x1, 0.0, 0.75, 12.0, 13.5, omit, profile(x1 - x0))
+    # Son dessous ne se dessine pas : il serait dans le plan du dessous de la nappe, qui le couvre déjà, et les deux
+    # faces se disputeraient l'affichage vues d'en bas.
+    return frame_part(x0, x1, 0.0, 0.75, 12.0, 13.5, set(omit) | {"down"}, profile(x1 - x0))
 
 
 def seal(x0, x1, omit):
