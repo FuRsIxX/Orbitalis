@@ -25,7 +25,7 @@
 - Panneaux solaires : 80 FE par tick en orbite (au lieu de 40) et 20 au sol de jour (au lieu de 8). Quatre panneaux raccordés en carré produisent chacun un quart de plus.
 
 ## Équilibrage
-- Batterie de station : 2 000 000 FE (au lieu de 500 000) et un débit de 8 000 FE par tick (au lieu de 2 000). Son habillage est simplifié, sur la même base : panneaux blancs unis, chapeau graphite à une seule fente, prises plates, et une fenêtre de charge à quatre barres qui s'allument en cyan.
+- Batterie de station : 2 000 000 FE (au lieu de 500 000) et un débit de 8 000 FE par tick (au lieu de 2 000). Elle devient un monolithe blanc, un bloc plein sans relief : un blanc mat, un fin liseré bleu sur les flancs, et à l'avant, tourné vers le joueur à la pose, une seule fente verticale qui se remplit de cyan avec la charge.
 - Recherche du début de partie : chaque vol réussi rapporte ses données (3 points en vol atmosphérique, 6 dans l'espace, 10 en orbite et au-delà). Les primes des premiers vols passent à 20 et 50 points, la charge utile de fusée-sonde à 10. Une fusée-sonde rapporte donc 16 points par vol au lieu de 5.
 - Nouveaux jalons pour les premières pièces fabriquées : carte électronique, moteur à poudre, charge utile de fusée-sonde, kit de pas de tir, moteurs à ergols, émetteur radio, centrale de navigation.
 
@@ -147,7 +147,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Solar panels: 80 FE per tick in orbit (up from 40) and 20 on the ground in daylight (up from 8). Four panels joined in a square each produce a quarter more.
 
 ## Balance
-- Station battery: 2,000,000 FE (up from 500,000) and 8,000 FE per tick in and out (up from 2,000). Its look is simpler, on the same base: plain white panels, a graphite cap with a single slot, flat sockets, and a charge window with four bars that light up cyan.
+- Station battery: 2,000,000 FE (up from 500,000) and 8,000 FE per tick in and out (up from 2,000). It becomes a white monolith, a plain full block: matte white, a thin blue line along the sides, and on the front, facing the player who placed it, a single vertical slot that fills with cyan as it charges.
 - Early research: every successful flight now brings back its data (3 points for an atmospheric flight, 6 for space, 10 for orbit and beyond). First-flight bonuses go up to 20 and 50 points, and the sounding rocket payload to 10. A sounding rocket now earns 16 points per flight instead of 5.
 - New milestones for the first parts you craft: circuit board, solid motor, sounding rocket payload, pad kit, liquid-fuel engines, radio transmitter, navigation unit.
 

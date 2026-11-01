@@ -778,55 +778,36 @@ def mat_texture():
 
 
 def battery_texture():
-    """Flancs de la batterie : un panneau blanc uni, à peine biseauté."""
+    """Flancs de la batterie : un blanc mat à peine biseauté, traversé d'un fin liseré bleu."""
     img = gm.plain(96, "#E9ECEF", "#EEF1F3", "#E3E7EA")
-    bevel(img, 1, 1, 14, 14, 1.04, 0.93)
+    bevel(img, 0, 0, 15, 15, 1.04, 0.92)
+    for x in range(1, 15):
+        dot(img, x, 11, "#3F76E4")
     return img
 
 
 def battery_top_texture():
-    """Dessus de la batterie : le chapeau graphite, uni, et une fente d'aération au milieu."""
-    img = gm.plain(103, "#4A515A", "#4F565F", "#454C54")
-    for x in range(4, 12):
-        dot(img, x, 7, "#1E2226")
-        dot(img, x, 8, "#5E6670")
+    """Dessus et dessous de la batterie : le même blanc mat, sans rien."""
+    img = gm.plain(103, "#E9ECEF", "#EEF1F3", "#E3E7EA")
+    bevel(img, 0, 0, 15, 15, 1.04, 0.92)
     return img
 
 
 def gauge_texture(level):
     """
-    Fenêtre de charge : derrière une vitre sombre, quatre modules empilés, en barres pleines. Chargé, un module
-    s'allume en cyan (en ambre quand il n'en reste qu'un) ; vide, il reste gris.
+    Face avant de la batterie : le blanc mat, et une seule fente verticale, cerclée de sombre, qui se remplit de cyan de
+    bas en haut avec la charge (de 0 à 4 quarts).
     """
-    img = canvas("#10171C")
-    for k in range(4):
-        y0 = 12 - k * 3
-        lit = k < level
-        tone = ("#3FB8D4" if level > 1 else "#E8A23A") if lit else "#212A31"
-        top = ("#8BE3F2" if level > 1 else "#F6CF86") if lit else "#2A343C"
-        for x in range(2, 14):
-            dot(img, x, y0, top)
-            dot(img, x, y0 + 1, tone)
-    return img
-
-
-def battery_label_texture():
-    """Façade de la batterie : le blanc de la coque et le cadre sombre de sa fenêtre."""
     img = gm.plain(104, "#E9ECEF", "#EEF1F3", "#E3E7EA")
-    outline(img, 2, 2, 13, 13, "#2E3238")
-    return img
-
-
-def port_texture():
-    """Prises de puissance : une platine sombre et deux prises plates, l'une orange, l'autre bleue."""
-    img = canvas("#2E3238")
-    outline(img, 0, 0, 15, 15, "#4A515A")
-    for x0, color in ((3, "#E8872A"), (10, "#3F76E4")):
-        for y in range(5, 11):
-            for x in range(x0, x0 + 4):
-                dot(img, x, y, color)
-        dot(img, x0 + 1, 7, "#15171A")
-        dot(img, x0 + 2, 8, "#15171A")
+    bevel(img, 0, 0, 15, 15, 1.04, 0.92)
+    rect(img, 6, 2, 9, 13, "#2E3238")
+    lit = round(10 * level / 4)
+    for k in range(10):
+        y = 12 - k
+        on = k < lit
+        color = ("#9FF0FF" if k == lit - 1 else "#3FD8F2") if on else "#1B2228"
+        dot(img, 7, y, color)
+        dot(img, 8, y, color)
     return img
 
 
@@ -1253,8 +1234,6 @@ def write_textures():
     write("hydroponic_mat", [mat_texture()])
     write("station_battery", [battery_texture()])
     write("station_battery_top", [battery_top_texture()])
-    write("station_battery_label", [battery_label_texture()])
-    write("station_port", [port_texture()])
     for level in range(5):
         write("battery_gauge_%d" % level, [gauge_texture(level)])
 
@@ -1379,7 +1358,7 @@ TEXTURES = {
     "lab_panel": "lab_panel", "locker": "lab_locker",
     "lab_led": "lab_led_off", "lab_led_on": "lab_led_on",
     "tray": "hydroponic_tray", "mat": "hydroponic_mat",
-    "battery": "station_battery", "label": "station_battery_label", "port": "station_port", "battop": "station_battery_top",
+    "battery": "station_battery", "battop": "station_battery_top",
     "gauge0": "battery_gauge_0", "gauge1": "battery_gauge_1", "gauge2": "battery_gauge_2", "gauge3": "battery_gauge_3",
     "gauge4": "battery_gauge_4", "plant": "station_light",
     "leaf_hi": "airlock_leaf_hi", "leaf_lo": "airlock_leaf_lo", "dframe": "airlock_frame", "track": "airlock_track",
@@ -1508,19 +1487,11 @@ CARGO = [
 
 def battery(level):
     """
-    Batterie : une armoire blanche sur son socle graphite, coiffée d'un chapeau à ventilateur. Sur la façade, derrière
-    une vitre fumée, les quatre modules de cellules et leurs voyants de charge, un filet de diodes bleues sur le côté ;
-    une platine de prises sur chaque flanc.
+    Batterie : un monolithe blanc, un bloc plein. Sa face avant, tournée vers le joueur à la pose, porte la fente de
+    charge ; ses flancs, un fin liseré bleu.
     """
     return [
-        box(0, 0, 0, 16, 1, 16, "frame"),
-        {**box(0, 15, 0, 16, 16, 16, "frame"), "faces": {"up": "battop"}},
-        {**box(1, 1, 1, 15, 15, 15, "battery"), "faces": {"north": "label", "up": "battop", "down": "frame"}},
-        box(0, 1, 0, 1, 15, 1, "frame"), box(15, 1, 0, 16, 15, 1, "frame"),
-        box(0, 1, 15, 1, 15, 16, "frame"), box(15, 1, 15, 16, 15, 16, "frame"),
-        front_only(whole(box(3, 3, 0.6, 13, 13, 1, "gauge%d" % level))),
-        front_only(box(1.6, 3, 0.7, 2.3, 13, 1, "led")),
-        whole(box(15, 6, 4.5, 15.6, 9.5, 11.5, "port")), whole(box(0.4, 6, 4.5, 1, 9.5, 11.5, "port")),
+        {**box(0, 0, 0, 16, 16, 16, "battery"), "faces": {"north": "gauge%d" % level, "up": "battop", "down": "battop"}},
     ]
 
 
