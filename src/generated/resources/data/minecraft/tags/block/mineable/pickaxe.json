@@ -142,6 +142,10 @@
     "orbitalis:solar_panel_advanced",
     "orbitalis:solar_panel_perovskite",
     "orbitalis:solar_panel_quantum",
+    "orbitalis:accumulator",
+    "orbitalis:accumulator_advanced",
+    "orbitalis:accumulator_elite",
+    "orbitalis:accumulator_quantum",
     "orbitalis:workstation_part",
     "orbitalis:rocket_hull",
     "orbitalis:rocket"

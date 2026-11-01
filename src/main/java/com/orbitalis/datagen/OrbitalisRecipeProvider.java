@@ -669,6 +669,48 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_steel_plate", has(ModTags.Items.PLATES_STEEL))
                 .save(output, key("drill_derrick"));
 
+        // Les accumulateurs : des cellules de batterie autour d'une carte, puis chaque génération autour de la précédente.
+        shaped(RecipeCategory.MISC, ModBlocks.ACCUMULATOR)
+                .pattern("PBP")
+                .pattern("BCB")
+                .pattern("PBP")
+                .define('P', ModTags.Items.PLATES_STEEL)
+                .define('B', ModItems.BATTERY_CELL)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .unlockedBy("has_battery_cell", has(ModItems.BATTERY_CELL))
+                .save(output, key("accumulator"));
+        shaped(RecipeCategory.MISC, ModBlocks.ACCUMULATOR_ADVANCED)
+                .pattern("LBL")
+                .pattern("BAB")
+                .pattern("LCL")
+                .define('L', ModTags.Items.PLATES_ALUMINUM_LITHIUM)
+                .define('B', ModItems.BATTERY_CELL)
+                .define('A', ModBlocks.ACCUMULATOR)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .unlockedBy("has_accumulator", has(ModBlocks.ACCUMULATOR))
+                .save(output, key("accumulator_advanced"));
+        shaped(RecipeCategory.MISC, ModBlocks.ACCUMULATOR_ELITE)
+                .pattern("TFT")
+                .pattern("BAB")
+                .pattern("TBT")
+                .define('T', ModTags.Items.PLATES_TITANIUM)
+                .define('F', ModItems.FLIGHT_PROCESSOR)
+                .define('B', ModItems.BATTERY_CELL)
+                .define('A', ModBlocks.ACCUMULATOR_ADVANCED)
+                .unlockedBy("has_advanced_accumulator", has(ModBlocks.ACCUMULATOR_ADVANCED))
+                .save(output, key("accumulator_elite"));
+        shaped(RecipeCategory.MISC, ModBlocks.ACCUMULATOR_QUANTUM)
+                .pattern("ORO")
+                .pattern("BAB")
+                .pattern("TBT")
+                .define('O', ModItems.OPTICAL_SENSOR)
+                .define('R', ModItems.REACTOR_CORE)
+                .define('B', ModItems.BATTERY_CELL)
+                .define('A', ModBlocks.ACCUMULATOR_ELITE)
+                .define('T', ModBlocks.TITANIUM_BLOCK)
+                .unlockedBy("has_elite_accumulator", has(ModBlocks.ACCUMULATOR_ELITE))
+                .save(output, key("accumulator_quantum"));
+
         // La tour de la foreuse : un socle de plaques d'acier sur un bloc d'acier, des mâts d'acier.
         shaped(RecipeCategory.MISC, ModBlocks.DRILL_BASE, 4)
                 .pattern("PPP")

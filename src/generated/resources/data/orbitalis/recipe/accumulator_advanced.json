@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "orbitalis:accumulator",
+    "B": "orbitalis:battery_cell",
+    "C": "orbitalis:circuit_board",
+    "L": "#c:plates/aluminum_lithium"
+  },
+  "pattern": [
+    "LBL",
+    "BAB",
+    "LCL"
+  ],
+  "result": {
+    "id": "orbitalis:accumulator_advanced"
+  }
+}

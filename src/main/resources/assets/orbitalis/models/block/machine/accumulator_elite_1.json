@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "orbitalis:block/accumulator_elite_front",
+    "north": "orbitalis:block/accumulator_elite_front",
+    "south": "orbitalis:block/accumulator_elite_side_1",
+    "east": "orbitalis:block/accumulator_elite_side_1",
+    "west": "orbitalis:block/accumulator_elite_side_1",
+    "up": "orbitalis:block/accumulator_elite_top",
+    "down": "orbitalis:block/accumulator_elite_bottom"
+  }
+}

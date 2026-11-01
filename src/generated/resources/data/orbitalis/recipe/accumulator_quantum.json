@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "orbitalis:accumulator_elite",
+    "B": "orbitalis:battery_cell",
+    "O": "orbitalis:optical_sensor",
+    "R": "orbitalis:reactor_core",
+    "T": "orbitalis:titanium_block"
+  },
+  "pattern": [
+    "ORO",
+    "BAB",
+    "TBT"
+  ],
+  "result": {
+    "id": "orbitalis:accumulator_quantum"
+  }
+}

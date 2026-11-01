@@ -294,6 +294,10 @@ public class OrbitalisModelProvider extends ModelProvider {
         // Panneaux solaires, des quatre générations : la nappe sur son mât, plus un cadre sur chaque côté qui n'est pas
         // raccordé à un voisin. Modèles écrits par tools/write_solar_panels.py.
         solarPanel(blockModels, ModBlocks.SOLAR_PANEL.get(), "");
+        for (Block accumulator : List.of(ModBlocks.ACCUMULATOR.get(), ModBlocks.ACCUMULATOR_ADVANCED.get(), ModBlocks.ACCUMULATOR_ELITE.get(),
+                ModBlocks.ACCUMULATOR_QUANTUM.get())) {
+            accumulator(blockModels, accumulator);
+        }
         solarPanel(blockModels, ModBlocks.SOLAR_PANEL_ADVANCED.get(), "_advanced");
         solarPanel(blockModels, ModBlocks.SOLAR_PANEL_PEROVSKITE.get(), "_perovskite");
         solarPanel(blockModels, ModBlocks.SOLAR_PANEL_QUANTUM.get(), "_quantum");
@@ -565,6 +569,19 @@ public class OrbitalisModelProvider extends ModelProvider {
      * {@code tools/generate_machine_models.py}. En marche, certaines pièces sont animées et lumineuses.
      */
     /** Un panneau solaire : la nappe, ses cadres sur les côtés libres ; en objet, le panneau seul, encadré de partout. */
+    /**
+     * Accumulateur : un modèle par cran de charge (écrits par tools/write_accumulators.py), tourné vers sa face avant ;
+     * l'objet montre l'accumulateur vide.
+     */
+    private static void accumulator(BlockModelGenerators blockModels, Block block) {
+        String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(PropertyDispatch.initial(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE)
+                        .generate(charge -> BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/" + name + "_" + charge))))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+        blockModels.registerSimpleItemModel(block, Orbitalis.id("block/machine/" + name + "_0"));
+    }
+
     private static void solarPanel(BlockModelGenerators blockModels, Block panel, String suffix) {
         MultiVariant core = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_panel" + suffix));
         MultiVariant edge = BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/solar_edge" + suffix));

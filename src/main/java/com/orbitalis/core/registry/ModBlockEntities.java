@@ -130,6 +130,12 @@ public final class ModBlockEntities {
             BLOCK_ENTITIES.register("solar_panel", () -> new BlockEntityType<>(SolarPanelBlockEntity::new, ModBlocks.SOLAR_PANEL.get(),
                     ModBlocks.SOLAR_PANEL_ADVANCED.get(), ModBlocks.SOLAR_PANEL_PEROVSKITE.get(), ModBlocks.SOLAR_PANEL_QUANTUM.get()));
 
+    /** Accumulateurs, de leurs quatre générations. */
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.orbitalis.phase1.power.AccumulatorBlockEntity>> ACCUMULATOR =
+            BLOCK_ENTITIES.register("accumulator", () -> new BlockEntityType<>(com.orbitalis.phase1.power.AccumulatorBlockEntity::new,
+                    ModBlocks.ACCUMULATOR.get(), ModBlocks.ACCUMULATOR_ADVANCED.get(), ModBlocks.ACCUMULATOR_ELITE.get(),
+                    ModBlocks.ACCUMULATOR_QUANTUM.get()));
+
     /** Générateur d'air des stations. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LifeSupportBlockEntity>> LIFE_SUPPORT =
             BLOCK_ENTITIES.register("life_support", () -> new BlockEntityType<>(LifeSupportBlockEntity::new, ModBlocks.LIFE_SUPPORT.get()));
@@ -242,6 +248,8 @@ public final class ModBlockEntities {
 
         // Stations : le panneau solaire fournit de l'électricité, le générateur d'air en reçoit.
         event.registerBlockEntity(Capabilities.Energy.BLOCK, SOLAR_PANEL.get(), (panel, side) -> panel.getEnergy());
+        // Accumulateur : il reçoit par cinq faces et ne donne que par l'avant.
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ACCUMULATOR.get(), (accumulator, side) -> accumulator.handler(side));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, LIFE_SUPPORT.get(), (unit, side) -> unit.getEnergy());
         // Équipements de station : ils se branchent aussi par câble, hors d'une station ou en renfort de son réseau.
         event.registerBlockEntity(Capabilities.Energy.BLOCK, LAB_RACK.get(), (rack, side) -> rack.getEnergy());

@@ -99,6 +99,7 @@ public class OrbitalisClient {
         event.register(ModMenus.CRYOGENIC_TANK.get(), CryogenicTankScreen::new);
         event.register(ModMenus.SUIT_WORKBENCH.get(), com.orbitalis.client.screen.SuitWorkbenchScreen::new);
         event.register(ModMenus.DRILL_DERRICK.get(), com.orbitalis.client.screen.DerrickScreen::new);
+        event.register(ModMenus.ACCUMULATOR.get(), com.orbitalis.client.screen.AccumulatorScreen::new);
     }
 
     /** Le ciel de l'espace, celui de l'orbite et de la Lune : entièrement dessiné par le mod (voir SpaceSky). */

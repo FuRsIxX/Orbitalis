@@ -501,6 +501,42 @@ public final class ModBlocks {
                     .strength(3.0F, 6.0F)
                     .sound(SoundType.METAL)
                     .noOcclusion()));
+    /** Accumulateur : il stocke l'électricité, la reçoit par cinq faces et la rend par l'avant. */
+    public static final DeferredBlock<com.orbitalis.phase1.power.AccumulatorBlock> ACCUMULATOR = withItem(BLOCKS.registerBlock("accumulator",
+            properties -> new com.orbitalis.phase1.power.AccumulatorBlock(properties, com.orbitalis.phase1.power.AccumulatorBlock.Tier.BASIC),
+            properties -> properties
+                    .mapColor(MapColor.COLOR_GRAY)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)));
+    /** Accumulateur avancé : quatre fois plus de réserve et de débit. */
+    public static final DeferredBlock<com.orbitalis.phase1.power.AccumulatorBlock> ACCUMULATOR_ADVANCED = withItem(BLOCKS.registerBlock("accumulator_advanced",
+            properties -> new com.orbitalis.phase1.power.AccumulatorBlock(properties, com.orbitalis.phase1.power.AccumulatorBlock.Tier.ADVANCED),
+            properties -> properties
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)));
+    /** Accumulateur d'élite : seize fois la réserve du premier. */
+    public static final DeferredBlock<com.orbitalis.phase1.power.AccumulatorBlock> ACCUMULATOR_ELITE = withItem(BLOCKS.registerBlock("accumulator_elite",
+            properties -> new com.orbitalis.phase1.power.AccumulatorBlock(properties, com.orbitalis.phase1.power.AccumulatorBlock.Tier.ELITE),
+            properties -> properties
+                    .mapColor(MapColor.GOLD)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)));
+    /** Accumulateur quantique : soixante-quatre millions de FE. */
+    public static final DeferredBlock<com.orbitalis.phase1.power.AccumulatorBlock> ACCUMULATOR_QUANTUM = withItem(BLOCKS.registerBlock("accumulator_quantum",
+            properties -> new com.orbitalis.phase1.power.AccumulatorBlock(properties, com.orbitalis.phase1.power.AccumulatorBlock.Tier.QUANTUM),
+            properties -> properties
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)));
     /** Panneau solaire avancé : cellules noires à contacts arrière, deux fois et demie plus puissantes. */
     public static final DeferredBlock<SolarPanelBlock> SOLAR_PANEL_ADVANCED = withItem(BLOCKS.registerBlock("solar_panel_advanced",
             properties -> new SolarPanelBlock(properties, SolarPanelBlock.Tier.ADVANCED),

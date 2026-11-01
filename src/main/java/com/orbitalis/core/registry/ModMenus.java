@@ -42,6 +42,10 @@ public final class ModMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<com.orbitalis.phase1.quarry.DerrickMenu>> DRILL_DERRICK =
             MENUS.register("drill_derrick", () -> IMenuTypeExtension.create(com.orbitalis.phase1.quarry.DerrickMenu::fromNetwork));
 
+    /** Accumulateur : sa charge et ses échanges. */
+    public static final DeferredHolder<MenuType<?>, MenuType<com.orbitalis.phase1.power.AccumulatorMenu>> ACCUMULATOR =
+            MENUS.register("accumulator", () -> IMenuTypeExtension.create(com.orbitalis.phase1.power.AccumulatorMenu::fromNetwork));
+
     private ModMenus() {
     }
 

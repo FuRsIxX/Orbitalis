@@ -1,0 +1,40 @@
+package com.orbitalis.phase1.power;
+
+import com.orbitalis.core.registry.ModMenus;
+import com.orbitalis.phase1.machines.MachineMenu;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+/**
+ * Écran d'un accumulateur : rien à poser ni à régler, seulement sa charge et ses échanges, synchronisés à chaque tick
+ * (l'énergie et la capacité, la génération, l'entrée et la sortie moyennes).
+ */
+public class AccumulatorMenu extends MachineMenu {
+    public static AccumulatorMenu fromNetwork(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buffer) {
+        buffer.readBlockPos();
+        return new AccumulatorMenu(containerId, null, new SimpleContainerData(AccumulatorBlockEntity.DATA_COUNT));
+    }
+
+    public AccumulatorMenu(int containerId, BlockEntity blockEntity, ContainerData data) {
+        super(ModMenus.ACCUMULATOR.get(), containerId, blockEntity, data, 0);
+    }
+
+    public AccumulatorBlock.Tier tier() {
+        AccumulatorBlock.Tier[] tiers = AccumulatorBlock.Tier.values();
+        return tiers[Math.clamp(data.get(4), 0, tiers.length - 1)];
+    }
+
+    /** Entrée moyenne de la dernière seconde, en FE par tick. */
+    public int averageIn() {
+        return data.get(MachineMenu.BASE_DATA_COUNT) & 0xFFFF;
+    }
+
+    /** Sortie moyenne de la dernière seconde, en FE par tick. */
+    public int averageOut() {
+        return data.get(MachineMenu.BASE_DATA_COUNT + 1) & 0xFFFF;
+    }
+}

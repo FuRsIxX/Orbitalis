@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "orbitalis:accumulator_advanced",
+    "B": "orbitalis:battery_cell",
+    "F": "orbitalis:flight_processor",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TFT",
+    "BAB",
+    "TBT"
+  ],
+  "result": {
+    "id": "orbitalis:accumulator_elite"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:battery_cell",
+    "C": "orbitalis:circuit_board",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "PBP",
+    "BCB",
+    "PBP"
+  ],
+  "result": {
+    "id": "orbitalis:accumulator"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "orbitalis:block/accumulator_quantum_front",
+    "north": "orbitalis:block/accumulator_quantum_front",
+    "south": "orbitalis:block/accumulator_quantum_side_3",
+    "east": "orbitalis:block/accumulator_quantum_side_3",
+    "west": "orbitalis:block/accumulator_quantum_side_3",
+    "up": "orbitalis:block/accumulator_quantum_top",
+    "down": "orbitalis:block/accumulator_quantum_bottom"
+  }
+}

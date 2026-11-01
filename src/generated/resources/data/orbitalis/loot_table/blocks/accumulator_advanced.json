@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "orbitalis:stored_energy",
+                "minecraft:container",
+                "orbitalis:machine_fluids"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "orbitalis:accumulator_advanced"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "orbitalis:blocks/accumulator_advanced"
+}

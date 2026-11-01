@@ -27,6 +27,7 @@ public final class GuideChapters {
             new GuideChapter("ores", BASICS, ModItems.RAW_BAUXITE),
             new GuideChapter("facilities", BASICS, ModBlocks.RADOME_PANEL),
             new GuideChapter("energy", MACHINES, ModBlocks.COMBUSTION_GENERATOR),
+            new GuideChapter("accumulators", MACHINES, ModBlocks.ACCUMULATOR),
             new GuideChapter("arc_foundry", MACHINES, ModBlocks.ARC_FOUNDRY),
             new GuideChapter("rolling_mill", MACHINES, ModBlocks.ROLLING_MILL),
             new GuideChapter("conduits", MACHINES, ModBlocks.ENERGY_CABLE),

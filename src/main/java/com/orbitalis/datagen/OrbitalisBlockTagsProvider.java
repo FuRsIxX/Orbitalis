@@ -66,6 +66,10 @@ public class OrbitalisBlockTagsProvider extends BlockTagsProvider {
         // Panneaux solaires des générations suivantes : comme le premier.
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.SOLAR_PANEL_ADVANCED.getKey(), ModBlocks.SOLAR_PANEL_PEROVSKITE.getKey(), ModBlocks.SOLAR_PANEL_QUANTUM.getKey());
         tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.SOLAR_PANEL_ADVANCED.getKey(), ModBlocks.SOLAR_PANEL_PEROVSKITE.getKey(), ModBlocks.SOLAR_PANEL_QUANTUM.getKey());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.ACCUMULATOR.getKey(), ModBlocks.ACCUMULATOR_ADVANCED.getKey(), ModBlocks.ACCUMULATOR_ELITE.getKey(),
+                ModBlocks.ACCUMULATOR_QUANTUM.getKey());
+        tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.ACCUMULATOR.getKey(), ModBlocks.ACCUMULATOR_ADVANCED.getKey(), ModBlocks.ACCUMULATOR_ELITE.getKey(),
+                ModBlocks.ACCUMULATOR_QUANTUM.getKey());
         // Cases invisibles des grands meubles et flancs des fusées : la pioche les casse aussi vite que le reste.
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.WORKSTATION_PART.getKey(), ModBlocks.ROCKET_HULL.getKey(), ModBlocks.ROCKET.getKey());
 

@@ -421,6 +421,24 @@ public final class WorldPreview {
             set(level, 61, 0, 8, "orbitalis:solar_panel_quantum[east=true]");
             set(level, 62, 0, 8, "orbitalis:solar_panel_quantum[west=true]");
         }, 61.0, 2.3, 10.2, 180.0F, 45.0F, 8));
+        // Les quatre accumulateurs, plus ou moins chargés, l'avant vers la caméra, puis l'écran du quantique.
+        SHOTS.add(new Shot("accumulators", level -> {
+            String[] names = {"accumulator", "accumulator_advanced", "accumulator_elite", "accumulator_quantum"};
+            for (int k = 0; k < names.length; k++) {
+                set(level, 64 + 2 * k, 0, 8, "orbitalis:" + names[k] + "[facing=south]");
+                if (level.getBlockEntity(at(64 + 2 * k, 0, 8)) instanceof com.orbitalis.phase1.power.AccumulatorBlockEntity accumulator) {
+                    accumulator.getEnergy().generate(accumulator.tier().capacity / 5 * (k + 2));
+                }
+            }
+        }, 70.5, 2.6, 12.0, 145.0F, 25.0F, 20));
+        SHOTS.add(new Shot("accumulator_screen", level -> {
+            var players = level.getServer().getPlayerList().getPlayers();
+            if (!players.isEmpty() && level.getBlockEntity(at(70, 0, 8)) instanceof com.orbitalis.phase1.power.AccumulatorBlockEntity accumulator) {
+                players.get(0).openMenu(accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
+            }
+        }, 70.5, 2.6, 12.0, 145.0F, 25.0F, 30));
+        SHOTS.add(new Shot("accumulator_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
+                () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), 70.5, 2.6, 12.0, 145.0F, 25.0F, 4));
         SHOTS.add(new Shot("solar_icons", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
             java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();
             for (var id : java.util.List.of("solar_panel", "solar_panel_advanced", "solar_panel_perovskite", "solar_panel_quantum", "water_pump",

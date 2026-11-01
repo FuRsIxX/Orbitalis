@@ -1,6 +1,7 @@
 # Orbitalis — prochaine version
 
 ## Nouveautés
+- **Accumulateurs** : un stockage d'électricité sans réglage, qu'on pose et qu'on branche. L'énergie entre par cinq faces et ressort par l'avant (la face qui regardait le joueur à la pose) ; les flancs montrent la charge en cinq crans, et l'accumulateur garde son énergie quand on le casse. Un clic droit ouvre son écran : la jauge, l'état, le temps avant qu'il soit plein ou vide, l'entrée et la sortie. Quatre générations, chacune fabriquée autour de la précédente : 1, 4, 16 et 64 millions de FE, pour 1 000, 4 000, 16 000 et 64 000 FE par tick. Un chapitre du guide les présente.
 - **Pompe à eau** : posée au-dessus d'une étendue d'au moins 8 blocs d'eau (une nappe de 4×2), elle pompe un seau par seconde pour 10 FE par tick, sans jamais la vider. C'est une vraie pompe, sur son socle, avec son moteur : le câble se branche sur son boîtier électrique, à l'arrière, et le tuyau sur sa bride de sortie, à l'avant.
 - Chaque machine a sa propre livrée : la couleur de sa coque et les motifs de ses flancs, de son dessus et de sa grille changent d'une machine à l'autre (ailettes du générateur, bandes de danger de la fonderie, conduites de l'électrolyseur, givre du liquéfacteur...). La forme reste la même pour toutes.
 - Cassés, les réservoirs gardent leur contenu : l'objet l'emporte et le rend une fois reposé. Un bloc de réservoir modulable emporte sa part.
@@ -122,6 +123,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 # Orbitalis — next version
 
 ## New
+- **Accumulators**: plug-and-play electricity storage with nothing to set up. Power comes in through five faces and leaves through the front (the face that looked at the player on placement); the sides show the charge in five steps, and an accumulator keeps its energy when broken. Right-click opens its screen: the gauge, the state, the time until full or empty, input and output. Four generations, each crafted around the one before: 1, 4, 16 and 64 million FE, moving 1,000, 4,000, 16,000 and 64,000 FE per tick. A guide chapter covers them.
 - **Water pump**: placed above a body of at least 8 water blocks (a 4×2 pool), it pumps a bucket per second for 10 FE per tick and never drains it. It's a real pump, on its skid, with its motor: the cable goes into its electrical box at the back, and the pipe onto its outlet flange at the front.
 - Every machine has its own livery: the colour of its casing and the patterns on its sides, top and grille differ from one machine to the next (the generator's fins, the foundry's hazard stripes, the electrolyzer's pipes, the liquefier's frost...). The shape stays the same for all.
 - Broken tanks keep their contents: the item carries them and gives them back once placed again. A modular tank block takes its share.

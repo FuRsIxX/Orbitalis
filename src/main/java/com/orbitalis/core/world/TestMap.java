@@ -348,6 +348,17 @@ public final class TestMap {
             level.setBlock(at, tiers.get(k).defaultBlockState(), Block.UPDATE_ALL);
             sign(level, at.south(3), tiers.get(k).getName(), null, null);
         }
+        // Les quatre générations d'accumulateurs, derrière les panneaux : une source créative contre le dos de chacun le
+        // charge, et ses flancs montrent sa charge monter.
+        java.util.List<Block> accumulators = java.util.List.of(ModBlocks.ACCUMULATOR.get(), ModBlocks.ACCUMULATOR_ADVANCED.get(),
+                ModBlocks.ACCUMULATOR_ELITE.get(), ModBlocks.ACCUMULATOR_QUANTUM.get());
+        for (int k = 0; k < accumulators.size(); k++) {
+            BlockPos at = new BlockPos(sx + 4 + 2 * k, Y, z0 - 3);
+            level.setBlock(at, accumulators.get(k).defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH),
+                    Block.UPDATE_ALL);
+            level.setBlock(at.south(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+            sign(level, at.north(2), accumulators.get(k).getName(), null, null);
+        }
 
         // La foreuse, plus loin à l'est, tournée vers le sud : sa tour la plus haute (3×3×9), une source d'énergie et un
         // réservoir d'eau créatifs contre les flancs du socle, et un coffre derrière, où part son butin.

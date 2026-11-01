@@ -144,6 +144,8 @@ public final class OrbitalisGameTests {
 
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> DRILL_DERRICK =
             FUNCTIONS.register("drill_derrick", () -> OrbitalisGameTests::drillDerrick);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ACCUMULATOR =
+            FUNCTIONS.register("accumulator", () -> OrbitalisGameTests::accumulator);
 
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
@@ -316,6 +318,9 @@ public final class OrbitalisGameTests {
         // Le derrick : sa tour, le forage d'un minerai avec remblai, la chaleur et l'eau, le carottage et ses points.
         event.registerTest(Orbitalis.id("drill_derrick"), new FunctionGameTestInstance(
                 DRILL_DERRICK.getKey(), spaced(environment, emptyStructure, 200)));
+        // L'accumulateur : il reçoit par ses flancs, jamais par l'avant, et rend par l'avant à ce qui le touche.
+        event.registerTest(Orbitalis.id("accumulator"), new FunctionGameTestInstance(
+                ACCUMULATOR.getKey(), spaced(environment, emptyStructure, 60)));
         // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
         event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
                 WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
@@ -3984,6 +3989,43 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 gotDirt |= tall.getOutput().getStack(slot).is(Items.DIRT);
             }
             helper.assertTrue(gotDirt, "la terre aurait dû arriver dans la réserve");
+        });
+    }
+
+    /**
+     * Accumulateur : ce qu'on lui envoie par un flanc s'y range, ce qu'on lui envoie par l'avant est refusé, on ne
+     * peut rien lui prendre par un flanc ; il pousse son énergie par l'avant dans un second accumulateur, qui la reçoit
+     * par son dos ; ses flancs montrent sa charge.
+     */
+    private static void accumulator(GameTestHelper helper) {
+        BlockPos first = new BlockPos(2, 1, 2);
+        BlockPos second = first.north();
+        helper.setBlock(first, ModBlocks.ACCUMULATOR.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+        helper.setBlock(second, ModBlocks.ACCUMULATOR_ADVANCED.get().defaultBlockState()
+                .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+        var source = helper.getBlockEntity(first, com.orbitalis.phase1.power.AccumulatorBlockEntity.class);
+        var target = helper.getBlockEntity(second, com.orbitalis.phase1.power.AccumulatorBlockEntity.class);
+        var level = helper.getLevel();
+        var side = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK, helper.absolutePos(first), Direction.EAST);
+        var front = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK, helper.absolutePos(first), Direction.NORTH);
+        helper.assertTrue(side != null && front != null, "l'accumulateur devrait offrir de l'énergie sur toutes ses faces");
+        int tier = com.orbitalis.phase1.power.AccumulatorBlock.Tier.BASIC.transfer;
+        try (Transaction transaction = Transaction.openRoot()) {
+            helper.assertTrue(side.insert(500_000, transaction) == tier, "un flanc aurait dû recevoir au plus le débit de la génération");
+            helper.assertTrue(front.insert(500, transaction) == 0, "l'avant ne devrait rien recevoir");
+            transaction.commit();
+        }
+        helper.assertTrue(source.getEnergy().getEnergy() == tier, "l'énergie reçue aurait dû se ranger : " + source.getEnergy().getEnergy());
+        try (Transaction transaction = Transaction.openRoot()) {
+            helper.assertTrue(side.extract(100, transaction) == 0, "on ne devrait rien prendre par un flanc");
+        }
+        source.getEnergy().generate(300_000);
+        helper.succeedWhen(() -> {
+            helper.assertTrue(target.getEnergy().getEnergy() > 0, "le second accumulateur aurait dû recevoir l'énergie du premier");
+            helper.assertTrue(helper.getBlockState(second).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) >= 1,
+                    "les flancs du second auraient dû montrer sa charge");
+            helper.assertTrue(helper.getBlockState(first).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) == 2,
+                    "les flancs du premier auraient dû montrer deux crans : " + helper.getBlockState(first));
         });
     }
 
