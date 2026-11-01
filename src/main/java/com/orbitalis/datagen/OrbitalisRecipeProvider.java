@@ -679,7 +679,7 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('B', ModBlocks.STEEL_BLOCK)
                 .unlockedBy("has_steel_plate", has(ModTags.Items.PLATES_STEEL))
                 .save(output, key("drill_base"));
-        shaped(RecipeCategory.MISC, ModBlocks.DRILL_MAST, 4)
+        shaped(RecipeCategory.MISC, ModBlocks.DRILL_MAST, 8)
                 .pattern("I I")
                 .pattern("IPI")
                 .pattern("I I")

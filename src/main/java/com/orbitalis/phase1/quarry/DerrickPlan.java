@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.Block;
  * zone qu'il fore :
  * <ul>
  * <li>un socle de 3×3 : le bloc de commande et huit blocs de socle, par où arrivent l'électricité et l'eau ;</li>
- * <li>quatre colonnes de mâts aux angles du socle, de deux à huit étages : une tour de trois à neuf blocs de haut.</li>
+ * <li>de deux à huit étages pleins de 3×3 mâts par-dessus : une tour pleine de trois à neuf blocs de haut.</li>
  * </ul>
  * Plus la tour est haute, plus la foreuse va loin : la plus petite (3×3×3) fore jusqu'à 9×9 sur 32 blocs de profondeur,
  * la plus grande (3×3×9) jusqu'à 33×33, jusqu'au fond du monde. Tant qu'elle n'a pas ses deux premiers étages, les blocs
@@ -49,30 +49,46 @@ public final class DerrickPlan {
 
     /** Les huit cases du socle, autour du bloc de commande (lui-même au milieu de la face avant). */
     public static List<BlockPos> base(Direction facing) {
+        List<BlockPos> cells = layer(facing);
+        cells.remove(BlockPos.ZERO);
+        return cells;
+    }
+
+    /** Les neuf cases d'un étage de la tour, au niveau du bloc de commande. */
+    public static List<BlockPos> layer(Direction facing) {
         Direction back = facing.getOpposite();
         Direction right = facing.getClockWise();
-        List<BlockPos> cells = new ArrayList<>(8);
+        List<BlockPos> cells = new ArrayList<>(9);
         for (int row = 0; row <= 2; row++) {
             for (int side = -1; side <= 1; side++) {
-                if (row != 0 || side != 0) {
-                    cells.add(BlockPos.ZERO.relative(back, row).relative(right, side));
-                }
+                cells.add(BlockPos.ZERO.relative(back, row).relative(right, side));
             }
         }
         return cells;
     }
 
-    /** Les quatre angles du socle, au pied desquels montent les colonnes de mâts. */
-    public static List<BlockPos> corners(Direction facing) {
+    /** La place d'une case d'étage dans la tour assemblée, et l'orientation de son aspect. */
+    public record Role(DrillTowerBlock.Part part, Direction facing) {
+    }
+
+    /**
+     * La place d'une case d'étage ({@code cell}, au niveau du bloc de commande) : un angle est tourné de sorte que sa
+     * seconde face extérieure soit à sa droite ; un côté, vers l'extérieur.
+     */
+    public static Role role(Direction facing, BlockPos cell) {
         Direction back = facing.getOpposite();
         Direction right = facing.getClockWise();
-        List<BlockPos> corners = new ArrayList<>(4);
-        for (int row = 0; row <= 2; row += 2) {
-            for (int side = -1; side <= 1; side += 2) {
-                corners.add(BlockPos.ZERO.relative(back, row).relative(right, side));
-            }
+        int row = cell.getX() * back.getStepX() + cell.getZ() * back.getStepZ();
+        int side = cell.getX() * right.getStepX() + cell.getZ() * right.getStepZ();
+        Direction across = row == 0 ? facing : row == 2 ? back : null;
+        Direction along = side == -1 ? right.getOpposite() : side == 1 ? right : null;
+        if (across != null && along != null) {
+            return new Role(DrillTowerBlock.Part.CORNER, across.getClockWise() == along ? across : along);
         }
-        return corners;
+        if (across != null || along != null) {
+            return new Role(DrillTowerBlock.Part.EDGE, across != null ? across : along);
+        }
+        return new Role(DrillTowerBlock.Part.CENTER, facing);
     }
 
     /** Vrai si la case appartient à l'emprise de la tour (son socle de 3×3), qu'on ne fore jamais. */
@@ -84,12 +100,12 @@ public final class DerrickPlan {
         return base(facing).contains(local);
     }
 
-    /** Étages complets, du premier vers le haut : un étage compte si ses quatre mâts sont posés. */
+    /** Étages complets, du premier vers le haut : un étage compte si ses neuf mâts sont posés. */
     public static int levels(Level level, BlockPos origin, Direction facing) {
         int levels = 0;
         for (int y = 1; y <= MAX_LEVELS; y++) {
-            for (BlockPos corner : corners(facing)) {
-                if (!level.getBlockState(origin.offset(corner).above(y)).is(ModBlocks.DRILL_MAST.get())) {
+            for (BlockPos cell : layer(facing)) {
+                if (!level.getBlockState(origin.offset(cell).above(y)).is(ModBlocks.DRILL_MAST.get())) {
                     return levels;
                 }
             }
@@ -107,8 +123,8 @@ public final class DerrickPlan {
             }
         }
         for (int y = 1; y <= MIN_LEVELS; y++) {
-            for (BlockPos corner : corners(facing)) {
-                BlockPos cell = corner.above(y);
+            for (BlockPos at : layer(facing)) {
+                BlockPos cell = at.above(y);
                 if (!level.getBlockState(origin.offset(cell)).is(ModBlocks.DRILL_MAST.get())) {
                     missing.add(new Piece(cell, ModBlocks.DRILL_MAST.get()));
                 }
@@ -124,8 +140,8 @@ public final class DerrickPlan {
             pieces.add(new Piece(cell, ModBlocks.DRILL_BASE.get()));
         }
         for (int y = 1; y <= levels; y++) {
-            for (BlockPos corner : corners(facing)) {
-                pieces.add(new Piece(corner.above(y), ModBlocks.DRILL_MAST.get()));
+            for (BlockPos cell : layer(facing)) {
+                pieces.add(new Piece(cell.above(y), ModBlocks.DRILL_MAST.get()));
             }
         }
         return pieces;

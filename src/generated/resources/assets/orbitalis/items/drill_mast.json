@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "orbitalis:block/drill_mast"
+    "model": "orbitalis:block/machine/drill_mast"
   }
 }

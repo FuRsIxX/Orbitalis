@@ -88,8 +88,8 @@ public class OrbitalisModelProvider extends ModelProvider {
         machine(blockModels, ModBlocks.WATER_PUMP.get());
         machine(blockModels, ModBlocks.DRILL_DERRICK.get());
         // La tour de la foreuse : un socle d'acier strié, des mâts en poutre jaune (textures de tools/write_machines.py).
-        blockModels.createTrivialBlock(ModBlocks.DRILL_BASE.get(), net.minecraft.client.data.models.model.TexturedModel.COLUMN);
-        blockModels.createAxisAlignedPillarBlock(ModBlocks.DRILL_MAST.get(), net.minecraft.client.data.models.model.TexturedModel.COLUMN);
+        drillTower(blockModels, ModBlocks.DRILL_BASE.get());
+        drillTower(blockModels, ModBlocks.DRILL_MAST.get());
 
         // Terminal de recherche : même carcasse que les machines, avec un écran toujours allumé.
 
@@ -609,6 +609,23 @@ public class OrbitalisModelProvider extends ModelProvider {
                     return BlockModelGenerators.plainVariant(
                             ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(block, suffix, textures, blockModels.modelOutput));
                 })));
+    }
+
+    /**
+     * Bloc de tour de foreuse : son aspect à bâtir, puis, la tour assemblée, un aspect par place (angle, côté, cœur, et
+     * en couronne pour l'étage du haut), tourné selon son orientation. Les modèles sont écrits par l'outil des machines.
+     */
+    private static void drillTower(BlockModelGenerators blockModels, Block block) {
+        String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(PropertyDispatch.initial(com.orbitalis.phase1.quarry.DrillTowerBlock.PART, com.orbitalis.phase1.quarry.DrillTowerBlock.TOP)
+                        .generate((part, top) -> {
+                            String suffix = part == com.orbitalis.phase1.quarry.DrillTowerBlock.Part.LOOSE ? ""
+                                    : "_" + part.getSerializedName() + (top && block == ModBlocks.DRILL_MAST.get() ? "_top" : "");
+                            return BlockModelGenerators.plainVariant(Orbitalis.id("block/machine/" + name + suffix));
+                        }))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+        blockModels.registerSimpleItemModel(block, Orbitalis.id("block/machine/" + name));
     }
 
     /** Table de lancement : modèle 3D du kit du pas de tir, dont les voyants s'allument quand le complexe est opérationnel. */

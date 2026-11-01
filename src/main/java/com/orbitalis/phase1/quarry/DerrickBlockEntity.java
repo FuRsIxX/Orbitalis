@@ -35,6 +35,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -296,6 +297,54 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
             }
             sync();
         }
+        applyLooks(level, worldPosition, facing, formed ? levels : -1);
+    }
+
+    /**
+     * Donne à la tour son aspect : assemblé pour le socle et les {@code levels} premiers étages (l'étage du haut en
+     * couronne), à bâtir pour le reste ; {@code levels} négatif rend à toute la tour son aspect à bâtir.
+     */
+    static void applyLooks(Level level, BlockPos origin, Direction facing, int levels) {
+        for (BlockPos cell : DerrickPlan.base(facing)) {
+            look(level, origin.offset(cell), ModBlocks.DRILL_BASE.get(), levels >= 0 ? DerrickPlan.role(facing, cell) : null, false);
+        }
+        for (int y = 1; y <= DerrickPlan.MAX_LEVELS; y++) {
+            for (BlockPos cell : DerrickPlan.layer(facing)) {
+                look(level, origin.offset(cell).above(y), ModBlocks.DRILL_MAST.get(), y <= levels ? DerrickPlan.role(facing, cell) : null,
+                        y == levels);
+            }
+        }
+    }
+
+    private static void look(Level level, BlockPos pos, Block block, DerrickPlan.Role role, boolean top) {
+        BlockState state = level.getBlockState(pos);
+        if (!state.is(block)) {
+            return;
+        }
+        BlockState wanted = state.setValue(DrillTowerBlock.PART, role == null ? DrillTowerBlock.Part.LOOSE : role.part())
+                .setValue(DrillTowerBlock.TOP, role != null && top)
+                .setValue(BlockStateProperties.HORIZONTAL_FACING, role == null ? Direction.NORTH : role.facing());
+        if (wanted != state) {
+            level.setBlock(pos, wanted, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+        }
+    }
+
+    /** Un bloc de tour posé ou cassé près d'une foreuse : elle relève sa tour à l'instant. */
+    public static void notifyTowerChanged(ServerLevel level, BlockPos pos) {
+        for (int dy = -DerrickPlan.MAX_LEVELS; dy <= 0; dy++) {
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    if (level.getBlockEntity(pos.offset(dx, dy, dz)) instanceof DerrickBlockEntity derrick) {
+                        derrick.checkStructure();
+                    }
+                }
+            }
+        }
+    }
+
+    /** La foreuse est cassée : sa tour reprend son aspect à bâtir. */
+    public static void releaseTower(Level level, BlockPos origin, Direction facing) {
+        applyLooks(level, origin, facing, -1);
     }
 
     /** Un tick de forage. Renvoie vrai si la tête a travaillé. */

@@ -623,8 +623,177 @@ def hazard_row(img, y0, y1):
             put(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
 
 
+# ---------------------------------------------------------------------------
+# La tour de la foreuse
+# ---------------------------------------------------------------------------
+# Posés seuls, le socle et le mât ont leur aspect « à bâtir ». La tour complète prend son aspect assemblé, dessiné
+# d'un seul tenant sur toute sa largeur (trois blocs) puis découpé bloc par bloc : jambes en treillis jaune aux angles,
+# contreventement en triangle d'une jambe à l'autre, couronne à bande de danger et feux d'obstacle en haut, plateau
+# tournant de la flèche au sommet, plinthe au pied.
+TOWER_STEEL = "#343A41"
+TOWER_DEEP = "#262B30"
+TOWER_PALE = "#4B535C"
+LAMP = "#E8473F"
+
+
+def sheet(w, h, color, seed=0, tones=0.05):
+    """Une tôle de w×h pixels, à peine nuancée."""
+    rnd = random.Random(seed)
+    choices = (rgb(color), rgb(color), light(color, tones), shade(color, tones))
+    return [[rnd.choice(choices) for _ in range(w)] for _ in range(h)]
+
+
+def dot(img, x, y, color):
+    if 0 <= y < len(img) and 0 <= x < len(img[0]):
+        img[y][x] = rgb(color) if isinstance(color, str) else color
+
+
+def piece(img, x0, y0):
+    """Un carré de 16 pixels découpé dans un dessin d'ensemble."""
+    return [row[x0:x0 + SIZE] for row in img[y0:y0 + SIZE]]
+
+
+def tower_legs(img, y0, y1):
+    """Les deux jambes jaunes, aux deux bords, en miroir l'une de l'autre, boulonnées."""
+    w = len(img[0])
+    tones = (shade(DRILL_YELLOW, 0.5), light(DRILL_YELLOW, 0.3), DRILL_YELLOW, DRILL_YELLOW, shade(DRILL_YELLOW, 0.25),
+             shade(TOWER_STEEL, 0.45))
+    for y in range(y0, y1 + 1):
+        for k, color in enumerate(tones):
+            dot(img, k, y, color)
+            dot(img, w - 1 - k, y, color)
+    for y in (y0 + 3, y1 - 3):
+        for x in (2, 3):
+            dot(img, x, y, light(DRILL_YELLOW, 0.55))
+            dot(img, w - 1 - x, y, light(DRILL_YELLOW, 0.55))
+
+
+def brace(img, apex, bottom):
+    """Le contreventement : un triangle de poutrelles d'une jambe à l'autre, pointe en haut au milieu."""
+    w = len(img[0])
+    span = (w // 2 - 1) - 6
+    for y in range(apex, bottom + 1):
+        x = 6 + round((bottom - y) * span / max(1, bottom - apex))
+        for xx, color in ((x, light(DRILL_YELLOW, 0.15)), (x + 1, DRILL_YELLOW), (x + 2, shade(DRILL_YELLOW, 0.35))):
+            dot(img, xx, y, color)
+            dot(img, w - 1 - xx, y, color if xx != x + 2 else shade(DRILL_YELLOW, 0.2))
+        dot(img, x - 1, y, shade(TOWER_STEEL, 0.3))
+        dot(img, w - x, y, shade(TOWER_STEEL, 0.3))
+
+
+def chords(img, top=True):
+    """Les membrures : une poutrelle haute (claire) et basse (ombrée), qui se rejoignent d'un étage à l'autre."""
+    for x in range(len(img[0])):
+        if top:
+            dot(img, x, 0, light(DRILL_YELLOW, 0.2))
+        dot(img, x, 15, shade(DRILL_YELLOW, 0.3))
+        dot(img, x, 14, shade(DRILL_YELLOW, 0.05) if x < 6 or x > len(img[0]) - 7 else shade(TOWER_STEEL, 0.3))
+
+
+def tower_side(crown):
+    """Un étage vu de côté, sur toute la largeur de la tour (48 pixels) ; en couronne pour l'étage du haut."""
+    img = sheet(48, SIZE, TOWER_STEEL, 71)
+    # Panneaux d'habillage : un joint discret à mi-hauteur, et une petite grille d'aération sous la pointe.
+    for x in range(6, 42):
+        dot(img, x, 8, shade(TOWER_STEEL, 0.18))
+    for y in range(10, 14):
+        for x in range(19, 29):
+            dot(img, x, y, DARK if y % 2 == 0 else TOWER_PALE)
+    chords(img, top=not crown)
+    tower_legs(img, 0, 15)
+    if crown:
+        for y in range(0, 4):
+            for x in range(48):
+                dot(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
+        for x in range(48):
+            dot(img, x, 4, shade(DRILL_YELLOW, 0.45))
+        for x in (2, 3, 44, 45):
+            for y in (1, 2):
+                dot(img, x, y, LAMP if y == 2 else light(LAMP, 0.45))
+        brace(img, 5, 13)
+    else:
+        brace(img, 1, 13)
+    return img
+
+
+def tower_plinth():
+    """Le pied de la tour, vu de côté sur toute sa largeur : lèvre jaune, bande de danger, tôle, grilles, pieds."""
+    img = sheet(48, SIZE, "#4A5058", 72)
+    for x in range(48):
+        dot(img, x, 0, light(DRILL_YELLOW, 0.2))
+        dot(img, x, 1, shade(DRILL_YELLOW, 0.3))
+        for y in (2, 3, 4):
+            dot(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
+        dot(img, x, 5, EDGE)
+        dot(img, x, 15, EDGE)
+    for y in range(8, 13):
+        for x in list(range(10, 20)) + list(range(28, 38)):
+            dot(img, x, y, DARK if y % 2 == 0 else "#5A626C")
+    for x in range(21, 27):
+        for y in range(8, 13):
+            dot(img, x, y, "#2E3238")
+    dot(img, 23, 10, "#5BE37D")
+    dot(img, 24, 10, "#5BE37D")
+    for x, y in ((8, 7), (39, 7), (8, 13), (39, 13)):
+        dot(img, x, y, BOLT)
+    tower_legs(img, 6, 14)
+    for x in range(7):
+        dot(img, x, 14, shade(DRILL_YELLOW, 0.4))
+        dot(img, 47 - x, 14, shade(DRILL_YELLOW, 0.4))
+    return img
+
+
+def tower_cap():
+    """Le sommet, vu d'en haut sur toute la tour (48×48), symétrique dans les quatre sens : platelage, poutres de
+    rive, chapeaux des jambes, et au milieu le plateau tournant d'où part la flèche."""
+    n = 48
+    img = sheet(n, n, "#2E3339", 73, 0.0)
+    for y in range(n):
+        for x in range(n):
+            if (x + y) % 4 == 0 or (x - y) % 4 == 0:
+                dot(img, x, y, "#3A4047")
+    c = (n - 1) / 2.0
+    # Les poutres qui relient le plateau aux poutres de rive.
+    for k in range(n):
+        for at, tone in ((22, shade(DRILL_YELLOW, 0.35)), (23, DRILL_YELLOW), (24, DRILL_YELLOW), (25, shade(DRILL_YELLOW, 0.35))):
+            dot(img, k, at, tone)
+            dot(img, at, k, tone)
+    # Les poutres de rive.
+    for k in range(n):
+        for d, tone in ((0, shade(DRILL_YELLOW, 0.45)), (1, light(DRILL_YELLOW, 0.25)), (2, DRILL_YELLOW), (3, shade(DRILL_YELLOW, 0.3))):
+            dot(img, k, d, tone)
+            dot(img, k, n - 1 - d, tone)
+            dot(img, d, k, tone)
+            dot(img, n - 1 - d, k, tone)
+    # Les chapeaux des jambes : une coupe de poutre en H, sombre sur jaune.
+    for cx, cy in ((0, 0), (n - 7, 0), (0, n - 7), (n - 7, n - 7)):
+        for y in range(7):
+            for x in range(7):
+                rim = x in (0, 6) or y in (0, 6)
+                dot(img, cx + x, cy + y, shade(DRILL_YELLOW, 0.45) if rim else light(DRILL_YELLOW, 0.1))
+        for y in range(1, 6):
+            dot(img, cx + 3, cy + y, DARK)
+        for x in range(1, 6):
+            dot(img, cx + x, cy + 1, DARK)
+            dot(img, cx + x, cy + 5, DARK)
+    # Le plateau tournant.
+    for y in range(n):
+        for x in range(n):
+            r = math.hypot(x - c, y - c)
+            if r <= 3.2:
+                dot(img, x, y, DARK if r > 1.6 else BOLT)
+            elif r <= 7.6:
+                dot(img, x, y, light(TOWER_PALE, 0.08) if (x + y) % 3 else TOWER_PALE)
+            elif r <= 9.6:
+                dot(img, x, y, DRILL_YELLOW if r <= 8.8 else shade(DRILL_YELLOW, 0.45))
+    for a in range(8):
+        ang = a * math.pi / 4
+        dot(img, int(round(c + 5.5 * math.cos(ang))), int(round(c + 5.5 * math.sin(ang))), BOLT)
+    return img
+
+
 def drill_base_top():
-    """Dessus du socle : une tôle striée d'acier sombre, bordée d'une bande de danger, et ses boulons."""
+    """Dessus du socle à bâtir : une tôle striée d'acier sombre, bordée d'une bande de danger, et ses boulons."""
     img = canvas("#4A5058")
     for y in range(SIZE):
         for x in range(SIZE):
@@ -632,64 +801,75 @@ def drill_base_top():
                 put(img, x, y, "#59616A")
             if x in (0, 15) or y in (0, 15):
                 put(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
-    bolts(img, ((2, 2), (13, 2), (2, 13), (13, 13)))
+    for x, y in ((3, 3), (12, 3), (3, 12), (12, 12)):
+        put(img, x, y, BOLT)
+        put(img, x + 1, y + 1, shade("#4A5058", 0.35))
     return img
 
 
 def drill_base_side():
-    """Flanc du socle : une bande de danger en haut, une tôle d'acier, une grille d'aération et ses rivets."""
-    img = shell(31, "#5A616A")
-    hazard_row(img, 1, 3)
-    for x in range(SIZE):
-        put(img, x, 0, EDGE)
-        put(img, x, 4, shade("#5A616A", 0.35))
-    slats(img, 4, 11, 9, 12)
-    bolts(img, ((2, 6), (13, 6), (2, 13), (13, 13)))
-    return img
+    """Flanc du socle à bâtir : le pied de la tour en réduction, une jambe à chaque bord."""
+    return [row[0:6] + row[21:25] + row[42:48] for row in tower_plinth()]
 
 
 def drill_mast_side():
-    """Flanc d'un mât : un treillis d'acier, deux montants jaunes, une traverse à chaque bout et une croix de
-    contreventement, sur un fond d'acier sombre ; empilés, les mâts forment une tour en treillis."""
-    back = "#30353B"
-    img = canvas(back)
+    """Flanc d'un mât à bâtir : un treillis d'acier, deux montants jaunes, une traverse à chaque bout et une croix de
+    contreventement ; empilés, les mâts forment une tour en treillis."""
+    img = sheet(SIZE, SIZE, "#30353B", 74)
     for y in range(SIZE):
-        for x in range(SIZE):
-            if (x + y) % 2 == 0 and 3 <= x <= 12:
-                put(img, x, y, shade(back, 0.12))
-    for y in range(SIZE):
-        for x in range(2, 14):
-            if abs(x - y) <= 0 or abs(x - (15 - y)) <= 0:
+        for x in range(3, 13):
+            if abs(x - y) == 0 or abs(x - (15 - y)) == 0:
                 put(img, x, y, DRILL_YELLOW)
             elif abs(x - y) == 1 or abs(x - (15 - y)) == 1:
-                put(img, x, y, shade(DRILL_YELLOW, 0.35))
+                put(img, x, y, shade(DRILL_YELLOW, 0.35) if x > 7 else light(DRILL_YELLOW, 0.1))
     for y in range(SIZE):
-        put(img, 0, y, shade(DRILL_YELLOW, 0.45))
-        put(img, 1, y, light(DRILL_YELLOW, 0.2))
-        put(img, 2, y, DRILL_YELLOW)
-        put(img, 13, y, DRILL_YELLOW)
-        put(img, 14, y, shade(DRILL_YELLOW, 0.2))
-        put(img, 15, y, shade(DRILL_YELLOW, 0.45))
+        for x, tone in ((0, shade(DRILL_YELLOW, 0.5)), (1, light(DRILL_YELLOW, 0.3)), (2, DRILL_YELLOW), (13, DRILL_YELLOW),
+                        (14, shade(DRILL_YELLOW, 0.25)), (15, shade(DRILL_YELLOW, 0.5))):
+            put(img, x, y, tone)
     for x in range(SIZE):
-        put(img, x, 0, light(DRILL_YELLOW, 0.15))
-        put(img, x, 1, shade(DRILL_YELLOW, 0.3))
+        put(img, x, 0, light(DRILL_YELLOW, 0.2))
+        put(img, x, 1, shade(DRILL_YELLOW, 0.3) if 2 < x < 13 else DRILL_YELLOW)
         put(img, x, 14, DRILL_YELLOW)
         put(img, x, 15, shade(DRILL_YELLOW, 0.45))
-    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13), (7, 7), (8, 8), (7, 8), (8, 7)):
-        put(img, x, y, light(DRILL_YELLOW, 0.4))
+    for x, y in ((2, 3), (13, 3), (2, 12), (13, 12)):
+        put(img, x, y, light(DRILL_YELLOW, 0.55))
     return img
 
 
 def drill_mast_top():
-    """Bout d'un mât : la coupe de la poutre en H, jaune sur fond sombre."""
-    img = canvas("#2A2E33")
+    """Bout d'un mât à bâtir : le cadre jaune du treillis, ses goussets d'angle et sa croix, sur un fond sombre."""
+    img = sheet(SIZE, SIZE, "#2A2E33", 75)
     for y in range(SIZE):
         for x in range(SIZE):
-            flange = y <= 3 or y >= 12
-            web = 6 <= x <= 9
-            if flange or web:
-                put(img, x, y, DRILL_YELLOW if not (x in (0, 15) or y in (0, 15)) else shade(DRILL_YELLOW, 0.4))
+            if x in (0, 15) or y in (0, 15):
+                put(img, x, y, shade(DRILL_YELLOW, 0.45))
+            elif x in (1, 14) or y in (1, 14):
+                put(img, x, y, DRILL_YELLOW)
+            elif x == y or x == 15 - y:
+                put(img, x, y, shade(DRILL_YELLOW, 0.2))
+    for cx, cy in ((2, 2), (11, 2), (2, 11), (11, 11)):
+        for k in range(3):
+            put(img, cx + k, cy + (0 if cy == 2 else 2), light(DRILL_YELLOW, 0.2))
     return img
+
+
+def tower_cube(textures, mirror_east=False):
+    """Un bloc plein de la tour : une texture par face, la face est en miroir pour un angle (sa jambe à droite)."""
+    faces = {}
+    for face in ("north", "south", "east", "west", "up", "down"):
+        entry = {"texture": "#" + face, "cullface": face, "uv": [0, 0, 16, 16]}
+        if face == "east" and mirror_east:
+            entry["uv"] = [16, 0, 0, 16]
+        faces[face] = entry
+    model = {"parent": "minecraft:block/block",
+             "textures": dict({"particle": textures["north"]}, **textures),
+             "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": faces}]}
+    return model
+
+
+def write_tower_model(name, model):
+    with open(os.path.join(gm.MODEL_DIR, name + ".json"), "w", newline="\n") as f:
+        json.dump(model, f, indent=2)
 
 
 def write_drill_tower():
@@ -697,6 +877,43 @@ def write_drill_tower():
     gm.write_texture("drill_base_side", [drill_base_side()])
     gm.write_texture("drill_mast_side", [drill_mast_side()])
     gm.write_texture("drill_mast_top", [drill_mast_top()])
+    side, crown, plinth, cap = tower_side(False), tower_side(True), tower_plinth(), tower_cap()
+    gm.write_texture("drill_tower_corner", [piece(side, 0, 0)])
+    gm.write_texture("drill_tower_edge", [piece(side, 16, 0)])
+    gm.write_texture("drill_tower_crown_corner", [piece(crown, 0, 0)])
+    gm.write_texture("drill_tower_crown_edge", [piece(crown, 16, 0)])
+    gm.write_texture("drill_tower_plinth_corner", [piece(plinth, 0, 0)])
+    gm.write_texture("drill_tower_plinth_edge", [piece(plinth, 16, 0)])
+    # Vu d'en haut, le nord en haut : un angle tourné vers le nord a sa seconde face à l'est, en haut à droite.
+    gm.write_texture("drill_tower_cap_corner", [piece(cap, 32, 0)])
+    gm.write_texture("drill_tower_cap_edge", [piece(cap, 16, 0)])
+    gm.write_texture("drill_tower_cap_center", [piece(cap, 16, 16)])
+    gm.write_texture("drill_tower_inner", [sheet(SIZE, SIZE, TOWER_DEEP, 76)])
+
+    def tex(name):
+        return "orbitalis:block/" + name
+
+    inner = tex("drill_tower_inner")
+    write_tower_model("drill_base", tower_cube({"north": tex("drill_base_side"), "south": tex("drill_base_side"),
+                                                "east": tex("drill_base_side"), "west": tex("drill_base_side"),
+                                                "up": tex("drill_base_top"), "down": tex("machine_base")}))
+    write_tower_model("drill_mast", tower_cube({"north": tex("drill_mast_side"), "south": tex("drill_mast_side"),
+                                                "east": tex("drill_mast_side"), "west": tex("drill_mast_side"),
+                                                "up": tex("drill_mast_top"), "down": tex("drill_mast_top")}))
+    for block, corner, edge in (("drill_base", "drill_tower_plinth_corner", "drill_tower_plinth_edge"),
+                                ("drill_mast", "drill_tower_corner", "drill_tower_edge")):
+        tops = [False, True] if block == "drill_mast" else [False]
+        for top in tops:
+            sfx = "_top" if top else ""
+            c = tex("drill_tower_crown_corner") if top else tex(corner)
+            e = tex("drill_tower_crown_edge") if top else tex(edge)
+            up = (lambda name: tex(name)) if top else (lambda name: inner)
+            write_tower_model(block + "_corner" + sfx, tower_cube(
+                {"north": c, "east": c, "south": inner, "west": inner, "up": up("drill_tower_cap_corner"), "down": inner}, True))
+            write_tower_model(block + "_edge" + sfx, tower_cube(
+                {"north": e, "east": inner, "south": inner, "west": inner, "up": up("drill_tower_cap_edge"), "down": inner}))
+            write_tower_model(block + "_center" + sfx, tower_cube(
+                {"north": inner, "east": inner, "south": inner, "west": inner, "up": up("drill_tower_cap_center"), "down": inner}))
 
 
 def write_pump():

@@ -56,6 +56,15 @@ public class DerrickBlock extends HorizontalDirectionalBlock implements EntityBl
         return super.playerWillDestroy(level, pos, state, player);
     }
 
+    /** Cassée, la foreuse rend à sa tour son aspect à bâtir. */
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        if (!level.getBlockState(pos).is(this)) {
+            DerrickBlockEntity.releaseTower(level, pos, state.getValue(FACING));
+        }
+    }
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (player instanceof ServerPlayer serverPlayer && level.getBlockEntity(pos) instanceof DerrickBlockEntity derrick) {

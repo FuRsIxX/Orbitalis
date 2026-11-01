@@ -8,6 +8,7 @@ import com.orbitalis.core.network.DerrickCommandPayload;
 import com.orbitalis.core.network.DerrickStatusPayload;
 import com.orbitalis.phase1.quarry.DerrickBlockEntity;
 import com.orbitalis.phase1.quarry.DerrickMenu;
+import com.orbitalis.phase1.quarry.DerrickPlan;
 import com.orbitalis.phase1.quarry.QuarryKinds;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -50,6 +51,9 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
     private static final int KINDS_W = 102;
     private static final int MAP = 66;
     private static final int ROW = 9;
+    /** La carte d'instrument de la tour, sous les réglages. */
+    private static final int CARD_Y = 126;
+    private static final int CARD_H = 61;
 
     private DerrickStatusPayload status;
     private int ticks;
@@ -140,8 +144,11 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
         rect(graphics, x + 176, y + 6, 1, HEIGHT - 12, SHADOW);
         rect(graphics, x + 177, y + 6, 1, HEIGHT - 12, WHITE);
 
-        // Jauges : l'eau, la chaleur, l'énergie.
+        // Jauges : l'eau, la chaleur, l'énergie, chacune coiffée d'un liseré de sa couleur.
         int gaugeTop = y + DerrickMenu.OUTPUT_Y - 1;
+        rect(graphics, x + 7, gaugeTop - 2, 14, 1, 0xFF3F76E4);
+        rect(graphics, x + 24, gaugeTop - 2, 10, 1, 0xFFFFB347);
+        rect(graphics, x + 37, gaugeTop - 2, 10, 1, 0xFF7CE08A);
         inset(graphics, x + 7, gaugeTop, 14, 56, GAUGE);
         new FluidGauge(8, DerrickMenu.OUTPUT_Y, 12, 54).extract(graphics, x, y, Fluids.WATER, menu.getWater(), DerrickBlockEntity.WATER_CAPACITY);
         inset(graphics, x + 24, gaugeTop, 10, 56, GAUGE);
@@ -166,6 +173,9 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
         rect(graphics, x + DerrickMenu.OUTPUT_X - 2, y + DerrickMenu.OUTPUT_Y - 2, 6 * 18 + 2, 1, 0xFFE8872A);
         rect(graphics, x + DerrickMenu.REPLACE_X - 2, y + DerrickMenu.REPLACE_Y - 2, 20, 20, 0xFF4F86D6);
         inset(graphics, x + DerrickMenu.REPLACE_X - 1, y + DerrickMenu.REPLACE_Y - 1, 18, 18, SLOT);
+        if (!menu.slots.get(DerrickBlockEntity.OUTPUT_SLOTS).hasItem()) {
+            ghostBlock(graphics, x + DerrickMenu.REPLACE_X + 3, y + DerrickMenu.REPLACE_Y + 3);
+        }
         // L'écran d'état.
         inset(graphics, x + 47, y + 77, 123, 21, SCREEN);
         // L'inventaire du joueur.
@@ -175,8 +185,29 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
                 inset(graphics, x + 7 + column * 18, y + sy - 1, 18, 18, SLOT);
             }
         }
+        // Les titres des volets, soulignés d'un filet gravé et d'une amorce de couleur.
+        for (int[] section : new int[][] {{SETTINGS_X, SETTINGS_W}, {KINDS_X, KINDS_W}}) {
+            rect(graphics, x + section[0], y + 15, section[1], 1, SHADOW);
+            rect(graphics, x + section[0], y + 16, section[1], 1, WHITE);
+            rect(graphics, x + section[0], y + 15, 12, 1, 0xFFE2B132);
+        }
         // La carte.
         inset(graphics, x + KINDS_X - 1, y + 17, MAP + 2, MAP + 2, GAUGE);
+        // La carte d'instrument de la tour, sous les réglages.
+        inset(graphics, x + SETTINGS_X - 1, y + CARD_Y, SETTINGS_W + 2, CARD_H, SCREEN);
+    }
+
+    /** Un bloc en fantôme, estompé : ce que remet la foreuse quand la case est vide (la roche du monde). */
+    private static void ghostBlock(GuiGraphicsExtractor graphics, int x, int y) {
+        int top = Ui.alpha(0xFFD0D0D0, 0.6F);
+        int front = Ui.alpha(0xFF9A9A9A, 0.6F);
+        int side = Ui.alpha(0xFF707070, 0.6F);
+        rect(graphics, x + 2, y, 8, 1, top);
+        rect(graphics, x + 1, y + 1, 8, 1, top);
+        rect(graphics, x, y + 2, 8, 1, top);
+        rect(graphics, x, y + 3, 8, 7, front);
+        rect(graphics, x + 9, y, 1, 8, side);
+        rect(graphics, x + 8, y + 1, 1, 9, side);
     }
 
     @Override
@@ -237,12 +268,27 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
 
     private void button(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int w, Component label, int accent, boolean enabled,
             Component detail, Runnable action) {
+        button(graphics, mouseX, mouseY, x, y, w, label, accent, enabled, null, detail, action);
+    }
+
+    /** Un bouton ; {@code led} non nul, c'est une bascule, avec son voyant à droite, allumé ou éteint. */
+    private void button(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int w, Component label, int accent, boolean enabled,
+            Boolean led, Component detail, Runnable action) {
         boolean hovered = enabled && Ui.inside(mouseX, mouseY, x, y, w, 15);
         raised(graphics, x, y, w, 15, !enabled ? 0xFFA9A9A9 : hovered ? 0xFFD6DCE6 : 0xFFB5B5B5);
         rect(graphics, x + 2, y + 2, 2, 11, enabled ? accent : 0xFF8B8B8B);
+        int room = w - 10;
+        if (led != null) {
+            room -= 8;
+            inset(graphics, x + w - 10, y + 4, 7, 7, 0xFF2A2E2A);
+            if (led) {
+                rect(graphics, x + w - 9, y + 5, 5, 5, enabled ? 0xFF5BE37D : 0xFF6E8F76);
+                rect(graphics, x + w - 9, y + 5, 2, 2, 0xFFD8FFE0);
+            }
+        }
         // Un petit bouton (moins, plus) garde son signe entier, centré à droite de sa bande de couleur.
-        String text = w < 20 ? label.getString() : Ui.fit(font, label.getString(), w - 10);
-        int textX = w < 20 ? x + (w - font.width(text) + 4) / 2 : x + 7 + (w - 10 - font.width(text)) / 2;
+        String text = w < 20 ? label.getString() : Ui.fit(font, label.getString(), room);
+        int textX = w < 20 ? x + (w - font.width(text) + 4) / 2 : x + 7 + (room - font.width(text)) / 2;
         graphics.text(font, text, textX, y + 4, enabled ? 0xFF202020 : 0xFF6B6B6B, false);
         if (enabled) {
             zones.add(new Zone(x, y, w, 15, action));
@@ -278,19 +324,20 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
         y += 18;
         boolean chunkPossible = status.maxSide() > DerrickBlockEntity.CHUNK;
         button(graphics, mouseX, mouseY, x, y, w, Component.translatable(status.chunk() ? "derrick.orbitalis.chunk.on" : "derrick.orbitalis.chunk.off"),
-                status.chunk() ? OK : 0xFF8B8B8B, chunkPossible, Component.translatable(chunkPossible ? "derrick.orbitalis.chunk.detail"
+                status.chunk() ? OK : 0xFF8B8B8B, chunkPossible, status.chunk(), Component.translatable(chunkPossible ? "derrick.orbitalis.chunk.detail"
                         : "derrick.orbitalis.chunk.too_small"), () -> send(DerrickBlockEntity.ACTION_CHUNK, 0));
         y += 18;
         button(graphics, mouseX, mouseY, x, y, w, Component.translatable(status.replace() ? "derrick.orbitalis.replace.on" : "derrick.orbitalis.replace.off"),
-                status.replace() ? OK : 0xFF8B8B8B, true, Component.translatable("derrick.orbitalis.replace.detail", DerrickBlockEntity.REPLACE_ENERGY),
+                status.replace() ? OK : 0xFF8B8B8B, true, status.replace(), Component.translatable("derrick.orbitalis.replace.detail", DerrickBlockEntity.REPLACE_ENERGY),
                 () -> send(DerrickBlockEntity.ACTION_REPLACE, 0));
         y += 18;
         boolean coring = status.core() >= 0;
         button(graphics, mouseX, mouseY, x, y, w, coring ? Component.literal(status.core() + " %") : Component.translatable("derrick.orbitalis.core"),
                 0xFF4FC3F7, formed && !coring, Component.translatable("derrick.orbitalis.core.detail", DerrickBlockEntity.CORE_ENERGY,
                         DerrickBlockEntity.CORE_POINTS), () -> send(DerrickBlockEntity.ACTION_CORE, 0));
-        y += 22;
-        // Ce que permet la tour, puis ce qui a été fait.
+        y = topPos + CARD_Y + 4;
+        // Ce que permet la tour, sur sa carte d'instrument : sa hauteur et l'échelle de ses étages, la zone, la profondeur
+        // et la réserve, puis l'avancement du forage.
         String depth = status.depth() == 0 ? Component.translatable("derrick.orbitalis.depth.bottom").getString()
                 : Component.translatable("derrick.orbitalis.depth", status.depth()).getString();
         String[] lines = {
@@ -298,10 +345,29 @@ public class DerrickScreen extends AbstractContainerScreen<DerrickMenu> implemen
                 Component.translatable("derrick.orbitalis.tower.max", status.maxSide(), status.maxSide()).getString(),
                 depth,
                 Component.translatable("derrick.orbitalis.stored.short", status.stored()).getString()};
-        for (String line : lines) {
-            graphics.text(font, Ui.fit(font, line, w), x, y, LABEL, false);
-            y += 10;
+        for (int k = 0; k < lines.length; k++) {
+            graphics.text(font, Ui.fit(font, lines[k], w - 6), x + 3, y, k == 0 ? 0xFFE2C35A : 0xFFB8D8C0, false);
+            y += k == 0 ? 9 : 10;
+            if (k == 0) {
+                // L'échelle des étages : un cran par étage de mâts possible, allumé s'il est bâti.
+                int cell = (w - 6 - (DerrickPlan.MAX_LEVELS - 1)) / DerrickPlan.MAX_LEVELS;
+                for (int level = 1; level <= DerrickPlan.MAX_LEVELS; level++) {
+                    int cx = x + 3 + (level - 1) * (cell + 1);
+                    boolean built = level <= status.levels();
+                    rect(graphics, cx, y, cell, 3, built ? 0xFFE2B132 : 0xFF2E3A33);
+                    if (built) {
+                        rect(graphics, cx, y, cell, 1, 0xFFF4D77A);
+                    }
+                }
+                y += 6;
+            }
         }
+        // L'avancement : de la surface au fond que permet la tour.
+        int span = Math.max(1, status.top() - status.bottom());
+        float done = status.running() || status.mined() > 0 ? Math.clamp((status.top() - status.layer()) / (float) span, 0.0F, 1.0F) : 0.0F;
+        int barY = topPos + CARD_Y + CARD_H - 7;
+        rect(graphics, x + 3, barY, w - 6, 3, 0xFF2E3A33);
+        rect(graphics, x + 3, barY, Math.round((w - 6) * done), 3, 0xFF4FC3F7);
     }
 
     // ------------------------------------------------------------------

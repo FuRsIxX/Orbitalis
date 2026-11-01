@@ -1,16 +1,124 @@
 {
   "variants": {
-    "axis=x": {
-      "model": "orbitalis:block/drill_mast",
-      "x": 90,
+    "facing=east,part=center,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_center",
       "y": 90
     },
-    "axis=y": {
-      "model": "orbitalis:block/drill_mast"
+    "facing=east,part=center,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_center_top",
+      "y": 90
     },
-    "axis=z": {
-      "model": "orbitalis:block/drill_mast",
-      "x": 90
+    "facing=east,part=corner,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_corner",
+      "y": 90
+    },
+    "facing=east,part=corner,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_corner_top",
+      "y": 90
+    },
+    "facing=east,part=edge,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_edge",
+      "y": 90
+    },
+    "facing=east,part=edge,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_edge_top",
+      "y": 90
+    },
+    "facing=east,part=loose,top=false": {
+      "model": "orbitalis:block/machine/drill_mast",
+      "y": 90
+    },
+    "facing=east,part=loose,top=true": {
+      "model": "orbitalis:block/machine/drill_mast",
+      "y": 90
+    },
+    "facing=north,part=center,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_center"
+    },
+    "facing=north,part=center,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_center_top"
+    },
+    "facing=north,part=corner,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_corner"
+    },
+    "facing=north,part=corner,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_corner_top"
+    },
+    "facing=north,part=edge,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_edge"
+    },
+    "facing=north,part=edge,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_edge_top"
+    },
+    "facing=north,part=loose,top=false": {
+      "model": "orbitalis:block/machine/drill_mast"
+    },
+    "facing=north,part=loose,top=true": {
+      "model": "orbitalis:block/machine/drill_mast"
+    },
+    "facing=south,part=center,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_center",
+      "y": 180
+    },
+    "facing=south,part=center,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_center_top",
+      "y": 180
+    },
+    "facing=south,part=corner,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_corner",
+      "y": 180
+    },
+    "facing=south,part=corner,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_corner_top",
+      "y": 180
+    },
+    "facing=south,part=edge,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_edge",
+      "y": 180
+    },
+    "facing=south,part=edge,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_edge_top",
+      "y": 180
+    },
+    "facing=south,part=loose,top=false": {
+      "model": "orbitalis:block/machine/drill_mast",
+      "y": 180
+    },
+    "facing=south,part=loose,top=true": {
+      "model": "orbitalis:block/machine/drill_mast",
+      "y": 180
+    },
+    "facing=west,part=center,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_center",
+      "y": 270
+    },
+    "facing=west,part=center,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_center_top",
+      "y": 270
+    },
+    "facing=west,part=corner,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_corner",
+      "y": 270
+    },
+    "facing=west,part=corner,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_corner_top",
+      "y": 270
+    },
+    "facing=west,part=edge,top=false": {
+      "model": "orbitalis:block/machine/drill_mast_edge",
+      "y": 270
+    },
+    "facing=west,part=edge,top=true": {
+      "model": "orbitalis:block/machine/drill_mast_edge_top",
+      "y": 270
+    },
+    "facing=west,part=loose,top=false": {
+      "model": "orbitalis:block/machine/drill_mast",
+      "y": 270
+    },
+    "facing=west,part=loose,top=true": {
+      "model": "orbitalis:block/machine/drill_mast",
+      "y": 270
     }
   }
 }

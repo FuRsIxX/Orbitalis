@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "orbitalis:block/drill_base_top",
-    "side": "orbitalis:block/drill_base_side"
-  }
-}

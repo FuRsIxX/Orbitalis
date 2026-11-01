@@ -532,16 +532,17 @@ public final class ModBlocks {
                     .sound(SoundType.METAL)
                     .noOcclusion().lightLevel(state -> 4)));
     /** Socle de foreuse : les huit blocs autour du bloc de commande ; l'électricité, l'eau et le butin passent par eux. */
-    public static final DeferredBlock<Block> DRILL_BASE = withItem(BLOCKS.registerSimpleBlock("drill_base",
+    public static final DeferredBlock<com.orbitalis.phase1.quarry.DrillTowerBlock> DRILL_BASE = withItem(BLOCKS.registerBlock("drill_base",
+            com.orbitalis.phase1.quarry.DrillTowerBlock::new,
             properties -> properties
                     .mapColor(MapColor.COLOR_GRAY)
                     .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5F, 6.0F)
                     .sound(SoundType.METAL)));
-    /** Mât de foreuse : les colonnes d'angle de la tour ; plus elles sont hautes, plus la foreuse va loin. */
-    public static final DeferredBlock<net.minecraft.world.level.block.RotatedPillarBlock> DRILL_MAST = withItem(BLOCKS.registerBlock("drill_mast",
-            net.minecraft.world.level.block.RotatedPillarBlock::new,
+    /** Mât de foreuse : les étages pleins de la tour ; plus elle est haute, plus la foreuse va loin. */
+    public static final DeferredBlock<com.orbitalis.phase1.quarry.DrillTowerBlock> DRILL_MAST = withItem(BLOCKS.registerBlock("drill_mast",
+            com.orbitalis.phase1.quarry.DrillTowerBlock::new,
             properties -> properties
                     .mapColor(MapColor.COLOR_YELLOW)
                     .instrument(NoteBlockInstrument.IRON_XYLOPHONE)

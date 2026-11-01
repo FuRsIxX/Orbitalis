@@ -3902,6 +3902,9 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         }
         derrick.checkStructure();
         helper.assertTrue(derrick.isFormed() && derrick.levels() == 2, "le socle et deux étages auraient dû former la foreuse");
+        BlockState crown = helper.getBlockState(pos.above(2));
+        helper.assertTrue(crown.getValue(com.orbitalis.phase1.quarry.DrillTowerBlock.PART) == com.orbitalis.phase1.quarry.DrillTowerBlock.Part.EDGE
+                && crown.getValue(com.orbitalis.phase1.quarry.DrillTowerBlock.TOP), "la tour formée aurait dû prendre son aspect assemblé : " + crown);
         derrick.setSide(99);
         helper.assertTrue(derrick.effectiveSide() == com.orbitalis.phase1.quarry.DerrickPlan.maxSide(2),
                 "la zone aurait dû être bornée par la tour : " + derrick.effectiveSide());
