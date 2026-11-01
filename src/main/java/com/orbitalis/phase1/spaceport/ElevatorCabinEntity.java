@@ -126,6 +126,16 @@ public class ElevatorCabinEntity extends Entity {
         return Direction.from2DDataValue(entityData.get(FACING));
     }
 
+    /**
+     * Tourne la cabine d'un socle qui n'est pas encore au centre d'une tour achevée : son entrée, à l'arrière, fait
+     * face au joueur qui l'a posé. Une fois la tour en service, c'est elle qui décide (voir {@link #survey}).
+     */
+    public void faceAwayFrom(Direction look) {
+        if (riser == null && look.getAxis().isHorizontal()) {
+            entityData.set(FACING, look.get2DDataValue());
+        }
+    }
+
     public boolean isMoving() {
         return elapsed < travel;
     }

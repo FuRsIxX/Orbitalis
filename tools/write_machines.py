@@ -9,7 +9,7 @@ grille d'aération en retrait d'un demi-pixel. Ce qui les distingue :
   et les coins du dessus ;
 - leur pictogramme : flamme (générateur), éclair (fonderie à arc), cylindres (laminoir), goutte (électrolyseur),
   flocon (liquéfacteur), colonne (raffinerie), fiole (Sabatier), croissant de lune (hélium-3), plaques (Casimir),
-  atome (fusion), réservoir (cryogénique), fusée (ordinateur de vol).
+  atome (fusion), réservoir (cryogénique), flèche au-dessus de l'eau (pompe à eau), fusée (ordinateur de vol).
 
 En marche, la jauge de l'écran monte cran par cran, le témoin clignote et la grille ondule de la couleur de la machine.
 
@@ -54,6 +54,7 @@ ICONS = {
     "atom": [".###.", "#.#.#", "##.##", "#.#.#", ".###."],
     "tank": [".###.", "#...#", "#####", "#####", ".###."],
     "rocket": ["..#..", ".###.", ".###.", ".###.", "#.#.#"],
+    "pump": ["..#..", ".###.", "..#..", "#.#.#", ".#.#."],
 }
 
 
@@ -217,6 +218,7 @@ MACHINES = {
     "casimir_chamber": ("#A05CF0", "plates", 8),
     "fusion_reactor": ("#F05AB4", "atom", 8),
     "cryogenic_tank": ("#9AD4F5", "tank", 8),
+    "water_pump": ("#2FA6D8", "pump", 8),
 }
 # Blocs du même style qui n'ont pas d'état allumé : leur fenêtre est toujours animée et lumineuse.
 ALWAYS_ON = {

@@ -69,10 +69,11 @@ final class LaunchEffects {
             lastTicks = ticks > 40 ? ticks - 1 : -1L;
         }
         if (phase == LaunchTableBlockEntity.Phase.IDLE && calm <= 0) {
-            // Au repos, la séquence se voit quand même : les réservoirs sous pression dégazent, le déluge coule.
-            if (table.hasRocket() && (table.isPressurized() || table.isDelugeOn())) {
+            // Au repos, la séquence se voit quand même : les réservoirs sous pression dégazent, le déluge coule. Le
+            // déluge se voit aussi sans fusée : c'est souvent ainsi qu'on l'essaie.
+            if ((table.hasRocket() && table.isPressurized()) || table.isDelugeOn()) {
                 locate(table, level);
-                if (table.isPressurized() && table.isLiquid()) {
+                if (table.hasRocket() && table.isPressurized() && table.isLiquid()) {
                     venting(20.0F, Math.max(1, table.rocketHeight()));
                 }
                 if (table.isDelugeOn()) {
@@ -286,11 +287,12 @@ final class LaunchEffects {
                     double sx = x + px * side + dx * k;
                     double sz = z + pz * side + dz * k;
                     if (random.nextFloat() < 0.2F * strength) {
-                        near(ModParticles.VAPOR.get(), sx, y + 1.6, sz, spread(0.03), 0.02, spread(0.03));
+                        far(ModParticles.VAPOR.get(), sx, y + 1.6, sz, spread(0.03), 0.02, spread(0.03));
                     }
+                    // Les gerbes se voient de loin : on regarde le déluge depuis le pupitre, à bonne distance.
                     for (int i = 0; i < 4; i++) {
                         if (random.nextFloat() < strength) {
-                            near(ModParticles.DELUGE_WATER.get(), sx, y + 0.85, sz,
+                            far(ModParticles.DELUGE_WATER.get(), sx, y + 0.85, sz,
                                     -px * side * 0.07 - dx * k * 0.05 + spread(0.05), 0.22 + random.nextDouble() * 0.1,
                                     -pz * side * 0.07 - dz * k * 0.05 + spread(0.05));
                         }
@@ -302,7 +304,7 @@ final class LaunchEffects {
         for (int i = 0; i < curtain; i++) {
             double angle = random.nextDouble() * Math.PI * 2;
             double distance = half + 0.3 + random.nextDouble() * 1.2;
-            near(ModParticles.DELUGE_WATER.get(), x + Math.cos(angle) * distance, y + 0.5, z + Math.sin(angle) * distance,
+            far(ModParticles.DELUGE_WATER.get(), x + Math.cos(angle) * distance, y + 0.5, z + Math.sin(angle) * distance,
                     Math.cos(angle) * 0.05, 0.05, Math.sin(angle) * 0.05);
             near(ParticleTypes.SPLASH, x + Math.cos(angle) * distance, y + 0.05, z + Math.sin(angle) * distance, 0.0, 0.2, 0.0);
         }

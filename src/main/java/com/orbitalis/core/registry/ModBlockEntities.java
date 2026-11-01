@@ -90,6 +90,10 @@ public final class ModBlockEntities {
             BLOCK_ENTITIES.register("cryogenic_tank",
                     () -> new BlockEntityType<>(CryogenicTankBlockEntity::new, ModBlocks.CRYOGENIC_TANK.get()));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.orbitalis.phase1.fuel.WaterPumpBlockEntity>> WATER_PUMP =
+            BLOCK_ENTITIES.register("water_pump",
+                    () -> new BlockEntityType<>(com.orbitalis.phase1.fuel.WaterPumpBlockEntity::new, ModBlocks.WATER_PUMP.get()));
+
     /** Table de lancement : surveille le complexe qui l'entoure. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LaunchTableBlockEntity>> LAUNCH_TABLE =
             BLOCK_ENTITIES.register("launch_table",
@@ -206,6 +210,9 @@ public final class ModBlockEntities {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, FUSION_REACTOR.get(), (reactor, side) -> reactor.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, FUSION_REACTOR.get(), (reactor, side) -> reactor.getTanks().automationView());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, CRYOGENIC_TANK.get(), (tank, side) -> tank.getTank().automationView());
+        // Pompe à eau : elle reçoit de l'énergie, et on ne peut que lui prendre son eau.
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, WATER_PUMP.get(), (pump, side) -> pump.getEnergy());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, WATER_PUMP.get(), (pump, side) -> pump.getTank().automationView());
 
         // Réservoir modulable : quel que soit le bloc touché, on atteint le contenu du réservoir entier.
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, FLUID_TANK.get(), (tank, side) -> tank.handler());

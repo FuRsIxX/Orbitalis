@@ -46,6 +46,22 @@ public class ElevatorBlock extends Block {
         }
     }
 
+    /**
+     * Posé par un joueur : la cabine tourne son entrée vers lui. Sans cela, hors d'une tour achevée, elle regardait
+     * toujours vers l'est.
+     */
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, net.minecraft.world.entity.LivingEntity placer,
+            net.minecraft.world.item.ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (level instanceof ServerLevel serverLevel && placer != null) {
+            AABB shaft = new AABB(pos).inflate(3.0, LaunchComplex.MAX_TOWER_HEIGHT, 3.0);
+            for (ElevatorCabinEntity cabin : serverLevel.getEntitiesOfClass(ElevatorCabinEntity.class, shaft, cabin -> pos.equals(cabin.getHome()))) {
+                cabin.faceAwayFrom(placer.getDirection());
+            }
+        }
+    }
+
     /** Clic droit : appelle la cabine au sol, rappelle le mode d'emploi, et fait revenir la cabine si elle a disparu. */
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {

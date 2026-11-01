@@ -46,7 +46,9 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.CASIMIR_CHAMBER.get());
         dropSelf(ModBlocks.FUSION_REACTOR.get());
         dropSelf(ModBlocks.REFINERY.get());
-        dropSelf(ModBlocks.CRYOGENIC_TANK.get());
+        // Le réservoir cryogénique tombe avec son contenu.
+        add(ModBlocks.CRYOGENIC_TANK.get(), this::keepingFluid);
+        dropSelf(ModBlocks.WATER_PUMP.get());
 
         // Terminal de recherche et atelier d'assemblage (ses pièces tombent séparément).
 
@@ -174,8 +176,20 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.FLUID_PIPE.get());
         dropSelf(ModBlocks.GAS_PIPE.get());
         dropSelf(ModBlocks.DATA_CABLE.get());
-        dropSelf(ModBlocks.FLUID_TANK.get());
+        // Un bloc de réservoir modulable emporte sa part du contenu.
+        add(ModBlocks.FLUID_TANK.get(), this::keepingFluid);
         ModBlocks.CREATIVE_TANKS.forEach(tank -> dropSelf(tank.get()));
+    }
+
+    /** Le bloc lui-même, qui garde le fluide que contenait son réservoir (voir ModDataComponents.FLUID_CONTENT). */
+    private net.minecraft.world.level.storage.loot.LootTable.Builder keepingFluid(Block block) {
+        return net.minecraft.world.level.storage.loot.LootTable.lootTable().withPool(applyExplosionCondition(block,
+                net.minecraft.world.level.storage.loot.LootPool.lootPool()
+                        .setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1.0F))
+                        .add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(block)
+                                .apply(net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction
+                                        .copyComponentsFromBlockEntity(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_ENTITY)
+                                        .include(com.orbitalis.core.registry.ModDataComponents.FLUID_CONTENT.get())))));
     }
 
     /** Limite la vérification aux blocs d'Orbitalis : chaque bloc du mod doit avoir une loot table. */

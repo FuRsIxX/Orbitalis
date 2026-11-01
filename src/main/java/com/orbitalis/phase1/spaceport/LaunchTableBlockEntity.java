@@ -143,6 +143,13 @@ public class LaunchTableBlockEntity extends BlockEntity {
     private Phase phase = Phase.IDLE;
     /** Ticks restants pendant le compte à rebours, ticks écoulés pendant le vol. */
     private int timer;
+    /**
+     * Agences des autres joueurs présents au décollage, à {@link #WITNESS_RANGE} blocs au plus de la table : en
+     * multijoueur, chacune reçoit aussi les points de recherche du vol.
+     */
+    private final java.util.Set<String> witnesses = new java.util.LinkedHashSet<>();
+    /** Distance jusqu'à laquelle un joueur assiste au lancement, en blocs. */
+    public static final double WITNESS_RANGE = 64.0;
     /** Agence qui a lancé le compte à rebours : c'est elle qui reçoit les points de recherche. */
     private String agencyKey = "";
     private Result lastResult = Result.NONE;
@@ -1413,6 +1420,9 @@ public class LaunchTableBlockEntity extends BlockEntity {
         return level == null ? 0 : Math.max(0, level.getGameTime() - phaseStart);
     }
 
+    /** Durée du dégagement des bras et des passerelles, en ticks : celle du son des vérins (5,45 s). */
+    private static final int CLEARANCE_TICKS = 109;
+
     /** Dégagement de la structure à l'instant du rendu, entre deux ticks. */
     public float getClearance(float partialTick) {
         return Mth.lerp(partialTick, previousClearance, clearance);
@@ -1425,9 +1435,11 @@ public class LaunchTableBlockEntity extends BlockEntity {
     public void clientTick() {
         // Consigne : la structure se dégage quand le retrait du bras est commandé, et le reste pendant le vol.
         float target = retracted || phase == Phase.FLIGHT ? 1.0F : 0.0F;
-        // Chaque mouvement rejoint sa consigne en douceur, sans jamais sauter : il part vite et ralentit en arrivant.
+        // Le mouvement dure autant que le son des vérins : la passerelle rentre pendant sa première moitié, les bras
+        // l'un après l'autre jusqu'à la fin. Chaque pièce adoucit elle-même son départ et son arrivée (voir le rendu).
         previousClearance = clearance;
-        clearance += (target - clearance) * (target > clearance ? 0.06F : 0.035F);
+        float step = 1.0F / CLEARANCE_TICKS;
+        clearance = target > clearance ? Math.min(target, clearance + step) : Math.max(target, clearance - step);
         // Projecteurs : leurs LED montent en puissance en une seconde, et s'éteignent un peu plus vite.
         previousLampGlow = lampGlow;
         boolean lamps = isOperational() && (phase != Phase.IDLE || (level != null && level.isDarkOutside()));
@@ -2903,13 +2915,13 @@ public class LaunchTableBlockEntity extends BlockEntity {
             case VALVES -> 0;
             case PRESSURIZE -> 40;
             // Le bras et la passerelle prennent le temps de s'écarter : on les voit bouger.
-            case RETRACT -> 80;
+            case RETRACT -> CLEARANCE_TICKS;
             case DELUGE -> 25;
             case POLL -> POLL_TICKS;
             case CHILL -> 50;
             case INTERNAL -> 25;
             case TEST_DELUGE -> TEST_DELUGE_TICKS;
-            case TEST_ARMS -> TEST_ARMS_TICKS + 80;
+            case TEST_ARMS -> TEST_ARMS_TICKS + CLEARANCE_TICKS;
             case TEST_ALARM -> TEST_ALARM_TICKS;
             default -> 0;
         };
@@ -4209,6 +4221,14 @@ public class LaunchTableBlockEntity extends BlockEntity {
         double x = worldPosition.getX() + 0.5;
         double y = worldPosition.getY() + 1.5;
         double z = worldPosition.getZ() + 0.5;
+        // Les joueurs présents au décollage : leurs agences recevront aussi les points du vol.
+        witnesses.clear();
+        for (ServerPlayer player : level.players()) {
+            String agency = ResearchManager.agencyKey(player);
+            if (player.distanceToSqr(x, y, z) <= WITNESS_RANGE * WITNESS_RANGE && !agency.equals(agencyKey)) {
+                witnesses.add(agency);
+            }
+        }
         // La capsule existe dès le décollage, même sans équipage : un vol d'essai la ramène au sol comme les autres.
         CapsuleEntity capsule = capsule(true);
         removeRocketBlocks(level);
@@ -4336,6 +4356,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
                 lastPoints += bonus;
                 announce(Component.translatable("sequence.orbitalis.assist.bonus", manualSteps, bonus).withStyle(ChatFormatting.AQUA));
             }
+            awardWitnesses(reached, science, bonus);
             lastResult = Result.SUCCESS;
             holdChunk(false);
             phase = Phase.IDLE;
@@ -4359,6 +4380,34 @@ public class LaunchTableBlockEntity extends BlockEntity {
                 StationManager.onFlight(level.getServer(), agencyKey, reached, worldPosition, payload).forEach(this::announce);
             }
         }
+    }
+
+    /**
+     * Les agences des joueurs présents au décollage reçoivent, chacune, les points du vol : premiers paliers atteints,
+     * données de la charge utile, télémétrie et prime de pilotage. Leurs joueurs en sont avertis.
+     */
+    private void awardWitnesses(RocketStats.Reach reached, boolean science, int bonus) {
+        if (level == null || level.getServer() == null) {
+            return;
+        }
+        for (String agency : witnesses) {
+            int points = ResearchManager.awardFlight(level.getServer(), agency, reached, science);
+            if (bonus > 0) {
+                ResearchManager.forAgency(level.getServer(), agency).addPoints(bonus);
+                points += bonus;
+            }
+            for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+                if (ResearchManager.agencyKey(player).equals(agency)) {
+                    player.sendSystemMessage(Component.translatable("launch.orbitalis.witness_points", points).withStyle(ChatFormatting.GREEN));
+                }
+            }
+        }
+        witnesses.clear();
+    }
+
+    /** Agences qui assistent au vol en cours, en plus de celle qui l'a lancé (pour les essais). */
+    public java.util.Set<String> witnesses() {
+        return java.util.Collections.unmodifiableSet(witnesses);
     }
 
     /** Avancement du vol simulé, de 0 à 1. */
@@ -4601,6 +4650,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
         output.putInt("phase", phase.ordinal());
         output.putInt("timer", timer);
         output.putString("agency", agencyKey);
+        output.putString("witnesses", String.join("\n", witnesses));
         output.putInt("last_result", lastResult.ordinal());
         output.putInt("last_points", lastPoints);
         output.putLong("phase_start", phaseStart);
@@ -4688,6 +4738,12 @@ public class LaunchTableBlockEntity extends BlockEntity {
         phase = Phase.values()[Math.floorMod(input.getIntOr("phase", 0), Phase.values().length)];
         timer = input.getIntOr("timer", 0);
         agencyKey = input.getStringOr("agency", "");
+        witnesses.clear();
+        for (String agency : input.getStringOr("witnesses", "").split("\n")) {
+            if (!agency.isEmpty()) {
+                witnesses.add(agency);
+            }
+        }
         lastResult = Result.values()[Math.floorMod(input.getIntOr("last_result", 0), Result.values().length)];
         lastPoints = input.getIntOr("last_points", 0);
         phaseStart = input.getLongOr("phase_start", 0L);

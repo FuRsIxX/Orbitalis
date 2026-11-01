@@ -1841,6 +1841,18 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('G', Tags.Items.GLASS_BLOCKS)
                 .unlockedBy("has_aluminum_plate", has(ModTags.Items.PLATES_ALUMINUM))
                 .save(output, key("cryogenic_tank"));
+
+        // Pompe à eau : un moteur électrique qui fait tourner sa roue dans un carter d'acier, un tuyau qui plonge.
+        shaped(RecipeCategory.MISC, ModBlocks.WATER_PUMP)
+                .pattern("SBS")
+                .pattern("SMS")
+                .pattern(" F ")
+                .define('S', ModTags.Items.PLATES_STEEL)
+                .define('B', Items.BUCKET)
+                .define('M', ModItems.ELECTRIC_MOTOR)
+                .define('F', ModBlocks.FLUID_PIPE)
+                .unlockedBy("has_electric_motor", has(ModItems.ELECTRIC_MOTOR))
+                .save(output, key("water_pump"));
     }
 
     /** Production des gaz et des ergols. Quantités en mB, énergie en FE, durée en ticks. */

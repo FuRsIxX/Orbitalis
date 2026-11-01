@@ -28,6 +28,11 @@ public final class ModDataComponents {
             "archive_plan", builder -> builder.persistent(com.mojang.serialization.Codec.STRING)
                     .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8));
 
+    /** Contenu d'un réservoir cassé : il le garde, et le retrouve une fois reposé. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<net.neoforged.neoforge.fluids.SimpleFluidContent>> FLUID_CONTENT =
+            COMPONENTS.registerComponentType("fluid_content", builder -> builder.persistent(net.neoforged.neoforge.fluids.SimpleFluidContent.CODEC)
+                    .networkSynchronized(net.neoforged.neoforge.fluids.SimpleFluidContent.STREAM_CODEC));
+
     private ModDataComponents() {
     }
 

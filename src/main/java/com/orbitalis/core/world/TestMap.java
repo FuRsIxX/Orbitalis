@@ -313,6 +313,21 @@ public final class TestMap {
         level.setBlock(extractor.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
         // Le panneau, sur le côté : il ne cache aucune machine.
         sign(level, new BlockPos(x0 - 2, Y, z0 + 2), Component.translatable("testmap.orbitalis.zone.machines"), null, null);
+
+        // La pompe à eau, à l'est de l'atelier : au-dessus d'un bassin de 4×2 sur deux de profondeur, alimentée par une
+        // source créative, elle remplit le réservoir cryogénique posé contre elle.
+        int px = x0 + 9;
+        for (int x = px; x < px + 4; x++) {
+            for (int z = z0; z < z0 + 2; z++) {
+                level.setBlock(new BlockPos(x, Y - 1, z), net.minecraft.world.level.block.Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+                level.setBlock(new BlockPos(x, Y - 2, z), net.minecraft.world.level.block.Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+            }
+        }
+        BlockPos pump = new BlockPos(px + 1, Y, z0);
+        level.setBlock(pump, ModBlocks.WATER_PUMP.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
+                Block.UPDATE_ALL);
+        level.setBlock(pump.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+        machine(level, pump.east(), ModBlocks.CRYOGENIC_TANK.get(), ItemStack.EMPTY);
     }
 
     /**

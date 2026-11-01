@@ -118,6 +118,12 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("proxima_world", () -> OrbitalisGameTests::proximaWorld);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ORBITAL_SHIPYARD =
             FUNCTIONS.register("orbital_shipyard", () -> OrbitalisGameTests::orbitalShipyard);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> WATER_PUMP =
+            FUNCTIONS.register("water_pump", () -> OrbitalisGameTests::waterPump);
+
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> TANKS_KEEP_CONTENTS =
+            FUNCTIONS.register("tanks_keep_contents", () -> OrbitalisGameTests::tanksKeepContents);
+
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
 
@@ -277,6 +283,12 @@ public final class OrbitalisGameTests {
         // Le réacteur à fusion alimente, seul, une chambre de Casimir qui fait de la matière exotique.
         event.registerTest(Orbitalis.id("fusion_power"), new FunctionGameTestInstance(
                 FUSION_POWER.getKey(), spaced(environment, emptyStructure, 1600)));
+        // La pompe remplit un réservoir au-dessus d'une nappe de 4×2, et refuse une flaque trop petite.
+        event.registerTest(Orbitalis.id("water_pump"), new FunctionGameTestInstance(
+                WATER_PUMP.getKey(), spaced(environment, emptyStructure, 100)));
+        // Cassés, les réservoirs gardent leur contenu ; reposés, ils le rendent.
+        event.registerTest(Orbitalis.id("tanks_keep_contents"), new FunctionGameTestInstance(
+                TANKS_KEEP_CONTENTS.getKey(), spaced(environment, emptyStructure, 20)));
         event.registerTest(Orbitalis.id("cryogenic_storage"), new FunctionGameTestInstance(
                 CRYOGENIC_STORAGE.getKey(), spaced(environment, emptyStructure, 100)));
         event.registerTest(Orbitalis.id("cables_carry_energy"), new FunctionGameTestInstance(
@@ -1660,6 +1672,13 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         BlockPos displayPos = tablePos.offset(0, 0, 2);
         helper.setBlock(displayPos, ModBlocks.MISSION_DISPLAY.get());
         helper.getBlockEntity(displayPos, MissionDisplayBlockEntity.class).setLink(table.getBlockPos());
+        // Un autre joueur assiste au lancement, à quelques blocs : son agence reçoit aussi les points du vol.
+        @SuppressWarnings("removal")
+        net.minecraft.server.level.ServerPlayer witness = helper.makeMockServerPlayerInLevel();
+        BlockPos watch = helper.absolutePos(tablePos.offset(0, 1, 4));
+        witness.setPos(watch.getX() + 0.5, watch.getY(), watch.getZ() + 0.5);
+        String witnessAgency = ResearchManager.agencyKey(witness);
+        ResearchManager.forAgency(helper.getLevel().getServer(), witnessAgency).reset();
         helper.assertTrue(table.startCountdown(agency), "le compte à rebours aurait dû démarrer");
         helper.assertTrue(!table.startCountdown(agency), "un second compte à rebours ne doit pas démarrer");
 
@@ -1678,6 +1697,8 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             // 10 (premier vol atmosphérique) + 30 (premier vol dans l'espace) + 5 (charge utile scientifique).
             helper.assertTrue(research.points() == 45 && table.getLastPoints() == 45, "points de recherche incorrects : " + research.points());
             helper.assertTrue(research.flights() == 1, "le vol réussi n'a pas été compté");
+            int witnessPoints = ResearchManager.forAgency(helper.getLevel().getServer(), witnessAgency).points();
+            helper.assertTrue(witnessPoints == 45, "le joueur présent au décollage aurait dû recevoir les points du vol : " + witnessPoints);
         });
     }
 
@@ -3404,7 +3425,8 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         helper.assertTrue(fillTank(helper, new BlockPos(1, 2, 1), Fluids.WATER, 1_000) == 0, "un réservoir ne contient qu'un fluide à la fois");
         helper.assertTrue(any.fluid().getAmount() == 20_000 && any.tankCapacity() == 128_000, "contenu du réservoir incorrect");
 
-        // Un bloc du haut retiré : il reste un réservoir de 2×2×1 et trois blocs seuls, et rien n'est perdu.
+        // Un bloc du haut retiré : il reste un réservoir de 2×2×1 et trois blocs seuls. Le bloc parti emporte sa part, un
+        // huitième (2 500 mB) ; ici, retiré sans rien lâcher, elle disparaît avec lui.
         helper.setBlock(new BlockPos(2, 3, 2), Blocks.AIR);
         int total = 0;
         int wide = 0;
@@ -3417,7 +3439,7 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 }
             }
         }
-        helper.assertTrue(total == 20_000 && wide == 1, "après le retrait d'un bloc : " + total + " mB, " + wide + " réservoir(s) de 2×2×1");
+        helper.assertTrue(total == 17_500 && wide == 1, "après le retrait d'un bloc : " + total + " mB, " + wide + " réservoir(s) de 2×2×1");
 
         // Une colonne : de l'eau en bas, du RP-1 en haut. Le bloc posé entre les deux rejoint celui du bas, pas celui du haut.
         helper.setBlock(new BlockPos(5, 2, 1), ModBlocks.FLUID_TANK.get());
@@ -3657,6 +3679,94 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(reactor.getTanks().getFluid(0).getAmount() < 1000 && reactor.getTanks().getFluid(1).getAmount() < 8000,
                     "le réacteur n'a pas brûlé ses gaz");
         });
+    }
+
+    /**
+     * Pompe à eau : au-dessus d'une nappe de 4×2, alimentée, elle remplit le réservoir qui la touche sans vider l'eau ;
+     * au-dessus d'une flaque de trois blocs, elle ne pompe rien.
+     */
+    private static void waterPump(GameTestHelper helper) {
+        for (int x = 0; x < 4; x++) {
+            for (int z = 1; z < 3; z++) {
+                helper.setBlock(new BlockPos(x, 0, z), Blocks.WATER);
+            }
+        }
+        BlockPos pumpPos = new BlockPos(1, 1, 1);
+        helper.setBlock(pumpPos, ModBlocks.WATER_PUMP.get());
+        helper.setBlock(pumpPos.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get());
+        BlockPos tankPos = pumpPos.offset(0, 0, -1);
+        helper.setBlock(tankPos.below(), Blocks.STONE);
+        helper.setBlock(tankPos, ModBlocks.CRYOGENIC_TANK.get());
+
+        // Une flaque de trois blocs : pas assez d'eau.
+        for (int x = 6; x < 9; x++) {
+            helper.setBlock(new BlockPos(x, 0, 1), Blocks.WATER);
+        }
+        BlockPos dryPos = new BlockPos(7, 1, 1);
+        helper.setBlock(dryPos, ModBlocks.WATER_PUMP.get());
+        helper.setBlock(dryPos.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get());
+
+        helper.succeedWhen(() -> {
+            CryogenicTankBlockEntity tank = helper.getBlockEntity(tankPos, CryogenicTankBlockEntity.class);
+            int water = tank.getTank().getFluid(0).is(net.minecraft.world.level.material.Fluids.WATER) ? tank.getTank().getFluid(0).getAmount() : 0;
+            helper.assertTrue(water >= 1000, "la pompe aurait dû remplir le réservoir d'eau : " + water + " mB");
+            for (int x = 0; x < 4; x++) {
+                helper.assertTrue(helper.getBlockState(new BlockPos(x, 0, 1)).is(Blocks.WATER), "la pompe ne doit pas vider l'étendue d'eau");
+            }
+            var dry = helper.getBlockEntity(dryPos, com.orbitalis.phase1.fuel.WaterPumpBlockEntity.class);
+            helper.assertTrue(!dry.isPumping() && dry.getTank().getFluid(0).isEmpty(), "une pompe sur trois blocs d'eau ne doit rien pomper");
+        });
+    }
+
+    /**
+     * Réservoirs cassés : le réservoir cryogénique emporte tout son contenu ; un bloc d'un réservoir modulable de deux
+     * blocs emporte la moitié, l'autre garde le reste. Reposé, le réservoir cryogénique retrouve son contenu.
+     */
+    private static void tanksKeepContents(GameTestHelper helper) {
+        BlockPos cryoPos = new BlockPos(1, 1, 1);
+        helper.setBlock(cryoPos, ModBlocks.CRYOGENIC_TANK.get());
+        helper.getBlockEntity(cryoPos, CryogenicTankBlockEntity.class).getTank().setFluid(0, new FluidStack(ModFluids.RP1.get(), 5000));
+        BlockPos lower = new BlockPos(4, 1, 1);
+        helper.setBlock(lower, ModBlocks.FLUID_TANK.get());
+        helper.setBlock(lower.above(), ModBlocks.FLUID_TANK.get());
+        var modular = helper.getBlockEntity(lower, com.orbitalis.phase1.fuel.FluidTankBlockEntity.class);
+        helper.assertTrue(modular.tankCapacity() == 2 * com.orbitalis.phase1.fuel.FluidTankBlockEntity.CAPACITY_PER_BLOCK,
+                "les deux blocs devraient former un seul réservoir");
+        try (Transaction transaction = Transaction.openRoot()) {
+            modular.handler().insert(FluidResource.of(net.minecraft.world.level.material.Fluids.WATER), 20_000, transaction);
+            transaction.commit();
+        }
+
+        helper.getLevel().destroyBlock(helper.absolutePos(cryoPos), true);
+        helper.getLevel().destroyBlock(helper.absolutePos(lower.above()), true);
+        int cryoDrop = 0;
+        int modularDrop = 0;
+        ItemStack cryoItem = ItemStack.EMPTY;
+        for (net.minecraft.world.entity.item.ItemEntity item : helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(helper.absolutePos(BlockPos.ZERO)).inflate(8.0))) {
+            var content = item.getItem().get(com.orbitalis.core.registry.ModDataComponents.FLUID_CONTENT.get());
+            if (content == null) {
+                continue;
+            }
+            if (item.getItem().is(ModBlocks.CRYOGENIC_TANK.get().asItem())) {
+                cryoDrop = content.getAmount();
+                cryoItem = item.getItem().copy();
+            } else if (item.getItem().is(ModBlocks.FLUID_TANK.get().asItem())) {
+                modularDrop = content.getAmount();
+            }
+        }
+        helper.assertTrue(cryoDrop == 5000, "le réservoir cryogénique cassé aurait dû emporter ses 5 000 mB : " + cryoDrop);
+        int left = helper.getBlockEntity(lower, com.orbitalis.phase1.fuel.FluidTankBlockEntity.class).fluid().getAmount();
+        helper.assertTrue(modularDrop == 10_000 && left == 10_000,
+                "le bloc cassé aurait dû emporter la moitié du réservoir modulable : " + modularDrop + " emportés, " + left + " restés");
+
+        // Reposé, le réservoir cryogénique rend son contenu.
+        helper.setBlock(cryoPos, ModBlocks.CRYOGENIC_TANK.get());
+        CryogenicTankBlockEntity placed = helper.getBlockEntity(cryoPos, CryogenicTankBlockEntity.class);
+        placed.applyComponentsFromItemStack(cryoItem);
+        helper.assertTrue(placed.getTank().getFluid(0).getAmount() == 5000 && placed.getTank().getFluid(0).is(ModFluids.RP1.get()),
+                "le réservoir reposé aurait dû retrouver son RP-1");
+        helper.succeed();
     }
 
     /**

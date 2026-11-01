@@ -2,16 +2,13 @@ package com.orbitalis.phase1.fuel;
 
 import com.orbitalis.core.energy.MachineEnergyStorage;
 import com.orbitalis.core.registry.ModBlockEntities;
-import com.orbitalis.core.registry.ModBlocks;
+import com.orbitalis.core.registry.ModDataComponents;
 import com.orbitalis.core.registry.ModFluids;
-import com.orbitalis.phase1.conduit.ConduitNetwork;
-import com.orbitalis.phase1.conduit.ConduitBlock;
 import com.orbitalis.phase1.machines.MachineBlockEntity;
 import com.orbitalis.phase1.machines.MachineInventory;
 import com.orbitalis.phase1.machines.MachineMenu;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,17 +16,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 /**
- * Réservoir cryogénique : stocke un seul fluide à la fois.
+ * Réservoir cryogénique : stocke un seul fluide à la fois. Cassé, il garde son contenu.
  * <p>
  * Les ergols cryogéniques (oxygène et hydrogène liquides) doivent être maintenus au froid : alimenté en
  * énergie, le réservoir les conserve sans perte ; sinon ils s'évaporent peu à peu. Les fluides stockables
@@ -131,57 +126,37 @@ public class CryogenicTankBlockEntity extends MachineBlockEntity {
         feedLaunchPad(level, pos);
     }
 
-    /**
-     * Ravitaillement du pas de tir : le réservoir envoie son contenu à la tour de service ou aux bras ombilicaux
-     * qu'il touche, ou qu'un réseau de tuyaux relie à lui. Un seul tuyau jusqu'au pied de la tour suffit pour tout
-     * un parc de réservoirs, quels que soient leurs ergols. Il ne se vide jamais dans une autre machine ni dans un autre réservoir :
-     * le bras ne prend que ce dont la fusée a besoin.
-     */
+    /** Ravitaillement du pas de tir, directement ou par des tuyaux (voir {@link PadFeed}). */
     private void feedLaunchPad(ServerLevel level, BlockPos pos) {
         FluidStack content = tank.getFluid(0);
-        if (content.isEmpty()) {
-            return;
+        if (!content.isEmpty()) {
+            PadFeed.feed(level, pos, tank.automationView(), content.getFluid(), FEED_PER_TICK);
         }
-        Fluid fluid = content.getFluid();
-        for (Direction direction : Direction.values()) {
-            BlockPos neighbour = pos.relative(direction);
-            BlockState neighbourState = level.getBlockState(neighbour);
-            if (isLaunchPadInlet(neighbourState)) {
-                feed(level, neighbour, direction.getOpposite(), fluid);
-            } else if (neighbourState.is(ModBlocks.FLUID_PIPE.get())) {
-                int sent = 0;
-                for (ConduitNetwork.Endpoint endpoint : ConduitNetwork.endpoints(level, neighbour, neighbourState.getBlock(),
-                        Capabilities.Fluid.BLOCK)) {
-                    if (isLaunchPadInlet(level.getBlockState(endpoint.pos()))) {
-                        sent += feed(level, endpoint.pos(), endpoint.side(), fluid);
-                    }
-                }
-                if (sent > 0) {
-                    // Les tuyaux traversés s'illuminent, comme pour tout transfert.
-                    ConduitNetwork.markActive(level, neighbour, neighbourState.getBlock(), Capabilities.Fluid.BLOCK,
-                            neighbourState.getBlock() instanceof ConduitBlock conduit ? conduit.contentOf(fluid) : 0);
-                }
-            }
-        }
-    }
-
-    /** Vrai si le bloc est une prise d'ergols du pas de tir : un bloc de ravitaillement, au pied de la tour. */
-    private static boolean isLaunchPadInlet(BlockState state) {
-        return state.is(ModBlocks.FUEL_PORT.get());
-    }
-
-    /** Envoie le fluide du réservoir à une prise du pas de tir. Renvoie la quantité transférée, en mB. */
-    private int feed(ServerLevel level, BlockPos armPos, Direction side, Fluid fluid) {
-        ResourceHandler<FluidResource> arm = level.getCapability(Capabilities.Fluid.BLOCK, armPos, side);
-        if (arm == null) {
-            return 0;
-        }
-        return ResourceHandlerUtil.move(tank.automationView(), arm, resource -> resource.getFluid() == fluid, FEED_PER_TICK, null);
     }
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
         return new CryogenicTankMenu(containerId, playerInventory, this, data);
+    }
+
+    /** Cassé, le réservoir garde son contenu : l'objet qui tombe l'emporte. */
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        FluidStack content = tank.getFluid(0);
+        if (!content.isEmpty()) {
+            components.set(ModDataComponents.FLUID_CONTENT.get(), SimpleFluidContent.copyOf(content));
+        }
+    }
+
+    /** Reposé, il retrouve ce contenu. */
+    @Override
+    protected void applyImplicitComponents(net.minecraft.core.component.DataComponentGetter components) {
+        super.applyImplicitComponents(components);
+        SimpleFluidContent content = components.get(ModDataComponents.FLUID_CONTENT.get());
+        if (content != null && !content.isEmpty()) {
+            tank.setFluid(0, content.copy());
+        }
     }
 
     @Override

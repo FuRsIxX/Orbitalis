@@ -230,6 +230,17 @@ public final class ModBlocks {
     /** Réservoir cryogénique : stocke les ergols et les maintient au froid. */
     public static final DeferredBlock<MachineBlock> CRYOGENIC_TANK =
             machine("cryogenic_tank", () -> ModBlockEntities.CRYOGENIC_TANK.get());
+    /** Pompe à eau : posée au-dessus d'une étendue d'eau, elle la pompe sans jamais la vider. */
+    public static final DeferredBlock<com.orbitalis.phase1.fuel.WaterPumpBlock> WATER_PUMP = withItem(BLOCKS.registerBlock("water_pump",
+            com.orbitalis.phase1.fuel.WaterPumpBlock::new,
+            properties -> properties
+                    .mapColor(MapColor.METAL)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()
+                    .lightLevel(state -> state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT) ? 10 : 0)));
 
     /**
      * Réservoir modulable : ses blocs s'assemblent en un seul réservoir, d'un bloc jusqu'à 3×3×12. Il stocke n'importe

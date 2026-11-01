@@ -11,7 +11,7 @@ It all starts on the ground, with ores and a foundry. Step by step, your industr
 **Industry**
 - Titanium, aluminum and lithium ores; steel and alloys.
 - Combustion generator, arc foundry, rolling mill; energy cables, pipes and data cables.
-- Electrolyzer, cryogenic liquefier, RP-1 refinery, Sabatier reactor, helium-3 extractor; modular and cryogenic tanks.
+- Water pump, electrolyzer, cryogenic liquefier, RP-1 refinery, Sabatier reactor, helium-3 extractor; modular and cryogenic tanks.
 - Fusion reactor and Casimir chamber.
 
 **Spaceport and rockets**

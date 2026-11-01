@@ -1,3 +1,17 @@
+# Orbitalis — prochaine version
+
+## Nouveautés
+- **Pompe à eau** : posée au-dessus d'une étendue d'au moins 8 blocs d'eau (une nappe de 4×2), elle pompe un seau par seconde pour 10 FE par tick, sans jamais la vider. Elle envoie l'eau aux tuyaux et aux machines qui la touchent.
+- Cassés, les réservoirs gardent leur contenu : l'objet l'emporte et le rend une fois reposé. Un bloc de réservoir modulable emporte sa part.
+- Le réservoir modulable ravitaille aussi la fusée, collé à un bloc de ravitaillement ou relié par un tuyau.
+- En multijoueur, tous les joueurs à moins de 64 blocs du pas de tir au décollage reçoivent les points de recherche du vol, pour leur agence.
+
+## Corrections
+- Les blocs de ravitaillement des pas de tir 9×9 et 11×11 ne trouvaient pas leur table : ceux du fond de la tour étaient hors de portée. L'hélium-3 passe aussi par les tuyaux à gaz.
+- Le déluge se voit de loin, depuis le pupitre, et pendant ses essais même sans fusée sur la table.
+- Le bras ombilical et la passerelle se retirent au rythme du son des vérins, sur tous les pas de tir.
+- La cabine de l'ascenseur, posée avant que la tour soit finie, tourne son entrée vers le joueur qui pose le socle.
+
 # Orbitalis — 0.9.2 (bêta)
 
 *Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
@@ -72,6 +86,20 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Les réglages de jeu (réalisme, pannes, évaporation des ergols, dégâts des accidents…) sont dans la configuration serveur du monde.
 
 ---
+
+# Orbitalis — next version
+
+## New
+- **Water pump**: placed above a body of at least 8 water blocks (a 4×2 pool), it pumps a bucket per second for 10 FE per tick and never drains it. It sends the water to the pipes and machines touching it.
+- Broken tanks keep their contents: the item carries them and gives them back once placed again. A modular tank block takes its share.
+- The modular tank fuels rockets too, placed against a fuel port or connected to one by a pipe.
+- In multiplayer, every player within 64 blocks of the pad at liftoff earns the flight's research points for their agency.
+
+## Fixes
+- Fuel ports on 9×9 and 11×11 pads couldn't find their table: the ones at the back of the tower were out of range. Helium-3 now goes through gas pipes too.
+- The deluge can be seen from afar, from the console, and during its tests even with no rocket on the table.
+- The umbilical arm and the gangway retract in time with the hydraulic sound, on every pad.
+- An elevator cabin placed before the tower is finished turns its entrance toward the player placing the base.
 
 # Orbitalis — 0.9.2 (beta)
 

@@ -15,8 +15,12 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * et rien n'en ressort.
  */
 public class UmbilicalFluidHandler extends SnapshotJournal<int[]> implements ResourceHandler<FluidResource> {
-    /** Distance maximale entre un bras et la table qu'il dessert (le plus grand pas de tir fait 7×7). */
-    private static final double RANGE = 8.0;
+    /**
+     * Distance maximale entre un bloc de ravitaillement et la table qu'il dessert : sur un 11×11, les plus éloignés,
+     * au pied de la tour, sont à une dizaine de blocs. (Elle était de 8 : ceux des grands pas de tir ne trouvaient
+     * pas leur table.)
+     */
+    private static final double RANGE = LaunchComplex.REACH + 2;
 
     private final Level level;
     private final BlockPos pos;

@@ -383,6 +383,27 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tower_foot", null, 17.0, 2.4, 24.5, -150.0F, 15.0F, 20));
         // Vue de profil, depuis le sud : les bras tendus entre la tour et la fusée.
         SHOTS.add(new Shot("arms_static", null, 20.5, 9.0, 31.0, 180.0F, 0.0F, 20));
+        // Le déluge : son essai, puis le vrai ; enfin le retrait du bras et de la passerelle, à mi-course puis au bout.
+        SHOTS.add(new Shot("deluge_test", level -> {
+            if (level.getBlockEntity(at(22, 1, 22)) instanceof LaunchTableBlockEntity table) {
+                table.commission(true);
+                table.fill(net.minecraft.world.level.material.Fluids.WATER, table.waterCapacity(), false);
+                table.command(com.orbitalis.phase1.spaceport.LaunchStep.TEST_DELUGE, "preview");
+            }
+        }, 20.5, 3.5, 31.0, 180.0F, 12.0F, 30));
+        SHOTS.add(new Shot("deluge_real", level -> {
+            if (level.getBlockEntity(at(22, 1, 22)) instanceof LaunchTableBlockEntity table) {
+                table.command(com.orbitalis.phase1.spaceport.LaunchStep.DELUGE, "preview");
+            }
+        }, 26.5, 4.5, 31.5, 150.0F, 20.0F, 30));
+        // Le même déluge vu de loin, comme depuis un pupitre à une quarantaine de blocs.
+        SHOTS.add(new Shot("deluge_far", null, 60.5, 8.0, 40.5, 115.0F, 6.0F, 20));
+        SHOTS.add(new Shot("retract_half", level -> {
+            if (level.getBlockEntity(at(22, 1, 22)) instanceof LaunchTableBlockEntity table) {
+                table.command(com.orbitalis.phase1.spaceport.LaunchStep.RETRACT, "preview");
+            }
+        }, 20.5, 9.0, 31.0, 180.0F, 0.0F, 55));
+        SHOTS.add(new Shot("retract_end", null, 20.5, 9.0, 31.0, 180.0F, 0.0F, 60));
         // Détails du pas de tir : la bouche du carneau, la table sous la fusée, l'escalier et les paliers de la tour.
         SHOTS.add(new Shot("pad_trench", null, 27.5, 2.2, 24.0, 116.0F, 20.0F, 12));
         SHOTS.add(new Shot("pad_table", null, 23.6, 2.0, 23.8, 140.0F, 30.0F, 12));
@@ -2086,6 +2107,8 @@ public final class WorldPreview {
         }, -20.5, -58.4, 53.5, 180.0F, 10.0F, 40));
         SHOTS.add(new Shot("tm_test_kit", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance()
                 .gui.setScreen(new com.orbitalis.client.screen.PadKitScreen(null, Direction.NORTH, 1, false))), -20.5, -58.4, 53.5, 180.0F, 10.0F, 30));
+        // La pompe à eau de l'atelier, au-dessus de son bassin.
+        SHOTS.add(new Shot("tm_pump", null, -11.5, -58.0, 14.5, 145.0F, 28.0F, 40));
         // Garde des écrans : un clic ouvre le pupitre d'essai ; le pupitre cassé, l'écran se ferme ; rouvert, la touche
         // d'inventaire le ferme aussi.
         SHOTS.add(new Shot("tm_guard_open", level -> {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.orbitalis.core.registry.ModBlockEntities;
 import com.orbitalis.core.registry.ModBlocks;
+import com.orbitalis.core.registry.ModDataComponents;
 import com.orbitalis.core.registry.ModFluids;
 
 import net.minecraft.core.BlockPos;
@@ -74,6 +75,13 @@ public class FluidTankBlockEntity extends BlockEntity {
     private final Storage storage = new Storage();
     private boolean dirty;
     private int ticks;
+    /** Part du contenu qu'emporte un bloc cassé (voir {@link #preRemoveSideEffects}). */
+    private FluidStack dropContent = FluidStack.EMPTY;
+    /** Blocs du réservoir qui touchent une prise du pas de tir ou un tuyau, relevés de temps en temps. */
+    private List<BlockPos> feeders = List.of();
+    /** Intervalle entre deux relevés de ces blocs, en ticks, et débit de ravitaillement d'une fusée, en mB par tick. */
+    private static final int FEEDER_SCAN_INTERVAL = 40;
+    private static final int FEED_PER_TICK = 100;
 
     public FluidTankBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.FLUID_TANK.get(), pos, state);
@@ -196,14 +204,88 @@ public class FluidTankBlockEntity extends BlockEntity {
             dirty = false;
             serverLevel.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
+        feedLaunchPad(serverLevel);
     }
 
-    /** Un bloc du réservoir va disparaître : le réservoir se défait, et son contenu se partage entre les blocs qui restent. */
+    /**
+     * Ravitaillement du pas de tir, comme le réservoir cryogénique : collé contre un bloc de ravitaillement, ou relié
+     * à lui par des tuyaux (voir {@link PadFeed}).
+     */
+    private void feedLaunchPad(ServerLevel serverLevel) {
+        if (ticks % FEEDER_SCAN_INTERVAL == 1) {
+            List<BlockPos> found = new ArrayList<>();
+            for (FluidTankBlockEntity member : members()) {
+                for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
+                    BlockState next = serverLevel.getBlockState(member.getBlockPos().relative(direction));
+                    if (PadFeed.isInlet(next) || next.getBlock() instanceof com.orbitalis.phase1.conduit.ConduitBlock.Pipe) {
+                        found.add(member.getBlockPos());
+                        break;
+                    }
+                }
+            }
+            feeders = List.copyOf(found);
+        }
+        FluidStack content = FluidUtil.getStack(storage, 0);
+        int sent = 0;
+        for (BlockPos feeder : feeders) {
+            if (content.isEmpty() || sent >= FEED_PER_TICK) {
+                break;
+            }
+            sent += PadFeed.feed(serverLevel, feeder, storage, content.getFluid(), FEED_PER_TICK - sent);
+            content = FluidUtil.getStack(storage, 0);
+        }
+    }
+
+    /**
+     * Un bloc du réservoir va disparaître. Il emporte sa part du contenu, celle d'un bloc parmi tous ceux du réservoir
+     * (tout, s'il était seul) ; puis le réservoir se défait, et le reste se partage entre les blocs qui restent.
+     */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
         if (level instanceof ServerLevel serverLevel) {
+            FluidTankBlockEntity tank = master();
+            if (tank != null) {
+                FluidStack content = tank.fluid();
+                // Le bloc qui part ne compte déjà plus parmi les membres : on l'ajoute.
+                int share = content.getAmount() / (tank.members().size() + 1);
+                if (share > 0) {
+                    dropContent = new FluidStack(content.getFluid(), share);
+                    int left = content.getAmount() - share;
+                    tank.storage.set(0, left <= 0 ? FluidResource.EMPTY : FluidResource.of(content), Math.max(0, left));
+                }
+            }
             FluidTankStructure.dissolve(serverLevel, this);
+        }
+    }
+
+    /**
+     * L'objet qui tombe emporte la part du contenu de ce bloc. Un joueur qui casse le bloc le retire d'abord (sa part
+     * est alors déjà mise de côté) ; une explosion ou une commande fait tomber l'objet avant : on calcule la même part.
+     */
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        FluidStack share = dropContent;
+        FluidTankBlockEntity tank = master();
+        if (share.isEmpty() && tank != null && level != null && level.getBlockState(worldPosition).is(ModBlocks.FLUID_TANK.get())) {
+            FluidStack content = tank.fluid();
+            int amount = content.getAmount() / Math.max(1, tank.members().size());
+            share = amount <= 0 ? FluidStack.EMPTY : new FluidStack(content.getFluid(), amount);
+        }
+        if (!share.isEmpty()) {
+            components.set(ModDataComponents.FLUID_CONTENT.get(), net.neoforged.neoforge.fluids.SimpleFluidContent.copyOf(share));
+        }
+    }
+
+    /** Reposé, le bloc rend ce qu'il emportait : il rejoint ses voisins s'ils contiennent le même fluide (ou rien). */
+    @Override
+    protected void applyImplicitComponents(net.minecraft.core.component.DataComponentGetter components) {
+        super.applyImplicitComponents(components);
+        net.neoforged.neoforge.fluids.SimpleFluidContent content = components.get(ModDataComponents.FLUID_CONTENT.get());
+        if (content != null && !content.isEmpty() && level instanceof ServerLevel serverLevel) {
+            becomeSingle(content.copy());
+            FluidTankStructure.reform(serverLevel, worldPosition);
         }
     }
 

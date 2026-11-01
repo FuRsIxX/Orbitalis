@@ -373,10 +373,11 @@ public class LaunchTableRenderer implements BlockEntityRenderer<LaunchTableBlock
      * dégager la fusée, les flexibles se débranchent, puis la poutre rentre dans la tour, pixel après pixel.
      */
     private static void submitArm(State state, int index, int count, PoseStack poseStack, SubmitNodeCollector collector, int light) {
-        // Les bras se libèrent l'un après l'autre, de bas en haut : chacun a sa fenêtre dans le dégagement.
-        float start = 0.35F * index / Math.max(1, count);
-        float hose = ease((state.clearance - start) / 0.12F);
-        float retract = ease((state.clearance - start - 0.1F) / 0.42F);
+        // Les bras se libèrent l'un après l'autre, de bas en haut : chacun a sa fenêtre dans le dégagement, qui dure
+        // autant que le son des vérins. Le dernier finit de rentrer quand le son s'éteint.
+        float start = 0.15F * index / Math.max(1, count);
+        float hose = ease((state.clearance - start) / 0.2F);
+        float retract = ease((state.clearance - start - 0.15F) / 0.7F);
         float gap = index < state.armGaps.size() ? state.armGaps.get(index) : state.gap;
 
         poseStack.pushPose();
@@ -406,7 +407,7 @@ public class LaunchTableRenderer implements BlockEntityRenderer<LaunchTableBlock
      * @param height hauteur du seuil au-dessus du pied de la tour, en blocs
      */
     private static void submitGangway(State state, float height, PoseStack poseStack, SubmitNodeCollector collector, int light) {
-        float retract = ease(state.clearance / 0.45F);
+        float retract = ease(state.clearance / 0.7F);
         poseStack.pushPose();
         poseStack.translate(0.5F + FACE_GAP, height + GANGWAY_FLOOR, -0.5F);
         int reach = Math.max(4, Math.round((state.gangwayReach - FACE_GAP) * 16.0F));
