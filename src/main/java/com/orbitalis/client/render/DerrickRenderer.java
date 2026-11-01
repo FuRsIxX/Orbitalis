@@ -26,28 +26,26 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Dessine ce qui n'est pas un bloc autour d'une foreuse : tant que sa tour n'est pas debout, les blocs qui manquent, en
- * fantôme ; et, quand son aperçu est allumé, la zone qu'elle fore : ses arêtes en tirets cyan d'un bloc, le cadre en
- * surface, celui du fond que permet la tour, et les quatre angles qui les relient.
+ * fantôme ; et, quand son aperçu est allumé, la zone qu'elle fore : un voile transparent à fleur de sol, bordé d'un
+ * ruban transparent.
  */
 public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, DerrickRenderer.State> {
     private static final Identifier PREVIEW = Orbitalis.id("textures/entity/drill_preview.png");
-    /** Les deux cyans des tirets : celui des voyants de la tour, et un plus sombre. */
-    private static final int LIT = 0xFF3FD8F2;
-    private static final int DIM = 0xFF1C8FA8;
-    /** Épaisseur des arêtes, et hauteur des angles au-dessus du sol, en blocs. */
-    private static final float LINE = 2.0F / 16.0F;
-    private static final float POST = 1.0F;
+    /** Teinte de l'aperçu, le cyan des voyants de la tour : un voile léger sur la zone, un ruban plus dense autour. */
+    private static final int VEIL = 0x303FD8F2;
+    private static final int RIBBON = 0x803FD8F2;
+    /** Hauteur du ruban, en blocs. */
+    private static final float FENCE = 0.4F;
 
     public static class State extends BlockEntityRenderState {
         final List<BlockPos> ghostOffsets = new ArrayList<>();
         final List<BlockState> ghostStates = new ArrayList<>();
         boolean preview;
-        /** La zone, dans le repère du bloc de commande : ses bords et le fond. */
+        /** La zone, dans le repère du bloc de commande. */
         float x0;
         float z0;
         float x1;
         float z1;
-        float floor;
     }
 
     public DerrickRenderer(BlockEntityRendererProvider.Context context) {
@@ -78,7 +76,6 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
             state.z0 = area[1] - pos.getZ();
             state.x1 = area[2] + 1 - pos.getX();
             state.z1 = area[3] + 1 - pos.getZ();
-            state.floor = derrick.floor() - pos.getY();
         }
     }
 
@@ -92,38 +89,14 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
         }
         collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(PREVIEW), (pose, buffer) -> {
             float top = 0.02F;
-            // Le cadre en surface et celui du fond, en tirets d'un bloc.
-            for (float y : new float[] {top, state.floor}) {
-                dashes(buffer, pose, state.x0, y, state.z0, state.x1, state.z0 + LINE);
-                dashes(buffer, pose, state.x0, y, state.z1 - LINE, state.x1, state.z1);
-                dashes(buffer, pose, state.x0, y, state.z0, state.x0 + LINE, state.z1);
-                dashes(buffer, pose, state.x1 - LINE, y, state.z0, state.x1, state.z1);
-            }
-            // Les quatre angles, du fond jusqu'au-dessus du sol.
-            for (float[] corner : new float[][] {{state.x0, state.z0}, {state.x1 - LINE, state.z0}, {state.x0, state.z1 - LINE},
-                    {state.x1 - LINE, state.z1 - LINE}}) {
-                for (float y = state.floor; y < POST; y += 1.0F) {
-                    int color = ((int) Math.floor(y)) % 2 == 0 ? LIT : DIM;
-                    bar(buffer, pose, color, corner[0], y, corner[1], corner[0] + LINE, Math.min(POST, y + 1.0F), corner[1] + LINE);
-                }
-            }
+            // Le voile sur toute la zone, à fleur de sol, vu d'en haut comme d'en bas.
+            quad(buffer, pose, VEIL, state.x0, top, state.z0, state.x1, top, state.z0, state.x1, top, state.z1, state.x0, top, state.z1);
+            // Le cadre : un ruban transparent dressé tout autour.
+            quad(buffer, pose, RIBBON, state.x0, top, state.z0, state.x1, top, state.z0, state.x1, FENCE, state.z0, state.x0, FENCE, state.z0);
+            quad(buffer, pose, RIBBON, state.x0, top, state.z1, state.x1, top, state.z1, state.x1, FENCE, state.z1, state.x0, FENCE, state.z1);
+            quad(buffer, pose, RIBBON, state.x0, top, state.z0, state.x0, top, state.z1, state.x0, FENCE, state.z1, state.x0, FENCE, state.z0);
+            quad(buffer, pose, RIBBON, state.x1, top, state.z0, state.x1, top, state.z1, state.x1, FENCE, state.z1, state.x1, FENCE, state.z0);
         });
-    }
-
-    /** Une arête horizontale, en tirets d'un bloc qui alternent deux cyans, posés sur la grille du monde. */
-    private static void dashes(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y, float z0, float x1, float z1) {
-        boolean alongX = x1 - x0 >= z1 - z0;
-        float start = alongX ? x0 : z0;
-        float end = alongX ? x1 : z1;
-        for (float from = start; from < end; from += 1.0F) {
-            float to = Math.min(end, from + 1.0F);
-            int color = Math.floorMod((int) Math.floor(from), 2) == 0 ? LIT : DIM;
-            if (alongX) {
-                bar(buffer, pose, color, from, y, z0, to, y + LINE, z1);
-            } else {
-                bar(buffer, pose, color, x0, y, from, x1, y + LINE, to);
-            }
-        }
     }
 
     /** Un quadrilatère de lumière, dessiné dans les deux sens. */
@@ -137,15 +110,6 @@ public class DerrickRenderer implements BlockEntityRenderer<DerrickBlockEntity, 
                         .setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(pose, 0.0F, 1.0F, 0.0F);
             }
         }
-    }
-
-    /** Une arête : un fin pavé de lumière, ses faces. */
-    private static void bar(VertexConsumer buffer, PoseStack.Pose pose, int color, float x0, float y0, float z0, float x1, float y1, float z1) {
-        quad(buffer, pose, color, x0, y1, z0, x1, y1, z0, x1, y1, z1, x0, y1, z1);
-        quad(buffer, pose, color, x0, y0, z0, x1, y0, z0, x1, y1, z0, x0, y1, z0);
-        quad(buffer, pose, color, x0, y0, z1, x1, y0, z1, x1, y1, z1, x0, y1, z1);
-        quad(buffer, pose, color, x0, y0, z0, x0, y0, z1, x0, y1, z1, x0, y1, z0);
-        quad(buffer, pose, color, x1, y0, z0, x1, y0, z1, x1, y1, z1, x1, y1, z0);
     }
 
     @Override
