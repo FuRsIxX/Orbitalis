@@ -778,30 +778,18 @@ def mat_texture():
 
 
 def battery_texture():
-    """
-    Flancs de la batterie : un panneau blanc à peine biseauté, un filet gris en retrait, et une bande bleue sous la
-    platine des prises. Rien d'autre : la façade porte la fenêtre de charge.
-    """
-    img = gm.plain(96, "#E9ECEF", "#F2F4F6", "#DEE2E6")
-    bevel(img, 1, 1, 14, 14, 1.04, 0.92)
-    outline(img, 2, 2, 13, 13, "#C3CAD2")
-    for x in range(3, 13):
-        dot(img, x, 11, "#3F76E4")
-        dot(img, x, 12, "#2F5FC0")
+    """Flancs de la batterie : un panneau blanc uni, à peine biseauté."""
+    img = gm.plain(96, "#E9ECEF", "#EEF1F3", "#E3E7EA")
+    bevel(img, 1, 1, 14, 14, 1.04, 0.93)
     return img
 
 
 def battery_top_texture():
-    """Dessus de la batterie : le chapeau graphite, une grille d'aération à lamelles et quatre vis."""
-    img = gm.plain(103, "#4A515A", "#535B64", "#434A52")
-    for y in range(4, 12):
-        for x in range(4, 12):
-            corner = (x in (4, 11)) and (y in (4, 11))
-            if not corner:
-                img[y][x] = rgb("#1E2226") if y % 2 == 0 else rgb("#636C76")
-    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
-        dot(img, x, y, "#9AA3AD")
-        dot(img, x + 1, y + 1, "#30353B")
+    """Dessus de la batterie : le chapeau graphite, uni, et une fente d'aération au milieu."""
+    img = gm.plain(103, "#4A515A", "#4F565F", "#454C54")
+    for x in range(4, 12):
+        dot(img, x, 7, "#1E2226")
+        dot(img, x, 8, "#5E6670")
     return img
 
 
@@ -823,24 +811,22 @@ def gauge_texture(level):
 
 
 def battery_label_texture():
-    """Façade de la batterie : le blanc de la coque, le cadre sombre de sa fenêtre et une bande bleue au pied."""
-    img = gm.plain(104, "#E9ECEF", "#F2F4F6", "#DEE2E6")
+    """Façade de la batterie : le blanc de la coque et le cadre sombre de sa fenêtre."""
+    img = gm.plain(104, "#E9ECEF", "#EEF1F3", "#E3E7EA")
     outline(img, 2, 2, 13, 13, "#2E3238")
-    for x in range(2, 14):
-        dot(img, x, 14, "#3F76E4")
     return img
 
 
 def port_texture():
-    """Prises de puissance : une platine sombre et deux connecteurs ronds, l'un orange, l'autre bleu."""
+    """Prises de puissance : une platine sombre et deux prises plates, l'une orange, l'autre bleue."""
     img = canvas("#2E3238")
     outline(img, 0, 0, 15, 15, "#4A515A")
-    for cx, color in ((4.5, "#E8872A"), (11.0, "#3F76E4")):
-        for y in range(SIZE):
-            for x in range(SIZE):
-                d = math.hypot(x - cx, y - 7.5)
-                if d <= 3.4:
-                    img[y][x] = rgb(color) if d > 1.8 else rgb("#15171A")
+    for x0, color in ((3, "#E8872A"), (10, "#3F76E4")):
+        for y in range(5, 11):
+            for x in range(x0, x0 + 4):
+                dot(img, x, y, color)
+        dot(img, x0 + 1, 7, "#15171A")
+        dot(img, x0 + 2, 8, "#15171A")
     return img
 
 

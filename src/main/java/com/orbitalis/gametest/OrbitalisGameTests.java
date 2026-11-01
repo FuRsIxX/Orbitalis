@@ -3993,13 +3993,13 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
     }
 
     /**
-     * Accumulateur : ce qu'on lui envoie par un flanc s'y range, ce qu'on lui envoie par l'avant est refusé, on ne
-     * peut rien lui prendre par un flanc ; il pousse son énergie par l'avant dans un second accumulateur, qui la reçoit
-     * par son dos ; ses flancs montrent sa charge.
+     * Accumulateur : ce qu'on lui envoie par un flanc s'y range, ce qu'on lui envoie par le dos est refusé, on ne
+     * peut rien lui prendre par un flanc ; il pousse son énergie par le dos dans un second accumulateur, qui la reçoit
+     * par sa face avant ; sa jauge montre sa charge.
      */
     private static void accumulator(GameTestHelper helper) {
         BlockPos first = new BlockPos(2, 1, 2);
-        BlockPos second = first.north();
+        BlockPos second = first.south();
         helper.setBlock(first, ModBlocks.ACCUMULATOR.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
         helper.setBlock(second, ModBlocks.ACCUMULATOR_ADVANCED.get().defaultBlockState()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
@@ -4007,12 +4007,12 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         var target = helper.getBlockEntity(second, com.orbitalis.phase1.power.AccumulatorBlockEntity.class);
         var level = helper.getLevel();
         var side = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK, helper.absolutePos(first), Direction.EAST);
-        var front = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK, helper.absolutePos(first), Direction.NORTH);
+        var front = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK, helper.absolutePos(first), Direction.SOUTH);
         helper.assertTrue(side != null && front != null, "l'accumulateur devrait offrir de l'énergie sur toutes ses faces");
         int tier = com.orbitalis.phase1.power.AccumulatorBlock.Tier.BASIC.transfer;
         try (Transaction transaction = Transaction.openRoot()) {
             helper.assertTrue(side.insert(500_000, transaction) == tier, "un flanc aurait dû recevoir au plus le débit de la génération");
-            helper.assertTrue(front.insert(500, transaction) == 0, "l'avant ne devrait rien recevoir");
+            helper.assertTrue(front.insert(500, transaction) == 0, "le dos, la sortie, ne devrait rien recevoir");
             transaction.commit();
         }
         helper.assertTrue(source.getEnergy().getEnergy() == tier, "l'énergie reçue aurait dû se ranger : " + source.getEnergy().getEnergy());
@@ -4023,9 +4023,9 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         helper.succeedWhen(() -> {
             helper.assertTrue(target.getEnergy().getEnergy() > 0, "le second accumulateur aurait dû recevoir l'énergie du premier");
             helper.assertTrue(helper.getBlockState(second).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) >= 1,
-                    "les flancs du second auraient dû montrer sa charge");
+                    "la jauge du second aurait dû montrer sa charge");
             helper.assertTrue(helper.getBlockState(first).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) == 2,
-                    "les flancs du premier auraient dû montrer deux crans : " + helper.getBlockState(first));
+                    "la jauge du premier aurait dû montrer deux crans : " + helper.getBlockState(first));
         });
     }
 

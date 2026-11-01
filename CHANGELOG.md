@@ -1,7 +1,7 @@
 # Orbitalis — prochaine version
 
 ## Nouveautés
-- **Accumulateurs** : un stockage d'électricité sans réglage, qu'on pose et qu'on branche. L'énergie entre par cinq faces et ressort par l'avant (la face qui regardait le joueur à la pose) ; les flancs montrent la charge en cinq crans, et l'accumulateur garde son énergie quand on le casse. Un clic droit ouvre son écran : la jauge, l'état, le temps avant qu'il soit plein ou vide, l'entrée et la sortie. Quatre générations, chacune fabriquée autour de la précédente : 1, 4, 16 et 64 millions de FE, pour 1 000, 4 000, 16 000 et 64 000 FE par tick. Un chapitre du guide les présente.
+- **Accumulateurs** : un stockage d'électricité sans réglage, qu'on pose et qu'on branche. Sa jauge de cinq crans regarde le joueur qui le pose ; l'énergie entre par cette face et les quatre autres, et ressort par le dos. Il garde son énergie quand on le casse. Les quatre générations partagent le même châssis, qui gagne à chacune un signe de son amélioration : coiffes d'angle, filet lumineux, puis fenêtre de jauge cerclée de lumière. Un clic droit ouvre son écran, dans le style salle de contrôle : la jauge, l'état, le temps avant qu'il soit plein ou vide, la charge en grand, l'entrée et la sortie. Quatre générations, chacune fabriquée autour de la précédente : 1, 4, 16 et 64 millions de FE, pour 1 000, 4 000, 16 000 et 64 000 FE par tick. Un chapitre du guide les présente.
 - **Pompe à eau** : posée au-dessus d'une étendue d'au moins 8 blocs d'eau (une nappe de 4×2), elle pompe un seau par seconde pour 10 FE par tick, sans jamais la vider. C'est une vraie pompe, sur son socle, avec son moteur : le câble se branche sur son boîtier électrique, à l'arrière, et le tuyau sur sa bride de sortie, à l'avant.
 - Chaque machine a sa propre livrée : la couleur de sa coque et les motifs de ses flancs, de son dessus et de sa grille changent d'une machine à l'autre (ailettes du générateur, bandes de danger de la fonderie, conduites de l'électrolyseur, givre du liquéfacteur...). La forme reste la même pour toutes.
 - Cassés, les réservoirs gardent leur contenu : l'objet l'emporte et le rend une fois reposé. Un bloc de réservoir modulable emporte sa part.
@@ -25,7 +25,7 @@
 - Panneaux solaires : 80 FE par tick en orbite (au lieu de 40) et 20 au sol de jour (au lieu de 8). Quatre panneaux raccordés en carré produisent chacun un quart de plus.
 
 ## Équilibrage
-- Batterie de station : 2 000 000 FE (au lieu de 500 000) et un débit de 8 000 FE par tick (au lieu de 2 000). Son habillage est simplifié : panneaux blancs nets, grille d'aération à lamelles sur le chapeau, et une fenêtre de charge à quatre barres qui s'allument en cyan.
+- Batterie de station : 2 000 000 FE (au lieu de 500 000) et un débit de 8 000 FE par tick (au lieu de 2 000). Son habillage est simplifié, sur la même base : panneaux blancs unis, chapeau graphite à une seule fente, prises plates, et une fenêtre de charge à quatre barres qui s'allument en cyan.
 - Recherche du début de partie : chaque vol réussi rapporte ses données (3 points en vol atmosphérique, 6 dans l'espace, 10 en orbite et au-delà). Les primes des premiers vols passent à 20 et 50 points, la charge utile de fusée-sonde à 10. Une fusée-sonde rapporte donc 16 points par vol au lieu de 5.
 - Nouveaux jalons pour les premières pièces fabriquées : carte électronique, moteur à poudre, charge utile de fusée-sonde, kit de pas de tir, moteurs à ergols, émetteur radio, centrale de navigation.
 
@@ -123,7 +123,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 # Orbitalis — next version
 
 ## New
-- **Accumulators**: plug-and-play electricity storage with nothing to set up. Power comes in through five faces and leaves through the front (the face that looked at the player on placement); the sides show the charge in five steps, and an accumulator keeps its energy when broken. Right-click opens its screen: the gauge, the state, the time until full or empty, input and output. Four generations, each crafted around the one before: 1, 4, 16 and 64 million FE, moving 1,000, 4,000, 16,000 and 64,000 FE per tick. A guide chapter covers them.
+- **Accumulators**: plug-and-play electricity storage with nothing to set up. Its five-step gauge faces the player who places it; power comes in through that face and the four others, and leaves through the back. It keeps its energy when broken. All four generations share one chassis that gains a visible upgrade each time: corner caps, a light trim, then a gauge window ringed with light. Right-click opens its control-room style screen: the gauge, the state, the time until full or empty, the charge in large figures, input and output. Four generations, each crafted around the one before: 1, 4, 16 and 64 million FE, moving 1,000, 4,000, 16,000 and 64,000 FE per tick. A guide chapter covers them.
 - **Water pump**: placed above a body of at least 8 water blocks (a 4×2 pool), it pumps a bucket per second for 10 FE per tick and never drains it. It's a real pump, on its skid, with its motor: the cable goes into its electrical box at the back, and the pipe onto its outlet flange at the front.
 - Every machine has its own livery: the colour of its casing and the patterns on its sides, top and grille differ from one machine to the next (the generator's fins, the foundry's hazard stripes, the electrolyzer's pipes, the liquefier's frost...). The shape stays the same for all.
 - Broken tanks keep their contents: the item carries them and gives them back once placed again. A modular tank block takes its share.
@@ -147,7 +147,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Solar panels: 80 FE per tick in orbit (up from 40) and 20 on the ground in daylight (up from 8). Four panels joined in a square each produce a quarter more.
 
 ## Balance
-- Station battery: 2,000,000 FE (up from 500,000) and 8,000 FE per tick in and out (up from 2,000). Its look is simpler: clean white panels, a slatted vent on the cap, and a charge window with four bars that light up cyan.
+- Station battery: 2,000,000 FE (up from 500,000) and 8,000 FE per tick in and out (up from 2,000). Its look is simpler, on the same base: plain white panels, a graphite cap with a single slot, flat sockets, and a charge window with four bars that light up cyan.
 - Early research: every successful flight now brings back its data (3 points for an atmospheric flight, 6 for space, 10 for orbit and beyond). First-flight bonuses go up to 20 and 50 points, and the sounding rocket payload to 10. A sounding rocket now earns 16 points per flight instead of 5.
 - New milestones for the first parts you craft: circuit board, solid motor, sounding rocket payload, pad kit, liquid-fuel engines, radio transmitter, navigation unit.
 

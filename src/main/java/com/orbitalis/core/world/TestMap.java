@@ -348,15 +348,15 @@ public final class TestMap {
             level.setBlock(at, tiers.get(k).defaultBlockState(), Block.UPDATE_ALL);
             sign(level, at.south(3), tiers.get(k).getName(), null, null);
         }
-        // Les quatre générations d'accumulateurs, derrière les panneaux : une source créative contre le dos de chacun le
-        // charge, et ses flancs montrent sa charge monter.
+        // Les quatre générations d'accumulateurs, derrière les panneaux, la jauge vers eux : une source créative posée
+        // sur chacun le charge, et sa jauge monte.
         java.util.List<Block> accumulators = java.util.List.of(ModBlocks.ACCUMULATOR.get(), ModBlocks.ACCUMULATOR_ADVANCED.get(),
                 ModBlocks.ACCUMULATOR_ELITE.get(), ModBlocks.ACCUMULATOR_QUANTUM.get());
         for (int k = 0; k < accumulators.size(); k++) {
             BlockPos at = new BlockPos(sx + 4 + 2 * k, Y, z0 - 3);
-            level.setBlock(at, accumulators.get(k).defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH),
+            level.setBlock(at, accumulators.get(k).defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
                     Block.UPDATE_ALL);
-            level.setBlock(at.south(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(at.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
             sign(level, at.north(2), accumulators.get(k).getName(), null, null);
         }
 

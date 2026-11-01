@@ -25,9 +25,10 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
- * Réserve d'un accumulateur. Tout ce qu'on lui envoie par ses cinq faces d'entrée s'y range ; à chaque tick, il en
- * pousse autant qu'il peut par sa face avant, dans ce qui la touche (un câble, une machine, un autre accumulateur). Il
- * ne se renvoie jamais sa propre énergie, même quand le câble de sa sortie revient sur une de ses entrées.
+ * Réserve d'un accumulateur. Tout ce qu'on lui envoie par ses cinq faces d'entrée (l'avant, celui de la jauge, et
+ * les autres) s'y range ; à chaque tick, il en pousse autant qu'il peut par son dos, dans ce qui le touche (un câble,
+ * une machine, un autre accumulateur). Il ne se renvoie jamais sa propre énergie, même quand le câble de sa sortie
+ * revient sur une de ses entrées.
  */
 public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider {
     /** Données de l'écran : celles des machines, puis l'entrée et la sortie moyennes, en FE par tick. */
@@ -64,12 +65,17 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
         return energy;
     }
 
-    /** L'énergie vue d'une face : la face avant ne fait que donner, les autres ne font que recevoir. */
+    /** L'énergie vue d'une face : le dos ne fait que donner, les autres faces ne font que recevoir. */
     public EnergyHandler handler(Direction side) {
         if (side == null) {
             return energy;
         }
-        return side == front() ? output : input;
+        return side == outlet() ? output : input;
+    }
+
+    /** La sortie : le dos, à l'opposé de la jauge. */
+    public Direction outlet() {
+        return front().getOpposite();
     }
 
     public Direction front() {
@@ -90,8 +96,8 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
         int delta = energy.getEnergy() - lastEnergy;
         int moved = 0;
         if (energy.getEnergy() > 0) {
-            Direction front = front();
-            EnergyHandler target = level.getCapability(Capabilities.Energy.BLOCK, pos.relative(front), front.getOpposite());
+            Direction outlet = outlet();
+            EnergyHandler target = level.getCapability(Capabilities.Energy.BLOCK, pos.relative(outlet), outlet.getOpposite());
             if (target != null) {
                 pushing = true;
                 try {

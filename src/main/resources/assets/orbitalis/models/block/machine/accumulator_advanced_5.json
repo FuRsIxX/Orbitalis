@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "particle": "orbitalis:block/accumulator_advanced_front",
-    "north": "orbitalis:block/accumulator_advanced_front",
-    "south": "orbitalis:block/accumulator_advanced_side_5",
-    "east": "orbitalis:block/accumulator_advanced_side_5",
-    "west": "orbitalis:block/accumulator_advanced_side_5",
+    "particle": "orbitalis:block/accumulator_advanced_side",
+    "north": "orbitalis:block/accumulator_advanced_front_5",
+    "south": "orbitalis:block/accumulator_advanced_back",
+    "east": "orbitalis:block/accumulator_advanced_side",
+    "west": "orbitalis:block/accumulator_advanced_side",
     "up": "orbitalis:block/accumulator_advanced_top",
     "down": "orbitalis:block/accumulator_advanced_bottom"
   }
