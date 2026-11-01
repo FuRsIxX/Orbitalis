@@ -2351,13 +2351,14 @@ public final class WorldPreview {
         }
         PadPlan plan = new PadPlan(radius, radius >= 2, Direction.EAST);
         table.setPlan(plan);
+        // Le tablier se pose sur le sol : la scène, dallée deux blocs sous la table, est rehaussée d'un bloc dessous.
+        fill(level, x - radius - 7, y - 1, z - radius - 2, x + radius + 1, y - 1, z + radius + 2, "minecraft:smooth_stone");
         for (PadPlan.Piece piece : plan.pieces()) {
             level.setBlock(pos.offset(piece.offset()), piece.display(), 3);
         }
-        set(level, x - radius, y + 3, z, "orbitalis:umbilical_arm");
         String[] kinds = {"rp1", "lox", "lh2"};
         for (int i = 0; i < kinds.length; i++) {
-            set(level, x - radius - 2 - i, y - 1, z + 2, "orbitalis:fuel_port[kind=" + kinds[i] + "]");
+            set(level, x - radius - 2 - i, y + plan.groundY(), z + 2, "orbitalis:fuel_port[kind=" + kinds[i] + "]");
         }
     }
 

@@ -82,9 +82,9 @@ public final class PadKitPlacement {
         overlay(Component.translatable("spaceport.orbitalis.kit.aim").withStyle(ChatFormatting.AQUA));
     }
 
-    /** La table se pose un bloc au-dessus de la case visée, pour loger le déflecteur dessous. */
+    /** La table se pose contre la case visée, sur le sol : le tablier repose sur le sol, le déflecteur s'enterre dessous. */
     private static BlockPos tableAbove(BlockPos clicked, Direction face) {
-        return clicked.relative(face).above();
+        return clicked.relative(face);
     }
 
     /** Message au-dessus de la barre d'objets. */
@@ -142,7 +142,7 @@ public final class PadKitPlacement {
             for (PadPlan.Piece piece : plan.pieces()) {
                 int y = piece.offset().getY();
                 // Le tablier et ce qui est à sa hauteur, et le premier niveau de la tour, posé au sol.
-                if (y == 0 || (y == -1 && piece.role() == PadPlan.Role.TOWER)) {
+                if (y == 0 || (y == plan.groundY() && piece.role() == PadPlan.Role.TOWER)) {
                     OFFSETS.add(piece.offset());
                     STATES.add(piece.display());
                 }

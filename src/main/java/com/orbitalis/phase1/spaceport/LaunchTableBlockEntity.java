@@ -586,19 +586,19 @@ public class LaunchTableBlockEntity extends BlockEntity {
         List<PortNeed> needs = new ArrayList<>();
         int radius = plan.radius();
         if (fuel.rp1() > 0) {
-            needs.add(new PortNeed(plan.at(-radius - 2, -1, 2), FuelPortBlock.Kind.RP1));
+            needs.add(new PortNeed(plan.at(-radius - 2, plan.groundY(), 2), FuelPortBlock.Kind.RP1));
         }
         if (fuel.oxygen() > 0) {
-            needs.add(new PortNeed(plan.at(-radius - 3, -1, 2), FuelPortBlock.Kind.LOX));
+            needs.add(new PortNeed(plan.at(-radius - 3, plan.groundY(), 2), FuelPortBlock.Kind.LOX));
         }
         if (fuel.hydrogen() > 0) {
-            needs.add(new PortNeed(plan.at(-radius - 4, -1, 2), FuelPortBlock.Kind.LH2));
+            needs.add(new PortNeed(plan.at(-radius - 4, plan.groundY(), 2), FuelPortBlock.Kind.LH2));
         }
         if (fuel.methane() > 0) {
-            needs.add(new PortNeed(plan.at(-radius - 5, -1, 2), FuelPortBlock.Kind.CH4));
+            needs.add(new PortNeed(plan.at(-radius - 5, plan.groundY(), 2), FuelPortBlock.Kind.CH4));
         }
         if (fuel.helium3() > 0) {
-            needs.add(new PortNeed(plan.at(-radius - 5, -1, -2), FuelPortBlock.Kind.HE3));
+            needs.add(new PortNeed(plan.at(-radius - 5, plan.groundY(), -2), FuelPortBlock.Kind.HE3));
         }
         return needs;
     }
@@ -1049,9 +1049,11 @@ public class LaunchTableBlockEntity extends BlockEntity {
             return;
         }
         // Le portique va à la hauteur de la cabine, s'il y en a une ; le bras, au milieu des réservoirs du dernier
-        // étage de la fusée, là où se branchent ses ergols.
+        // étage de la fusée, là où se branchent ses ergols. Ces étages sont comptés pour une tour qui part un bloc sous
+        // la table (l'ancienne forme, surélevée) : posée sur le sol, la tour en compte un de moins jusqu'à la même hauteur.
+        int shift = -1 - plan.groundY();
         int capsule = capsuleLevel();
-        PadPlan moved = plan.withGate(capsule < 0 ? plan.gate() : capsule).withArm(armLevelFor(expected));
+        PadPlan moved = plan.withGate(capsule < 0 ? plan.gate() : capsule + shift).withArm(armLevelFor(expected) + shift);
         if (moved.equals(plan)) {
             return;
         }
@@ -4662,6 +4664,7 @@ public class LaunchTableBlockEntity extends BlockEntity {
             output.putInt("plan_gate", plan.gate());
             output.putInt("plan_arm", plan.arm());
             output.putBoolean("plan_compact", plan.compact());
+            output.putBoolean("plan_raised", plan.raised());
         }
         output.putInt("pad_missing", complex.missing());
         output.putInt("pad_radius", complex.radius());
@@ -4761,7 +4764,9 @@ public class LaunchTableBlockEntity extends BlockEntity {
         int planRadius = input.getIntOr("plan_radius", 0);
         plan = planRadius <= 0 ? null : new PadPlan(planRadius, input.getBooleanOr("plan_elevator", false),
                 Direction.from2DDataValue(input.getIntOr("plan_facing", Direction.EAST.get2DDataValue())), input.getIntOr("plan_gate", 10),
-                input.getIntOr("plan_arm", 4), input.getBooleanOr("plan_compact", false));
+                input.getIntOr("plan_arm", 4), input.getBooleanOr("plan_compact", false),
+                // Un plan enregistré sans cette donnée vient d'avant la 0.9.3 : son tablier est surélevé.
+                input.getBooleanOr("plan_raised", true));
     }
 
     /** Vrai si les échecs de lancement sont activés dans la configuration du serveur. */

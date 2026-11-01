@@ -495,6 +495,9 @@ public final class OrbitalisGameTests {
      *
      * @return la position du bras ombilical
      */
+    /** Pied de la tour par rapport à la table : le tablier est posé sur le sol, et la tour aussi (voir PadPlan#groundY). */
+    private static final int GROUND_Y = 0;
+
     private static BlockPos buildLaunchPad(GameTestHelper helper, BlockPos tablePos, int radius) {
         return buildLaunchPad(helper, tablePos, radius, false);
     }
@@ -510,7 +513,7 @@ public final class OrbitalisGameTests {
         for (PadPlan.Piece piece : plan.pieces()) {
             helper.getLevel().setBlockAndUpdate(origin.offset(piece.offset()), piece.display());
         }
-        BlockPos arm = tablePos.offset(-radius, 3, 0);
+        BlockPos arm = tablePos.offset(plan.armOffset());
         helper.setBlock(arm, ModBlocks.UMBILICAL_ARM.get());
         return arm;
     }
@@ -521,8 +524,8 @@ public final class OrbitalisGameTests {
      * @return la case libre contre ce bloc, hors de la tour, où brancher un réservoir ou un tuyau
      */
     private static BlockPos placeFuelPort(GameTestHelper helper, BlockPos tablePos, int radius, FuelPortBlock.Kind kind) {
-        helper.setBlock(tablePos.offset(-radius - 3, -1, 2), ModBlocks.FUEL_PORT.get().defaultBlockState().setValue(FuelPortBlock.KIND, kind));
-        return tablePos.offset(-radius - 3, -1, 3);
+        helper.setBlock(tablePos.offset(-radius - 3, GROUND_Y, 2), ModBlocks.FUEL_PORT.get().defaultBlockState().setValue(FuelPortBlock.KIND, kind));
+        return tablePos.offset(-radius - 3, GROUND_Y, 3);
     }
 
     /**
@@ -577,7 +580,7 @@ public final class OrbitalisGameTests {
         BlockPos tablePos = new BlockPos(3, 2, 3);
         buildLaunchPad(helper, tablePos, 1);
         // Le portique d'embarquement du plan est dans la colonne technique, à un étage où l'escalier a un palier à l'avant.
-        BlockPos riser = tablePos.offset(-2, -1, 0);
+        BlockPos riser = tablePos.offset(-2, GROUND_Y, 0);
         helper.assertTrue(new PadPlan(1, false, Direction.EAST).gate() == 7, "le portique du plan 3×3 devrait être au septième étage");
         // L'escalier doit laisser passer un joueur : deux cases libres au-dessus de chaque volée (on y monte d'un bloc),
         // une au-dessus de chaque palier, jusque sous le platelage du sommet.
@@ -1486,7 +1489,7 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
     private static void towerElevator(GameTestHelper helper) {
         BlockPos tablePos = new BlockPos(3, 2, 3);
         buildLaunchPad(helper, tablePos, 1, true);
-        BlockPos riser = tablePos.offset(-2, -1, 0);
+        BlockPos riser = tablePos.offset(-2, GROUND_Y, 0);
         // Le portique fait partie du plan : c'est le seul arrêt de l'ascenseur en hauteur.
         int floor = new PadPlan(1, true, Direction.EAST).gate();
         LaunchTableBlockEntity table = helper.getBlockEntity(tablePos, LaunchTableBlockEntity.class);
@@ -1654,8 +1657,8 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
 
         RocketFuel needed = table.requiredFuel();
         // Un bloc de ravitaillement par ergol : chacun ne laisse passer que le sien.
-        BlockPos rp1Port = tablePos.offset(-4, -1, 2);
-        BlockPos oxygenPort = tablePos.offset(-5, -1, 2);
+        BlockPos rp1Port = tablePos.offset(-4, GROUND_Y, 2);
+        BlockPos oxygenPort = tablePos.offset(-5, GROUND_Y, 2);
         helper.setBlock(rp1Port, ModBlocks.FUEL_PORT.get().defaultBlockState().setValue(FuelPortBlock.KIND, FuelPortBlock.Kind.RP1));
         helper.setBlock(oxygenPort, ModBlocks.FUEL_PORT.get().defaultBlockState().setValue(FuelPortBlock.KIND, FuelPortBlock.Kind.LOX));
         helper.assertTrue(table.isOperational(), "un bloc de ravitaillement peut remplacer un bloc de charpente au pied de la tour");
@@ -1783,7 +1786,16 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(LaunchTableBlock.missingParts(helper.getLevel(), table).size() == 2, "la table devrait dire ce qui manque");
             helper.getLevel().setBlockAndUpdate(pos, piece.display());
         }
-        helper.assertTrue(seen.size() == PadPlan.Role.values().length - 1, "le 3×3 devrait avoir tous les rôles sauf le déluge");
+        // Posé sur le sol, le tablier n'a plus d'appuis ; le 3×3 n'a pas de rampes de déluge.
+        helper.assertTrue(seen.size() == PadPlan.Role.values().length - 2 && !seen.contains(PadPlan.Role.SUPPORT),
+                "le 3×3 devrait avoir tous les rôles sauf le déluge et les appuis");
+        // Un pas de tir bâti avant la 0.9.3 garde sa forme : tablier sur appuis, tour qui part un bloc plus bas, deux marches.
+        PadPlan raised = plan.raised(true);
+        helper.assertTrue(raised.pieces().stream().anyMatch(piece -> piece.role() == PadPlan.Role.SUPPORT)
+                && raised.riserBase().getY() == -1 && plan.riserBase().getY() == 0
+                && raised.pieces().stream().filter(piece -> piece.role() == PadPlan.Role.ACCESS).count() == 2
+                && plan.pieces().stream().filter(piece -> piece.role() == PadPlan.Role.ACCESS).count() == 1,
+                "l'ancienne forme surélevée devrait garder ses appuis, sa tour plus basse et ses deux marches");
         helper.assertTrue(table.getComplex().isComplete(), "le pas de tir devrait être de nouveau complet");
 
         // Une table sans plan ne forme rien, et le dit.
@@ -2003,12 +2015,12 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         // Ici la cabine est basse : le bras ombilical, qui gênerait le passage, monte au-dessus du portique. L'ancien
         // portique occupait les étages 7 à 9 : le neuvième redevient colonne technique.
         table.refresh(helper.getLevel());
-        int cabin = com.orbitalis.phase1.spaceport.RocketShape.cabinIndex(table.rocketShape().parts()) + 2;
+        int cabin = table.getPlan().levelAt(com.orbitalis.phase1.spaceport.RocketShape.cabinIndex(table.rocketShape().parts()) + 1);
         int wanted = PadPlan.gateLevel(1, false, cabin);
         helper.assertTrue(table.getPlan().gate() == wanted && wanted != new PadPlan(1, false, Direction.EAST).gate(),
                 "le portique du plan devrait suivre la cabine : étage " + table.getPlan().gate() + " au lieu de " + wanted);
-        helper.assertTrue(BoardingGateBlock.isCore(helper.getBlockState(tablePos.offset(-2, wanted - 1, 0)))
-                && helper.getBlockState(tablePos.offset(-2, 8, 0)).is(ModBlocks.SERVICE_TOWER.get()),
+        helper.assertTrue(BoardingGateBlock.isCore(helper.getBlockState(tablePos.offset(-2, wanted + GROUND_Y, 0)))
+                && helper.getBlockState(tablePos.offset(-2, 9 + GROUND_Y, 0)).is(ModBlocks.SERVICE_TOWER.get()),
                 "le portique devrait avoir été déplacé, et la colonne technique remise à son ancienne place");
         helper.assertTrue(helper.getBlockState(tablePos.offset(table.getPlan().armOffset())).is(ModBlocks.UMBILICAL_ARM.get())
                 && table.getComplex().isComplete() && table.getGateLevels().length == 1,

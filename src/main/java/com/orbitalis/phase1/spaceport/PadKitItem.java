@@ -95,6 +95,10 @@ public class PadKitItem extends Item {
                 player.sendSystemMessage(Component.translatable("spaceport.orbitalis.table.busy").withStyle(ChatFormatting.GOLD));
                 return;
             }
+            // Un pas de tir bâti avant la 0.9.3 garde son tablier surélevé : sa tour et ses appuis restent valides.
+            if (table.getPlan() != null && table.getPlan().raised()) {
+                plan = plan.raised(true);
+            }
             table.setPlan(plan);
             player.sendSystemMessage(Component.translatable("spaceport.orbitalis.kit.placed", plan.deckSize(), plan.deckSize(),
                     plan.pieces().size()).withStyle(ChatFormatting.GREEN));

@@ -399,7 +399,7 @@ public final class TestMap {
      */
     private static void testPad(ServerLevel level, int x0, int z0) {
         loadAround(level, x0, z0, 1);
-        BlockPos tablePos = new BlockPos(x0, Y + 1, z0);
+        BlockPos tablePos = new BlockPos(x0, Y, z0);
         level.setBlock(tablePos, ModBlocks.LAUNCH_TABLE.get().defaultBlockState(), Block.UPDATE_ALL);
         if (!(level.getBlockEntity(tablePos) instanceof com.orbitalis.phase1.spaceport.LaunchTableBlockEntity table)) {
             return;

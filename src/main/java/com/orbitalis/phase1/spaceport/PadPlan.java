@@ -21,8 +21,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
  * ascenseur) et son orientation. La table le garde en mémoire, montre en jeu les blocs qui manquent, et ne forme le
  * pas de tir que lorsque tous sont en place ; si l'un d'eux est cassé, le plan réapparaît.
  * <p>
- * Tout est repéré depuis la table. Le tablier est un bloc au-dessus du sol : la table et les dalles sont au niveau 0,
- * le déflecteur et les appuis au niveau -1 (posés sur le sol), et la tour part du sol.
+ * Tout est repéré depuis la table. Le tablier est posé sur le sol : la table et les dalles sont au niveau 0, le
+ * déflecteur au niveau -1, enterré sous la table, et la tour part du sol, au niveau 0. Une marche suffit pour monter
+ * sur le tablier.
+ * <p>
+ * Les pas de tir bâtis avant cela ({@code raised}) ont leur tablier surélevé d'un bloc sur des appuis : le déflecteur et
+ * les appuis au niveau -1, posés sur le sol, et la tour qui part du niveau -1. Ils gardent cette forme.
  * <pre>
  *   vue de dessus, carneau vers la droite          un étage de la tour (5×5), la fusée à droite
  *
@@ -40,8 +44,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
  *                 hauteur de la cabine de la fusée qu'on lui confie
  * @param arm      étage du bras ombilical. La table le déplace de même à la hauteur des réservoirs de la fusée
  * @param compact  vrai pour le pas de tir d'essai : un tablier 3×3, sans tour, sans mâts ni bras (voir {@link #test})
+ * @param raised   vrai pour l'ancienne forme, tablier surélevé sur ses appuis (pas de tir bâtis avant la 0.9.3)
  */
-public record PadPlan(int radius, boolean elevator, Direction facing, int gate, int arm, boolean compact) {
+public record PadPlan(int radius, boolean elevator, Direction facing, int gate, int arm, boolean compact, boolean raised) {
     /** Étage du bras ombilical tant qu'aucune fusée ne dit où le mettre. */
     private static final int ARM_LEVEL = 4;
 
@@ -128,7 +133,25 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
     }
 
     public PadPlan(int radius, boolean elevator, Direction facing, int gate, int arm) {
-        this(radius, elevator, facing, gate, arm, false);
+        this(radius, elevator, facing, gate, arm, false, false);
+    }
+
+    /** Le même plan, dans l'ancienne forme surélevée ({@code true}) ou posé sur le sol ({@code false}). */
+    public PadPlan raised(boolean raisedLayout) {
+        return new PadPlan(radius, elevator, facing, gate, arm, compact, raisedLayout);
+    }
+
+    /** Niveau du pied de la tour par rapport à la table : le sol, à côté du tablier. */
+    public int groundY() {
+        return raised ? -1 : 0;
+    }
+
+    /**
+     * Étage de la tour qui se trouve à cette hauteur au-dessus de la table. Le tronçon d'indice {@code i} d'une fusée est
+     * à {@code i + 1} blocs au-dessus de la table.
+     */
+    public int levelAt(int heightAboveTable) {
+        return heightAboveTable - groundY();
     }
 
     public PadPlan(int radius, boolean elevator, Direction facing, int gate) {
@@ -140,7 +163,7 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
      * premières fusées-sondes, à poudre et sans équipage, depuis le pupitre d'essai.
      */
     public static PadPlan test(Direction facing) {
-        return new PadPlan(1, false, facing, 0, 0, true);
+        return new PadPlan(1, false, facing, 0, 0, true, false);
     }
 
     /** Plan dont le portique est à sa hauteur habituelle : à dix blocs du sol, ou au plus haut si la tour est basse. */
@@ -167,12 +190,12 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
 
     /** Le même plan, portique à un autre étage. */
     public PadPlan withGate(int level) {
-        return compact ? this : new PadPlan(radius, elevator, facing, level, arm);
+        return compact ? this : new PadPlan(radius, elevator, facing, level, arm, false, raised);
     }
 
     /** Le même plan, bras ombilical à un autre étage. */
     public PadPlan withArm(int level) {
-        return compact ? this : new PadPlan(radius, elevator, facing, gate, level);
+        return compact ? this : new PadPlan(radius, elevator, facing, gate, level, false, raised);
     }
 
     /** Étage du bras ombilical. */
@@ -182,7 +205,7 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
 
     /** Place du bras ombilical par rapport à la table : contre la colonne technique, du côté de la fusée. */
     public BlockPos armOffset() {
-        return at(-radius, armLevel() - 1, 0);
+        return at(-radius, armLevel() + groundY(), 0);
     }
 
     /**
@@ -190,7 +213,7 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
      * avant droit. {@code null} sur le plus petit pas de tir, qui n'a pas de rampes de déluge.
      */
     public BlockPos waterPort() {
-        return radius >= 2 ? at(-radius - 1, -1, TOWER_HALF) : null;
+        return radius >= 2 ? at(-radius - 1, groundY(), TOWER_HALF) : null;
     }
 
     /** Les neuf cases du portique d'embarquement, par rapport à la table, du seuil au linteau. */
@@ -198,7 +221,7 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
         List<BlockPos> cells = new ArrayList<>(9);
         for (int row = 0; row <= 2; row++) {
             for (int s = -1; s <= 1; s++) {
-                cells.add(at(-radius - 1, gate - 1 + row, s));
+                cells.add(at(-radius - 1, gate + groundY() + row, s));
             }
         }
         return cells;
@@ -285,7 +308,7 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
 
     /** Pied de la colonne technique, par rapport à la table : au milieu de la face de la tour tournée vers la fusée. */
     public BlockPos riserBase() {
-        return at(-radius - 1, -1, 0);
+        return at(-radius - 1, groundY(), 0);
     }
 
     /** Tous les blocs du plan, du bas vers le haut. */
@@ -314,9 +337,10 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
         Direction front = plan.facing;
         Direction back = front.getOpposite();
 
-        // Sous le tablier : le déflecteur sous la table, et un appui sur deux le long du pourtour.
+        // Sous le tablier : le déflecteur sous la table, enterré. L'ancienne forme, surélevée, a en plus un appui sur deux
+        // le long du pourtour.
         plan.add(pieces, 0, -1, 0, Role.DEFLECTOR, ModBlocks.FLAME_DEFLECTOR.get());
-        for (int f = -r; f <= r; f++) {
+        for (int f = -r; plan.raised && f <= r; f++) {
             for (int s = -r; s <= r; s++) {
                 if (Math.max(Math.abs(f), Math.abs(s)) == r && Math.floorMod(f + s, 2) == 0) {
                     plan.add(pieces, f, -1, s, Role.SUPPORT, ModBlocks.PAD_SUPPORT.get());
@@ -371,7 +395,7 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
         // sa face avant (0) jusqu'à sa face arrière (4).
         int levels = plan.towerLevels();
         for (int level = 0; level <= levels; level++) {
-            int y = level - 1;
+            int y = level + plan.groundY();
             boolean roof = level == levels;
             for (int depth = 0; depth < TOWER_DEPTH; depth++) {
                 for (int s = -TOWER_HALF; s <= TOWER_HALF; s++) {
@@ -403,9 +427,12 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
                 }
             }
         }
-        // Escalier d'accès : deux volées contre le flanc gauche du tablier, du sol jusqu'à son dessus.
+        // Escalier d'accès contre le flanc gauche du tablier, du sol jusqu'à son dessus : une marche, ou deux pour
+        // l'ancienne forme surélevée.
         Direction up = front.getClockWise();
-        pieces.add(new Piece(plan.at(0, -1, -r - 2), Role.ACCESS, ModBlocks.TOWER_STAIRS.get(), null, up, -1));
+        if (plan.raised) {
+            pieces.add(new Piece(plan.at(0, -1, -r - 2), Role.ACCESS, ModBlocks.TOWER_STAIRS.get(), null, up, -1));
+        }
         pieces.add(new Piece(plan.at(0, 0, -r - 1), Role.ACCESS, ModBlocks.TOWER_STAIRS.get(), null, up, -1));
         // Le bras ombilical, accroché à la colonne technique et tourné vers la fusée.
         pieces.add(new Piece(plan.armOffset(), Role.ARM, ModBlocks.UMBILICAL_ARM.get(), null, front, plan.armLevel()));
