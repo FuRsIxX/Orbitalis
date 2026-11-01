@@ -905,63 +905,120 @@ def preview_texture():
 
 
 def drill_base_top():
-    """Dessus du socle à bâtir : une tôle striée d'acier sombre, bordée d'une bande de danger, et ses boulons."""
-    img = canvas("#4A5058")
+    """Dessus du socle à bâtir : une tôle striée d'alliage, une bande de danger sur le pourtour, et au milieu la platine
+    où se pose un mât, boulonnée aux quatre coins."""
+    img = sheet(SIZE, SIZE, "#4C555F", 80, 0.04)
     for y in range(SIZE):
         for x in range(SIZE):
-            if (x + y) % 4 == 0 or (x - y) % 4 == 0:
-                put(img, x, y, "#59616A")
-            if x in (0, 15) or y in (0, 15):
-                put(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
+            if (x + y) % 4 == 0:
+                dot(img, x, y, "#5F6973")
+            elif (x - y) % 4 == 0:
+                dot(img, x, y, "#424A53")
+    for k in range(SIZE):
+        for x, y in ((k, 0), (k, 15), (0, k), (15, k)):
+            dot(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
+        for x, y in ((k, 1), (1, k)):
+            if 1 <= k <= 14:
+                dot(img, x, y, SEAM)
+    for y in range(5, 11):
+        for x in range(5, 11):
+            edge = x in (5, 10) or y in (5, 10)
+            dot(img, x, y, SEAM if edge else (light(ALLOY, 0.1) if x + y < 15 else ALLOY))
+    for x, y in ((6, 6), (9, 6), (6, 9), (9, 9)):
+        dot(img, x, y, light(ALLOY, 0.5))
     for x, y in ((3, 3), (12, 3), (3, 12), (12, 12)):
-        put(img, x, y, BOLT)
-        put(img, x + 1, y + 1, shade("#4A5058", 0.35))
+        dot(img, x, y, BOLT)
+        dot(img, x + 1, y + 1, SEAM)
     return img
 
 
 def drill_base_side():
-    """Flanc du socle à bâtir : le pied de la tour en réduction, une jambe à chaque bord."""
-    return [row[0:6] + row[21:25] + row[42:48] for row in tower_plinth()]
+    """Flanc du socle à bâtir : une lèvre d'alliage, une bande de danger, un caisson graphite à grille d'aération et
+    voyant, et un pied d'alliage à chaque bord."""
+    img = sheet(SIZE, SIZE, "#262C33", 81, 0.05)
+    for x in range(SIZE):
+        dot(img, x, 0, light(ALLOY, 0.35))
+        dot(img, x, 1, shade(ALLOY, 0.3))
+        for y in (2, 3):
+            dot(img, x, y, "#F2C14E" if ((x + y) // 2) % 2 == 0 else DARK)
+        dot(img, x, 4, SEAM)
+        dot(img, x, 15, SEAM)
+    for y in range(5, 15):
+        for x, tone in ((0, SEAM), (1, light(ALLOY, 0.3)), (2, ALLOY), (13, ALLOY), (14, shade(ALLOY, 0.3)), (15, SEAM)):
+            dot(img, x, y, tone)
+    for y in range(7, 13):
+        for x in range(4, 12):
+            dot(img, x, y, SEAM if y % 2 == 1 else "#4A545F")
+    for x in range(4, 12):
+        dot(img, x, 6, shade("#262C33", 0.3))
+    dot(img, 7, 13, "#5BE37D")
+    dot(img, 8, 13, light("#5BE37D", 0.4))
+    for x, y in ((2, 6), (13, 6), (2, 13), (13, 13)):
+        dot(img, x, y, light(ALLOY, 0.55))
+    return img
 
 
 def drill_mast_side():
-    """Flanc d'un mât à bâtir : un treillis d'acier, deux montants jaunes, une traverse à chaque bout et une croix de
-    contreventement ; empilés, les mâts forment une tour en treillis."""
-    img = sheet(SIZE, SIZE, "#30353B", 74)
+    """Flanc d'un mât à bâtir : un treillis jaune, deux montants et deux traverses, une croix de contreventement
+    ombrée, des goussets aux angles et une platine boulonnée au croisement, sur un fond graphite ; empilés, les mâts
+    forment une tour en treillis."""
+    img = sheet(SIZE, SIZE, "#2B3138", 82, 0.05)
     for y in range(SIZE):
         for x in range(3, 13):
-            if abs(x - y) == 0 or abs(x - (15 - y)) == 0:
-                put(img, x, y, DRILL_YELLOW)
-            elif abs(x - y) == 1 or abs(x - (15 - y)) == 1:
-                put(img, x, y, shade(DRILL_YELLOW, 0.35) if x > 7 else light(DRILL_YELLOW, 0.1))
-    for y in range(SIZE):
+            if (x + y) % 2 == 0:
+                dot(img, x, y, "#2F363E")
+    # La croix : un trait jaune d'un pixel, et son ombre juste dessous.
+    for y in range(2, 14):
+        for x in range(3, 13):
+            if x == y or x == 15 - y:
+                if y + 1 < 14 and img[y + 1][x] != rgb(DRILL_YELLOW):
+                    dot(img, x, y + 1, shade(DRILL_YELLOW, 0.45))
+                dot(img, x, y, DRILL_YELLOW)
+    # La platine du croisement.
+    for y in range(6, 10):
+        for x in range(6, 10):
+            dot(img, x, y, shade(DRILL_YELLOW, 0.15) if x in (6, 9) or y in (6, 9) else DRILL_YELLOW)
+    dot(img, 7, 7, light(DRILL_YELLOW, 0.6))
+    dot(img, 8, 8, shade(DRILL_YELLOW, 0.45))
+    # Les montants et les traverses.
+    for k in range(SIZE):
         for x, tone in ((0, shade(DRILL_YELLOW, 0.5)), (1, light(DRILL_YELLOW, 0.3)), (2, DRILL_YELLOW), (13, DRILL_YELLOW),
                         (14, shade(DRILL_YELLOW, 0.25)), (15, shade(DRILL_YELLOW, 0.5))):
-            put(img, x, y, tone)
-    for x in range(SIZE):
-        put(img, x, 0, light(DRILL_YELLOW, 0.2))
-        put(img, x, 1, shade(DRILL_YELLOW, 0.3) if 2 < x < 13 else DRILL_YELLOW)
-        put(img, x, 14, DRILL_YELLOW)
-        put(img, x, 15, shade(DRILL_YELLOW, 0.45))
-    for x, y in ((2, 3), (13, 3), (2, 12), (13, 12)):
-        put(img, x, y, light(DRILL_YELLOW, 0.55))
+            dot(img, x, k, tone)
+        dot(img, k, 0, light(DRILL_YELLOW, 0.25))
+        dot(img, k, 1, DRILL_YELLOW if k < 3 or k > 12 else shade(DRILL_YELLOW, 0.3))
+        dot(img, k, 14, DRILL_YELLOW)
+        dot(img, k, 15, shade(DRILL_YELLOW, 0.5))
+    # Les goussets d'angle, et leurs boulons.
+    for cx, cy, dx, dy in ((3, 2, 1, 1), (12, 2, -1, 1), (3, 13, 1, -1), (12, 13, -1, -1)):
+        dot(img, cx, cy, DRILL_YELLOW)
+        dot(img, cx + dx, cy, shade(DRILL_YELLOW, 0.2))
+        dot(img, cx, cy + dy, shade(DRILL_YELLOW, 0.2))
+    for x, y in ((1, 3), (14, 3), (1, 12), (14, 12)):
+        dot(img, x, y, light(DRILL_YELLOW, 0.6))
     return img
 
 
 def drill_mast_top():
-    """Bout d'un mât à bâtir : le cadre jaune du treillis, ses goussets d'angle et sa croix, sur un fond sombre."""
-    img = sheet(SIZE, SIZE, "#2A2E33", 75)
+    """Bout d'un mât à bâtir : le cadre jaune du treillis vu d'en haut, ses goussets, une croix, et la platine du
+    milieu, sur un fond graphite."""
+    img = sheet(SIZE, SIZE, "#262B31", 83, 0.04)
     for y in range(SIZE):
         for x in range(SIZE):
             if x in (0, 15) or y in (0, 15):
-                put(img, x, y, shade(DRILL_YELLOW, 0.45))
+                dot(img, x, y, shade(DRILL_YELLOW, 0.45))
             elif x in (1, 14) or y in (1, 14):
-                put(img, x, y, DRILL_YELLOW)
+                dot(img, x, y, light(DRILL_YELLOW, 0.1) if x == 1 or y == 1 else DRILL_YELLOW)
             elif x == y or x == 15 - y:
-                put(img, x, y, shade(DRILL_YELLOW, 0.2))
+                dot(img, x, y, shade(DRILL_YELLOW, 0.2))
     for cx, cy in ((2, 2), (11, 2), (2, 11), (11, 11)):
         for k in range(3):
-            put(img, cx + k, cy + (0 if cy == 2 else 2), light(DRILL_YELLOW, 0.2))
+            dot(img, cx + k, cy if cy == 2 else cy + 2, DRILL_YELLOW)
+            dot(img, cx if cx == 2 else cx + 2, cy + k, DRILL_YELLOW)
+    for y in range(6, 10):
+        for x in range(6, 10):
+            dot(img, x, y, ALLOY if not (x in (6, 9) or y in (6, 9)) else shade(ALLOY, 0.3))
+    dot(img, 7, 7, light(ALLOY, 0.5))
     return img
 
 

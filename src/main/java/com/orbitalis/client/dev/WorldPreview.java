@@ -403,6 +403,14 @@ public final class WorldPreview {
                 derrick.setRunning(true);
             }
         }, 33.0, 9.0, 1.0, -20.0F, 30.0F, 120));
+        // Les blocs de la tour, posés seuls : deux socles et une colonne de trois mâts.
+        SHOTS.add(new Shot("drill_parts", level -> {
+            set(level, 42, 0, 14, "orbitalis:drill_base");
+            set(level, 43, 0, 14, "orbitalis:drill_base");
+            for (int y = 0; y < 3; y++) {
+                set(level, 45, y, 14, "orbitalis:drill_mast");
+            }
+        }, 43.8, 2.2, 17.6, 160.0F, 25.0F, 10));
         SHOTS.add(new Shot("derrick_close", null, 34.5, 3.5, 20.5, 160.0F, 15.0F, 20));
         SHOTS.add(new Shot("derrick_screen", level -> {
             var players = level.getServer().getPlayerList().getPlayers();
