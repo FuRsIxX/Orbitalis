@@ -350,6 +350,16 @@ public final class WorldPreview {
             }
         }, -5.5, 1.9, -3.4, 0.0F, 28.0F, 80));
         SHOTS.add(new Shot("machines_b", null, 5.5, 1.9, -3.4, 0.0F, 28.0F, 20));
+        // Les autres machines, et la pompe à eau de face (sa bride), de dos (son boîtier électrique) et de profil.
+        SHOTS.add(new Shot("machines_c", level -> {
+            String[] machines = {"sabatier_reactor", "helium3_extractor", "casimir_chamber", "fusion_reactor", "flight_computer",
+                    "water_pump[facing=north]", "water_pump[facing=south]", "water_pump[facing=east]"};
+            for (int i = 0; i < machines.length; i++) {
+                set(level, 10 + 2 * i, 0, 0, "orbitalis:" + machines[i]);
+            }
+        }, 14.5, 1.9, -3.4, 0.0F, 28.0F, 20));
+        SHOTS.add(new Shot("machines_d", null, 22.5, 1.6, -2.6, 0.0F, 30.0F, 12));
+        SHOTS.add(new Shot("machines_tops", null, 5.5, 4.5, -2.0, 0.0F, 62.0F, 12));
 
         // Grand pas de tir 5×5 bâti selon le plan complet, avec le lanceur orbital.
         SHOTS.add(new Shot("large_pad", level -> {

@@ -3962,7 +3962,14 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         }
         BlockPos pumpPos = new BlockPos(1, 1, 1);
         helper.setBlock(pumpPos, ModBlocks.WATER_PUMP.get());
+        // La pompe regarde au nord : son boîtier électrique est au sud, sa bride de sortie au nord. Une source posée sur
+        // elle ne l'alimente pas, et un réservoir sur son flanc ne reçoit rien.
         helper.setBlock(pumpPos.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get());
+        helper.assertTrue(helper.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK,
+                helper.absolutePos(pumpPos), Direction.UP) == null, "la pompe ne doit prendre le courant que par son boîtier");
+        helper.setBlock(pumpPos.south(), ModBlocks.CREATIVE_ENERGY_SOURCE.get());
+        BlockPos sideTank = pumpPos.east();
+        helper.setBlock(sideTank, ModBlocks.CRYOGENIC_TANK.get());
         BlockPos tankPos = pumpPos.offset(0, 0, -1);
         helper.setBlock(tankPos.below(), Blocks.STONE);
         helper.setBlock(tankPos, ModBlocks.CRYOGENIC_TANK.get());
@@ -3982,6 +3989,8 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             for (int x = 0; x < 4; x++) {
                 helper.assertTrue(helper.getBlockState(new BlockPos(x, 0, 1)).is(Blocks.WATER), "la pompe ne doit pas vider l'étendue d'eau");
             }
+            helper.assertTrue(helper.getBlockEntity(sideTank, CryogenicTankBlockEntity.class).getTank().getFluid(0).isEmpty(),
+                    "l'eau ne doit sortir que par la bride, à l'avant");
             var dry = helper.getBlockEntity(dryPos, com.orbitalis.phase1.fuel.WaterPumpBlockEntity.class);
             helper.assertTrue(!dry.isPumping() && dry.getTank().getFluid(0).isEmpty(), "une pompe sur trois blocs d'eau ne doit rien pomper");
         });

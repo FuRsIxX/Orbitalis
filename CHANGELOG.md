@@ -1,7 +1,8 @@
 # Orbitalis — prochaine version
 
 ## Nouveautés
-- **Pompe à eau** : posée au-dessus d'une étendue d'au moins 8 blocs d'eau (une nappe de 4×2), elle pompe un seau par seconde pour 10 FE par tick, sans jamais la vider. Elle envoie l'eau aux tuyaux et aux machines qui la touchent.
+- **Pompe à eau** : posée au-dessus d'une étendue d'au moins 8 blocs d'eau (une nappe de 4×2), elle pompe un seau par seconde pour 10 FE par tick, sans jamais la vider. C'est une vraie pompe, sur son socle, avec son moteur : le câble se branche sur son boîtier électrique, à l'arrière, et le tuyau sur sa bride de sortie, à l'avant.
+- Chaque machine a sa propre livrée : la couleur de sa coque et les motifs de ses flancs, de son dessus et de sa grille changent d'une machine à l'autre (ailettes du générateur, bandes de danger de la fonderie, conduites de l'électrolyseur, givre du liquéfacteur...). La forme reste la même pour toutes.
 - Cassés, les réservoirs gardent leur contenu : l'objet l'emporte et le rend une fois reposé. Un bloc de réservoir modulable emporte sa part.
 - Le réservoir modulable ravitaille aussi la fusée, collé à un bloc de ravitaillement ou relié par un tuyau.
 - En multijoueur, tous les joueurs à moins de 64 blocs du pas de tir au décollage reçoivent les points de recherche du vol, pour leur agence.
@@ -105,7 +106,8 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 # Orbitalis — next version
 
 ## New
-- **Water pump**: placed above a body of at least 8 water blocks (a 4×2 pool), it pumps a bucket per second for 10 FE per tick and never drains it. It sends the water to the pipes and machines touching it.
+- **Water pump**: placed above a body of at least 8 water blocks (a 4×2 pool), it pumps a bucket per second for 10 FE per tick and never drains it. It's a real pump, on its skid, with its motor: the cable goes into its electrical box at the back, and the pipe onto its outlet flange at the front.
+- Every machine has its own livery: the colour of its casing and the patterns on its sides, top and grille differ from one machine to the next (the generator's fins, the foundry's hazard stripes, the electrolyzer's pipes, the liquefier's frost...). The shape stays the same for all.
 - Broken tanks keep their contents: the item carries them and gives them back once placed again. A modular tank block takes its share.
 - The modular tank fuels rockets too, placed against a fuel port or connected to one by a pipe.
 - In multiplayer, every player within 64 blocks of the pad at liftoff earns the flight's research points for their agency.

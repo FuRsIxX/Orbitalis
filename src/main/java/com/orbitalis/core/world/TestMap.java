@@ -315,7 +315,7 @@ public final class TestMap {
         sign(level, new BlockPos(x0 - 2, Y, z0 + 2), Component.translatable("testmap.orbitalis.zone.machines"), null, null);
 
         // La pompe à eau, à l'est de l'atelier : au-dessus d'un bassin de 4×2 sur deux de profondeur, alimentée par une
-        // source créative, elle remplit le réservoir cryogénique posé contre elle.
+        // source créative contre son boîtier électrique, au nord, elle remplit le réservoir posé contre sa bride, au sud.
         int px = x0 + 9;
         for (int x = px; x < px + 4; x++) {
             for (int z = z0; z < z0 + 2; z++) {
@@ -326,8 +326,8 @@ public final class TestMap {
         BlockPos pump = new BlockPos(px + 1, Y, z0);
         level.setBlock(pump, ModBlocks.WATER_PUMP.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
                 Block.UPDATE_ALL);
-        level.setBlock(pump.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
-        machine(level, pump.east(), ModBlocks.CRYOGENIC_TANK.get(), ItemStack.EMPTY);
+        level.setBlock(pump.north(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+        machine(level, pump.south(), ModBlocks.CRYOGENIC_TANK.get(), ItemStack.EMPTY);
 
         // Un carré de quatre panneaux solaires raccordés, plus loin à l'est : chacun produit un quart de plus.
         int sx = px + 7;

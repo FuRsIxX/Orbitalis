@@ -215,9 +215,12 @@ public final class ModBlockEntities {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, FUSION_REACTOR.get(), (reactor, side) -> reactor.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, FUSION_REACTOR.get(), (reactor, side) -> reactor.getTanks().automationView());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, CRYOGENIC_TANK.get(), (tank, side) -> tank.getTank().automationView());
-        // Pompe à eau : elle reçoit de l'énergie, et on ne peut que lui prendre son eau.
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, WATER_PUMP.get(), (pump, side) -> pump.getEnergy());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, WATER_PUMP.get(), (pump, side) -> pump.getTank().automationView());
+        // Pompe à eau : le courant n'entre que par son boîtier électrique, à l'arrière, et l'eau ne sort que par sa bride,
+        // à l'avant. Câbles et tuyaux ne se raccordent donc qu'au bon endroit.
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, WATER_PUMP.get(),
+                (pump, side) -> side == null || side == pump.powerInlet() ? pump.getEnergy() : null);
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, WATER_PUMP.get(),
+                (pump, side) -> side == null || side == pump.outlet() ? pump.getTank().automationView() : null);
 
         // Réservoir modulable : quel que soit le bloc touché, on atteint le contenu du réservoir entier.
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, FLUID_TANK.get(), (tank, side) -> tank.handler());

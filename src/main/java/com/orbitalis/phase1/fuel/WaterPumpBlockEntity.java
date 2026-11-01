@@ -28,7 +28,8 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 /**
  * La pompe à eau au travail. Posée au-dessus d'une étendue d'eau d'au moins {@link #MIN_SOURCES} blocs (une nappe de
  * 4×2), elle pompe un seau par seconde, tant qu'elle a du courant. Comme une source infinie, elle ne vide jamais
- * l'étendue. Elle envoie son eau aux tuyaux et aux machines qui la touchent, par toutes ses faces sauf le dessous.
+ * l'étendue. Comme une vraie pompe, elle a deux raccords : son boîtier électrique, à l'arrière, reçoit le courant, et
+ * sa bride, à l'avant, envoie l'eau au tuyau, à la machine ou au réservoir qui s'y branche.
  */
 public class WaterPumpBlockEntity extends BlockEntity {
     /** Plus petite étendue d'eau dont la pompe se contente, en blocs d'eau de source qui se touchent. */
@@ -82,17 +83,27 @@ public class WaterPumpBlockEntity extends BlockEntity {
         deliver(level, pos);
     }
 
-    /** Envoie l'eau aux blocs voisins qui en prennent : tuyaux, machines, réservoirs, raccords du pas de tir. */
+    /** Envoie l'eau par la bride de sortie, à l'avant, au bloc qui s'y branche : tuyau, machine, réservoir. */
     private void deliver(ServerLevel level, BlockPos pos) {
-        for (Direction direction : Direction.values()) {
-            if (direction == Direction.DOWN || tank.getFluid(0).isEmpty()) {
-                continue;
-            }
-            ResourceHandler<FluidResource> target = level.getCapability(Capabilities.Fluid.BLOCK, pos.relative(direction), direction.getOpposite());
-            if (target != null) {
-                ResourceHandlerUtil.move(tank.automationView(), target, resource -> resource.getFluid() == Fluids.WATER, RATE * 2, null);
-            }
+        if (tank.getFluid(0).isEmpty()) {
+            return;
         }
+        Direction outlet = outlet();
+        ResourceHandler<FluidResource> target = level.getCapability(Capabilities.Fluid.BLOCK, pos.relative(outlet), outlet.getOpposite());
+        if (target != null) {
+            ResourceHandlerUtil.move(tank.automationView(), target, resource -> resource.getFluid() == Fluids.WATER, RATE * 2, null);
+        }
+    }
+
+    /** Face de la bride de sortie, à l'avant de la pompe. */
+    public Direction outlet() {
+        BlockState state = getBlockState();
+        return state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
+    }
+
+    /** Face du boîtier électrique, à l'arrière de la pompe. */
+    public Direction powerInlet() {
+        return outlet().getOpposite();
     }
 
     /**
