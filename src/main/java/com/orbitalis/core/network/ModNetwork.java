@@ -45,6 +45,14 @@ public final class ModNetwork {
         registrar.playToClient(StationStatusPayload.TYPE, StationStatusPayload.STREAM_CODEC);
         registrar.playToClient(SuitStatusPayload.TYPE, SuitStatusPayload.STREAM_CODEC);
         registrar.playToClient(DesignStatePayload.TYPE, DesignStatePayload.STREAM_CODEC);
+        registrar.playToClient(DerrickStatusPayload.TYPE, DerrickStatusPayload.STREAM_CODEC);
+        // Une commande de l'écran d'un derrick.
+        registrar.playToServer(DerrickCommandPayload.TYPE, DerrickCommandPayload.STREAM_CODEC, (payload, context) -> {
+            if (context.player() instanceof ServerPlayer player && player.level().isLoaded(payload.pos())
+                    && player.level().getBlockEntity(payload.pos()) instanceof com.orbitalis.phase1.quarry.DerrickBlockEntity derrick) {
+                derrick.command(player, payload.action(), payload.argument());
+            }
+        });
         // Un réglage de l'écran de conception : l'ordinateur le garde.
         registrar.playToServer(DesignEditPayload.TYPE, DesignEditPayload.STREAM_CODEC, (payload, context) -> {
             if (context.player() instanceof ServerPlayer player && player.level().isLoaded(payload.pos())

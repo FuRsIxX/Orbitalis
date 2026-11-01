@@ -656,6 +656,19 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_aluminum_plate", has(ModTags.Items.PLATES_ALUMINUM))
                 .save(output, key("solar_panel"));
 
+        // Derrick : un moteur, une carte électronique, une pioche en diamant pour la tête de forage, sur un bloc d'acier.
+        shaped(RecipeCategory.MISC, ModBlocks.DRILL_DERRICK)
+                .pattern("PMP")
+                .pattern("CDC")
+                .pattern("PBP")
+                .define('P', ModTags.Items.PLATES_STEEL)
+                .define('M', ModItems.ELECTRIC_MOTOR)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .define('D', Items.DIAMOND_PICKAXE)
+                .define('B', ModBlocks.STEEL_BLOCK)
+                .unlockedBy("has_steel_plate", has(ModTags.Items.PLATES_STEEL))
+                .save(output, key("drill_derrick"));
+
         // Les générations suivantes de panneaux : deux panneaux de la précédente, et des matériaux de plus en plus rares.
         shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PANEL_ADVANCED)
                 .pattern("GGG")

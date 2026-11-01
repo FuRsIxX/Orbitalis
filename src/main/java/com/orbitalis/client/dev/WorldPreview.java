@@ -383,6 +383,31 @@ public final class WorldPreview {
             }
         }, 44.5, 3.2, -2.6, 0.0F, 45.0F, 20));
         SHOTS.add(new Shot("solar_lone", null, 40.5, 1.9, -1.2, 0.0F, 50.0F, 8));
+        // Le derrick : un complet qui fore, un autre dont la tour manque encore, puis son écran.
+        SHOTS.add(new Shot("derrick", level -> {
+            set(level, 30, 0, 12, "orbitalis:drill_derrick[facing=north]");
+            for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces()) {
+                level.setBlockAndUpdate(at(30, 0, 12).offset(piece.offset()), piece.block().defaultBlockState());
+            }
+            set(level, 36, 0, 12, "orbitalis:drill_derrick[facing=north]");
+            set(level, 36, 0, 11, "minecraft:chest");
+            if (level.getBlockEntity(at(30, 0, 12)) instanceof com.orbitalis.phase1.quarry.DerrickBlockEntity derrick) {
+                derrick.getEnergy().generate(com.orbitalis.phase1.quarry.DerrickBlockEntity.ENERGY_CAPACITY);
+                derrick.getCoolant().setFluid(0, new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 16000));
+                derrick.setRadius(4);
+                derrick.checkStructure();
+                derrick.setRunning(true);
+            }
+        }, 33.0, 7.0, 3.0, 0.0F, 30.0F, 120));
+        SHOTS.add(new Shot("derrick_close", null, 30.5, 2.5, 8.6, 0.0F, 20.0F, 20));
+        SHOTS.add(new Shot("derrick_screen", level -> {
+            var players = level.getServer().getPlayerList().getPlayers();
+            if (!players.isEmpty() && level.getBlockEntity(at(30, 0, 12)) instanceof com.orbitalis.phase1.quarry.DerrickBlockEntity derrick) {
+                derrick.open(players.get(0));
+            }
+        }, 33.0, 7.0, 3.0, 0.0F, 30.0F, 20));
+        SHOTS.add(new Shot("derrick_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
+                () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), 33.0, 7.0, 3.0, 0.0F, 30.0F, 4));
         SHOTS.add(new Shot("solar_tiers", null, 57.5, 4.5, -3.0, 0.0F, 45.0F, 8));
         SHOTS.add(new Shot("solar_tiers_close", null, 53.0, 2.2, -0.5, 0.0F, 45.0F, 8));
         SHOTS.add(new Shot("solar_icons", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {

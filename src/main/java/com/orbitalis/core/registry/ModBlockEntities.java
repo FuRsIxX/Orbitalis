@@ -99,6 +99,11 @@ public final class ModBlockEntities {
             BLOCK_ENTITIES.register("design_computer",
                     () -> new BlockEntityType<>(com.orbitalis.phase1.rocket.DesignComputerBlockEntity::new, ModBlocks.DESIGN_COMPUTER.get()));
 
+    /** Derrick : la tour de forage et son travail. */
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.orbitalis.phase1.quarry.DerrickBlockEntity>> DRILL_DERRICK =
+            BLOCK_ENTITIES.register("drill_derrick",
+                    () -> new BlockEntityType<>(com.orbitalis.phase1.quarry.DerrickBlockEntity::new, ModBlocks.DRILL_DERRICK.get()));
+
     /** Table de lancement : surveille le complexe qui l'entoure. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LaunchTableBlockEntity>> LAUNCH_TABLE =
             BLOCK_ENTITIES.register("launch_table",
@@ -248,6 +253,10 @@ public final class ModBlockEntities {
         event.registerBlock(Capabilities.Fluid.BLOCK,
                 (level, pos, state, blockEntity, side) -> new UmbilicalFluidHandler(level, pos),
                 ModBlocks.FUEL_PORT.get());
+        // Derrick : il prend l'électricité et l'eau de refroidissement par ses côtés, et on lui prend son butin.
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, DRILL_DERRICK.get(), (derrick, side) -> derrick.getEnergy());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, DRILL_DERRICK.get(), (derrick, side) -> derrick.getCoolant());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, DRILL_DERRICK.get(), (derrick, side) -> derrick.getOutput().automationView());
         // L'électricité du pas de tir : un câble se branche sur la table, sur une dalle du tablier ou sur un bloc de
         // ravitaillement, et charge la réserve de la table la plus proche.
         event.registerBlockEntity(Capabilities.Energy.BLOCK, LAUNCH_TABLE.get(), (table, side) -> table.getPower());

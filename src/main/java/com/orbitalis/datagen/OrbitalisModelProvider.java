@@ -86,6 +86,7 @@ public class OrbitalisModelProvider extends ModelProvider {
         machine(blockModels, ModBlocks.REFINERY.get());
         machine(blockModels, ModBlocks.CRYOGENIC_TANK.get());
         machine(blockModels, ModBlocks.WATER_PUMP.get());
+        machine(blockModels, ModBlocks.DRILL_DERRICK.get());
 
         // Terminal de recherche : même carcasse que les machines, avec un écran toujours allumé.
 

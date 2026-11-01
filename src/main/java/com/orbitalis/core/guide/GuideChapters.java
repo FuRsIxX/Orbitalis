@@ -31,6 +31,7 @@ public final class GuideChapters {
             new GuideChapter("rolling_mill", MACHINES, ModBlocks.ROLLING_MILL),
             new GuideChapter("conduits", MACHINES, ModBlocks.ENERGY_CABLE),
             new GuideChapter("automation", MACHINES, () -> Items.HOPPER),
+            new GuideChapter("quarry", MACHINES, ModBlocks.DRILL_DERRICK),
             new GuideChapter("fuels", FUELS, ModBlocks.REFINERY),
             new GuideChapter("cryogenics", FUELS, ModBlocks.CRYOGENIC_LIQUEFIER),
             new GuideChapter("methane", FUELS, ModBlocks.SABATIER_REACTOR),

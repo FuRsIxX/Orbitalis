@@ -13,7 +13,7 @@ demi-pixel. Chacune a pourtant sa livrée, qui la fait reconnaître de loin :
   barreaux, voyants) ;
 - son pictogramme : flamme (générateur), éclair (fonderie à arc), cylindres (laminoir), goutte (électrolyseur),
   flocon (liquéfacteur), colonne (raffinerie), fiole (Sabatier), croissant de lune (hélium-3), plaques (Casimir),
-  atome (fusion), réservoir (cryogénique), fusée (ordinateur de vol).
+  atome (fusion), réservoir (cryogénique), foret (derrick), fusée (ordinateur de vol).
 
 En marche, la jauge de l'écran monte cran par cran, le témoin clignote et la grille s'anime de la couleur de la machine.
 Le dos de toutes porte le port d'énergie, le dessous est un socle sombre : câbles et tuyaux s'y raccordent proprement.
@@ -56,6 +56,7 @@ ICONS = {
     "atom": [".###.", "#.#.#", "##.##", "#.#.#", ".###."],
     "tank": [".###.", "#...#", "#####", "#####", ".###."],
     "rocket": ["..#..", ".###.", ".###.", ".###.", "#.#.#"],
+    "drill": ["#####", ".###.", ".###.", "..#..", "..#.."],
 }
 
 
@@ -444,6 +445,7 @@ MACHINES = {
     "casimir_chamber": spec("#4B4462", "#B07CFF", "plates", 8, "panels", "core", "dots"),
     "fusion_reactor": spec("#2E3036", "#F05AB4", "atom", 8, "hoops", "core", "mesh"),
     "cryogenic_tank": spec("#DCE8EF", "#9AD4F5", "tank", 8, "hoops", "cap", "slats"),
+    "drill_derrick": spec("#B4652B", "#FFB347", "drill", 8, "hazard", "hatch", "bars"),
 }
 # Blocs du même style qui n'ont pas d'état allumé : leur fenêtre est toujours animée et lumineuse.
 ALWAYS_ON = {

@@ -119,6 +119,7 @@ public class OrbitalisClient {
         event.registerBlockEntityRenderer(ModBlockEntities.SHIPYARD_CONSOLE.get(), com.orbitalis.client.render.ShipyardConsoleRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.MISSION_DISPLAY.get(), MissionDisplayRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), FluidTankRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.DRILL_DERRICK.get(), com.orbitalis.client.render.DerrickRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.GLASS_DOOR.get(), com.orbitalis.client.render.GlassDoorRenderer::new);
         event.registerEntityRenderer(ModEntities.CAPSULE.get(), CapsuleRenderer::new);
         event.registerEntityRenderer(ModEntities.ELEVATOR_CABIN.get(), ElevatorCabinRenderer::new);
@@ -130,6 +131,15 @@ public class OrbitalisClient {
     @SubscribeEvent
     static void registerPayloadHandlers(RegisterClientPayloadHandlersEvent event) {
         event.register(ResearchSyncPayload.TYPE, (payload, context) -> ClientResearch.receive(payload));
+        // Derrick : son écran s'ouvre sur son état, puis s'actualise.
+        event.register(com.orbitalis.core.network.DerrickStatusPayload.TYPE, (payload, context) -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (payload.open()) {
+                minecraft.gui.setScreen(new com.orbitalis.client.screen.DerrickScreen(payload));
+            } else if (minecraft.gui.screen() instanceof com.orbitalis.client.screen.DerrickScreen screen) {
+                screen.receive(payload);
+            }
+        });
         // Ordinateur de conception : il ouvre l'écran sur son brouillon, puis montre les réglages des autres joueurs.
         event.register(com.orbitalis.core.network.DesignStatePayload.TYPE, (payload, context) -> {
             Minecraft minecraft = Minecraft.getInstance();

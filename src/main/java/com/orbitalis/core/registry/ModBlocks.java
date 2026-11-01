@@ -531,6 +531,16 @@ public final class ModBlocks {
                     .strength(3.0F, 6.0F)
                     .sound(SoundType.METAL)
                     .noOcclusion().lightLevel(state -> 4)));
+    /** Derrick : le bloc de commande d'une tour de forage, qui extrait les minerais choisis sous elle. */
+    public static final DeferredBlock<com.orbitalis.phase1.quarry.DerrickBlock> DRILL_DERRICK = withItem(BLOCKS.registerBlock("drill_derrick",
+            com.orbitalis.phase1.quarry.DerrickBlock::new,
+            properties -> properties
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .lightLevel(state -> state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT) ? 9 : 0)));
     /** Bras d'assemblage : alimenté en électricité, il bâtit la fusée du pas de tir voisin avec les pièces d'un coffre. */
     /** Générateur d'air : alimenté en électricité, il pressurise la pièce close qui l'entoure. Il l'éclaire aussi. */
     public static final DeferredBlock<LifeSupportBlock> LIFE_SUPPORT = withItem(BLOCKS.registerBlock("life_support", LifeSupportBlock::new,

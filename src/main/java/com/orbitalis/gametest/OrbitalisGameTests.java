@@ -142,6 +142,9 @@ public final class OrbitalisGameTests {
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FLUID_PURGE =
             FUNCTIONS.register("fluid_purge", () -> OrbitalisGameTests::fluidPurge);
 
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> DRILL_DERRICK =
+            FUNCTIONS.register("drill_derrick", () -> OrbitalisGameTests::drillDerrick);
+
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
 
@@ -310,6 +313,9 @@ public final class OrbitalisGameTests {
         // La purge d'une sortie tient le réservoir à moitié, ou le vide.
         event.registerTest(Orbitalis.id("fluid_purge"), new FunctionGameTestInstance(
                 FLUID_PURGE.getKey(), spaced(environment, emptyStructure, 200)));
+        // Le derrick : sa tour, le forage d'un minerai avec remblai, la chaleur et l'eau, le carottage et ses points.
+        event.registerTest(Orbitalis.id("drill_derrick"), new FunctionGameTestInstance(
+                DRILL_DERRICK.getKey(), spaced(environment, emptyStructure, 200)));
         // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
         event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
                 WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
@@ -3869,6 +3875,63 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         helper.succeedWhen(() -> {
             helper.assertTrue(stage[0] == 2, "la purge n'a pas tenu le réservoir à moitié puis ne l'a pas vidé");
             helper.assertTrue(machine.getTanks().getFluid(1).getAmount() == 1000, "purge arrêtée, le réservoir ne doit plus se vider");
+        });
+    }
+
+    /**
+     * Derrick : il ne fore qu'une fois sa tour complète ; il extrait le minerai voulu et le remplace par de la roche (le
+     * remblai), chauffe et boit son eau de refroidissement ; un carottage trouve les minerais sous lui et rapporte des
+     * points de recherche la première fois.
+     */
+    private static void drillDerrick(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(3, 6, 3);
+        helper.setBlock(pos, ModBlocks.DRILL_DERRICK.get());
+        var derrick = helper.getBlockEntity(pos, com.orbitalis.phase1.quarry.DerrickBlockEntity.class);
+        derrick.checkStructure();
+        helper.assertTrue(!derrick.isFormed(), "sans sa tour, le derrick ne doit pas être formé");
+        for (var piece : com.orbitalis.phase1.quarry.DerrickPlan.pieces()) {
+            helper.setBlock(pos.offset(piece.offset()), piece.block());
+        }
+        derrick.checkStructure();
+        helper.assertTrue(derrick.isFormed(), "la tour complète aurait dû former le derrick");
+
+        // Sous lui, un minerai de fer à la première couche, du charbon à la deuxième.
+        BlockPos iron = pos.offset(1, -1, 1);
+        BlockPos coal = pos.offset(-2, -2, 0);
+        helper.setBlock(iron, Blocks.IRON_ORE);
+        helper.setBlock(coal, Blocks.COAL_ORE);
+        derrick.getEnergy().generate(com.orbitalis.phase1.quarry.DerrickBlockEntity.ENERGY_CAPACITY);
+        derrick.getCoolant().setFluid(0, new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 8000));
+        derrick.setRadius(2);
+
+        // Le carottage d'abord : il trouve le fer et le charbon, et la première découverte rapporte des points.
+        @SuppressWarnings("removal")
+        net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        AgencyResearch research = ResearchManager.of(player);
+        research.reset();
+        derrick.coreNow(player);
+        int found = 0;
+        for (int band : derrick.coreBands()) {
+            found |= band;
+        }
+        int ironKind = com.orbitalis.phase1.satellite.ProspectOre.IRON.ordinal();
+        helper.assertTrue((found & (1 << ironKind)) != 0, "le carottage aurait dû trouver le fer");
+        helper.assertTrue(research.points() >= com.orbitalis.phase1.quarry.DerrickBlockEntity.CORE_POINTS,
+                "le premier carottage aurait dû rapporter des points : " + research.points());
+        int afterFirst = research.points();
+        derrick.coreNow(player);
+        helper.assertTrue(research.points() == afterFirst, "un second carottage des mêmes filons ne doit rien rapporter");
+
+        derrick.setRunning(true);
+        helper.succeedWhen(() -> {
+            helper.assertTrue(helper.getBlockState(iron).is(Blocks.STONE), "le fer extrait aurait dû être remplacé par de la roche");
+            helper.assertTrue(helper.getBlockState(coal).is(Blocks.STONE), "le charbon extrait aurait dû être remplacé par de la roche");
+            boolean rawIron = false;
+            for (int slot = 0; slot < 18; slot++) {
+                rawIron |= derrick.getOutput().getStack(slot).is(Items.RAW_IRON);
+            }
+            helper.assertTrue(rawIron, "le fer brut aurait dû arriver dans la réserve");
+            helper.assertTrue(derrick.getCoolant().getFluid(0).getAmount() < 8000, "la tête aurait dû boire de l'eau en chauffant");
         });
     }
 
