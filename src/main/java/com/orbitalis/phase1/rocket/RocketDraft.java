@@ -3,7 +3,11 @@ package com.orbitalis.phase1.rocket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.orbitalis.core.registry.ModItems;
+
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
@@ -20,6 +24,13 @@ import net.minecraft.world.item.Items;
  * @param boosters boosters latéraux du premier étage : 0, ou une paire
  */
 public record RocketDraft(Item payload, List<Stage> stages, int boosters) {
+    /** Le brouillon tel que l'ordinateur de conception le garde. */
+    public static final Codec<RocketDraft> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            BuiltInRegistries.ITEM.byNameCodec().fieldOf("payload").forGetter(RocketDraft::payload),
+            Stage.CODEC.listOf(0, RocketDesign.MAX_STAGES).fieldOf("stages").forGetter(RocketDraft::stages),
+            Codec.INT.optionalFieldOf("boosters", 0).forGetter(RocketDraft::boosters))
+            .apply(instance, RocketDraft::new));
+
     /** Un brouillon sans boosters latéraux. */
     public RocketDraft(Item payload, List<Stage> stages) {
         this(payload, stages, 0);
@@ -40,6 +51,13 @@ public record RocketDraft(Item payload, List<Stage> stages, int boosters) {
      * @param tanks   nombre de réservoirs
      */
     public record Stage(Item engine, int engines, Item tank, int tanks) {
+        static final Codec<Stage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                BuiltInRegistries.ITEM.byNameCodec().fieldOf("engine").forGetter(Stage::engine),
+                Codec.INT.fieldOf("engines").forGetter(Stage::engines),
+                BuiltInRegistries.ITEM.byNameCodec().fieldOf("tank").forGetter(Stage::tank),
+                Codec.INT.fieldOf("tanks").forGetter(Stage::tanks))
+                .apply(instance, Stage::new));
+
         /** Vrai si les moteurs de l'étage embarquent leurs ergols : il n'a pas de réservoir. */
         public boolean preloaded() {
             RocketParts.Part part = RocketParts.get(new ItemStack(engine));

@@ -94,6 +94,11 @@ public final class ModBlockEntities {
             BLOCK_ENTITIES.register("water_pump",
                     () -> new BlockEntityType<>(com.orbitalis.phase1.fuel.WaterPumpBlockEntity::new, ModBlocks.WATER_PUMP.get()));
 
+    /** Ordinateur de conception : il garde le brouillon qu'on y règle. */
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.orbitalis.phase1.rocket.DesignComputerBlockEntity>> DESIGN_COMPUTER =
+            BLOCK_ENTITIES.register("design_computer",
+                    () -> new BlockEntityType<>(com.orbitalis.phase1.rocket.DesignComputerBlockEntity::new, ModBlocks.DESIGN_COMPUTER.get()));
+
     /** Table de lancement : surveille le complexe qui l'entoure. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LaunchTableBlockEntity>> LAUNCH_TABLE =
             BLOCK_ENTITIES.register("launch_table",

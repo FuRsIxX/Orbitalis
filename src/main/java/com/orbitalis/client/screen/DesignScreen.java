@@ -7,7 +7,9 @@ import java.util.Map;
 
 import org.joml.Matrix3x2fStack;
 
+import com.orbitalis.core.network.DesignEditPayload;
 import com.orbitalis.core.network.DesignPrintPayload;
+import com.orbitalis.core.network.DesignStatePayload;
 import com.orbitalis.core.research.EngineeringStudies;
 import com.orbitalis.core.research.ResearchNode;
 import com.orbitalis.core.research.ResearchNodes;
@@ -30,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -107,9 +110,19 @@ public class DesignScreen extends Screen implements BlockScreen {
     /** Les problèmes du brouillon, relevés à chaque image, et celui que montre le bandeau. */
     private List<Problem> problems = List.of();
     private int problemIndex;
+    /** L'ordinateur qui garde le brouillon, et ce qu'il en a reçu en dernier ; {@code null} pour un écran de capture. */
+    private final DesignStatePayload opened;
+    private DesignEditPayload sent;
 
+    /** Un écran qui ne garde rien (outil des captures d'écran). */
     public DesignScreen() {
+        this(null);
+    }
+
+    /** L'écran d'un ordinateur, ouvert sur le brouillon qu'il garde. */
+    public DesignScreen(DesignStatePayload opened) {
         super(Component.translatable("design.orbitalis.title"));
+        this.opened = opened;
     }
 
     @Override
@@ -118,11 +131,46 @@ public class DesignScreen extends Screen implements BlockScreen {
         top = (height - HEIGHT) / 2;
         if (preset == UNSET) {
             List<Integer> known = knownTemplates();
-            if (known.isEmpty()) {
+            if (opened != null && opened.saved()) {
+                apply(opened);
+            } else if (known.isEmpty()) {
                 blank();
             } else {
                 load(known.get(0));
             }
+            sent = edit();
+        }
+    }
+
+    /** Reprend un brouillon gardé par l'ordinateur : celui de la dernière visite, ou celui qu'un autre joueur règle. */
+    private void apply(DesignStatePayload state) {
+        select(state.draft().draft());
+        preset = state.preset();
+        selected = Math.clamp(state.selected(), 0, Math.max(0, stageCount - 1));
+    }
+
+    /** Un autre joueur a changé un réglage sur le même ordinateur. */
+    public void receive(DesignStatePayload state) {
+        if (opened != null && opened.pos().equals(state.pos()) && state.saved()) {
+            apply(state);
+            sent = edit();
+        }
+    }
+
+    /** Ce que l'ordinateur doit garder, ou {@code null} pour un écran de capture. */
+    private DesignEditPayload edit() {
+        BlockPos pos = opened == null ? null : opened.pos();
+        return pos == null ? null : new DesignEditPayload(pos, DesignPrintPayload.of(draft()), preset, selected);
+    }
+
+    /** Chaque réglage part à l'ordinateur, qui le garde et le montre aux autres. */
+    @Override
+    public void tick() {
+        super.tick();
+        DesignEditPayload now = preset == UNSET ? null : edit();
+        if (now != null && !now.equals(sent)) {
+            sent = now;
+            ClientPacketDistributor.sendToServer(now);
         }
     }
 

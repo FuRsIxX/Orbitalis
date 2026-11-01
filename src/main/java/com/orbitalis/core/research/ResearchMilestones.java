@@ -24,6 +24,15 @@ public final class ResearchMilestones {
     }
 
     public static final List<Milestone> ALL = List.of(
+            // Premières pièces : de quoi rechercher la suite dès les premiers essais.
+            new Milestone("circuit_board", ModItems.CIRCUIT_BOARD, 5),
+            new Milestone("solid_motor", ModItems.SOLID_MOTOR, 10),
+            new Milestone("sounding_payload", ModItems.SOUNDING_PAYLOAD, 10),
+            new Milestone("pad_kit", ModItems.PAD_KIT, 10),
+            new Milestone("pressure_fed_engine", ModItems.PRESSURE_FED_ENGINE, 10),
+            new Milestone("radio_transmitter", ModItems.RADIO_TRANSMITTER, 10),
+            new Milestone("navigation_unit", ModItems.NAVIGATION_UNIT, 10),
+            new Milestone("kerolox_engine", ModItems.KEROLOX_ENGINE, 15),
             new Milestone("steel_ingot", ModItems.STEEL_INGOT, 5),
             new Milestone("steel_plate", ModItems.STEEL_PLATE, 5),
             new Milestone("aluminum_ingot", ModItems.ALUMINUM_INGOT, 5),

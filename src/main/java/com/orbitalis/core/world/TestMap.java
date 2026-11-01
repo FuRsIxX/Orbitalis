@@ -328,6 +328,18 @@ public final class TestMap {
                 Block.UPDATE_ALL);
         level.setBlock(pump.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
         machine(level, pump.east(), ModBlocks.CRYOGENIC_TANK.get(), ItemStack.EMPTY);
+
+        // Un carré de quatre panneaux solaires raccordés, plus loin à l'est : chacun produit un quart de plus.
+        int sx = px + 7;
+        for (int x = sx; x < sx + 2; x++) {
+            for (int z = z0; z < z0 + 2; z++) {
+                BlockState panel = ModBlocks.SOLAR_PANEL.get().defaultBlockState()
+                        .setValue(com.orbitalis.phase2.station.SolarPanelBlock.CONNECTIONS.get(x == sx ? Direction.EAST : Direction.WEST), true)
+                        .setValue(com.orbitalis.phase2.station.SolarPanelBlock.CONNECTIONS.get(z == z0 ? Direction.SOUTH : Direction.NORTH), true);
+                level.setBlock(new BlockPos(x, Y, z), panel, Block.UPDATE_ALL);
+            }
+        }
+        sign(level, new BlockPos(sx, Y, z0 + 3), ModBlocks.SOLAR_PANEL.get().getName(), null, null);
     }
 
     /**

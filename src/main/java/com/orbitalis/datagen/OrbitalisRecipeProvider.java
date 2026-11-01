@@ -466,14 +466,15 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_lunar_probe", has(ModItems.LUNAR_PROBE))
                 .save(output, key("mars_probe"));
         // Sondes vers les planètes du système solaire.
+        // Vénus : un capteur pour cartographier sous les nuages ; Mercure, tout près du Soleil, garde sa cellule solaire.
         shaped(RecipeCategory.MISC, ModItems.VENUS_ORBITER)
                 .pattern(" R ")
                 .pattern("HPH")
-                .pattern(" S ")
+                .pattern(" O ")
                 .define('R', ModItems.RADIO_TRANSMITTER)
                 .define('H', ModItems.HEAT_SHIELD_TILE)
                 .define('P', ModItems.MARS_PROBE)
-                .define('S', ModItems.SOLAR_CELL)
+                .define('O', ModItems.OPTICAL_SENSOR)
                 .unlockedBy("has_mars_probe", has(ModItems.MARS_PROBE))
                 .save(output, key("venus_orbiter"));
         shaped(RecipeCategory.MISC, ModItems.VENUS_LANDER)
@@ -517,15 +518,17 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('H', ModItems.HEAT_SHIELD_TILE)
                 .unlockedBy("has_jupiter_orbiter", has(ModItems.JUPITER_ORBITER))
                 .save(output, key("jupiter_entry_probe"));
+        // Saturne : deux capteurs pour photographier les anneaux.
         shaped(RecipeCategory.MISC, ModItems.SATURN_ORBITER)
                 .pattern("RNR")
                 .pattern("TPT")
-                .pattern(" C ")
+                .pattern("OCO")
                 .define('R', ModItems.RADIO_TRANSMITTER)
                 .define('N', ModItems.NAVIGATION_UNIT)
                 .define('T', ModTags.Items.PLATES_TITANIUM)
                 .define('P', ModItems.MARS_PROBE)
                 .define('C', ModItems.REACTOR_CORE)
+                .define('O', ModItems.OPTICAL_SENSOR)
                 .unlockedBy("has_mars_probe", has(ModItems.MARS_PROBE))
                 .save(output, key("saturn_orbiter"));
         shaped(RecipeCategory.MISC, ModItems.TITAN_ENTRY_PROBE)
@@ -538,10 +541,11 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('H', ModItems.HEAT_SHIELD_TILE)
                 .unlockedBy("has_saturn_orbiter", has(ModItems.SATURN_ORBITER))
                 .save(output, key("titan_entry_probe"));
+        // Europe : un blindage de titane tout autour, contre les radiations de Jupiter.
         shaped(RecipeCategory.MISC, ModItems.EUROPA_ORBITER)
                 .pattern("RNR")
                 .pattern("TPT")
-                .pattern(" C ")
+                .pattern("TCT")
                 .define('R', ModItems.RADIO_TRANSMITTER)
                 .define('N', ModItems.NAVIGATION_UNIT)
                 .define('T', ModTags.Items.PLATES_TITANIUM)
@@ -742,11 +746,13 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('G', Tags.Items.GLASS_BLOCKS)
                 .unlockedBy("has_titanium_plate", has(ModTags.Items.PLATES_TITANIUM))
                 .save(output, key("cupola_window"));
+        // Terminal : sur une coque de station, ce qui le distingue du pupitre de lancement.
         shaped(RecipeCategory.MISC, ModBlocks.STATION_TERMINAL)
                 .pattern("AGA")
                 .pattern("RCR")
-                .pattern("AAA")
+                .pattern("AHA")
                 .define('A', ModTags.Items.PLATES_ALUMINUM)
+                .define('H', ModBlocks.STATION_HULL)
                 .define('G', ModItems.DISPLAY_SCREEN)
                 .define('R', Tags.Items.DUSTS_REDSTONE)
                 .define('C', ModItems.CIRCUIT_BOARD)
@@ -1454,11 +1460,13 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .save(output, key("engineer_workbench"));
 
         // Blocs de construction des fusées. Moteurs et réservoirs se fabriquent autour de la pièce correspondante.
+        // Fuselage : des tôles d'aluminium sur un lingot d'acier, qui le distingue du réservoir en aluminium.
         shaped(RecipeCategory.MISC, ModBlocks.ROCKET_FUSELAGE, 8)
                 .pattern("AAA")
-                .pattern("A A")
+                .pattern("ASA")
                 .pattern("AAA")
                 .define('A', ModItems.ALUMINUM_PLATE)
+                .define('S', ModTags.Items.INGOTS_STEEL)
                 .unlockedBy("has_part", has(ModItems.ALUMINUM_PLATE))
                 .save(output, key("rocket_fuselage"));
         shaped(RecipeCategory.MISC, ModBlocks.ROCKET_RACEWAY, 2)

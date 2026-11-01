@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "H": "orbitalis:heat_shield_tile",
+    "O": "orbitalis:optical_sensor",
     "P": "orbitalis:mars_probe",
-    "R": "orbitalis:radio_transmitter",
-    "S": "orbitalis:solar_cell"
+    "R": "orbitalis:radio_transmitter"
   },
   "pattern": [
     " R ",
     "HPH",
-    " S "
+    " O "
   ],
   "result": {
     "id": "orbitalis:venus_orbiter"

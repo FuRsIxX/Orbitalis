@@ -57,6 +57,11 @@ public class OrbitalisBlockTagsProvider extends BlockTagsProvider {
                 ModBlocks.ROCKET_TANK_CRYO.getKey(), ModBlocks.ROCKET_MOTOR_CASING.getKey(), ModBlocks.ROCKET_INTERSTAGE.getKey(),
                 ModBlocks.ROCKET_PAYLOAD_BAY.getKey(), ModBlocks.ROCKET_FAIRING.getKey(), ModBlocks.ROCKET_NOSE.getKey());
         tag(BlockTags.STAIRS).add(ModBlocks.FACILITY_CONCRETE_STAIRS.getKey());
+        // Pièces de fusée venues plus tard : à la pioche en pierre, comme les autres, sans quoi elles ne tombaient jamais.
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.ROCKET_ENGINE_BOOSTER.getKey(), ModBlocks.ROCKET_ENGINE_HYPERGOLIC.getKey(), ModBlocks.ROCKET_ENGINE_VACUUM.getKey(), ModBlocks.ROCKET_ION_THRUSTER.getKey(), ModBlocks.ROCKET_SOLAR_SAIL.getKey(), ModBlocks.ROCKET_TANK_TITANIUM.getKey(), ModBlocks.ROCKET_TANK_STAINLESS.getKey(), ModBlocks.ROCKET_ENGINE_FUSION.getKey(), ModBlocks.ROCKET_ENGINE_NUCLEAR.getKey());
+        tag(BlockTags.NEEDS_STONE_TOOL).add(ModBlocks.ROCKET_ENGINE_BOOSTER.getKey(), ModBlocks.ROCKET_ENGINE_HYPERGOLIC.getKey(), ModBlocks.ROCKET_ENGINE_VACUUM.getKey(), ModBlocks.ROCKET_ION_THRUSTER.getKey(), ModBlocks.ROCKET_SOLAR_SAIL.getKey(), ModBlocks.ROCKET_TANK_TITANIUM.getKey(), ModBlocks.ROCKET_TANK_STAINLESS.getKey(), ModBlocks.ROCKET_ENGINE_FUSION.getKey(), ModBlocks.ROCKET_ENGINE_NUCLEAR.getKey());
+        // Cases invisibles des grands meubles et flancs des fusées : la pioche les casse aussi vite que le reste.
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.WORKSTATION_PART.getKey(), ModBlocks.ROCKET_HULL.getKey(), ModBlocks.ROCKET.getKey());
 
         // Pioche en pierre : bauxite, lithium, acier, aluminium et machines.
         tag(BlockTags.NEEDS_STONE_TOOL).add(

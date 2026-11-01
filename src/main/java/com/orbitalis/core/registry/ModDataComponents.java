@@ -33,6 +33,11 @@ public final class ModDataComponents {
             COMPONENTS.registerComponentType("fluid_content", builder -> builder.persistent(net.neoforged.neoforge.fluids.SimpleFluidContent.CODEC)
                     .networkSynchronized(net.neoforged.neoforge.fluids.SimpleFluidContent.STREAM_CODEC));
 
+    /** Énergie d'une machine cassée, en FE : elle la garde, et la retrouve une fois reposée. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> STORED_ENERGY = COMPONENTS.registerComponentType(
+            "stored_energy", builder -> builder.persistent(net.minecraft.util.ExtraCodecs.NON_NEGATIVE_INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
+
     private ModDataComponents() {
     }
 

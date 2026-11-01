@@ -20,7 +20,8 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 
 /**
  * Élément de panneau solaire : produit de l'électricité quand il voit le ciel. En orbite, hors de l'atmosphère et
- * sans nuit, il donne sa pleine puissance en permanence ; au sol, seulement de jour et quatre fois moins.
+ * sans nuit, il donne sa pleine puissance en permanence ; au sol, seulement de jour et quatre fois moins. Un élément
+ * pris dans un carré de deux sur deux éléments raccordés produit un quart de plus.
  * <p>
  * Les éléments raccordés en un grand panneau mettent leur électricité en commun : chacun connaît toutes les
  * prises du panneau (les machines et les câbles qui touchent l'un de ses éléments) et y envoie sa production.
@@ -31,8 +32,10 @@ public class SolarPanelBlockEntity extends BlockEntity {
     private static final int ENERGY_CAPACITY = 10_000;
     private static final int ENERGY_TRANSFER = 200;
     /** Production en orbite, puis au sol en plein jour, en FE par tick. */
-    public static final int ORBIT_OUTPUT = 40;
-    public static final int GROUND_OUTPUT = 8;
+    public static final int ORBIT_OUTPUT = 80;
+    public static final int GROUND_OUTPUT = 20;
+    /** Un élément pris dans un carré de quatre produit un quart de plus. */
+    private static final int GROUPED_BONUS_PERCENT = 25;
     /** Intervalle entre deux relevés des prises du grand panneau, et de l'ensoleillement, en ticks. */
     private static final int SCAN_INTERVAL = 40;
 
@@ -60,10 +63,35 @@ public class SolarPanelBlockEntity extends BlockEntity {
         if (!level.canSeeSky(pos.above())) {
             return 0;
         }
+        int base;
         if (SpaceRules.isVacuum(level)) {
-            return StationPower.sunlit(level) ? ORBIT_OUTPUT : 0;
+            base = StationPower.sunlit(level) ? ORBIT_OUTPUT : 0;
+        } else {
+            base = level.isBrightOutside() && !level.isRaining() ? GROUND_OUTPUT : 0;
         }
-        return level.isBrightOutside() && !level.isRaining() ? GROUND_OUTPUT : 0;
+        return grouped(level, pos) ? base * (100 + GROUPED_BONUS_PERCENT) / 100 : base;
+    }
+
+    /** Vrai si l'élément forme, avec trois voisins raccordés, un carré de deux sur deux. */
+    public static boolean grouped(net.minecraft.world.level.BlockGetter level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        if (!(state.getBlock() instanceof SolarPanelBlock)) {
+            return false;
+        }
+        for (Direction alongX : new Direction[] {Direction.EAST, Direction.WEST}) {
+            for (Direction alongZ : new Direction[] {Direction.NORTH, Direction.SOUTH}) {
+                if (!state.getValue(SolarPanelBlock.CONNECTIONS.get(alongX)) || !state.getValue(SolarPanelBlock.CONNECTIONS.get(alongZ))) {
+                    continue;
+                }
+                // Le coin opposé doit être raccordé aux deux autres éléments du carré.
+                BlockState corner = level.getBlockState(pos.relative(alongX).relative(alongZ));
+                if (corner.getBlock() instanceof SolarPanelBlock && corner.getValue(SolarPanelBlock.CONNECTIONS.get(alongX.getOpposite()))
+                        && corner.getValue(SolarPanelBlock.CONNECTIONS.get(alongZ.getOpposite()))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
@@ -104,6 +132,19 @@ public class SolarPanelBlockEntity extends BlockEntity {
                 }
             }
         }
+    }
+
+    /** Cassée, la machine garde son énergie sur son objet ; reposée, elle la retrouve. */
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        energy.storeIn(components);
+    }
+
+    @Override
+    protected void applyImplicitComponents(net.minecraft.core.component.DataComponentGetter components) {
+        super.applyImplicitComponents(components);
+        energy.restoreFrom(components);
     }
 
     @Override

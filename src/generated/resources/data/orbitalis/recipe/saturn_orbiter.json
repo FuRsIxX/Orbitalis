@@ -3,6 +3,7 @@
   "key": {
     "C": "orbitalis:reactor_core",
     "N": "orbitalis:navigation_unit",
+    "O": "orbitalis:optical_sensor",
     "P": "orbitalis:mars_probe",
     "R": "orbitalis:radio_transmitter",
     "T": "#c:plates/titanium"
@@ -10,7 +11,7 @@
   "pattern": [
     "RNR",
     "TPT",
-    " C "
+    "OCO"
   ],
   "result": {
     "id": "orbitalis:saturn_orbiter"

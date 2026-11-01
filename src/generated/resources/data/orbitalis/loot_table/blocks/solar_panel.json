@@ -10,6 +10,15 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "orbitalis:stored_energy"
+              ],
+              "source": "block_entity"
+            }
+          ],
           "name": "orbitalis:solar_panel"
         }
       ],

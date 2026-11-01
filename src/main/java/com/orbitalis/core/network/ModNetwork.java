@@ -44,6 +44,14 @@ public final class ModNetwork {
         registrar.playToClient(AtlasOpenPayload.TYPE, AtlasOpenPayload.STREAM_CODEC);
         registrar.playToClient(StationStatusPayload.TYPE, StationStatusPayload.STREAM_CODEC);
         registrar.playToClient(SuitStatusPayload.TYPE, SuitStatusPayload.STREAM_CODEC);
+        registrar.playToClient(DesignStatePayload.TYPE, DesignStatePayload.STREAM_CODEC);
+        // Un réglage de l'écran de conception : l'ordinateur le garde.
+        registrar.playToServer(DesignEditPayload.TYPE, DesignEditPayload.STREAM_CODEC, (payload, context) -> {
+            if (context.player() instanceof ServerPlayer player && player.level().isLoaded(payload.pos())
+                    && player.level().getBlockEntity(payload.pos()) instanceof com.orbitalis.phase1.rocket.DesignComputerBlockEntity computer) {
+                computer.edit(player, payload);
+            }
+        });
         // L'écran d'un terminal de station s'actualise.
         registrar.playToServer(StationRequestPayload.TYPE, StationRequestPayload.STREAM_CODEC, (payload, context) -> {
             if (context.player() instanceof ServerPlayer player) {

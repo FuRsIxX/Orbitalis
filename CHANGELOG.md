@@ -5,8 +5,19 @@
 - Cassés, les réservoirs gardent leur contenu : l'objet l'emporte et le rend une fois reposé. Un bloc de réservoir modulable emporte sa part.
 - Le réservoir modulable ravitaille aussi la fusée, collé à un bloc de ravitaillement ou relié par un tuyau.
 - En multijoueur, tous les joueurs à moins de 64 blocs du pas de tir au décollage reçoivent les points de recherche du vol, pour leur agence.
+- Cassées, toutes les machines gardent leur énergie (générateurs, machines de raffinage, panneaux solaires, batteries, réacteur à fusion...). L'info-bulle de l'objet l'affiche.
+- L'ordinateur de conception garde le brouillon en cours : on le retrouve en revenant, et en multijoueur tous les joueurs voient le même, réglage après réglage.
+- Panneaux solaires : 80 FE par tick en orbite (au lieu de 40) et 20 au sol de jour (au lieu de 8). Quatre panneaux raccordés en carré produisent chacun un quart de plus.
+
+## Équilibrage
+- Recherche du début de partie : chaque vol réussi rapporte ses données (3 points en vol atmosphérique, 6 dans l'espace, 10 en orbite et au-delà). Les primes des premiers vols passent à 20 et 50 points, la charge utile de fusée-sonde à 10. Une fusée-sonde rapporte donc 16 points par vol au lieu de 5.
+- Nouveaux jalons pour les premières pièces fabriquées : carte électronique, moteur à poudre, charge utile de fusée-sonde, kit de pas de tir, moteurs à ergols, émetteur radio, centrale de navigation.
 
 ## Corrections
+- Les points de recherche s'actualisent aussitôt chez tous les joueurs, sans se reconnecter : les gains des satellites, sondes, échantillons ou coéquipiers n'arrivaient parfois qu'à la connexion suivante.
+- Les grands meubles (établi d'ingénieur, ordinateur de conception, pupitre de lancement, station de poursuite) se cassent par n'importe laquelle de leurs cases, aussi vite que par leur bloc principal, avec les fissures visibles.
+- Neuf pièces de fusée (propulseurs d'appoint, moteurs hypergolique, à vide, ionique, à fusion et nucléaire, voile solaire, réservoirs en titane et inox) mettaient une douzaine de secondes à casser, même à la pioche : elles se cassent maintenant aussi vite que les autres.
+- Recettes en double corrigées : le fuselage (il prend un lingot d'acier au centre), le terminal de station (sur une coque de station), et les sondes de Vénus, Saturne et Europe, qui avaient la même recette que d'autres.
 - Les blocs de ravitaillement des pas de tir 9×9 et 11×11 ne trouvaient pas leur table : ceux du fond de la tour étaient hors de portée. L'hélium-3 passe aussi par les tuyaux à gaz.
 - Le déluge se voit de loin, depuis le pupitre, et pendant ses essais même sans fusée sur la table.
 - Le bras ombilical et la passerelle se retirent au rythme du son des vérins, sur tous les pas de tir.
@@ -94,8 +105,19 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Broken tanks keep their contents: the item carries them and gives them back once placed again. A modular tank block takes its share.
 - The modular tank fuels rockets too, placed against a fuel port or connected to one by a pipe.
 - In multiplayer, every player within 64 blocks of the pad at liftoff earns the flight's research points for their agency.
+- Every machine keeps its power when broken (generators, processing machines, solar panels, batteries, fusion reactor...). The item's tooltip shows it.
+- The design computer remembers the draft you were working on: it's still there when you come back, and in multiplayer everyone sees the same one, change by change.
+- Solar panels: 80 FE per tick in orbit (up from 40) and 20 on the ground in daylight (up from 8). Four panels joined in a square each produce a quarter more.
+
+## Balance
+- Early research: every successful flight now brings back its data (3 points for an atmospheric flight, 6 for space, 10 for orbit and beyond). First-flight bonuses go up to 20 and 50 points, and the sounding rocket payload to 10. A sounding rocket now earns 16 points per flight instead of 5.
+- New milestones for the first parts you craft: circuit board, solid motor, sounding rocket payload, pad kit, liquid-fuel engines, radio transmitter, navigation unit.
 
 ## Fixes
+- Research points update right away for every player, with no need to reconnect: points from satellites, probes, samples or teammates sometimes only showed up on the next login.
+- Large furniture (engineer's workbench, design computer, launch console, tracking station) can be broken from any of its blocks, as fast as from its main block, with the cracks showing.
+- Nine rocket parts (side boosters, hypergolic, vacuum, ion, fusion and nuclear engines, solar sail, titanium and stainless tanks) took about twelve seconds to break, even with a pickaxe: they now break as fast as the others.
+- Fixed duplicate recipes: the fuselage (it now takes a steel ingot in the middle), the station terminal (on a station hull), and the Venus, Saturn and Europa probes, which shared their recipe with others.
 - Fuel ports on 9×9 and 11×11 pads couldn't find their table: the ones at the back of the tower were out of range. Helium-3 now goes through gas pipes too.
 - The deluge can be seen from afar, from the console, and during its tests even with no rocket on the table.
 - The umbilical arm and the gangway retract in time with the hydraulic sound, on every pad.

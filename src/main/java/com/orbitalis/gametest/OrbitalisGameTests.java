@@ -124,6 +124,18 @@ public final class OrbitalisGameTests {
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> TANKS_KEEP_CONTENTS =
             FUNCTIONS.register("tanks_keep_contents", () -> OrbitalisGameTests::tanksKeepContents);
 
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> MACHINES_KEEP_ENERGY =
+            FUNCTIONS.register("machines_keep_energy", () -> OrbitalisGameTests::machinesKeepEnergy);
+
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> WORKSTATION_WINGS =
+            FUNCTIONS.register("workstation_wings", () -> OrbitalisGameTests::workstationWings);
+
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SOLAR_GROUPS =
+            FUNCTIONS.register("solar_groups", () -> OrbitalisGameTests::solarGroups);
+
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> DESIGN_MEMORY =
+            FUNCTIONS.register("design_memory", () -> OrbitalisGameTests::designMemory);
+
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
 
@@ -283,6 +295,18 @@ public final class OrbitalisGameTests {
         // Le réacteur à fusion alimente, seul, une chambre de Casimir qui fait de la matière exotique.
         event.registerTest(Orbitalis.id("fusion_power"), new FunctionGameTestInstance(
                 FUSION_POWER.getKey(), spaced(environment, emptyStructure, 1600)));
+        // Cassées, les machines gardent leur énergie ; reposées, elles la retrouvent.
+        event.registerTest(Orbitalis.id("machines_keep_energy"), new FunctionGameTestInstance(
+                MACHINES_KEEP_ENERGY.getKey(), spaced(environment, emptyStructure, 20)));
+        // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
+        event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
+                WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
+        // Un carré de quatre panneaux solaires produit un peu plus.
+        event.registerTest(Orbitalis.id("solar_groups"), new FunctionGameTestInstance(
+                SOLAR_GROUPS.getKey(), spaced(environment, emptyStructure, 20)));
+        // L'ordinateur de conception garde le brouillon, et la recherche note chacun de ses changements.
+        event.registerTest(Orbitalis.id("design_memory"), new FunctionGameTestInstance(
+                DESIGN_MEMORY.getKey(), spaced(environment, emptyStructure, 20)));
         // La pompe remplit un réservoir au-dessus d'une nappe de 4×2, et refuse une flaque trop petite.
         event.registerTest(Orbitalis.id("water_pump"), new FunctionGameTestInstance(
                 WATER_PUMP.getKey(), spaced(environment, emptyStructure, 100)));
@@ -1694,11 +1718,11 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(helper.getBlockState(displayPos).getValue(MissionDisplayBlock.MODE) == MissionDisplayBlock.Mode.IDLE,
                     "l'écran de contrôle devrait revenir en veille après le vol");
             helper.assertTrue(!table.hasRocket(), "la fusée devrait avoir quitté la table");
-            // 10 (premier vol atmosphérique) + 30 (premier vol dans l'espace) + 5 (charge utile scientifique).
-            helper.assertTrue(research.points() == 45 && table.getLastPoints() == 45, "points de recherche incorrects : " + research.points());
+            // 20 (premier vol atmosphérique) + 50 (premier vol dans l'espace) + 6 (données du vol) + 10 (charge utile scientifique).
+            helper.assertTrue(research.points() == 86 && table.getLastPoints() == 86, "points de recherche incorrects : " + research.points());
             helper.assertTrue(research.flights() == 1, "le vol réussi n'a pas été compté");
             int witnessPoints = ResearchManager.forAgency(helper.getLevel().getServer(), witnessAgency).points();
-            helper.assertTrue(witnessPoints == 45, "le joueur présent au décollage aurait dû recevoir les points du vol : " + witnessPoints);
+            helper.assertTrue(witnessPoints == 86, "le joueur présent au décollage aurait dû recevoir les points du vol : " + witnessPoints);
         });
     }
 
@@ -3679,6 +3703,134 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(reactor.getTanks().getFluid(0).getAmount() < 1000 && reactor.getTanks().getFluid(1).getAmount() < 8000,
                     "le réacteur n'a pas brûlé ses gaz");
         });
+    }
+
+    /**
+     * Énergie des machines : une fonderie et une batterie de station cassées emportent leur énergie sur leur objet, et
+     * la fonderie reposée la retrouve.
+     */
+    private static void machinesKeepEnergy(GameTestHelper helper) {
+        BlockPos foundryPos = new BlockPos(1, 1, 1);
+        helper.setBlock(foundryPos, ModBlocks.ARC_FOUNDRY.get());
+        helper.getBlockEntity(foundryPos, com.orbitalis.phase1.machines.MachineBlockEntity.class).getEnergy().generate(5000);
+        BlockPos batteryPos = new BlockPos(4, 1, 1);
+        helper.setBlock(batteryPos, ModBlocks.STATION_BATTERY.get());
+        helper.getBlockEntity(batteryPos, com.orbitalis.phase2.station.StationBatteryBlockEntity.class).getEnergy().generate(7000);
+
+        helper.getLevel().destroyBlock(helper.absolutePos(foundryPos), true);
+        helper.getLevel().destroyBlock(helper.absolutePos(batteryPos), true);
+        ItemStack foundryItem = ItemStack.EMPTY;
+        int batteryEnergy = 0;
+        for (net.minecraft.world.entity.item.ItemEntity item : helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(helper.absolutePos(BlockPos.ZERO)).inflate(8.0))) {
+            if (item.getItem().is(ModBlocks.ARC_FOUNDRY.get().asItem())) {
+                foundryItem = item.getItem().copy();
+            } else if (item.getItem().is(ModBlocks.STATION_BATTERY.get().asItem())) {
+                batteryEnergy = item.getItem().getOrDefault(com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get(), 0);
+            }
+        }
+        int foundryEnergy = foundryItem.getOrDefault(com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get(), 0);
+        helper.assertTrue(foundryEnergy == 5000, "la fonderie cassée aurait dû emporter ses 5 000 FE : " + foundryEnergy);
+        helper.assertTrue(batteryEnergy == 7000, "la batterie cassée aurait dû emporter ses 7 000 FE : " + batteryEnergy);
+
+        helper.setBlock(foundryPos, ModBlocks.ARC_FOUNDRY.get());
+        var placed = helper.getBlockEntity(foundryPos, com.orbitalis.phase1.machines.MachineBlockEntity.class);
+        placed.applyComponentsFromItemStack(foundryItem);
+        helper.assertTrue(placed.getEnergy().getEnergy() == 5000, "la fonderie reposée aurait dû retrouver son énergie : " + placed.getEnergy().getEnergy());
+        helper.succeed();
+    }
+
+    /**
+     * Grands meubles : casser à la pioche une case invisible de l'établi d'ingénieur va aussi vite que casser le bloc
+     * de l'établi, et le meuble entier tombe en rendant son objet.
+     */
+    private static void workstationWings(GameTestHelper helper) {
+        BlockPos hostPos = new BlockPos(2, 1, 2);
+        helper.setBlock(hostPos, ModBlocks.ENGINEER_WORKBENCH.get().defaultBlockState()
+                .setValue(com.orbitalis.phase1.rocket.EngineerWorkbenchBlock.FACING, Direction.NORTH));
+        BlockPos host = helper.absolutePos(hostPos);
+        BlockPos wing = host.relative(Direction.NORTH.getClockWise()).relative(Direction.SOUTH);
+        helper.assertTrue(helper.getLevel().getBlockState(wing).is(ModBlocks.WORKSTATION_PART.get()), "la case arrière de l'établi manque");
+
+        @SuppressWarnings("removal")
+        net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_PICKAXE));
+        player.setOnGround(true);
+        float hostSpeed = helper.getLevel().getBlockState(host).getDestroyProgress(player, helper.getLevel(), host);
+        float wingSpeed = helper.getLevel().getBlockState(wing).getDestroyProgress(player, helper.getLevel(), wing);
+        helper.assertTrue(wingSpeed == hostSpeed && wingSpeed > 0.02F,
+                "la case de l'établi devrait se casser comme l'établi : " + wingSpeed + " contre " + hostSpeed);
+
+        player.gameMode.destroyBlock(wing);
+        helper.assertTrue(helper.getLevel().getBlockState(host).isAir(), "l'établi aurait dû tomber avec sa case");
+        boolean dropped = !helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(host).inflate(3.0), item -> item.getItem().is(ModBlocks.ENGINEER_WORKBENCH.get().asItem())).isEmpty();
+        helper.assertTrue(dropped, "l'établi cassé par sa case aurait dû rendre son objet");
+        helper.succeed();
+    }
+
+    /** Panneaux solaires : les quatre éléments d'un carré raccordé ont la prime ; deux éléments en ligne, non. */
+    private static void solarGroups(GameTestHelper helper) {
+        BlockState panel = ModBlocks.SOLAR_PANEL.get().defaultBlockState();
+        for (int x = 1; x <= 2; x++) {
+            for (int z = 1; z <= 2; z++) {
+                BlockState state = panel.setValue(SolarPanelBlock.CONNECTIONS.get(x == 1 ? Direction.EAST : Direction.WEST), true)
+                        .setValue(SolarPanelBlock.CONNECTIONS.get(z == 1 ? Direction.SOUTH : Direction.NORTH), true);
+                helper.setBlock(new BlockPos(x, 1, z), state);
+            }
+        }
+        helper.setBlock(new BlockPos(5, 1, 1), panel.setValue(SolarPanelBlock.CONNECTIONS.get(Direction.EAST), true));
+        helper.setBlock(new BlockPos(6, 1, 1), panel.setValue(SolarPanelBlock.CONNECTIONS.get(Direction.WEST), true));
+        for (int x = 1; x <= 2; x++) {
+            for (int z = 1; z <= 2; z++) {
+                helper.assertTrue(com.orbitalis.phase2.station.SolarPanelBlockEntity.grouped(helper.getLevel(), helper.absolutePos(new BlockPos(x, 1, z))),
+                        "chaque élément du carré devrait avoir la prime");
+            }
+        }
+        helper.assertTrue(!com.orbitalis.phase2.station.SolarPanelBlockEntity.grouped(helper.getLevel(), helper.absolutePos(new BlockPos(5, 1, 1))),
+                "deux panneaux en ligne n'ont pas la prime");
+        helper.succeed();
+    }
+
+    /**
+     * Ordinateur de conception : il garde le brouillon que règle un joueur proche, ignore un joueur trop loin, et le
+     * relit tel quel après sauvegarde. La recherche d'une agence note aussi chacun de ses changements, pour les renvoyer
+     * aux joueurs sans attendre.
+     */
+    private static void designMemory(GameTestHelper helper) {
+        BlockPos computerPos = new BlockPos(2, 1, 3);
+        helper.setBlock(computerPos, ModBlocks.DESIGN_COMPUTER.get().defaultBlockState()
+                .setValue(com.orbitalis.phase1.rocket.DesignComputerBlock.FACING, Direction.NORTH));
+        var computer = helper.getBlockEntity(computerPos, com.orbitalis.phase1.rocket.DesignComputerBlockEntity.class);
+        com.orbitalis.phase1.rocket.RocketCatalog.Template template = com.orbitalis.phase1.rocket.RocketCatalog.all().get(0);
+        com.orbitalis.phase1.rocket.RocketDraft draft = com.orbitalis.phase1.rocket.RocketDraft.of(
+                com.orbitalis.phase1.rocket.RocketCatalog.build(template, 0, template.presets()));
+
+        @SuppressWarnings("removal")
+        net.minecraft.server.level.ServerPlayer far = helper.makeMockServerPlayerInLevel();
+        far.setPos(far.getX() + 40, far.getY(), far.getZ());
+        computer.edit(far, new com.orbitalis.core.network.DesignEditPayload(computer.getBlockPos(),
+                com.orbitalis.core.network.DesignPrintPayload.of(draft), 0, 0));
+        helper.assertTrue(computer.draft() == null, "un joueur trop loin ne doit rien régler");
+
+        @SuppressWarnings("removal")
+        net.minecraft.server.level.ServerPlayer near = helper.makeMockServerPlayerInLevel();
+        BlockPos stand = helper.absolutePos(computerPos.south(2));
+        near.setPos(stand.getX() + 0.5, stand.getY(), stand.getZ() + 0.5);
+        computer.edit(near, new com.orbitalis.core.network.DesignEditPayload(computer.getBlockPos(),
+                com.orbitalis.core.network.DesignPrintPayload.of(draft), 0, 0));
+        helper.assertTrue(draft.equals(computer.draft()), "l'ordinateur aurait dû garder le brouillon");
+        var saved = com.orbitalis.phase1.rocket.RocketDraft.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, draft).getOrThrow();
+        helper.assertTrue(draft.equals(com.orbitalis.phase1.rocket.RocketDraft.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, saved).getOrThrow()),
+                "le brouillon gardé aurait dû se relire tel quel");
+
+        AgencyResearch research = ResearchManager.forAgency(helper.getLevel().getServer(), "test:design_memory");
+        int before = research.revision();
+        research.addPoints(5);
+        helper.assertTrue(research.revision() != before, "un gain de points aurait dû être noté, pour être renvoyé aux joueurs");
+        research.reset();
+        helper.succeed();
     }
 
     /**

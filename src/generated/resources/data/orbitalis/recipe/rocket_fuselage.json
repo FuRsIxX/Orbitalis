@@ -1,11 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "A": "orbitalis:aluminum_plate"
+    "A": "orbitalis:aluminum_plate",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "AAA",
-    "A A",
+    "ASA",
     "AAA"
   ],
   "result": {

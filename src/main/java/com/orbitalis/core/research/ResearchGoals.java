@@ -74,8 +74,8 @@ public final class ResearchGoals {
     /** Prime de recherche la première fois qu'une agence atteint ce palier de vol. */
     public static int flightReward(RocketStats.Reach reach) {
         return switch (reach) {
-            case ATMOSPHERIC -> 10;
-            case SUBORBITAL -> 30;
+            case ATMOSPHERIC -> 20;
+            case SUBORBITAL -> 50;
             case LOW_ORBIT -> 100;
             case GEO_TRANSFER -> 150;
             case LUNAR, GEOSTATIONARY -> 200;

@@ -34,13 +34,18 @@ public final class ResearchManager {
     /** Intervalle entre deux vérifications des jalons et de l'agence d'un joueur, en ticks. */
     private static final int CHECK_INTERVAL = 40;
     /** Points gagnés à chaque vol qui emporte une charge utile scientifique dans l'espace (données de haute altitude). */
-    private static final int PAYLOAD_DATA_POINTS = 5;
+    private static final int PAYLOAD_DATA_POINTS = 10;
     /** La télémétrie, et les points que rapportent les mesures d'un vol qui atteint l'espace. */
     public static final String TELEMETRY = "telemetry";
     private static final int TELEMETRY_POINTS = 3;
 
     /** Dernière agence connue de chaque joueur connecté, pour détecter un changement d'équipe. */
     private static final Map<UUID, String> KNOWN_AGENCY = new ConcurrentHashMap<>();
+    /** Ce que chaque joueur connecté a reçu en dernier : son agence et le numéro de changement de sa recherche. */
+    private static final Map<UUID, Sent> SENT = new ConcurrentHashMap<>();
+
+    private record Sent(String agency, int revision) {
+    }
 
     /**
      * Recherche connue du client. Renseigné par le client au démarrage : cette classe est aussi chargée
@@ -81,6 +86,7 @@ public final class ResearchManager {
     /** Envoie à un joueur l'état de la recherche de son agence. */
     public static void sync(ServerPlayer player) {
         AgencyResearch research = of(player);
+        SENT.put(player.getUUID(), new Sent(agencyKey(player), research.revision()));
         // Les études de l'établi d'ingénieur voyagent avec les technologies : le client les lit de la même façon.
         List<String> known = new java.util.ArrayList<>(research.unlocked());
         for (String milestone : research.milestones()) {
@@ -113,8 +119,8 @@ public final class ResearchManager {
 
     /**
      * Récompense un vol réussi : une prime la première fois que l'agence atteint chaque palier
-     * (vol atmosphérique, espace, orbite...), plus quelques points à chaque vol qui emporte une charge utile
-     * scientifique jusque dans l'espace.
+     * (vol atmosphérique, espace, orbite...), les données de chaque vol (voir {@link #flightData}), plus quelques points
+     * à chaque vol qui emporte une charge utile scientifique jusque dans l'espace.
      *
      * @return les points de recherche gagnés
      */
@@ -127,6 +133,7 @@ public final class ResearchManager {
                 points += reward;
             }
         }
+        points += flightData(reach);
         if (hasPayload && reach.ordinal() >= RocketStats.Reach.SUBORBITAL.ordinal()) {
             points += PAYLOAD_DATA_POINTS;
         }
@@ -138,6 +145,17 @@ public final class ResearchManager {
         research.addPoints(points);
         changed(server, agencyKey);
         return points;
+    }
+
+    /**
+     * Données d'un vol réussi, à chaque vol : de quoi avancer au début, quand chaque fusée-sonde compte. Plus tard, elles
+     * pèsent peu à côté des missions.
+     */
+    public static int flightData(RocketStats.Reach reach) {
+        if (reach.ordinal() >= RocketStats.Reach.LOW_ORBIT.ordinal()) {
+            return 10;
+        }
+        return reach == RocketStats.Reach.SUBORBITAL ? 6 : reach == RocketStats.Reach.ATMOSPHERIC ? 3 : 0;
     }
 
     /** Prime de recherche la première fois qu'une agence atteint ce palier (voir {@link ResearchGoals}). */
@@ -196,6 +214,21 @@ public final class ResearchManager {
     @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         KNOWN_AGENCY.remove(event.getEntity().getUUID());
+        SENT.remove(event.getEntity().getUUID());
+    }
+
+    /**
+     * À chaque tick, chaque joueur dont l'agence a gagné ou dépensé des points reçoit le nouvel état : les points d'un
+     * lancement, d'une sonde ou d'un coéquipier s'affichent aussitôt, sans se reconnecter.
+     */
+    @SubscribeEvent
+    public static void onServerTick(net.neoforged.neoforge.event.tick.ServerTickEvent.Post event) {
+        for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
+            Sent sent = SENT.get(player.getUUID());
+            if (sent == null || !sent.agency().equals(agencyKey(player)) || sent.revision() != of(player).revision()) {
+                sync(player);
+            }
+        }
     }
 
     /** Régulièrement : récompense les jalons atteints, et renvoie l'état si le joueur a changé d'équipe. */

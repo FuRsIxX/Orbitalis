@@ -139,6 +139,19 @@ public class WaterPumpBlockEntity extends BlockEntity {
         return Component.translatable("pump.orbitalis.water_pump.pumping", RATE * 20, stored, TANK_CAPACITY).withStyle(ChatFormatting.AQUA);
     }
 
+    /** Cassée, la machine garde son énergie sur son objet ; reposée, elle la retrouve. */
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        energy.storeIn(components);
+    }
+
+    @Override
+    protected void applyImplicitComponents(net.minecraft.core.component.DataComponentGetter components) {
+        super.applyImplicitComponents(components);
+        energy.restoreFrom(components);
+    }
+
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);

@@ -1,5 +1,14 @@
 {
   "values": [
+    "orbitalis:rocket_engine_booster",
+    "orbitalis:rocket_engine_hypergolic",
+    "orbitalis:rocket_engine_vacuum",
+    "orbitalis:rocket_ion_thruster",
+    "orbitalis:rocket_solar_sail",
+    "orbitalis:rocket_tank_titanium",
+    "orbitalis:rocket_tank_stainless",
+    "orbitalis:rocket_engine_fusion",
+    "orbitalis:rocket_engine_nuclear",
     "orbitalis:bauxite_ore",
     "orbitalis:deepslate_bauxite_ore",
     "orbitalis:lithium_ore",

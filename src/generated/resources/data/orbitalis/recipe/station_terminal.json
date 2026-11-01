@@ -4,12 +4,13 @@
     "A": "#c:plates/aluminum",
     "C": "orbitalis:circuit_board",
     "G": "orbitalis:display_screen",
+    "H": "orbitalis:station_hull",
     "R": "#c:dusts/redstone"
   },
   "pattern": [
     "AGA",
     "RCR",
-    "AAA"
+    "AHA"
   ],
   "result": {
     "id": "orbitalis:station_terminal"

@@ -37,6 +37,11 @@ public final class AgencyResearch {
     private final Set<String> milestones = new LinkedHashSet<>();
     /** Nombre de vols réussis : la fiabilité des lancements augmente avec l'expérience. */
     private int flights;
+    /** Compte les changements, pour que le serveur renvoie l'état aux joueurs dès qu'il bouge (non sauvegardé). */
+    private int revision;
+    /** Prévenu à chaque changement : la sauvegarde se marque à enregistrer. */
+    private Runnable onChange = () -> {
+    };
 
     public AgencyResearch() {
     }
@@ -62,10 +67,29 @@ public final class AgencyResearch {
 
     public void addFlight() {
         flights++;
+        changed();
     }
 
     public void setPoints(int points) {
-        this.points = Math.max(0, points);
+        int clamped = Math.max(0, points);
+        if (clamped != this.points) {
+            this.points = clamped;
+            changed();
+        }
+    }
+
+    /** Numéro du dernier changement : deux valeurs différentes veulent dire que l'état a bougé entre-temps. */
+    public int revision() {
+        return revision;
+    }
+
+    void onChange(Runnable listener) {
+        onChange = listener;
+    }
+
+    private void changed() {
+        revision++;
+        onChange.run();
     }
 
     public void addPoints(int amount) {
@@ -118,6 +142,7 @@ public final class AgencyResearch {
         if (result == UnlockResult.SUCCESS) {
             points -= ResearchNodes.get(id).cost();
             unlocked.add(id);
+            changed();
         }
         return result;
     }
@@ -125,7 +150,11 @@ public final class AgencyResearch {
     /** Débloque la technologie sans condition ni dépense (commande d'administration). */
     public boolean forceUnlock(String id) {
         ResearchNode node = ResearchNodes.get(id);
-        return node != null && !node.isStartingKnowledge() && unlocked.add(id);
+        if (node != null && !node.isStartingKnowledge() && unlocked.add(id)) {
+            changed();
+            return true;
+        }
+        return false;
     }
 
     /** Jalons atteints (primes déjà versées, études de l'établi d'ingénieur). */
@@ -135,7 +164,11 @@ public final class AgencyResearch {
 
     /** Marque un jalon comme récompensé. Renvoie faux s'il l'était déjà. */
     public boolean completeMilestone(String id) {
-        return milestones.add(id);
+        if (milestones.add(id)) {
+            changed();
+            return true;
+        }
+        return false;
     }
 
     public boolean hasMilestone(String id) {
@@ -148,5 +181,6 @@ public final class AgencyResearch {
         unlocked.clear();
         milestones.clear();
         flights = 0;
+        changed();
     }
 }

@@ -14,7 +14,8 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "orbitalis:fluid_content"
+                "orbitalis:fluid_content",
+                "orbitalis:stored_energy"
               ],
               "source": "block_entity"
             }

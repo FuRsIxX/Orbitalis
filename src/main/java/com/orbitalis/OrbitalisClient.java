@@ -1,7 +1,6 @@
 package com.orbitalis;
 
 import com.orbitalis.client.screen.DesignScreen;
-import com.orbitalis.phase1.rocket.DesignComputerBlock;
 import com.orbitalis.client.screen.ElevatorScreen;
 import com.orbitalis.core.network.ElevatorPayload;
 import com.orbitalis.client.PadKitPlacement;
@@ -72,7 +71,6 @@ public class OrbitalisClient {
         ResearchManager.clientView = ClientResearch::get;
         // L'ordinateur de conception aussi.
         com.orbitalis.phase1.spaceport.LaunchTableBlockEntity.delugeSound = com.orbitalis.client.DelugeSound::start;
-        DesignComputerBlock.screenOpener = () -> Minecraft.getInstance().gui.setScreen(new DesignScreen());
         com.orbitalis.phase3.interstellar.ShipyardConsoleBlock.screenOpener =
                 pos -> Minecraft.getInstance().gui.setScreen(new com.orbitalis.client.screen.ShipyardScreen(pos));
         com.orbitalis.phase1.rocket.EngineerWorkbenchBlock.screenOpener =
@@ -132,6 +130,15 @@ public class OrbitalisClient {
     @SubscribeEvent
     static void registerPayloadHandlers(RegisterClientPayloadHandlersEvent event) {
         event.register(ResearchSyncPayload.TYPE, (payload, context) -> ClientResearch.receive(payload));
+        // Ordinateur de conception : il ouvre l'écran sur son brouillon, puis montre les réglages des autres joueurs.
+        event.register(com.orbitalis.core.network.DesignStatePayload.TYPE, (payload, context) -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (payload.open()) {
+                minecraft.gui.setScreen(new DesignScreen(payload));
+            } else if (minecraft.gui.screen() instanceof DesignScreen screen) {
+                screen.receive(payload);
+            }
+        });
         // L'état d'un complexe de lancement arrive quand le joueur utilise un pupitre : on ouvre son écran.
         // Informations d'un pas de tir : clic droit sur la structure formée.
         event.register(LaunchPadInfoPayload.TYPE,

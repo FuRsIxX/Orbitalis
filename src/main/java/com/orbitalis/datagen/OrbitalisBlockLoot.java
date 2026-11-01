@@ -35,20 +35,21 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.ALUMINUM_BLOCK.get());
         dropSelf(ModBlocks.TITANIUM_BLOCK.get());
 
-        // Machines : se lâchent elles-mêmes (leur contenu tombe séparément).
-        dropSelf(ModBlocks.COMBUSTION_GENERATOR.get());
-        dropSelf(ModBlocks.ARC_FOUNDRY.get());
-        dropSelf(ModBlocks.ROLLING_MILL.get());
-        dropSelf(ModBlocks.ELECTROLYZER.get());
-        dropSelf(ModBlocks.CRYOGENIC_LIQUEFIER.get());
-        dropSelf(ModBlocks.SABATIER_REACTOR.get());
-        dropSelf(ModBlocks.HELIUM3_EXTRACTOR.get());
-        dropSelf(ModBlocks.CASIMIR_CHAMBER.get());
-        dropSelf(ModBlocks.FUSION_REACTOR.get());
-        dropSelf(ModBlocks.REFINERY.get());
-        // Le réservoir cryogénique tombe avec son contenu.
-        add(ModBlocks.CRYOGENIC_TANK.get(), this::keepingFluid);
-        dropSelf(ModBlocks.WATER_PUMP.get());
+        // Machines : se lâchent elles-mêmes avec leur énergie (leur contenu tombe séparément).
+        add(ModBlocks.COMBUSTION_GENERATOR.get(), this::keepingEnergy);
+        add(ModBlocks.ARC_FOUNDRY.get(), this::keepingEnergy);
+        add(ModBlocks.ROLLING_MILL.get(), this::keepingEnergy);
+        add(ModBlocks.ELECTROLYZER.get(), this::keepingEnergy);
+        add(ModBlocks.CRYOGENIC_LIQUEFIER.get(), this::keepingEnergy);
+        add(ModBlocks.SABATIER_REACTOR.get(), this::keepingEnergy);
+        add(ModBlocks.HELIUM3_EXTRACTOR.get(), this::keepingEnergy);
+        add(ModBlocks.CASIMIR_CHAMBER.get(), this::keepingEnergy);
+        add(ModBlocks.FUSION_REACTOR.get(), this::keepingEnergy);
+        add(ModBlocks.REFINERY.get(), this::keepingEnergy);
+        // Le réservoir cryogénique tombe avec son contenu et son énergie.
+        add(ModBlocks.CRYOGENIC_TANK.get(), block -> keeping(block, com.orbitalis.core.registry.ModDataComponents.FLUID_CONTENT.get(),
+                com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get()));
+        add(ModBlocks.WATER_PUMP.get(), this::keepingEnergy);
 
         // Terminal de recherche et atelier d'assemblage (ses pièces tombent séparément).
 
@@ -131,8 +132,8 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.SERVER_RACK.get());
         dropSelf(ModBlocks.DRAFTING_TABLE.get());
         dropSelf(ModBlocks.DOCKING_PORT.get());
-        dropSelf(ModBlocks.SOLAR_PANEL.get());
-        dropSelf(ModBlocks.LIFE_SUPPORT.get());
+        add(ModBlocks.SOLAR_PANEL.get(), this::keepingEnergy);
+        add(ModBlocks.LIFE_SUPPORT.get(), this::keepingEnergy);
         // Aménagement des stations.
         dropSelf(ModBlocks.STATION_PANEL.get());
         dropSelf(ModBlocks.STATION_FLOOR.get());
@@ -157,10 +158,10 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
                                 net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                                         .setProperties(net.minecraft.advancements.predicates.StatePropertiesPredicate.Builder.properties()
                                                 .hasProperty(com.orbitalis.phase2.survival.SuitWorkbenchBlock.RIGHT, false)))))));
-        dropSelf(ModBlocks.LAB_RACK.get());
-        dropSelf(ModBlocks.HYDROPONIC_TRAY.get());
+        add(ModBlocks.LAB_RACK.get(), this::keepingEnergy);
+        add(ModBlocks.HYDROPONIC_TRAY.get(), this::keepingEnergy);
         dropSelf(ModBlocks.CARGO_RACK.get());
-        dropSelf(ModBlocks.STATION_BATTERY.get());
+        add(ModBlocks.STATION_BATTERY.get(), this::keepingEnergy);
         add(ModBlocks.STATION_HATCH.get(), this::createDoorTable);
         add(ModBlocks.AIRLOCK_DOOR.get(), this::createDoorTable);
         // La porte vitrée tient sur quatre cases : seule celle du bas, à gauche, rend la porte.
@@ -177,19 +178,26 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.GAS_PIPE.get());
         dropSelf(ModBlocks.DATA_CABLE.get());
         // Un bloc de réservoir modulable emporte sa part du contenu.
-        add(ModBlocks.FLUID_TANK.get(), this::keepingFluid);
+        add(ModBlocks.FLUID_TANK.get(), block -> keeping(block, com.orbitalis.core.registry.ModDataComponents.FLUID_CONTENT.get()));
         ModBlocks.CREATIVE_TANKS.forEach(tank -> dropSelf(tank.get()));
     }
 
-    /** Le bloc lui-même, qui garde le fluide que contenait son réservoir (voir ModDataComponents.FLUID_CONTENT). */
-    private net.minecraft.world.level.storage.loot.LootTable.Builder keepingFluid(Block block) {
+    /** Le bloc lui-même, qui garde l'énergie de sa réserve (voir ModDataComponents.STORED_ENERGY). */
+    private net.minecraft.world.level.storage.loot.LootTable.Builder keepingEnergy(Block block) {
+        return keeping(block, com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get());
+    }
+
+    /** Le bloc lui-même, qui emporte ces données de son entité (le fluide d'un réservoir, l'énergie d'une machine...). */
+    private net.minecraft.world.level.storage.loot.LootTable.Builder keeping(Block block, net.minecraft.core.component.DataComponentType<?>... kept) {
+        var copy = net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction
+                .copyComponentsFromBlockEntity(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_ENTITY);
+        for (var type : kept) {
+            copy.include(type);
+        }
         return net.minecraft.world.level.storage.loot.LootTable.lootTable().withPool(applyExplosionCondition(block,
                 net.minecraft.world.level.storage.loot.LootPool.lootPool()
                         .setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1.0F))
-                        .add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(block)
-                                .apply(net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction
-                                        .copyComponentsFromBlockEntity(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_ENTITY)
-                                        .include(com.orbitalis.core.registry.ModDataComponents.FLUID_CONTENT.get())))));
+                        .add(net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem(block).apply(copy))));
     }
 
     /** Limite la vérification aux blocs d'Orbitalis : chaque bloc du mod doit avoir une loot table. */

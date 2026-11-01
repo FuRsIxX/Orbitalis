@@ -126,6 +126,18 @@
     "orbitalis:rusty_facility_siding",
     "orbitalis:facility_concrete_slab",
     "orbitalis:orange_facility_siding",
-    "orbitalis:server_rack"
+    "orbitalis:server_rack",
+    "orbitalis:rocket_engine_booster",
+    "orbitalis:rocket_engine_hypergolic",
+    "orbitalis:rocket_engine_vacuum",
+    "orbitalis:rocket_ion_thruster",
+    "orbitalis:rocket_solar_sail",
+    "orbitalis:rocket_tank_titanium",
+    "orbitalis:rocket_tank_stainless",
+    "orbitalis:rocket_engine_fusion",
+    "orbitalis:rocket_engine_nuclear",
+    "orbitalis:workstation_part",
+    "orbitalis:rocket_hull",
+    "orbitalis:rocket"
   ]
 }

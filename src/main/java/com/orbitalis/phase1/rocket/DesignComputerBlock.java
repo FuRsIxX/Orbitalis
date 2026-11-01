@@ -25,6 +25,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -38,17 +40,14 @@ import net.minecraft.world.phys.BlockHitResult;
  * <p>
  * Un clic droit ouvre son écran : le catalogue des lanceurs, une vue en 3D de celui qu'on règle, ses
  * caractéristiques, et le bouton qui imprime son plan. Imprimer coûte une feuille de papier, et la charge utile
- * choisie : elle part avec le plan, et sera à bord de la fusée une fois bâtie.
+ * choisie : elle part avec le plan, et sera à bord de la fusée une fois bâtie. L'ordinateur garde le brouillon en
+ * cours ({@link DesignComputerBlockEntity}).
  */
-public class DesignComputerBlock extends Block implements Workstation.Host {
+public class DesignComputerBlock extends Block implements Workstation.Host, EntityBlock {
     /** Direction vers laquelle les écrans sont tournés. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     /** Distance maximale entre le joueur et un ordinateur pour lui faire imprimer un plan, en blocs. */
     private static final int REACH = 8;
-
-    /** Ouvre l'écran de conception, côté client. */
-    public static Runnable screenOpener = () -> {
-    };
 
     public DesignComputerBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -82,9 +81,15 @@ public class DesignComputerBlock extends Block implements Workstation.Host {
     }
 
     @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new DesignComputerBlockEntity(pos, state);
+    }
+
+    /** Le serveur ouvre l'écran du joueur sur le brouillon que garde l'ordinateur. */
+    @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (level.isClientSide()) {
-            screenOpener.run();
+        if (player instanceof ServerPlayer serverPlayer && level.getBlockEntity(pos) instanceof DesignComputerBlockEntity computer) {
+            computer.open(serverPlayer);
         }
         return InteractionResult.SUCCESS;
     }

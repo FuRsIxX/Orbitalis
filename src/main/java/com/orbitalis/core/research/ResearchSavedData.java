@@ -28,10 +28,18 @@ public class ResearchSavedData extends SavedData {
 
     private ResearchSavedData(Map<String, AgencyResearch> agencies) {
         this.agencies.putAll(agencies);
+        this.agencies.values().forEach(research -> research.onChange(this::setDirty));
     }
 
-    /** Recherche d'une agence ; elle est créée vide à la première demande. */
+    /**
+     * Recherche d'une agence ; elle est créée vide à la première demande. Tout changement marque la sauvegarde à
+     * enregistrer, d'où qu'il vienne.
+     */
     public AgencyResearch get(String agencyKey) {
-        return agencies.computeIfAbsent(agencyKey, key -> new AgencyResearch());
+        return agencies.computeIfAbsent(agencyKey, key -> {
+            AgencyResearch research = new AgencyResearch();
+            research.onChange(this::setDirty);
+            return research;
+        });
     }
 }

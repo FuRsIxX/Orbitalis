@@ -1,5 +1,9 @@
 package com.orbitalis.core.energy;
 
+import com.orbitalis.core.registry.ModDataComponents;
+
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentMap;
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 
 /**
@@ -50,6 +54,21 @@ public class MachineEnergyStorage extends SimpleEnergyHandler {
             set(energy + added);
         }
         return added;
+    }
+
+    /** Garde l'énergie sur l'objet du bloc cassé (voir {@link ModDataComponents#STORED_ENERGY}). */
+    public void storeIn(DataComponentMap.Builder components) {
+        if (energy > 0) {
+            components.set(ModDataComponents.STORED_ENERGY.get(), energy);
+        }
+    }
+
+    /** Rend l'énergie que l'objet avait gardée, une fois le bloc reposé. */
+    public void restoreFrom(DataComponentGetter components) {
+        Integer stored = components.get(ModDataComponents.STORED_ENERGY.get());
+        if (stored != null) {
+            set(Math.clamp(stored, 0, capacity));
+        }
     }
 
     /** Consomme de l'énergie si la réserve en contient assez. Renvoie vrai si la consommation a eu lieu. */
