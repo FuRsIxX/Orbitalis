@@ -11,13 +11,17 @@ Chaque étage a son habit, d'après ce qu'il emporte :
 - kérosène : un blanc lisse, et la goulotte de câbles qui court tout le long du corps ;
 - hydrogène : la mousse isolante orange, marbrée, et la grosse conduite d'oxygène qui longe le réservoir ;
 - inox : l'acier brossé, une soudure en anneau à chaque virole ;
-- aluminium-lithium : le métal clair et son isogrille gravée ;
+- aluminium-lithium : le métal clair, raidi de lisses verticales ;
 - composite : le carbone tissé, noir ;
 - poudre : les segments blancs, leurs joints sombres et boulonnés.
 Les interétages sont noirs et nervurés, avec leurs quatre ailerons en grille ; la coiffe est blanche, avec ses rails
 de séparation. Le corps est un cylindre à seize pans, l'ogive se resserre par petits paliers, les tuyères ont leur
 lèvre. Les textures du corps ne portent aucune ligne horizontale qui découperait la fusée bloc par bloc, sauf là où
 la vraie en a (les soudures de l'inox, les joints des segments de poudre).
+
+Tout le lanceur parle la même langue, étages comme boosters : chaque panneau du corps a son joint vertical, une arête
+claire et une file de rivets ; seule la matière change d'un étage à l'autre. Les tuyères, les mêmes partout, s'évasent
+en paliers fins, du col sombre à la lèvre d'acier poli.
 
 Usage : python tools/generate_rocket_models.py   (après generate_machine_models.py)
 """
@@ -45,12 +49,23 @@ def seam_column(img, x, factor):
         img[y][x] = gm.shade(img[y][x], factor)
 
 
-def hull_white():
-    """Kérosène : un blanc lisse, un joint de panneau vertical à peine marqué."""
-    img = grain(501, "#EEF0F2", 0.012)
-    seam_column(img, 0, 0.9)
-    seam_column(img, 1, 1.02)
+def panel(img, rivets=True, depth=0.86):
+    """
+    Le détail commun à tous les corps, étages et boosters : le joint vertical entre deux panneaux (une ombre, puis une
+    arête claire), et une file de rivets qui le longe.
+    """
+    seam_column(img, 0, depth)
+    seam_column(img, 1, 1.05)
+    if rivets:
+        for y in range(1, SIZE, 4):
+            img[y][2] = gm.shade(img[y][2], 0.82)
+            img[y + 1][2] = gm.shade(img[y + 1][2], 1.06)
     return img
+
+
+def hull_white():
+    """Kérosène : un blanc lisse, son joint de panneau et ses rivets."""
+    return panel(grain(501, "#EEF0F2", 0.015), depth=0.9)
 
 
 def hull_orange():
@@ -66,7 +81,8 @@ def hull_orange():
                     img[y][x] = gm.shade(img[y][x], 0.9)
     for x in (3, 11):
         seam_column(img, x, 1.06)
-    return img
+    # La mousse cache les rivets : il ne reste que le joint entre deux pans.
+    return panel(img, rivets=False, depth=0.88)
 
 
 def hull_steel():
@@ -83,17 +99,19 @@ def hull_steel():
     for x in range(SIZE):
         img[15][x] = gm.shade(img[15][x], 0.82)
         img[0][x] = gm.shade(img[0][x], 1.08)
-    return img
+    return panel(img, depth=0.84)
 
 
 def hull_alloy():
-    """Aluminium-lithium : un métal clair, gris bleuté, et son isogrille gravée en triangles."""
-    img = grain(504, "#B9C3CE", 0.02)
-    for y in range(SIZE):
-        for x in range(SIZE):
-            if y % 8 == 0 or (x + y) % 8 == 0 or (x - y) % 8 == 0:
-                img[y][x] = gm.shade(img[y][x], 0.9)
-    return img
+    """
+    Aluminium-lithium : un métal clair, gris bleuté, raidi de lisses verticales (une ombre et une arête claire), sans
+    le quadrillage en losanges qui faisait papier peint.
+    """
+    img = grain(504, "#C2CBD5", 0.02)
+    for x in (6, 11):
+        seam_column(img, x, 0.92)
+        seam_column(img, x + 1, 1.05)
+    return panel(img, depth=0.84)
 
 
 def hull_composite():
@@ -106,18 +124,23 @@ def hull_composite():
             base = "#23262B" if weave else "#1A1C20"
             row.append(gm.shade(rgb(base), 1.0 + 0.06 * math.sin((x + y) * 0.4)))
         img.append(row)
-    return img
+    return panel(img, rivets=False, depth=0.8)
 
 
 def hull_solid():
-    """Poudre : un segment blanc, son joint sombre en bas, boulonné, et le filet de lumière au-dessus."""
-    img = grain(505, "#E8EAEC", 0.015)
+    """
+    Poudre : un segment blanc et, en bas, son joint de raccord : une lèvre claire, la bague sombre et ses boulons, puis
+    l'ombre qu'elle porte. Le même joint de panneau et les mêmes rivets que les étages.
+    """
+    img = panel(grain(505, "#E8EAEC", 0.015), depth=0.9)
     for x in range(SIZE):
+        img[12][x] = gm.shade(img[12][x], 1.04)
+        img[13][x] = rgb("#5A616A")
         img[14][x] = rgb("#4A5058")
         img[15][x] = rgb("#3A3F46")
-        img[13][x] = gm.shade(img[13][x], 0.92)
     for x in range(1, SIZE, 4):
-        img[14][x] = rgb("#9AA2AB")
+        img[14][x] = rgb("#A9B1BA")
+        img[15][x] = rgb("#2C3036")
     return img
 
 
@@ -131,10 +154,8 @@ def hull_dark():
 
 
 def hull_fairing():
-    """Coiffe : un blanc satiné, d'un seul tenant."""
-    img = grain(507, "#F1F2F4", 0.01)
-    seam_column(img, 8, 0.94)
-    return img
+    """Coiffe : un blanc satiné, et le joint de ses deux demi-coquilles, riveté comme le reste du lanceur."""
+    return panel(grain(507, "#F1F2F4", 0.012), depth=0.9)
 
 
 def hull_checker():
@@ -161,11 +182,11 @@ def hull_feed():
 
 
 def hull_bell():
-    """Tuyère : un métal sombre, bleui par la chaleur vers le col."""
+    """Tuyère : un métal sombre, bleui par la chaleur vers le col, parcouru des tubes de refroidissement."""
     img = []
     for y in range(SIZE):
         t = y / 15.0
-        img.append([gm.shade(gm.blend(rgb("#2E3440"), rgb("#4A505A"), t), 1.0 + 0.04 * ((x * 5) % 3 - 1)) for x in range(SIZE)])
+        img.append([gm.shade(gm.blend(rgb("#2E3440"), rgb("#55606C"), t), 1.08 if x % 2 == 0 else 0.92) for x in range(SIZE)])
     return img
 
 
@@ -265,10 +286,15 @@ def cylinder(y0, y1, half, texture):
     return elements
 
 
+# Profil d'une tuyère, du col à la sortie : (bas, haut, demi-largeur). Sept paliers fins, pour qu'elle s'évase en douceur
+# au lieu de descendre en marches d'escalier.
+BELL = ((9.2, 10, 0.9), (8, 9.2, 1.15), (6.6, 8, 1.45), (5.2, 6.6, 1.75), (3.8, 5.2, 2.05), (2.3, 3.8, 2.32), (0.6, 2.3, 2.56))
+
+
 def bell(cx, cz, scale, texture="bell"):
-    """Tuyère : un col étroit qui s'évase vers le bas en quatre paliers, et sa lèvre d'acier poli."""
+    """Tuyère : un col étroit qui s'évase vers le bas en paliers fins, et sa lèvre d'acier poli."""
     elements = []
-    for y0, y1, half in ((8, 10, 1.0), (5, 8, 1.6), (2, 5, 2.2), (0.6, 2, 2.6)):
+    for y0, y1, half in BELL:
         h = round(half * scale, 2)
         elements += tiled_box(cx - h, y0, cz - h, cx + h, y1, cz + h, texture)
     lip = round(2.8 * scale, 2)
