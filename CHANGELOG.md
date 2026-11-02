@@ -1,3 +1,8 @@
+# Orbitalis — prochaine version
+
+## Changements
+- Foreuse : elle ne perce plus de puits au milieu de la zone avant de forer. En mode « Filons » comme en mode « Tout miner », elle fouille directement la zone couche par couche.
+
 # Orbitalis — 0.10.0 (bêta)
 
 *Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
@@ -121,6 +126,11 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Les réglages de jeu (réalisme, pannes, évaporation des ergols, dégâts des accidents…) sont dans la configuration serveur du monde.
 
 ---
+
+# Orbitalis — next version
+
+## Changes
+- Drill rig: it no longer bores a shaft in the middle of the area before drilling. In both "Ores" and "Mine all" modes, it goes straight through the area layer by layer.
 
 # Orbitalis — 0.10.0 (beta)
 

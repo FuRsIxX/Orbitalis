@@ -57,8 +57,8 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  * La foreuse au travail. Une fois sa tour debout ({@link DerrickPlan}), elle fore la zone qui est devant elle, centrée
  * sur son axe, couche par couche, de la surface jusqu'à la profondeur que permet sa tour :
  * <ul>
- * <li>en mode « Filons », elle n'extrait que les sortes cochées ({@link QuarryKinds}) ; elle perce un puits au milieu de
- * la zone, où descend son train de tiges, suspendu à une flèche qui part du haut de la tour ;</li>
+ * <li>en mode « Filons », elle n'extrait que les sortes cochées ({@link QuarryKinds}) et laisse tout le reste en place,
+ * sans percer de puits ;</li>
  * <li>en mode « Tout miner », elle extrait tout ce qui se casse (sauf les fluides et les blocs qui ont un contenu, comme
  * un coffre ou une machine) ;</li>
  * <li>la zone est un carré dont on règle le côté, dans la limite de la tour, ou un tronçon entier du monde, celui qui
@@ -370,7 +370,6 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
         if (layer == Integer.MIN_VALUE) {
             layer = worldPosition.getY() - 1;
             cursor = 0;
-            bore(level, area);
         }
         if (cooldown > 0) {
             cooldown--;
@@ -388,7 +387,6 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
                     sync();
                     return false;
                 }
-                bore(level, area);
                 sync();
                 return true;
             }
@@ -427,30 +425,6 @@ public class DerrickBlockEntity extends BlockEntity implements MenuProvider {
             return !state.hasBlockEntity() && !state.is(ModBlocks.DRILL_BASE.get()) && !state.is(ModBlocks.DRILL_MAST.get());
         }
         return kind >= 0 && (filter & (1 << kind)) != 0;
-    }
-
-    /** En mode « Filons », perce le puits au milieu de la zone : ce qu'il traverse n'est pas gardé, sauf un minerai voulu. */
-    private void bore(ServerLevel level, int[] area) {
-        if (mode != MODE_ORES) {
-            return;
-        }
-        BlockPos shaft = new BlockPos((area[0] + area[2]) / 2, layer, (area[1] + area[3]) / 2);
-        BlockState state = level.getBlockState(shaft);
-        if (state.isAir() || !state.getFluidState().isEmpty() || state.getDestroySpeed(level, shaft) < 0 || state.hasBlockEntity()) {
-            return;
-        }
-        int kind = QuarryKinds.of(state);
-        if (kind >= 0 && (filter & (1 << kind)) != 0) {
-            boolean wasReplacing = replace;
-            replace = false;
-            extract(level, shaft, state, kind);
-            replace = wasReplacing;
-            return;
-        }
-        if (energy.consume(BLOCK_ENERGY)) {
-            level.levelEvent(2001, shaft, Block.getId(state));
-            level.setBlock(shaft, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-        }
     }
 
     /** Extrait un bloc : son butin dans la réserve, son remplaçant ou l'air à sa place, et la tête qui chauffe. */
