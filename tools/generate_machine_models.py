@@ -19,6 +19,7 @@ import random
 import sys
 
 from generate_textures import BLOCK_DIR, ROOT, SIZE, blotchy, rgb, write_png
+from model_kit import whole_uv
 
 MODEL_DIR = os.path.join(ROOT, "src", "main", "resources", "assets", "orbitalis", "models", "block", "machine")
 FACES = ("north", "south", "east", "west", "up", "down")
@@ -552,9 +553,9 @@ def build_extra(parts, own_textures, emissive):
     for part in parts:
         faces = {face: {"texture": "#" + part.get("faces", {}).get(face, part["texture"])} for face in FACES}
         if part.get("stretch") or any(c < 0 or c > 16 for c in part["from"] + part["to"]):
-            # Pièce qui dépasse du bloc : la texture entière est plaquée sur chaque face.
-            for face in faces.values():
-                face["uv"] = [0, 0, 16, 16]
+            # Pièce qui dépasse du bloc : la texture entière sur chaque face, sauf en travers d'une face fine.
+            for name, face in faces.items():
+                face["uv"] = whole_uv(name, part["from"], part["to"])
         # Portion de texture imposée à certaines faces (une conduite garde ainsi des pixels de la taille de ceux des blocs).
         for face, uv in part.get("uv", {}).items():
             faces[face]["uv"] = uv

@@ -775,6 +775,8 @@ public final class WorldPreview {
             set(level, -4, 0, 8, "orbitalis:pad_floodlight[facing=north,diagonal=true,lit=true]");
         }, 16.0, 3.6, 2.0, 0.0F, 22.0F, 30));
         SHOTS.add(new Shot("pad_blocks_b", null, 3.0, 3.0, 2.5, 0.0F, 22.0F, 12));
+        // La charpente de près : un anneau de 3×3 sur quatre étages, vu du dehors puis du dedans en levant les yeux (les
+        // poutres doivent montrer des pixels nets, pas des traînées).
         // De près : la charpente, la colonne technique et le bras ; le bloc de ravitaillement vu de dessus ; le portique.
         SHOTS.add(new Shot("pad_blocks_tower", null, 8.5, 0.6, 5.2, 0.0F, 12.0F, 12));
         SHOTS.add(new Shot("pad_blocks_top", null, 9.0, 2.6, 6.0, -20.0F, 50.0F, 12));
@@ -2255,6 +2257,14 @@ public final class WorldPreview {
         // Le pas de tir d'essai (table en -20 -59 40) et son pupitre, dix blocs au sud : vue d'ensemble, puis le pupitre
         // de près, son écran ouvert, et le kit réglé sur le 3×3.
         SHOTS.add(new Shot("tm_test_pad", null, -15.5, -55.0, 56.5, 150.0F, 18.0F, 80));
+        // La charpente de près, près du point d'apparition de la carte de test : un anneau de 3×3 sur quatre étages, vu
+        // du dehors puis du dedans en levant les yeux. Les poutres doivent montrer des pixels nets, pas des traînées.
+        SHOTS.add(new Shot("tm_frames", level -> {
+            run(level, "fill 39 -60 39 43 -55 43 air");
+            run(level, "fill 40 -60 40 42 -57 42 orbitalis:tower_frame");
+            run(level, "fill 41 -60 41 41 -57 41 air");
+        }, 41.5, -60.0, 37.6, 0.0F, -12.0F, 60));
+        SHOTS.add(new Shot("tm_frames_inside", null, 41.5, -60.0, 41.5, 30.0F, -55.0F, 20));
         SHOTS.add(new Shot("tm_test_console", null, -18.2, -58.4, 52.2, 145.0F, 28.0F, 40));
         SHOTS.add(new Shot("tm_test_console_screen", level -> {
             var status = com.orbitalis.phase1.spaceport.LaunchConsoleBlock.status(level, new BlockPos(-20, -60, 50), true);

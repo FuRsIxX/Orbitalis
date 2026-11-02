@@ -28,6 +28,7 @@ import random
 
 import generate_machine_models as gm
 from generate_textures import ROOT, SIZE, rgb
+from model_kit import whole_uv
 
 MODEL_DIR = os.path.join(ROOT, "src", "main", "resources", "assets", "orbitalis", "models", "block", "rocket")
 
@@ -247,8 +248,9 @@ def tiled_box(x0, y0, z0, x1, y1, z1, texture):
 
 
 def whole_box(x0, y0, z0, x1, y1, z1, texture):
-    """Pavé dont chaque face reçoit la texture entière (un aileron en grille)."""
-    faces = {face: {"uv": [0, 0, 16, 16], "texture": "#" + texture} for face in ("north", "south", "east", "west", "up", "down")}
+    """Pavé dont chaque face reçoit la texture entière (un aileron en grille), sauf en travers d'une face fine."""
+    faces = {face: {"uv": whole_uv(face, (x0, y0, z0), (x1, y1, z1)), "texture": "#" + texture}
+             for face in ("north", "south", "east", "west", "up", "down")}
     return [{"from": [x0, y0, z0], "to": [x1, y1, z1], "faces": faces}]
 
 

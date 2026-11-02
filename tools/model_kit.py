@@ -39,6 +39,26 @@ def _uv(face, lo, hi):
     }[face]
 
 
+# Axes (u, v) de la texture sur chaque face : 0 = x, 1 = y, 2 = z.
+_FACE_AXES = {"north": (0, 1), "south": (0, 1), "east": (2, 1), "west": (2, 1), "up": (0, 2), "down": (0, 2)}
+# En dessous de cette épaisseur, une face ne reçoit plus la texture entière : elle serait tassée en traînées lisses.
+_THIN = 8
+
+
+def whole_uv(face, lo, hi):
+    """
+    Portion de texture d'une face qui ne suit pas la grille (pièce tournée ou qui dépasse du bloc). Sur un axe où la
+    face est large, la texture entière ; sur un axe où elle est fine (une poutre, un rebord), une tranche du milieu de
+    la texture, de la même taille que la face : un pixel de texture y reste un pixel de bloc, comme dans le jeu, au lieu
+    d'une texture de 16 pixels tassée en traînées.
+    """
+    spans = []
+    for axis in _FACE_AXES[face]:
+        size = abs(hi[axis] - lo[axis])
+        spans.append((0.0, 16.0) if size >= _THIN else ((16 - size) / 2, (16 + size) / 2))
+    return [round(spans[0][0], 4), round(spans[1][0], 4), round(spans[0][1], 4), round(spans[1][1], 4)]
+
+
 def build_tiled(parts, textures, emissive=(), particle="orbitalis:block/machine_frame", display=None):
     """
     Modèle fait de pavés.
@@ -73,7 +93,7 @@ def build_tiled(parts, textures, emissive=(), particle="orbitalis:block/machine_
                     continue
                 name = own.get(face, part["texture"])
                 used.add(name)
-                uv = forced.get(face) or ([0, 0, 16, 16] if whole else [round(v, 4) for v in _uv(face, a, b)])
+                uv = forced.get(face) or (whole_uv(face, a, b) if whole else [round(v, 4) for v in _uv(face, a, b)])
                 faces[face] = {"texture": "#" + name, "uv": uv}
             if not faces:
                 continue
