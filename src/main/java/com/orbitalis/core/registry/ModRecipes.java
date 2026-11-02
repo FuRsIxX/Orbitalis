@@ -26,6 +26,10 @@ public final class ModRecipes {
     public static final DeferredHolder<RecipeBookCategory, RecipeBookCategory> MACHINES_CATEGORY =
             BOOK_CATEGORIES.register("machines", RecipeBookCategory::new);
 
+    /** Recette en forme qui garde l'énergie des ingrédients : l'amélioration d'un accumulateur. */
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<net.minecraft.world.item.crafting.ShapedRecipe>> KEEP_ENERGY_SHAPED =
+            SERIALIZERS.register("keep_energy_shaped", () -> com.orbitalis.core.energy.KeepEnergyRecipe.SERIALIZER);
+
     // ------------------------------------------------------------------
     // Fonderie à arc : alliages (deux ingrédients -> un lingot)
     // ------------------------------------------------------------------

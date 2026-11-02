@@ -44,6 +44,38 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
         super(registries, output);
     }
 
+    /**
+     * La sortie des recettes, qui écrit chaque recette en forme comme une recette qui garde l'énergie des ingrédients
+     * ({@link com.orbitalis.core.energy.KeepEnergyRecipe}) : la même recette (motif, catégorie, groupe, résultat), sous
+     * l'autre type.
+     */
+    private RecipeOutput keepingEnergy(ItemLike result) {
+        RecipeOutput base = output;
+        return new RecipeOutput() {
+            @Override
+            public void accept(ResourceKey<Recipe<?>> id, Recipe<?> recipe, net.minecraft.advancements.AdvancementHolder advancement,
+                    net.neoforged.neoforge.common.conditions.ICondition... conditions) {
+                Recipe<?> kept = recipe;
+                if (recipe instanceof net.minecraft.world.item.crafting.ShapedRecipe shaped) {
+                    kept = new com.orbitalis.core.energy.KeepEnergyRecipe(new Recipe.CommonInfo(shaped.showNotification()),
+                            new net.minecraft.world.item.crafting.CraftingRecipe.CraftingBookInfo(shaped.category(), shaped.group()),
+                            shaped.pattern, new ItemStackTemplate(result.asItem()));
+                }
+                base.accept(id, kept, advancement, conditions);
+            }
+
+            @Override
+            public net.minecraft.advancements.Advancement.Builder advancement() {
+                return base.advancement();
+            }
+
+            @Override
+            public void includeRootAdvancement() {
+                base.includeRootAdvancement();
+            }
+        };
+    }
+
     @Override
     protected void buildRecipes() {
         // Minerais et minerais bruts -> lingots (four et haut fourneau).
@@ -688,7 +720,7 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('A', ModBlocks.ACCUMULATOR)
                 .define('C', ModItems.CIRCUIT_BOARD)
                 .unlockedBy("has_accumulator", has(ModBlocks.ACCUMULATOR))
-                .save(output, key("accumulator_advanced"));
+                .save(keepingEnergy(ModBlocks.ACCUMULATOR_ADVANCED), key("accumulator_advanced"));
         shaped(RecipeCategory.MISC, ModBlocks.ACCUMULATOR_ELITE)
                 .pattern("TFT")
                 .pattern("BAB")
@@ -698,7 +730,7 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('B', ModItems.BATTERY_CELL)
                 .define('A', ModBlocks.ACCUMULATOR_ADVANCED)
                 .unlockedBy("has_advanced_accumulator", has(ModBlocks.ACCUMULATOR_ADVANCED))
-                .save(output, key("accumulator_elite"));
+                .save(keepingEnergy(ModBlocks.ACCUMULATOR_ELITE), key("accumulator_elite"));
         shaped(RecipeCategory.MISC, ModBlocks.ACCUMULATOR_QUANTUM)
                 .pattern("ORO")
                 .pattern("BAB")
@@ -709,7 +741,7 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('A', ModBlocks.ACCUMULATOR_ELITE)
                 .define('T', ModBlocks.TITANIUM_BLOCK)
                 .unlockedBy("has_elite_accumulator", has(ModBlocks.ACCUMULATOR_ELITE))
-                .save(output, key("accumulator_quantum"));
+                .save(keepingEnergy(ModBlocks.ACCUMULATOR_QUANTUM), key("accumulator_quantum"));
 
         // La tour de la foreuse : un socle de plaques d'acier sur un bloc d'acier, des mâts d'acier.
         shaped(RecipeCategory.MISC, ModBlocks.DRILL_BASE, 4)

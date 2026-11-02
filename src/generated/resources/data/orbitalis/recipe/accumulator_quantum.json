@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "orbitalis:keep_energy_shaped",
   "key": {
     "A": "orbitalis:accumulator_elite",
     "B": "orbitalis:battery_cell",

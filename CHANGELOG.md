@@ -1,6 +1,7 @@
 # Orbitalis — prochaine version
 
 ## Changements
+- Améliorer un accumulateur garde son énergie : la génération suivante, fabriquée autour de l'ancienne, reprend toute sa charge ; seule la capacité augmente.
 - Foreuse : elle ne perce plus de puits au milieu de la zone avant de forer. En mode « Filons » comme en mode « Tout miner », elle fouille directement la zone couche par couche.
 
 # Orbitalis — 0.10.0 (bêta)
@@ -130,6 +131,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 # Orbitalis — next version
 
 ## Changes
+- Upgrading an accumulator keeps its energy: the next generation, crafted around the old one, takes over its whole charge; only the capacity goes up.
 - Drill rig: it no longer bores a shaft in the middle of the area before drilling. In both "Ores" and "Mine all" modes, it goes straight through the area layer by layer.
 
 # Orbitalis — 0.10.0 (beta)

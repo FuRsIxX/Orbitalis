@@ -4020,6 +4020,19 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(side.extract(100, transaction) == 0, "on ne devrait rien prendre par un flanc");
         }
         source.getEnergy().generate(300_000);
+        // L'amélioration garde l'énergie : un accumulateur chargé, au milieu de la recette de l'avancé, la transmet.
+        var recipe = level.getServer().getRecipeManager().byKey(net.minecraft.resources.ResourceKey.create(
+                net.minecraft.core.registries.Registries.RECIPE, Orbitalis.id("accumulator_advanced")));
+        helper.assertTrue(recipe.isPresent(), "la recette de l'accumulateur avancé devrait exister");
+        ItemStack charged = new ItemStack(ModBlocks.ACCUMULATOR.get());
+        charged.set(com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get(), 750_000);
+        java.util.List<ItemStack> grid = new java.util.ArrayList<>(java.util.Collections.nCopies(9, ItemStack.EMPTY));
+        grid.set(4, charged);
+        ItemStack upgraded = ((net.minecraft.world.item.crafting.CraftingRecipe) recipe.get().value())
+                .assemble(net.minecraft.world.item.crafting.CraftingInput.of(3, 3, grid));
+        Integer kept = upgraded.get(com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get());
+        helper.assertTrue(upgraded.is(ModBlocks.ACCUMULATOR_ADVANCED.get().asItem()) && kept != null && kept == 750_000,
+                "l'accumulateur amélioré aurait dû garder son énergie : " + kept);
         helper.succeedWhen(() -> {
             helper.assertTrue(target.getEnergy().getEnergy() > 0, "le second accumulateur aurait dû recevoir l'énergie du premier");
             helper.assertTrue(helper.getBlockState(second).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) >= 1,
