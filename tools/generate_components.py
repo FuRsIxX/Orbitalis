@@ -733,6 +733,30 @@ PARTS["venus_lander"] = (ENTRY_ROWS, {**ENTRY_PAL, "h": "#7A4A2A"})
 PARTS["jupiter_entry_probe"] = (ENTRY_ROWS, {**ENTRY_PAL, "h": "#5A3A22"})
 PARTS["titan_entry_probe"] = (ENTRY_ROWS, {**ENTRY_PAL, "h": "#8A6A3A"})
 
+# Modules de surcadençage : une carte sombre, ses contacts dorés, et autant de chevrons que de crans de vitesse (un
+# pour ×2, deux pour ×4, trois pour ×8), de plus en plus chauds.
+OVERCLOCK_CHEVRONS = {
+    1: ["......cc........", ".......cc.......", "........cc......", ".......cc.......", "......cc........"],
+    2: ["....cc..cc......", ".....cc..cc.....", "......cc..cc....", ".....cc..cc.....", "....cc..cc......"],
+    3: ["..cc..cc..cc....", "...cc..cc..cc...", "....cc..cc..cc..", "...cc..cc..cc...", "..cc..cc..cc...."],
+}
+for _speed, _crans, _hot in ((2, 1, "#F2D04A"), (4, 2, "#FF9A3A"), (8, 3, "#FF4F3A")):
+    _face = [".o" + r[2:14].replace(".", "k") + "o." for r in OVERCLOCK_CHEVRONS[_crans]]
+    PARTS["overclock_module_x%d" % _speed] = ([
+        "................",
+        "................",
+        ".oooooooooooooo.",
+        ".olllllllllllGo.",
+        ".okkkkkkkkkkkGo.",
+    ] + _face + [
+        ".okkkkkkkkkkkGo.",
+        ".oGGGGGGGGGGGGo.",
+        ".oyoyoyoyoyoyoo.",
+        ".oooooooooooooo.",
+        "................",
+        "................",
+    ], {"o": "#1B1E23", "l": "#5E6670", "G": "#2A2E34", "k": "#33383F", "y": "#E8C25A", "c": _hot})
+
 def main():
     for name, (rows, palette) in list(COMPONENTS.items()) + list(PARTS.items()):
         write_png(os.path.join(ITEM_DIR, name + ".png"), icon(rows, palette))

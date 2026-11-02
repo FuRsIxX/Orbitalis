@@ -27,6 +27,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     protected final MachineEnergyStorage energy;
     protected final MachineInventory inventory;
+    /** Emplacement du module de surcadençage (seulement sur les machines qui le permettent, voir {@link #supportsOverclock()}). */
+    protected final MachineInventory upgrades = upgradeInventory(this::onUpgradeChanged);
+    /** Vitesse choisie sur l'écran : 1, 2, 4 ou 8, jamais plus que ce que permet le module. */
+    private int speed = 1;
     /** Vrai pendant les ticks où la machine travaille réellement. */
     private boolean working;
 
@@ -42,6 +46,71 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     /** Logique de la machine, exécutée une fois par tick côté serveur uniquement. */
     public abstract void serverTick(ServerLevel level, BlockPos pos, BlockState state);
+
+    /** Vrai si la machine accepte un module de surcadençage. */
+    public boolean supportsOverclock() {
+        return false;
+    }
+
+    /** L'emplacement du module de surcadençage : un seul module, rien d'autre. Le menu du client en crée un pareil. */
+    public static MachineInventory upgradeInventory(Runnable onChanged) {
+        return new MachineInventory(1, (slot, stack) -> stack.getItem() instanceof OverclockModuleItem, slot -> false, onChanged) {
+            @Override
+            protected int getCapacity(int index, net.neoforged.neoforge.transfer.item.ItemResource resource) {
+                return 1;
+            }
+        };
+    }
+
+    public MachineInventory getUpgrades() {
+        return upgrades;
+    }
+
+    /** Vitesse la plus haute que permet le module posé ; 1 sans module. */
+    public int maxSpeed() {
+        return supportsOverclock() && upgrades.getStack(0).getItem() instanceof OverclockModuleItem module ? module.speed() : 1;
+    }
+
+    /** Vitesse de la machine : combien de ticks de travail elle abat par tick. */
+    public int speed() {
+        return Math.min(speed, maxSpeed());
+    }
+
+    /** Choisit la vitesse (une puissance de deux, ramenée sous le plafond du module). */
+    public void setSpeed(int wanted) {
+        int chosen = 1;
+        while (chosen * 2 <= Math.min(wanted, maxSpeed())) {
+            chosen *= 2;
+        }
+        speed = chosen;
+        applyOverclock();
+        setChanged();
+    }
+
+    /** Consommation surcadencée : aller N fois plus vite coûte N² fois plus. */
+    protected int overclockEnergy(int perTick) {
+        int s = speed();
+        return perTick * s * s;
+    }
+
+    /** Valeurs synchronisées du surcadençage, après celles de la machine : la vitesse, puis le plafond du module. */
+    protected int overclockData(int local) {
+        return local == 0 ? speed() : maxSpeed();
+    }
+
+    private void onUpgradeChanged() {
+        // Sans module (ou avec un plus petit), la vitesse redescend d'elle-même ; elle remonte si on le repose.
+        applyOverclock();
+        setChanged();
+    }
+
+    /** La machine accepte d'autant plus d'énergie qu'elle en consomme. */
+    private void applyOverclock() {
+        if (supportsOverclock()) {
+            int s = speed();
+            energy.setMaxInsert(ENERGY_TRANSFER * s * s);
+        }
+    }
 
     /** Données supplémentaires envoyées au client à l'ouverture de l'interface. */
     public void writeMenuData(RegistryFriendlyByteBuf buffer) {
@@ -99,6 +168,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         super.collectImplicitComponents(components);
         energy.storeIn(components);
         inventory.storeIn(components);
+        if (supportsOverclock() && (maxSpeed() > 1 || speed > 1)) {
+            components.set(com.orbitalis.core.registry.ModDataComponents.OVERCLOCK.get(), new OverclockModuleItem.Setting(maxSpeed(), speed));
+        }
     }
 
     @Override
@@ -106,6 +178,12 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         super.applyImplicitComponents(components);
         energy.restoreFrom(components);
         inventory.restoreFrom(components);
+        OverclockModuleItem.Setting overclock = components.get(com.orbitalis.core.registry.ModDataComponents.OVERCLOCK.get());
+        if (overclock != null && supportsOverclock()) {
+            upgrades.setStack(0, OverclockModuleItem.forSpeed(overclock.module()));
+            speed = Math.max(1, overclock.speed());
+            applyOverclock();
+        }
     }
 
     @Override
@@ -113,6 +191,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         super.saveAdditional(output);
         energy.serialize(output.child("energy"));
         inventory.serialize(output.child("inventory"));
+        if (supportsOverclock()) {
+            upgrades.serialize(output.child("upgrades"));
+            output.putInt("speed", speed);
+        }
     }
 
     @Override
@@ -120,6 +202,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         super.loadAdditional(input);
         energy.deserialize(input.childOrEmpty("energy"));
         inventory.deserialize(input.childOrEmpty("inventory"));
+        if (supportsOverclock()) {
+            upgrades.deserialize(input.childOrEmpty("upgrades"));
+            speed = Math.max(1, input.getIntOr("speed", 1));
+            applyOverclock();
+        }
     }
 
     /**

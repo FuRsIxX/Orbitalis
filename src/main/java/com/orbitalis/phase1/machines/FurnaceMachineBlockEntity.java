@@ -47,7 +47,8 @@ public class FurnaceMachineBlockEntity extends MachineBlockEntity {
             return switch (index - MachineMenu.BASE_DATA_COUNT) {
                 case 0 -> progress;
                 case 1 -> maxProgress;
-                case 2 -> currentRecipe == null ? 0 : energyPerTick();
+                case 2 -> currentRecipe == null ? 0 : overclockEnergy(energyPerTick());
+                case 3, 4 -> overclockData(index - MachineMenu.BASE_DATA_COUNT - 3);
                 default -> baseData(index);
             };
         }
@@ -81,7 +82,12 @@ public class FurnaceMachineBlockEntity extends MachineBlockEntity {
         });
     }
 
-    /** Consommation en marche, en FE par tick. */
+    @Override
+    public boolean supportsOverclock() {
+        return true;
+    }
+
+    /** Consommation en marche à vitesse normale, en FE par tick. */
     public int energyPerTick() {
         return melting ? MELTING_ENERGY : INDUCTION_ENERGY;
     }
@@ -121,9 +127,10 @@ public class FurnaceMachineBlockEntity extends MachineBlockEntity {
             progress = 0;
         } else {
             ItemStack result = result(input);
-            if (!result.isEmpty() && canOutput(result) && energy.consume(energyPerTick())) {
+            if (!result.isEmpty() && canOutput(result) && energy.consume(overclockEnergy(energyPerTick()))) {
                 working = true;
-                if (++progress >= maxProgress) {
+                progress += speed();
+                if (progress >= maxProgress) {
                     input.shrink(1);
                     inventory.setStack(0, input);
                     ItemStack output = inventory.getStack(1);
@@ -163,7 +170,7 @@ public class FurnaceMachineBlockEntity extends MachineBlockEntity {
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new ProcessingMachineMenu(containerId, playerInventory, this, inventory, data, 1);
+        return new ProcessingMachineMenu(containerId, playerInventory, this, inventory, upgrades, data, 1);
     }
 
     @Override

@@ -152,6 +152,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("pad_data_link", () -> OrbitalisGameTests::padDataLink);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ELECTRIC_FURNACES =
             FUNCTIONS.register("electric_furnaces", () -> OrbitalisGameTests::electricFurnaces);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> OVERCLOCK =
+            FUNCTIONS.register("overclock", () -> OrbitalisGameTests::overclock);
 
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
@@ -336,6 +338,9 @@ public final class OrbitalisGameTests {
         // Les fours électriques : l'un cuit plus vite, l'autre double les minerais et refuse le reste.
         event.registerTest(Orbitalis.id("electric_furnaces"), new FunctionGameTestInstance(
                 ELECTRIC_FURNACES.getKey(), spaced(environment, emptyStructure, 400)));
+        // Le surcadençage : plus vite, beaucoup plus cher, plafonné par le module, gardé sur l'objet de la machine.
+        event.registerTest(Orbitalis.id("overclock"), new FunctionGameTestInstance(
+                OVERCLOCK.getKey(), spaced(environment, emptyStructure, 100)));
         // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
         event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
                 WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
@@ -4070,6 +4075,39 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                     "la jauge du second aurait dû montrer sa charge");
             helper.assertTrue(helper.getBlockState(first).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) == 2,
                     "la jauge du premier aurait dû montrer deux crans : " + helper.getBlockState(first));
+        });
+    }
+
+    /**
+     * Surcadençage : sans module, la vitesse reste à ×1 ; un module ×4 la laisse monter à ×4 mais pas à ×8, et la
+     * consommation passe à ×16. Le four à induction cuit alors un lingot en 25 ticks au lieu de 100. Cassée, la machine
+     * garde son module et sa vitesse sur son objet.
+     */
+    private static void overclock(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, ModBlocks.INDUCTION_FURNACE.get());
+        var furnace = helper.getBlockEntity(pos, com.orbitalis.phase1.machines.FurnaceMachineBlockEntity.class);
+        furnace.setSpeed(4);
+        helper.assertTrue(furnace.speed() == 1, "sans module, la vitesse devrait rester à ×1 : " + furnace.speed());
+        helper.assertTrue(!furnace.getUpgrades().isValid(0, net.neoforged.neoforge.transfer.item.ItemResource.of(new ItemStack(Items.REDSTONE))),
+                "l'emplacement du module ne devrait prendre que des modules");
+        furnace.getUpgrades().setStack(0, new ItemStack(com.orbitalis.core.registry.ModItems.OVERCLOCK_MODULE_X4.get()));
+        furnace.setSpeed(8);
+        helper.assertTrue(furnace.speed() == 4, "un module ×4 devrait plafonner la vitesse à ×4 : " + furnace.speed());
+        furnace.getEnergy().generate(com.orbitalis.phase1.machines.MachineBlockEntity.ENERGY_CAPACITY);
+        furnace.getInventory().setStack(0, new ItemStack(Items.RAW_IRON, 4));
+        var kept = furnace.collectComponents().get(com.orbitalis.core.registry.ModDataComponents.OVERCLOCK.get());
+        helper.assertTrue(kept != null && kept.module() == 4 && kept.speed() == 4,
+                "la machine cassée devrait garder son module et sa vitesse : " + kept);
+        helper.runAfterDelay(30, () -> {
+            ItemStack cooked = furnace.getInventory().getStack(1);
+            helper.assertTrue(cooked.is(Items.IRON_INGOT), "à ×4, un lingot devrait sortir en moins de 30 ticks : " + cooked);
+            int used = com.orbitalis.phase1.machines.MachineBlockEntity.ENERGY_CAPACITY - furnace.getEnergy().getEnergy();
+            helper.assertTrue(used >= 25 * com.orbitalis.phase1.machines.FurnaceMachineBlockEntity.INDUCTION_ENERGY * 16,
+                    "à ×4, la consommation devrait être multipliée par 16 : " + used + " FE");
+            furnace.getUpgrades().setStack(0, ItemStack.EMPTY);
+            helper.assertTrue(furnace.speed() == 1, "sans module, la vitesse devrait redescendre à ×1");
+            helper.succeed();
         });
     }
 

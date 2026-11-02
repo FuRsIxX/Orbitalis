@@ -43,6 +43,11 @@ public class MachineEnergyStorage extends SimpleEnergyHandler {
         return capacity;
     }
 
+    /** Change le débit accepté de l'extérieur, en FE par tick (une machine surcadencée a besoin de plus). */
+    public void setMaxInsert(int maxInsert) {
+        this.maxInsert = maxInsert;
+    }
+
     public boolean isFull() {
         return energy >= capacity;
     }

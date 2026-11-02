@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * Interface d'une machine de transformation (fonderie à arc, laminoir).
  */
 public class ProcessingMachineMenu extends MachineMenu {
-    /** Données communes + progression + durée de la recette + consommation par tick. */
-    public static final int DATA_COUNT = BASE_DATA_COUNT + 3;
+    /** Données communes + progression + durée de la recette + consommation par tick + surcadençage. */
+    public static final int DATA_COUNT = BASE_DATA_COUNT + 3 + OVERCLOCK_DATA_COUNT;
 
     private final int inputCount;
 
@@ -29,12 +29,14 @@ public class ProcessingMachineMenu extends MachineMenu {
                         && (!(target instanceof ProcessingMachineBlockEntity machine) || machine.acceptsInput(stack)),
                 slot -> true, () -> {
                 });
-        return new ProcessingMachineMenu(containerId, playerInventory, null, inventory, new SimpleContainerData(DATA_COUNT), inputCount);
+        return new ProcessingMachineMenu(containerId, playerInventory, null, inventory,
+                MachineBlockEntity.upgradeInventory(() -> {
+                }), new SimpleContainerData(DATA_COUNT), inputCount);
     }
 
     public ProcessingMachineMenu(int containerId, Inventory playerInventory, BlockEntity blockEntity,
-            MachineInventory inventory, ContainerData data, int inputCount) {
-        super(ModMenus.PROCESSING_MACHINE.get(), containerId, blockEntity, data, inputCount + 1);
+            MachineInventory inventory, MachineInventory upgrades, ContainerData data, int inputCount) {
+        super(ModMenus.PROCESSING_MACHINE.get(), containerId, blockEntity, data, inputCount + 2);
         this.inputCount = inputCount;
 
         // Entrées : une seule centrée, ou deux côte à côte.
@@ -46,6 +48,7 @@ public class ProcessingMachineMenu extends MachineMenu {
         }
         // Sortie
         addMachineSlot(inventory, inputCount, 120, SLOT_Y);
+        addUpgradeSlot(upgrades, BASE_DATA_COUNT + 3);
 
         addPlayerSlots(playerInventory);
     }
@@ -65,7 +68,7 @@ public class ProcessingMachineMenu extends MachineMenu {
         return data.get(BASE_DATA_COUNT + 1) > 0;
     }
 
-    /** Énergie consommée par tick par la recette en cours (0 sans recette). */
+    /** Énergie consommée par tick par la recette en cours, surcadençage compris (0 sans recette). */
     public int getEnergyPerTick() {
         return data.get(BASE_DATA_COUNT + 2);
     }

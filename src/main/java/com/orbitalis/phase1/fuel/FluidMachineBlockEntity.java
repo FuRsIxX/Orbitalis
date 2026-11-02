@@ -100,10 +100,11 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
             return switch (local) {
                 case 0 -> progress;
                 case 1 -> maxProgress;
-                case 2 -> currentRecipe == null ? 0 : currentRecipe.value().energyPerTick();
-                // Après les réservoirs : la purge des deux sorties.
+                case 2 -> currentRecipe == null ? 0 : overclockEnergy(currentRecipe.value().energyPerTick());
+                // Après les réservoirs : la purge des deux sorties, puis le surcadençage.
                 case 3 + TANK_COUNT * 2 -> purge[1].ordinal();
                 case 4 + TANK_COUNT * 2 -> purge[2].ordinal();
+                case 5 + TANK_COUNT * 2, 6 + TANK_COUNT * 2 -> overclockData(local - 5 - TANK_COUNT * 2);
                 default -> {
                     // Pour chaque réservoir : identifiant du fluide, puis quantité.
                     int tank = (local - 3) / 2;
@@ -164,6 +165,11 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
         return tanks;
     }
 
+    @Override
+    public boolean supportsOverclock() {
+        return true;
+    }
+
     /** Vrai si l'objet est consommé par au moins une recette de cette machine. */
     public boolean acceptsItem(ItemStack stack) {
         if (level == null || stack.isEmpty()) {
@@ -213,9 +219,9 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
             progress = 0;
         } else {
             FluidRecipe recipe = currentRecipe.value();
-            if (canOutput(recipe) && energy.consume(recipe.energyPerTick())) {
+            if (canOutput(recipe) && energy.consume(overclockEnergy(recipe.energyPerTick()))) {
                 working = true;
-                progress++;
+                progress += speed();
                 if (progress >= recipe.time()) {
                     craft(recipe);
                     progress = 0;
@@ -364,7 +370,7 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new FluidMachineMenu(containerId, playerInventory, this, inventory, data, layout);
+        return new FluidMachineMenu(containerId, playerInventory, this, inventory, upgrades, data, layout);
     }
 
     @Override

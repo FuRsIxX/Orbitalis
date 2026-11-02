@@ -319,6 +319,11 @@ public final class TestMap {
         BlockPos melting = reactor.east(5).south(2);
         machine(level, melting, ModBlocks.MELTING_FURNACE.get(), new ItemStack(net.minecraft.world.item.Items.RAW_IRON, 32));
         level.setBlock(melting.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+        // Le four à induction est surcadencé : module ×8, réglé sur ×4.
+        if (level.getBlockEntity(induction) instanceof com.orbitalis.phase1.machines.MachineBlockEntity overclocked) {
+            overclocked.getUpgrades().setStack(0, new ItemStack(com.orbitalis.core.registry.ModItems.OVERCLOCK_MODULE_X8.get()));
+            overclocked.setSpeed(4);
+        }
         // Le panneau, sur le côté : il ne cache aucune machine.
         sign(level, new BlockPos(x0 - 2, Y, z0 + 2), Component.translatable("testmap.orbitalis.zone.machines"), null, null);
 

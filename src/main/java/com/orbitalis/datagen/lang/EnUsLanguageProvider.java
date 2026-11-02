@@ -1944,6 +1944,17 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("pump.orbitalis.water_pump.no_power", "No power: the pump needs %s FE per tick.");
         add("launch.orbitalis.witness_points", "Your agency earns %s research points for this launch.");
         add("tank.orbitalis.tooltip", "Contains %s: %s mB");
+        add("item.orbitalis.overclock_module_x2", "Overclock Module ×2");
+        add("item.orbitalis.overclock_module_x4", "Overclock Module ×4");
+        add("item.orbitalis.overclock_module_x8", "Overclock Module ×8");
+        add("item.orbitalis.overclock_module.tooltip", "Up to ×%s speed, for ×%s power");
+        add("item.orbitalis.overclock_module.hint", "Goes in the left tab of a processing machine");
+        add("gui.orbitalis.overclock.title", "Overclocking");
+        add("gui.orbitalis.overclock.none", "Put in an overclock module to speed the machine up.");
+        add("gui.orbitalis.overclock.speed", "Speed ×%s");
+        add("gui.orbitalis.overclock.cost", "Power use ×%s");
+        add("gui.orbitalis.overclock.hint", "Left click: faster · right click: slower");
+        add("gui.orbitalis.overclock.slot", "The module sets the top speed.");
         add("block.orbitalis.induction_furnace", "Induction Furnace");
         add("block.orbitalis.melting_furnace", "Melting Furnace");
         add("research.orbitalis.node.ore_refining", "Ore Refining");

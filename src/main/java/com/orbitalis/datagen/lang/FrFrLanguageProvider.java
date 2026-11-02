@@ -1944,6 +1944,17 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("pump.orbitalis.water_pump.no_power", "Pas d'énergie : la pompe demande %s FE par tick.");
         add("launch.orbitalis.witness_points", "Votre agence gagne %s points de recherche pour ce lancement.");
         add("tank.orbitalis.tooltip", "Contient %s : %s mB");
+        add("item.orbitalis.overclock_module_x2", "Module de surcadençage ×2");
+        add("item.orbitalis.overclock_module_x4", "Module de surcadençage ×4");
+        add("item.orbitalis.overclock_module_x8", "Module de surcadençage ×8");
+        add("item.orbitalis.overclock_module.tooltip", "Jusqu'à ×%s de vitesse, pour ×%s d'électricité");
+        add("item.orbitalis.overclock_module.hint", "Se pose dans l'onglet gauche d'une machine de transformation");
+        add("gui.orbitalis.overclock.title", "Surcadençage");
+        add("gui.orbitalis.overclock.none", "Pose un module de surcadençage pour accélérer la machine.");
+        add("gui.orbitalis.overclock.speed", "Vitesse ×%s");
+        add("gui.orbitalis.overclock.cost", "Consommation ×%s");
+        add("gui.orbitalis.overclock.hint", "Clic gauche : plus vite · clic droit : moins vite");
+        add("gui.orbitalis.overclock.slot", "Le module fixe la vitesse la plus haute.");
         add("block.orbitalis.induction_furnace", "Four à induction");
         add("block.orbitalis.melting_furnace", "Four de fusion");
         add("research.orbitalis.node.ore_refining", "Affinage des minerais");

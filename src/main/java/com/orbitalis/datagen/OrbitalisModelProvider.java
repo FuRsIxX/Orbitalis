@@ -452,6 +452,9 @@ public class OrbitalisModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.GUIDE_BOOK.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.PAD_KIT.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.WIRELESS_MODULE.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.OVERCLOCK_MODULE_X2.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.OVERCLOCK_MODULE_X4.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.OVERCLOCK_MODULE_X8.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.ROCKET_BLUEPRINT.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RAW_BAUXITE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RAW_TITANIUM.get(), ModelTemplates.FLAT_ITEM);

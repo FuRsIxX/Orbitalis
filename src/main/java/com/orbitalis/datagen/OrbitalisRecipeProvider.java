@@ -274,6 +274,36 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('C', ModItems.CIRCUIT_BOARD)
                 .unlockedBy("has_radio_transmitter", has(ModItems.RADIO_TRANSMITTER))
                 .save(output, key("wireless_module"));
+        // Modules de surcadençage : chacun part du précédent, avec une électronique de plus en plus fine.
+        shaped(RecipeCategory.MISC, ModItems.OVERCLOCK_MODULE_X2)
+                .pattern("RGR")
+                .pattern("GCG")
+                .pattern("RGR")
+                .define('R', Tags.Items.DUSTS_REDSTONE)
+                .define('G', Tags.Items.INGOTS_GOLD)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .unlockedBy("has_circuit_board", has(ModItems.CIRCUIT_BOARD))
+                .save(output, key("overclock_module_x2"));
+        shaped(RecipeCategory.MISC, ModItems.OVERCLOCK_MODULE_X4)
+                .pattern("GFG")
+                .pattern("RMR")
+                .pattern("GFG")
+                .define('G', Tags.Items.INGOTS_GOLD)
+                .define('F', ModItems.FLIGHT_PROCESSOR)
+                .define('R', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .define('M', ModItems.OVERCLOCK_MODULE_X2)
+                .unlockedBy("has_overclock_module_x2", has(ModItems.OVERCLOCK_MODULE_X2))
+                .save(output, key("overclock_module_x4"));
+        shaped(RecipeCategory.MISC, ModItems.OVERCLOCK_MODULE_X8)
+                .pattern("DOD")
+                .pattern("FMF")
+                .pattern("DOD")
+                .define('D', Tags.Items.GEMS_DIAMOND)
+                .define('O', ModItems.OPTICAL_SENSOR)
+                .define('F', ModItems.FLIGHT_PROCESSOR)
+                .define('M', ModItems.OVERCLOCK_MODULE_X4)
+                .unlockedBy("has_overclock_module_x4", has(ModItems.OVERCLOCK_MODULE_X4))
+                .save(output, key("overclock_module_x8"));
         // Port de pas de tir : une prise de chaque sorte autour d'un bloc de charpente (liquide, électricité, gaz,
         // données), puisqu'un clic droit choisit ensuite ce qu'il fait passer.
         shaped(RecipeCategory.MISC, ModBlocks.FUEL_PORT)

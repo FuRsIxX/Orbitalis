@@ -47,7 +47,8 @@ public class ProcessingMachineBlockEntity extends MachineBlockEntity {
             return switch (index - MachineMenu.BASE_DATA_COUNT) {
                 case 0 -> progress;
                 case 1 -> maxProgress;
-                case 2 -> currentRecipe == null ? 0 : currentRecipe.value().energyPerTick();
+                case 2 -> currentRecipe == null ? 0 : overclockEnergy(currentRecipe.value().energyPerTick());
+                case 3, 4 -> overclockData(index - MachineMenu.BASE_DATA_COUNT - 3);
                 default -> baseData(index);
             };
         }
@@ -88,6 +89,11 @@ public class ProcessingMachineBlockEntity extends MachineBlockEntity {
                 });
     }
 
+    @Override
+    public boolean supportsOverclock() {
+        return true;
+    }
+
     public int getInputCount() {
         return inputCount;
     }
@@ -115,9 +121,9 @@ public class ProcessingMachineBlockEntity extends MachineBlockEntity {
             progress = 0;
         } else {
             MachineRecipe recipe = currentRecipe.value();
-            if (canOutput(recipe.result().create()) && energy.consume(recipe.energyPerTick())) {
+            if (canOutput(recipe.result().create()) && energy.consume(overclockEnergy(recipe.energyPerTick()))) {
                 working = true;
-                progress++;
+                progress += speed();
                 if (progress >= recipe.time()) {
                     craft(recipe);
                     progress = 0;
@@ -175,7 +181,7 @@ public class ProcessingMachineBlockEntity extends MachineBlockEntity {
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new ProcessingMachineMenu(containerId, playerInventory, this, inventory, data, inputCount);
+        return new ProcessingMachineMenu(containerId, playerInventory, this, inventory, upgrades, data, inputCount);
     }
 
     @Override

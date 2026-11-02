@@ -197,7 +197,8 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
     /** Le bloc lui-même, qui garde son énergie, ses objets et ses fluides (voir MachineDrops). */
     private net.minecraft.world.level.storage.loot.LootTable.Builder keepingEnergy(Block block) {
         return keeping(block, com.orbitalis.core.registry.ModDataComponents.STORED_ENERGY.get(),
-                net.minecraft.core.component.DataComponents.CONTAINER, com.orbitalis.core.registry.ModDataComponents.MACHINE_FLUIDS.get());
+                net.minecraft.core.component.DataComponents.CONTAINER, com.orbitalis.core.registry.ModDataComponents.MACHINE_FLUIDS.get(),
+                com.orbitalis.core.registry.ModDataComponents.OVERCLOCK.get());
     }
 
     /**

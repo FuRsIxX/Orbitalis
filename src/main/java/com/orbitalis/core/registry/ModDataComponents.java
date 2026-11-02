@@ -45,6 +45,12 @@ public final class ModDataComponents {
                     .networkSynchronized(net.neoforged.neoforge.fluids.SimpleFluidContent.STREAM_CODEC
                             .apply(net.minecraft.network.codec.ByteBufCodecs.list())));
 
+    /** Surcadençage d'une machine cassée : son module et la vitesse choisie, retrouvés une fois reposée. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.orbitalis.phase1.machines.OverclockModuleItem.Setting>> OVERCLOCK =
+            COMPONENTS.registerComponentType("overclock", builder -> builder
+                    .persistent(com.orbitalis.phase1.machines.OverclockModuleItem.Setting.CODEC)
+                    .networkSynchronized(com.orbitalis.phase1.machines.OverclockModuleItem.Setting.STREAM_CODEC));
+
     private ModDataComponents() {
     }
 

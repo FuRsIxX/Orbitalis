@@ -1,6 +1,7 @@
 package com.orbitalis.phase1.fuel;
 
 import com.orbitalis.core.registry.ModMenus;
+import com.orbitalis.phase1.machines.MachineBlockEntity;
 import com.orbitalis.phase1.machines.MachineInventory;
 import com.orbitalis.phase1.machines.MachineMenu;
 
@@ -17,8 +18,11 @@ import net.minecraft.world.level.material.Fluid;
  * Interface d'une machine à fluides (électrolyseur, liquéfacteur cryogénique, raffinerie).
  */
 public class FluidMachineMenu extends MachineMenu {
-    /** Données communes + progression, durée, consommation + (fluide, quantité) pour chaque réservoir + purge des deux sorties. */
-    public static final int DATA_COUNT = BASE_DATA_COUNT + 3 + FluidMachineBlockEntity.TANK_COUNT * 2 + 2;
+    /**
+     * Données communes + progression, durée, consommation + (fluide, quantité) pour chaque réservoir + purge des deux
+     * sorties + surcadençage.
+     */
+    public static final int DATA_COUNT = BASE_DATA_COUNT + 3 + FluidMachineBlockEntity.TANK_COUNT * 2 + 2 + OVERCLOCK_DATA_COUNT;
     private static final int TANK_DATA = BASE_DATA_COUNT + 3;
 
     private final FluidMachineLayout layout;
@@ -34,18 +38,21 @@ public class FluidMachineMenu extends MachineMenu {
                         && (!(target instanceof FluidMachineBlockEntity machine) || machine.acceptsItem(stack)),
                 slot -> true, () -> {
                 });
-        return new FluidMachineMenu(containerId, playerInventory, null, inventory, new SimpleContainerData(DATA_COUNT), layout);
+        return new FluidMachineMenu(containerId, playerInventory, null, inventory,
+                MachineBlockEntity.upgradeInventory(() -> {
+                }), new SimpleContainerData(DATA_COUNT), layout);
     }
 
     public FluidMachineMenu(int containerId, Inventory playerInventory, BlockEntity blockEntity,
-            MachineInventory inventory, ContainerData data, FluidMachineLayout layout) {
-        super(ModMenus.FLUID_MACHINE.get(), containerId, blockEntity, data, layout.hasItemInput() ? 1 : 0);
+            MachineInventory inventory, MachineInventory upgrades, ContainerData data, FluidMachineLayout layout) {
+        super(ModMenus.FLUID_MACHINE.get(), containerId, blockEntity, data, (layout.hasItemInput() ? 1 : 0) + 1);
         this.layout = layout;
 
         if (layout.hasItemInput()) {
             // Avec une jauge d'entrée à sa place habituelle, l'emplacement d'objet se range à sa gauche.
             addMachineSlot(inventory, 0, layout.hasFluidInput() ? 22 : 44, SLOT_Y);
         }
+        addUpgradeSlot(upgrades, DATA_COUNT - OVERCLOCK_DATA_COUNT);
         addPlayerSlots(playerInventory);
     }
 
@@ -88,6 +95,9 @@ public class FluidMachineMenu extends MachineMenu {
     /** Un joueur a cliqué sur un bouton de purge : le serveur change le mode de la sortie. */
     @Override
     public boolean clickMenuButton(net.minecraft.world.entity.player.Player player, int id) {
+        if (id > SPEED_BUTTON) {
+            return super.clickMenuButton(player, id);
+        }
         int tank = 1 + id / 2;
         if (id < 0 || tank > layout.outputCount() || !(blockEntity() instanceof FluidMachineBlockEntity machine)) {
             return false;

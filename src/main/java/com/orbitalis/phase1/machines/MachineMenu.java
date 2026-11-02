@@ -23,11 +23,20 @@ public abstract class MachineMenu extends AbstractContainerMenu {
     public static final int BASE_DATA_COUNT = 5;
     /** Hauteur des emplacements de la machine dans la fenêtre. */
     protected static final int SLOT_Y = 27;
+    /** Valeurs du surcadençage à la fin des données synchronisées : la vitesse, puis le plafond du module. */
+    public static final int OVERCLOCK_DATA_COUNT = 2;
+    /** Emplacement du module de surcadençage, dans l'onglet collé à gauche de la fenêtre. */
+    public static final int UPGRADE_X = -21;
+    public static final int UPGRADE_Y = 12;
+    /** Boutons de vitesse envoyés au serveur : ce numéro plus la vitesse voulue. */
+    public static final int SPEED_BUTTON = 100;
 
     /** Entité de bloc côté serveur ; {@code null} côté client. */
     private final BlockEntity blockEntity;
     protected final ContainerData data;
     private final int machineSlotCount;
+    /** Position des valeurs du surcadençage dans les données ; -1 si la machine n'en a pas. */
+    private int overclockData = -1;
 
     protected MachineMenu(MenuType<?> type, int containerId, BlockEntity blockEntity, ContainerData data, int machineSlotCount) {
         super(type, containerId);
@@ -45,6 +54,41 @@ public abstract class MachineMenu extends AbstractContainerMenu {
     /** Ajoute un emplacement de la machine. Les règles de dépôt viennent de l'inventaire de la machine. */
     protected void addMachineSlot(MachineInventory inventory, int index, int x, int y) {
         addSlot(new ResourceHandlerSlot(inventory, inventory::set, index, x, y));
+    }
+
+    /**
+     * Ajoute l'emplacement du module de surcadençage, dernier des emplacements de la machine.
+     *
+     * @param dataIndex position des valeurs du surcadençage dans les données synchronisées
+     */
+    protected void addUpgradeSlot(MachineInventory upgrades, int dataIndex) {
+        overclockData = dataIndex;
+        addSlot(new ResourceHandlerSlot(upgrades, upgrades::set, 0, UPGRADE_X, UPGRADE_Y));
+    }
+
+    /** Vrai si la machine a un onglet de surcadençage. */
+    public boolean hasOverclock() {
+        return overclockData >= 0;
+    }
+
+    /** Vitesse choisie (1 sans surcadençage). */
+    public int getSpeed() {
+        return hasOverclock() ? Math.max(1, data.get(overclockData)) : 1;
+    }
+
+    /** Vitesse la plus haute que permet le module posé (1 sans module). */
+    public int getMaxSpeed() {
+        return hasOverclock() ? Math.max(1, data.get(overclockData + 1)) : 1;
+    }
+
+    /** Un joueur a choisi une vitesse sur l'écran : le serveur la règle. */
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id > SPEED_BUTTON && hasOverclock() && blockEntity instanceof MachineBlockEntity machine && machine.supportsOverclock()) {
+            machine.setSpeed(id - SPEED_BUTTON);
+            return true;
+        }
+        return false;
     }
 
     /** Ajoute l'inventaire et la barre d'accès rapide du joueur, à l'emplacement standard. */

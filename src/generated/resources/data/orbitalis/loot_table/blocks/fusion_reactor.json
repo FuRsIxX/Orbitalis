@@ -11,7 +11,8 @@
               "include": [
                 "orbitalis:stored_energy",
                 "minecraft:container",
-                "orbitalis:machine_fluids"
+                "orbitalis:machine_fluids",
+                "orbitalis:overclock"
               ],
               "source": "block_entity"
             }

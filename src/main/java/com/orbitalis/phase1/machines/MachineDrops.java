@@ -35,7 +35,7 @@ public final class MachineDrops {
         }
         DataComponentMap components = blockEntity.collectComponents();
         if (!components.has(DataComponents.CONTAINER) && !components.has(ModDataComponents.MACHINE_FLUIDS.get())
-                && !components.has(ModDataComponents.FLUID_CONTENT.get())) {
+                && !components.has(ModDataComponents.FLUID_CONTENT.get()) && !components.has(ModDataComponents.OVERCLOCK.get())) {
             return;
         }
         ItemStack stack = new ItemStack(state.getBlock());

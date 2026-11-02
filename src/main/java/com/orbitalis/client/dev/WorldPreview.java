@@ -1557,10 +1557,16 @@ public final class WorldPreview {
             }
             data.set(base + 9, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.HALF.ordinal());
             data.set(base + 10, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.FULL.ordinal());
+            // Surcadençage : un module ×8, réglé sur ×4.
+            data.set(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT - 2, 4);
+            data.set(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT - 1, 8);
+            var upgrades = com.orbitalis.phase1.machines.MachineBlockEntity.upgradeInventory(() -> {
+            });
+            upgrades.setStack(0, new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.OVERCLOCK_MODULE_X8.get()));
             var inventory = minecraft.player.getInventory();
             var menu = new com.orbitalis.phase1.fuel.FluidMachineMenu(0, inventory, null,
                     new com.orbitalis.phase1.machines.MachineInventory(1, (slot, stack) -> true, slot -> true, () -> {
-                    }), data, com.orbitalis.phase1.fuel.FluidMachineLayout.ELECTROLYZER);
+                    }), upgrades, data, com.orbitalis.phase1.fuel.FluidMachineLayout.ELECTROLYZER);
             minecraft.gui.setScreen(new com.orbitalis.client.screen.FluidMachineScreen(menu, inventory,
                     net.minecraft.network.chat.Component.translatable("block.orbitalis.electrolyzer")));
         }), 27.5, 1.6, -16.4, 180.0F, 30.0F, 20));
