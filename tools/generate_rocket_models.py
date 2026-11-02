@@ -14,6 +14,10 @@ Chaque étage a son habit, d'après ce qu'il emporte :
 - aluminium-lithium : le métal clair, raidi de lisses verticales ;
 - composite : le carbone tissé, noir ;
 - poudre : les segments blancs, leurs joints sombres et boulonnés.
+Les tronçons reprennent l'aspect des blocs de fusée qu'on pose à leur place (generate_rocket_parts.py) : leur peau, les
+deux frettes et la ligne de cuivre des réservoirs, la bague de cuivre des tuyères, la bande de danger
+de l'interétage, les trappes cerclées de laiton de la coiffe, la pointe en gradins et sa sonde rouge. Les textures
+« rocket_hull_* » ne servent plus qu'aux lèvres des tuyères, aux rails et aux ailerons en grille.
 Les boosters latéraux ont leurs propres tronçons, calqués sur les blocs de booster qu'on pose : le corps de poudre
 blanc cerclé de ses bagues, sa bande de danger, sa tuyère large rougie par la chaleur, et une pointe à sonde rouge.
 Les interétages sont noirs et nervurés, avec leurs quatre ailerons en grille ; la coiffe est blanche, avec ses rails
@@ -294,11 +298,16 @@ BELL = ((9.2, 10, 0.9), (8, 9.2, 1.15), (6.6, 8, 1.45), (5.2, 6.6, 1.75), (3.8, 
 
 
 def bell(cx, cz, scale, texture="bell"):
-    """Tuyère : un col étroit qui s'évase vers le bas en paliers fins, et sa lèvre d'acier poli."""
+    """
+    Tuyère : un col étroit qui s'évase vers le bas en paliers fins, cerclé d'une bague de cuivre comme sur les blocs de
+    moteur, et sa lèvre d'acier poli.
+    """
     elements = []
     for y0, y1, half in BELL:
         h = round(half * scale, 2)
         elements += tiled_box(cx - h, y0, cz - h, cx + h, y1, cz + h, texture)
+    collar = round(1.95 * scale, 2)
+    elements += tiled_box(cx - collar, 5.6, cz - collar, cx + collar, 6.2, cz + collar, "copper")
     lip = round(2.8 * scale, 2)
     return elements + tiled_box(cx - lip, 0, cz - lip, cx + lip, 0.6, cz + lip, "lip")
 
@@ -351,15 +360,66 @@ def grid_fins(half):
     return elements
 
 
-# Texture du corps de chaque tronçon.
-BODIES = {
+# Peau de chaque tronçon : la même texture que le bloc qu'on pose à sa place.
+SKINS = {
     "tank_white": "white", "tank_orange": "orange", "tank_solid": "solid", "tank_steel": "steel", "tank_alloy": "alloy",
     "tank_composite": "composite",
     "interstage": "dark", "payload": "fairing", "nose_lower": "fairing", "nose": "fairing",
     "engine": "dark", "engine_solid": "solid", "engine_pressure": "checker", "engine_hydrolox": "orange",
     "escape_tower": "dark",
 }
-PARTS = tuple(BODIES) + ("capsule", "capsule_upper", "capsule_mk2", "capsule_mk3", "booster_engine", "booster_body", "booster_nose")
+PARTS = tuple(SKINS) + ("capsule", "capsule_upper", "capsule_mk2", "capsule_mk3", "booster_engine", "booster_body", "booster_nose")
+
+# Nom court d'une texture dans les tronçons, et la texture qu'il désigne : celles des blocs de fusée (generate_rocket_parts.py),
+# plus la lèvre des tuyères, les rails et les ailerons en grille propres à la fusée assemblée.
+FILES = {
+    "white": "rocket_white", "orange": "rocket_orange", "solid": "rocket_solid", "steel": "rocket_steel", "alloy": "rocket_alloy",
+    "composite": "rocket_composite", "dark": "rocket_dark", "fairing": "rocket_fairing", "checker": "rocket_checker",
+    "bell": "rocket_nozzle", "nozzlec": "rocket_nozzle_copper", "hazard": "pad_hazard", "frame": "machine_frame",
+    "copper": "machine_copper", "brass": "pad_brass", "metal": "machine_metal", "red": "machine_red", "port": "machine_port",
+    "lip": "rocket_hull_lip", "rail": "rocket_hull_rail", "gridfin": "rocket_hull_gridfin", "nozzle": "rocket_nozzle",
+}
+
+
+def body(y0, y1, half, bands=()):
+    """
+    Le corps du tronçon, et ses bagues (y0, y1, texture) : en saillie d'un quart de pixel par pixel de rayon, comme les
+    frettes des blocs ; un lanceur lourd touche déjà les bords permis d'un modèle, ses bagues affleurent alors le corps.
+    """
+    if half < 16:
+        out = cylinder(y0, y1, half, "body")
+        for b0, b1, texture in bands:
+            out += cylinder(b0, b1, round(half * 1.05, 2), texture)
+        return out
+    out, at = [], y0
+    for b0, b1, texture in sorted(bands):
+        if b0 > at:
+            out += cylinder(at, b0, half, "body")
+        out += cylinder(b0, b1, half, texture)
+        at = b1
+    if at < y1:
+        out += cylinder(at, y1, half, "body")
+    return out
+
+
+def feed_lines(half):
+    """
+    La ligne d'alimentation de cuivre, de part et d'autre du réservoir, comme sur les blocs. Sans la vanne de laiton du
+    bloc : répétée à chaque bloc d'un long réservoir, elle dessinait une échelle.
+    """
+    out = []
+    for angle in (0, 2):
+        out += strip(half, 1.2, 0.6, "copper", angle=angle)
+    return out
+
+
+def probe(top, size):
+    """La sonde au sommet d'une pointe : une tige de métal et son bout rouge."""
+    half = round(size / 2, 2)
+    tip = round(size / 4, 2)
+    return (tiled_box(8 - half, top, 8 - half, 8 + half, top + 1.2, 8 + half, "metal")
+            + tiled_box(8 - tip, top + 1.2, 8 - tip, 8 + tip, top + 2, 8 + tip, "red"))
+
 
 # Les boosters latéraux reprennent les textures des blocs de booster (voir generate_rocket_parts.py).
 BOOSTER_TEXTURES = {"solid": "rocket_solid", "hazard": "pad_hazard", "nozzle": "rocket_nozzle", "frame": "machine_frame",
@@ -389,10 +449,10 @@ def booster_model(part, half):
         elements = cylinder(0, 1, min(round(half * 1.02, 2), 24.0), "frame")
         for y0, y1, ratio in ((1, 4.5, 1.0), (4.5, 8.5, 0.8), (8.5, 11.5, 0.57), (11.5, 14, 0.36)):
             elements += cylinder(y0, y1, round(half * ratio, 2), "solid")
-        probe = max(0.5, round(0.8 * k, 2))
-        elements += tiled_box(8 - probe, 14, 8 - probe, 8 + probe, 15.2, 8 + probe, "metal")
-        elements += tiled_box(round(8 - probe * 0.5, 2), 15.2, round(8 - probe * 0.5, 2), round(8 + probe * 0.5, 2), 16,
-                              round(8 + probe * 0.5, 2), "red")
+        size = max(0.5, round(0.8 * k, 2))
+        elements += tiled_box(8 - size, 14, 8 - size, 8 + size, 15.2, 8 + size, "metal")
+        elements += tiled_box(round(8 - size * 0.5, 2), 15.2, round(8 - size * 0.5, 2), round(8 + size * 0.5, 2), 16,
+                              round(8 + size * 0.5, 2), "red")
     used = {face["texture"][1:] for element in elements for face in element["faces"].values()}
     textures = {key: "orbitalis:block/" + BOOSTER_TEXTURES[key] for key in sorted(used)}
     textures["particle"] = "orbitalis:block/rocket_solid"
@@ -408,7 +468,6 @@ def rocket_model(part, half):
         return {"textures": {"particle": "orbitalis:block/capsule_hull"}}
     if part.startswith("booster_"):
         return booster_model(part, half)
-    body = BODIES[part]
     wide = half > 8
     slim = half < 8
     if part == "escape_tower":
@@ -419,25 +478,38 @@ def rocket_model(part, half):
                     + tiled_box(6.25, 10, 6.25, 9.75, 14.5, 9.75, "fairing")
                     + tiled_box(7, 14.5, 7, 9, 16, 9, "fairing"))
     elif part == "nose":
-        # Pointe : l'ogive se resserre par paliers de deux pixels jusqu'au sommet ; sur une grosse fusée, elle prolonge
-        # le bas de l'ogive.
-        ratios = (0.8, 0.74, 0.66, 0.57, 0.47, 0.36, 0.25, 0.14) if wide else (1.0, 0.93, 0.83, 0.7, 0.56, 0.42, 0.28, 0.14)
-        elements = []
-        for k, ratio in enumerate(ratios):
-            elements += cylinder(2 * k, 2 * k + 2, max(0.6, round(half * ratio, 2)), "body")
+        if wide:
+            # Pointe d'une grosse fusée : elle prolonge le bas de l'ogive par petits paliers, et porte la sonde.
+            elements = []
+            for k, ratio in enumerate((0.8, 0.74, 0.66, 0.57, 0.47, 0.36, 0.25, 0.14)):
+                elements += cylinder(2 * k, 2 * k + 2, max(0.6, round(half * ratio, 2)), "body")
+            elements += probe(16, 2.4)
+        else:
+            # Pointe : comme le bloc de pointe, un cône en quatre gradins sur son anneau, et la sonde au bout rouge.
+            elements = cylinder(0, 1, round(half * 1.02, 2), "frame")
+            for y0, y1, ratio in ((1, 4.5, 1.0), (4.5, 8.5, 0.8), (8.5, 11.5, 0.57), (11.5, 14, 0.36)):
+                elements += cylinder(y0, y1, round(half * ratio, 2), "body")
+            elements += probe(14, max(1.0, round(half * 0.23, 2)))
     elif part == "nose_lower":
-        # Bas de l'ogive : encore presque au diamètre de la fusée, il s'arrondit doucement.
+        # Bas de l'ogive : encore presque au diamètre de la fusée, il s'arrondit doucement ; ses coutures comme sur le
+        # bloc de coiffe.
         elements = cylinder(0, 6, half, "body") + cylinder(6, 11, round(half * 0.95, 2), "body") + cylinder(11, 16, round(half * 0.88, 2), "body")
         if not slim:
             elements += strip(half, 0.8, 0.3, "rail", 0, 6) + strip(half, 0.8, 0.3, "rail", 0, 6, 2)
+            elements += strip(half, 0.8, 0.3, "frame", 0, 6, 1) + strip(half, 0.8, 0.3, "frame", 0, 6, 3)
     elif part == "payload":
-        # Coiffe : d'un seul tenant, et ses deux rails de séparation, face à face.
-        elements = cylinder(0, 16, half, "body")
+        # Coiffe : ses deux rails de séparation, et sur les deux autres faces une trappe de visite cerclée de laiton,
+        # comme sur le bloc de baie de charge utile.
+        elements = body(0, 16, half)
         if not slim:
             elements += strip(half, 0.8, 0.3, "rail") + strip(half, 0.8, 0.3, "rail", angle=2)
+            for angle in (1, 3):
+                elements += (strip(half, 2.2, 0.4, "port", 5.5, 10.5, angle) + strip(half, 2.8, 0.5, "brass", 5.1, 5.5, angle)
+                             + strip(half, 2.8, 0.5, "brass", 10.5, 10.9, angle))
     elif part == "interstage":
-        # Interétage : noir, nervuré, cerclé d'un anneau de séparation, et ses ailerons en grille repliés.
-        elements = cylinder(1, 16, half, "body") + cylinder(0, 1, half if wide else half + 0.3, "lip")
+        # Interétage : noir, cerclé de sa bande de danger (les boulons explosifs) et de son anneau de séparation, avec
+        # ses ailerons en grille repliés.
+        elements = body(1, 16, half, [(7, 9, "hazard")]) + cylinder(0, 1, half if wide else half + 0.3, "lip")
         if not slim and not wide:
             elements += grid_fins(half)
     elif part == "engine":
@@ -458,41 +530,36 @@ def rocket_model(part, half):
     elif part == "engine_hydrolox":
         # Moteur cryogénique : une jupe isolée, et une seule grande tuyère de cuivre.
         elements = cylinder(10, 16, half, "body") + cylinder(9.4, 10, round(half * 0.96, 2), "rail") \
-            + bell(8, 8, 2.4 if wide else 2.5 if half >= 8 else 1.25, "copper")
+            + bell(8, 8, 2.4 if wide else 2.5 if half >= 8 else 1.25, "nozzlec")
         if wide:
             for dx, dz in ((-13.5, -13.5), (13.5, -13.5), (-13.5, 13.5), (13.5, 13.5)):
-                elements += bell(8 + dx, 8 + dz, 2.4, "copper")
+                elements += bell(8 + dx, 8 + dz, 2.4, "nozzlec")
     elif part == "engine_pressure":
         # Moteur alimenté par pression : une jupe à damier, une petite tuyère et quatre ailerons en trapèze.
         elements = cylinder(9, 16, half, "body") + bell(8, 8, 3.6 if wide else 1.9 if half >= 8 else 1.05)
         if not wide:
             elements += fins(half, 11, "dark")
     elif part == "engine_solid":
-        # Moteur à poudre : le corps descend presque en bas, la tuyère dépasse à peine, quatre ailerons le stabilisent.
-        elements = cylinder(4, 16, half, "body") + bell(8, 8, 4.6 if wide else 2.2 if half >= 8 else 1.15)
+        # Moteur à poudre : le corps descend presque en bas, cerclé de sa frette comme le bloc ; la tuyère dépasse à
+        # peine, quatre ailerons le stabilisent.
+        elements = body(4, 16, half, [(12.5, 13.5, "frame")]) + bell(8, 8, 4.6 if wide else 2.2 if half >= 8 else 1.15)
         if not wide:
             elements += fins(half, 12, "dark")
     else:
-        elements = cylinder(0, 16, half, "body")
+        # Réservoirs : la virole, cerclée de deux frettes, et la ligne d'alimentation de cuivre et sa vanne, comme sur
+        # les blocs de réservoir.
+        elements = body(0, 16, half, [(4, 5, "frame"), (11, 12, "frame")])
         if not slim:
-            if part == "tank_white":
-                # La goulotte de câbles, tout le long du corps.
-                elements += strip(half, 1.6, 0.8, "rail")
-            elif part == "tank_orange":
-                # La conduite d'oxygène, qui longe le réservoir d'hydrogène.
-                elements += strip(half, 2.4 if half < 16 else 4.0, 1.6 if half < 16 else 2.6, "feed")
-            elif part == "tank_steel":
-                # Deux goulottes face à face.
-                elements += strip(half, 1.2, 0.6, "rail", angle=1) + strip(half, 1.2, 0.6, "rail", angle=3)
-    textures = {"body": "orbitalis:block/rocket_hull_" + body, "particle": "orbitalis:block/rocket_hull_" + body}
+            elements += feed_lines(half)
+    skin = FILES[SKINS[part]]
+    textures = {"body": "orbitalis:block/" + skin, "particle": "orbitalis:block/" + skin}
     # Seules les textures utilisées par le tronçon sont déclarées.
     used = {face["texture"][1:] for element in elements for face in element["faces"].values()}
     for key in sorted(used - {"body"}):
-        textures[key] = "orbitalis:block/rocket_hull_" + key
+        textures[key] = "orbitalis:block/" + FILES[key]
     # Pas d'ombrage de contact : la fusée déborde de son bloc et s'entoure de flancs invisibles,
     # ce qui fausserait le calcul et l'assombrirait entièrement.
     return {"ambientocclusion": False, "textures": textures, "elements": elements}
-
 
 if __name__ == "__main__":
     write_textures()

@@ -1,8 +1,8 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "body": "orbitalis:block/rocket_hull_fairing",
-    "particle": "orbitalis:block/rocket_hull_fairing"
+    "body": "orbitalis:block/rocket_fairing",
+    "particle": "orbitalis:block/rocket_fairing"
   },
   "elements": [
     {

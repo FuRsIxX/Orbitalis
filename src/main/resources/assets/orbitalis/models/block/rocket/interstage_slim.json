@@ -1,8 +1,9 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "body": "orbitalis:block/rocket_hull_dark",
-    "particle": "orbitalis:block/rocket_hull_dark",
+    "body": "orbitalis:block/rocket_dark",
+    "particle": "orbitalis:block/rocket_dark",
+    "hazard": "orbitalis:block/pad_hazard",
     "lip": "orbitalis:block/rocket_hull_lip"
   },
   "elements": [
@@ -207,6 +208,210 @@
             12.0
           ],
           "texture": "#body"
+        }
+      }
+    },
+    {
+      "from": [
+        3.8,
+        7,
+        5.69
+      ],
+      "to": [
+        12.2,
+        9,
+        10.31
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3.8,
+            7,
+            12.2,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "south": {
+          "uv": [
+            3.8,
+            7,
+            12.2,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "east": {
+          "uv": [
+            5.69,
+            7,
+            10.31,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "west": {
+          "uv": [
+            5.69,
+            7,
+            10.31,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "up": {
+          "uv": [
+            3.8,
+            5.69,
+            12.2,
+            10.31
+          ],
+          "texture": "#hazard"
+        },
+        "down": {
+          "uv": [
+            3.8,
+            5.69,
+            12.2,
+            10.31
+          ],
+          "texture": "#hazard"
+        }
+      }
+    },
+    {
+      "from": [
+        4.43,
+        7,
+        4.43
+      ],
+      "to": [
+        11.57,
+        9,
+        11.57
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.43,
+            7,
+            11.57,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "south": {
+          "uv": [
+            4.43,
+            7,
+            11.57,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "east": {
+          "uv": [
+            4.43,
+            7,
+            11.57,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "west": {
+          "uv": [
+            4.43,
+            7,
+            11.57,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "up": {
+          "uv": [
+            4.43,
+            4.43,
+            11.57,
+            11.57
+          ],
+          "texture": "#hazard"
+        },
+        "down": {
+          "uv": [
+            4.43,
+            4.43,
+            11.57,
+            11.57
+          ],
+          "texture": "#hazard"
+        }
+      }
+    },
+    {
+      "from": [
+        5.69,
+        7,
+        3.8
+      ],
+      "to": [
+        10.31,
+        9,
+        12.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.69,
+            7,
+            10.31,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "south": {
+          "uv": [
+            5.69,
+            7,
+            10.31,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "east": {
+          "uv": [
+            3.8,
+            7,
+            12.2,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "west": {
+          "uv": [
+            3.8,
+            7,
+            12.2,
+            9
+          ],
+          "texture": "#hazard"
+        },
+        "up": {
+          "uv": [
+            5.69,
+            3.8,
+            10.31,
+            12.2
+          ],
+          "texture": "#hazard"
+        },
+        "down": {
+          "uv": [
+            5.69,
+            3.8,
+            10.31,
+            12.2
+          ],
+          "texture": "#hazard"
         }
       }
     },

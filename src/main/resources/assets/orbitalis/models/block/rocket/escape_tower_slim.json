@@ -1,10 +1,10 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "body": "orbitalis:block/rocket_hull_dark",
-    "particle": "orbitalis:block/rocket_hull_dark",
-    "bell": "orbitalis:block/rocket_hull_bell",
-    "fairing": "orbitalis:block/rocket_hull_fairing"
+    "body": "orbitalis:block/rocket_dark",
+    "particle": "orbitalis:block/rocket_dark",
+    "bell": "orbitalis:block/rocket_nozzle",
+    "fairing": "orbitalis:block/rocket_fairing"
   },
   "elements": [
     {

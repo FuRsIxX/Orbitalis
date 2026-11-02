@@ -1,8 +1,9 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "body": "orbitalis:block/rocket_hull_fairing",
-    "particle": "orbitalis:block/rocket_hull_fairing",
+    "body": "orbitalis:block/rocket_fairing",
+    "particle": "orbitalis:block/rocket_fairing",
+    "frame": "orbitalis:block/machine_frame",
     "rail": "orbitalis:block/rocket_hull_rail"
   },
   "elements": [
@@ -9319,6 +9320,142 @@
             11.52
           ],
           "texture": "#rail"
+        }
+      }
+    },
+    {
+      "from": [
+        26.12,
+        0,
+        -11.52
+      ],
+      "to": [
+        27.52,
+        6,
+        -10.12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10.12,
+            10,
+            11.52,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            10.12,
+            10,
+            11.52,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            4.48,
+            10,
+            5.88,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            4.48,
+            10,
+            5.88,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "up": {
+          "uv": [
+            10.12,
+            4.48,
+            11.52,
+            5.88
+          ],
+          "texture": "#frame"
+        },
+        "down": {
+          "uv": [
+            10.12,
+            4.48,
+            11.52,
+            5.88
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "from": [
+        -11.52,
+        0,
+        26.12
+      ],
+      "to": [
+        -10.12,
+        6,
+        27.52
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.48,
+            10,
+            5.88,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            4.48,
+            10,
+            5.88,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            10.12,
+            10,
+            11.52,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            10.12,
+            10,
+            11.52,
+            16
+          ],
+          "texture": "#frame"
+        },
+        "up": {
+          "uv": [
+            4.48,
+            10.12,
+            5.88,
+            11.52
+          ],
+          "texture": "#frame"
+        },
+        "down": {
+          "uv": [
+            4.48,
+            10.12,
+            5.88,
+            11.52
+          ],
+          "texture": "#frame"
         }
       }
     }

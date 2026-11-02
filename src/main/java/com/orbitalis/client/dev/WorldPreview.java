@@ -2279,6 +2279,9 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_boosters_orbital", null, 84.5, -58.5, 61.5, 180.0F, -18.0F, 30));
         SHOTS.add(new Shot("tm_boosters_heavy", null, 96.5, -58.0, 64.0, 180.0F, -14.0F, 30));
         SHOTS.add(new Shot("tm_boosters_heavy_low", null, 99.5, -59.6, 60.5, 150.0F, -32.0F, 20));
+        // Le lanceur orbital de plus près : son milieu (réservoirs, interétage), puis son sommet (coiffe, pointe).
+        SHOTS.add(new Shot("tm_rocket_mid", null, 84.5, -52.0, 60.2, 180.0F, 8.0F, 20));
+        SHOTS.add(new Shot("tm_rocket_top", null, 84.5, -44.0, 60.2, 180.0F, 4.0F, 20));
         // Les quatre accumulateurs de la carte de test : de face (jauges), de dos et de côté, puis l'écran du premier.
         SHOTS.add(new Shot("tm_accumulators", null, -1.0, -59.4, 11.0, 180.0F, 22.0F, 60));
         SHOTS.add(new Shot("tm_accumulators_back", null, 2.6, -58.6, 3.2, 35.0F, 35.0F, 20));

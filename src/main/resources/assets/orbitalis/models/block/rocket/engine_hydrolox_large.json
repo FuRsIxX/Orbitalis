@@ -1,10 +1,11 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "body": "orbitalis:block/rocket_hull_orange",
-    "particle": "orbitalis:block/rocket_hull_orange",
-    "copper": "orbitalis:block/rocket_hull_copper",
+    "body": "orbitalis:block/rocket_orange",
+    "particle": "orbitalis:block/rocket_orange",
+    "copper": "orbitalis:block/machine_copper",
     "lip": "orbitalis:block/rocket_hull_lip",
+    "nozzlec": "orbitalis:block/rocket_nozzle_copper",
     "rail": "orbitalis:block/rocket_hull_rail"
   },
   "elements": [
@@ -6147,7 +6148,7 @@
             10.16,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6156,7 +6157,7 @@
             10.16,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6165,7 +6166,7 @@
             10.16,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6174,7 +6175,7 @@
             10.16,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6183,7 +6184,7 @@
             10.16,
             10.16
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6192,7 +6193,7 @@
             10.16,
             10.16
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6215,7 +6216,7 @@
             10.76,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6224,7 +6225,7 @@
             10.76,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6233,7 +6234,7 @@
             10.76,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6242,7 +6243,7 @@
             10.76,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6251,7 +6252,7 @@
             10.76,
             10.76
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6260,7 +6261,7 @@
             10.76,
             10.76
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6283,7 +6284,7 @@
             11.48,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6292,7 +6293,7 @@
             11.48,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6301,7 +6302,7 @@
             11.48,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6310,7 +6311,7 @@
             11.48,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6319,7 +6320,7 @@
             11.48,
             11.48
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6328,7 +6329,7 @@
             11.48,
             11.48
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6351,7 +6352,7 @@
             12.2,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6360,7 +6361,7 @@
             12.2,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6369,7 +6370,7 @@
             12.2,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6378,7 +6379,7 @@
             12.2,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6387,7 +6388,7 @@
             12.2,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6396,7 +6397,7 @@
             12.2,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6419,7 +6420,7 @@
             12.92,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6428,7 +6429,7 @@
             12.92,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6437,7 +6438,7 @@
             12.92,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6446,7 +6447,7 @@
             12.92,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6455,7 +6456,7 @@
             12.92,
             12.92
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6464,7 +6465,7 @@
             12.92,
             12.92
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6487,7 +6488,7 @@
             13.57,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6496,7 +6497,7 @@
             13.57,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6505,7 +6506,7 @@
             13.57,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6514,7 +6515,7 @@
             13.57,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6523,7 +6524,7 @@
             13.57,
             13.57
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6532,7 +6533,7 @@
             13.57,
             13.57
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6555,7 +6556,7 @@
             14.14,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6564,7 +6565,7 @@
             14.14,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6573,7 +6574,7 @@
             14.14,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6582,7 +6583,7 @@
             14.14,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6591,7 +6592,7 @@
             14.14,
             14.14
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6599,6 +6600,74 @@
             1.86,
             14.14,
             14.14
+          ],
+          "texture": "#nozzlec"
+        }
+      }
+    },
+    {
+      "from": [
+        3.3200000000000003,
+        5.6,
+        3.3200000000000003
+      ],
+      "to": [
+        12.68,
+        6.2,
+        12.68
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3.32,
+            9.8,
+            12.68,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "south": {
+          "uv": [
+            3.32,
+            9.8,
+            12.68,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "east": {
+          "uv": [
+            3.32,
+            9.8,
+            12.68,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "west": {
+          "uv": [
+            3.32,
+            9.8,
+            12.68,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "up": {
+          "uv": [
+            3.32,
+            3.32,
+            12.68,
+            12.68
+          ],
+          "texture": "#copper"
+        },
+        "down": {
+          "uv": [
+            3.32,
+            3.32,
+            12.68,
+            12.68
           ],
           "texture": "#copper"
         }
@@ -6691,7 +6760,7 @@
             12.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6700,7 +6769,7 @@
             12.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6709,7 +6778,7 @@
             12.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6718,7 +6787,7 @@
             12.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6727,7 +6796,7 @@
             12.66,
             12.66
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6736,7 +6805,7 @@
             12.66,
             12.66
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6759,7 +6828,7 @@
             13.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6768,7 +6837,7 @@
             13.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6777,7 +6846,7 @@
             13.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6786,7 +6855,7 @@
             13.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6795,7 +6864,7 @@
             13.26,
             13.26
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6804,7 +6873,7 @@
             13.26,
             13.26
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6827,7 +6896,7 @@
             13.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6836,7 +6905,7 @@
             13.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6845,7 +6914,7 @@
             13.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6854,7 +6923,7 @@
             13.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6863,7 +6932,7 @@
             13.98,
             13.98
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6872,7 +6941,7 @@
             13.98,
             13.98
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6895,7 +6964,7 @@
             14.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6904,7 +6973,7 @@
             14.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6913,7 +6982,7 @@
             14.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6922,7 +6991,7 @@
             14.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6931,7 +7000,7 @@
             14.7,
             14.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -6940,7 +7009,7 @@
             14.7,
             14.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -6963,7 +7032,7 @@
             15.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -6972,7 +7041,7 @@
             15.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -6981,7 +7050,7 @@
             15.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -6990,7 +7059,7 @@
             15.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -6999,7 +7068,7 @@
             15.42,
             15.42
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7008,7 +7077,7 @@
             15.42,
             15.42
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7031,7 +7100,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7040,7 +7109,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7049,7 +7118,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7058,7 +7127,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7067,7 +7136,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7076,7 +7145,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7099,7 +7168,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7108,7 +7177,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7117,7 +7186,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7126,7 +7195,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7135,7 +7204,7 @@
             16.0,
             0.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7144,7 +7213,7 @@
             16.0,
             0.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7167,7 +7236,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7176,7 +7245,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7185,7 +7254,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7194,7 +7263,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7203,7 +7272,7 @@
             0.07,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7212,7 +7281,7 @@
             0.07,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7235,7 +7304,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7244,7 +7313,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7253,7 +7322,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7262,7 +7331,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7271,7 +7340,7 @@
             0.07,
             0.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7280,7 +7349,7 @@
             0.07,
             0.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7303,7 +7372,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7312,7 +7381,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7321,7 +7390,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7330,7 +7399,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7339,7 +7408,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7348,7 +7417,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7371,7 +7440,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7380,7 +7449,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7389,7 +7458,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7398,7 +7467,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7407,7 +7476,7 @@
             16.0,
             0.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7416,7 +7485,7 @@
             16.0,
             0.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7439,7 +7508,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7448,7 +7517,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7457,7 +7526,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7466,7 +7535,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7475,7 +7544,7 @@
             0.64,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7484,7 +7553,7 @@
             0.64,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7507,7 +7576,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7516,7 +7585,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7525,7 +7594,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7534,7 +7603,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7543,7 +7612,7 @@
             0.64,
             0.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7551,6 +7620,74 @@
             0,
             0.64,
             0.64
+          ],
+          "texture": "#nozzlec"
+        }
+      }
+    },
+    {
+      "from": [
+        -10.18,
+        5.6,
+        -10.18
+      ],
+      "to": [
+        -0.8200000000000003,
+        6.2,
+        -0.8200000000000003
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.82,
+            9.8,
+            15.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "south": {
+          "uv": [
+            5.82,
+            9.8,
+            15.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "east": {
+          "uv": [
+            5.82,
+            9.8,
+            15.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "west": {
+          "uv": [
+            5.82,
+            9.8,
+            15.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "up": {
+          "uv": [
+            5.82,
+            5.82,
+            15.18,
+            15.18
+          ],
+          "texture": "#copper"
+        },
+        "down": {
+          "uv": [
+            5.82,
+            5.82,
+            15.18,
+            15.18
           ],
           "texture": "#copper"
         }
@@ -7847,7 +7984,7 @@
             7.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7856,7 +7993,7 @@
             7.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7865,7 +8002,7 @@
             12.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7874,7 +8011,7 @@
             12.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7883,7 +8020,7 @@
             7.66,
             12.66
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7892,7 +8029,7 @@
             7.66,
             12.66
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7915,7 +8052,7 @@
             8.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7924,7 +8061,7 @@
             8.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -7933,7 +8070,7 @@
             13.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -7942,7 +8079,7 @@
             13.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -7951,7 +8088,7 @@
             8.26,
             13.26
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -7960,7 +8097,7 @@
             8.26,
             13.26
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -7983,7 +8120,7 @@
             8.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -7992,7 +8129,7 @@
             8.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8001,7 +8138,7 @@
             13.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8010,7 +8147,7 @@
             13.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8019,7 +8156,7 @@
             8.98,
             13.98
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8028,7 +8165,7 @@
             8.98,
             13.98
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8051,7 +8188,7 @@
             9.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8060,7 +8197,7 @@
             9.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8069,7 +8206,7 @@
             14.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8078,7 +8215,7 @@
             14.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8087,7 +8224,7 @@
             9.7,
             14.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8096,7 +8233,7 @@
             9.7,
             14.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8119,7 +8256,7 @@
             10.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8128,7 +8265,7 @@
             10.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8137,7 +8274,7 @@
             15.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8146,7 +8283,7 @@
             15.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8155,7 +8292,7 @@
             10.42,
             15.42
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8164,7 +8301,7 @@
             10.42,
             15.42
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8187,7 +8324,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8196,7 +8333,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8205,7 +8342,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8214,7 +8351,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8223,7 +8360,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8232,7 +8369,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8255,7 +8392,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8264,7 +8401,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8273,7 +8410,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8282,7 +8419,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8291,7 +8428,7 @@
             16.0,
             0.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8300,7 +8437,7 @@
             16.0,
             0.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8323,7 +8460,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8332,7 +8469,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8341,7 +8478,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8350,7 +8487,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8359,7 +8496,7 @@
             11.07,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8368,7 +8505,7 @@
             11.07,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8391,7 +8528,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8400,7 +8537,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8409,7 +8546,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8418,7 +8555,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8427,7 +8564,7 @@
             11.07,
             0.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8436,7 +8573,7 @@
             11.07,
             0.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8459,7 +8596,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8468,7 +8605,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8477,7 +8614,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8486,7 +8623,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8495,7 +8632,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8504,7 +8641,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8527,7 +8664,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8536,7 +8673,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8545,7 +8682,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8554,7 +8691,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8563,7 +8700,7 @@
             16.0,
             0.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8572,7 +8709,7 @@
             16.0,
             0.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8595,7 +8732,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8604,7 +8741,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8613,7 +8750,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8622,7 +8759,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8631,7 +8768,7 @@
             11.64,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8640,7 +8777,7 @@
             11.64,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -8663,7 +8800,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -8672,7 +8809,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -8681,7 +8818,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -8690,7 +8827,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -8699,7 +8836,7 @@
             11.64,
             0.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -8707,6 +8844,74 @@
             0,
             11.64,
             0.64
+          ],
+          "texture": "#nozzlec"
+        }
+      }
+    },
+    {
+      "from": [
+        16.82,
+        5.6,
+        -10.18
+      ],
+      "to": [
+        26.18,
+        6.2,
+        -0.8200000000000003
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.82,
+            9.8,
+            10.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "south": {
+          "uv": [
+            0.82,
+            9.8,
+            10.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "east": {
+          "uv": [
+            5.82,
+            9.8,
+            15.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "west": {
+          "uv": [
+            5.82,
+            9.8,
+            15.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "up": {
+          "uv": [
+            0.82,
+            5.82,
+            10.18,
+            15.18
+          ],
+          "texture": "#copper"
+        },
+        "down": {
+          "uv": [
+            0.82,
+            5.82,
+            10.18,
+            15.18
           ],
           "texture": "#copper"
         }
@@ -9003,7 +9208,7 @@
             12.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9012,7 +9217,7 @@
             12.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9021,7 +9226,7 @@
             7.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9030,7 +9235,7 @@
             7.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9039,7 +9244,7 @@
             12.66,
             7.66
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9048,7 +9253,7 @@
             12.66,
             7.66
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9071,7 +9276,7 @@
             13.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9080,7 +9285,7 @@
             13.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9089,7 +9294,7 @@
             8.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9098,7 +9303,7 @@
             8.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9107,7 +9312,7 @@
             13.26,
             8.26
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9116,7 +9321,7 @@
             13.26,
             8.26
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9139,7 +9344,7 @@
             13.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9148,7 +9353,7 @@
             13.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9157,7 +9362,7 @@
             8.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9166,7 +9371,7 @@
             8.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9175,7 +9380,7 @@
             13.98,
             8.98
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9184,7 +9389,7 @@
             13.98,
             8.98
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9207,7 +9412,7 @@
             14.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9216,7 +9421,7 @@
             14.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9225,7 +9430,7 @@
             9.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9234,7 +9439,7 @@
             9.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9243,7 +9448,7 @@
             14.7,
             9.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9252,7 +9457,7 @@
             14.7,
             9.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9275,7 +9480,7 @@
             15.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9284,7 +9489,7 @@
             15.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9293,7 +9498,7 @@
             10.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9302,7 +9507,7 @@
             10.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9311,7 +9516,7 @@
             15.42,
             10.42
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9320,7 +9525,7 @@
             15.42,
             10.42
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9343,7 +9548,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9352,7 +9557,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9361,7 +9566,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9370,7 +9575,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9379,7 +9584,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9388,7 +9593,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9411,7 +9616,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9420,7 +9625,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9429,7 +9634,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9438,7 +9643,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9447,7 +9652,7 @@
             16.0,
             11.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9456,7 +9661,7 @@
             16.0,
             11.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9479,7 +9684,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9488,7 +9693,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9497,7 +9702,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9506,7 +9711,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9515,7 +9720,7 @@
             0.07,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9524,7 +9729,7 @@
             0.07,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9547,7 +9752,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9556,7 +9761,7 @@
             0.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9565,7 +9770,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9574,7 +9779,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9583,7 +9788,7 @@
             0.07,
             11.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9592,7 +9797,7 @@
             0.07,
             11.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9615,7 +9820,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9624,7 +9829,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9633,7 +9838,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9642,7 +9847,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9651,7 +9856,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9660,7 +9865,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9683,7 +9888,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9692,7 +9897,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9701,7 +9906,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9710,7 +9915,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9719,7 +9924,7 @@
             16.0,
             11.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9728,7 +9933,7 @@
             16.0,
             11.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9751,7 +9956,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9760,7 +9965,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9769,7 +9974,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9778,7 +9983,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9787,7 +9992,7 @@
             0.64,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9796,7 +10001,7 @@
             0.64,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -9819,7 +10024,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -9828,7 +10033,7 @@
             0.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -9837,7 +10042,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -9846,7 +10051,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -9855,7 +10060,7 @@
             0.64,
             11.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -9863,6 +10068,74 @@
             0,
             0.64,
             11.64
+          ],
+          "texture": "#nozzlec"
+        }
+      }
+    },
+    {
+      "from": [
+        -10.18,
+        5.6,
+        16.82
+      ],
+      "to": [
+        -0.8200000000000003,
+        6.2,
+        26.18
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.82,
+            9.8,
+            15.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "south": {
+          "uv": [
+            5.82,
+            9.8,
+            15.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "east": {
+          "uv": [
+            0.82,
+            9.8,
+            10.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "west": {
+          "uv": [
+            0.82,
+            9.8,
+            10.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "up": {
+          "uv": [
+            5.82,
+            0.82,
+            15.18,
+            10.18
+          ],
+          "texture": "#copper"
+        },
+        "down": {
+          "uv": [
+            5.82,
+            0.82,
+            15.18,
+            10.18
           ],
           "texture": "#copper"
         }
@@ -10159,7 +10432,7 @@
             7.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10168,7 +10441,7 @@
             7.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10177,7 +10450,7 @@
             7.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10186,7 +10459,7 @@
             7.66,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10195,7 +10468,7 @@
             7.66,
             7.66
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10204,7 +10477,7 @@
             7.66,
             7.66
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10227,7 +10500,7 @@
             8.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10236,7 +10509,7 @@
             8.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10245,7 +10518,7 @@
             8.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10254,7 +10527,7 @@
             8.26,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10263,7 +10536,7 @@
             8.26,
             8.26
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10272,7 +10545,7 @@
             8.26,
             8.26
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10295,7 +10568,7 @@
             8.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10304,7 +10577,7 @@
             8.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10313,7 +10586,7 @@
             8.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10322,7 +10595,7 @@
             8.98,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10331,7 +10604,7 @@
             8.98,
             8.98
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10340,7 +10613,7 @@
             8.98,
             8.98
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10363,7 +10636,7 @@
             9.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10372,7 +10645,7 @@
             9.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10381,7 +10654,7 @@
             9.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10390,7 +10663,7 @@
             9.7,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10399,7 +10672,7 @@
             9.7,
             9.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10408,7 +10681,7 @@
             9.7,
             9.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10431,7 +10704,7 @@
             10.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10440,7 +10713,7 @@
             10.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10449,7 +10722,7 @@
             10.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10458,7 +10731,7 @@
             10.42,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10467,7 +10740,7 @@
             10.42,
             10.42
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10476,7 +10749,7 @@
             10.42,
             10.42
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10499,7 +10772,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10508,7 +10781,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10517,7 +10790,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10526,7 +10799,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10535,7 +10808,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10544,7 +10817,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10567,7 +10840,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10576,7 +10849,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10585,7 +10858,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10594,7 +10867,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10603,7 +10876,7 @@
             16.0,
             11.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10612,7 +10885,7 @@
             16.0,
             11.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10635,7 +10908,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10644,7 +10917,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10653,7 +10926,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10662,7 +10935,7 @@
             16.0,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10671,7 +10944,7 @@
             11.07,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10680,7 +10953,7 @@
             11.07,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10703,7 +10976,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10712,7 +10985,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10721,7 +10994,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10730,7 +11003,7 @@
             11.07,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10739,7 +11012,7 @@
             11.07,
             11.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10748,7 +11021,7 @@
             11.07,
             11.07
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10771,7 +11044,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10780,7 +11053,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10789,7 +11062,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10798,7 +11071,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10807,7 +11080,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10816,7 +11089,7 @@
             16.0,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10839,7 +11112,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10848,7 +11121,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10857,7 +11130,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10866,7 +11139,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10875,7 +11148,7 @@
             16.0,
             11.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10884,7 +11157,7 @@
             16.0,
             11.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10907,7 +11180,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10916,7 +11189,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10925,7 +11198,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -10934,7 +11207,7 @@
             16.0,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -10943,7 +11216,7 @@
             11.64,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -10952,7 +11225,7 @@
             11.64,
             16.0
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -10975,7 +11248,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -10984,7 +11257,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -10993,7 +11266,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -11002,7 +11275,7 @@
             11.64,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -11011,7 +11284,7 @@
             11.64,
             11.64
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -11019,6 +11292,74 @@
             0,
             11.64,
             11.64
+          ],
+          "texture": "#nozzlec"
+        }
+      }
+    },
+    {
+      "from": [
+        16.82,
+        5.6,
+        16.82
+      ],
+      "to": [
+        26.18,
+        6.2,
+        26.18
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.82,
+            9.8,
+            10.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "south": {
+          "uv": [
+            0.82,
+            9.8,
+            10.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "east": {
+          "uv": [
+            0.82,
+            9.8,
+            10.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "west": {
+          "uv": [
+            0.82,
+            9.8,
+            10.18,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "up": {
+          "uv": [
+            0.82,
+            0.82,
+            10.18,
+            10.18
+          ],
+          "texture": "#copper"
+        },
+        "down": {
+          "uv": [
+            0.82,
+            0.82,
+            10.18,
+            10.18
           ],
           "texture": "#copper"
         }

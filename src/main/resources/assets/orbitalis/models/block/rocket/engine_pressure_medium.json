@@ -1,10 +1,11 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "body": "orbitalis:block/rocket_hull_checker",
-    "particle": "orbitalis:block/rocket_hull_checker",
-    "bell": "orbitalis:block/rocket_hull_bell",
-    "dark": "orbitalis:block/rocket_hull_dark",
+    "body": "orbitalis:block/rocket_checker",
+    "particle": "orbitalis:block/rocket_checker",
+    "bell": "orbitalis:block/rocket_nozzle",
+    "copper": "orbitalis:block/machine_copper",
+    "dark": "orbitalis:block/rocket_dark",
     "lip": "orbitalis:block/rocket_hull_lip"
   },
   "elements": [
@@ -821,6 +822,74 @@
             12.86
           ],
           "texture": "#bell"
+        }
+      }
+    },
+    {
+      "from": [
+        4.3,
+        5.6,
+        4.3
+      ],
+      "to": [
+        11.7,
+        6.2,
+        11.7
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.3,
+            9.8,
+            11.7,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "south": {
+          "uv": [
+            4.3,
+            9.8,
+            11.7,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "east": {
+          "uv": [
+            4.3,
+            9.8,
+            11.7,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "west": {
+          "uv": [
+            4.3,
+            9.8,
+            11.7,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "up": {
+          "uv": [
+            4.3,
+            4.3,
+            11.7,
+            11.7
+          ],
+          "texture": "#copper"
+        },
+        "down": {
+          "uv": [
+            4.3,
+            4.3,
+            11.7,
+            11.7
+          ],
+          "texture": "#copper"
         }
       }
     },

@@ -1,10 +1,11 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "body": "orbitalis:block/rocket_hull_orange",
-    "particle": "orbitalis:block/rocket_hull_orange",
-    "copper": "orbitalis:block/rocket_hull_copper",
+    "body": "orbitalis:block/rocket_orange",
+    "particle": "orbitalis:block/rocket_orange",
+    "copper": "orbitalis:block/machine_copper",
     "lip": "orbitalis:block/rocket_hull_lip",
+    "nozzlec": "orbitalis:block/rocket_nozzle_copper",
     "rail": "orbitalis:block/rocket_hull_rail"
   },
   "elements": [
@@ -707,7 +708,7 @@
             10.25,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -716,7 +717,7 @@
             10.25,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -725,7 +726,7 @@
             10.25,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -734,7 +735,7 @@
             10.25,
             6.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -743,7 +744,7 @@
             10.25,
             10.25
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -752,7 +753,7 @@
             10.25,
             10.25
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -775,7 +776,7 @@
             10.88,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -784,7 +785,7 @@
             10.88,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -793,7 +794,7 @@
             10.88,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -802,7 +803,7 @@
             10.88,
             8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -811,7 +812,7 @@
             10.88,
             10.88
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -820,7 +821,7 @@
             10.88,
             10.88
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -843,7 +844,7 @@
             11.62,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -852,7 +853,7 @@
             11.62,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -861,7 +862,7 @@
             11.62,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -870,7 +871,7 @@
             11.62,
             9.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -879,7 +880,7 @@
             11.62,
             11.62
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -888,7 +889,7 @@
             11.62,
             11.62
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -911,7 +912,7 @@
             12.38,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -920,7 +921,7 @@
             12.38,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -929,7 +930,7 @@
             12.38,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -938,7 +939,7 @@
             12.38,
             10.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -947,7 +948,7 @@
             12.38,
             12.38
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -956,7 +957,7 @@
             12.38,
             12.38
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -979,7 +980,7 @@
             13.12,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -988,7 +989,7 @@
             13.12,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -997,7 +998,7 @@
             13.12,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -1006,7 +1007,7 @@
             13.12,
             12.2
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -1015,7 +1016,7 @@
             13.12,
             13.12
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -1024,7 +1025,7 @@
             13.12,
             13.12
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -1047,7 +1048,7 @@
             13.8,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -1056,7 +1057,7 @@
             13.8,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -1065,7 +1066,7 @@
             13.8,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -1074,7 +1075,7 @@
             13.8,
             13.7
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -1083,7 +1084,7 @@
             13.8,
             13.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -1092,7 +1093,7 @@
             13.8,
             13.8
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         }
       }
     },
@@ -1115,7 +1116,7 @@
             14.4,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "south": {
           "uv": [
@@ -1124,7 +1125,7 @@
             14.4,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "east": {
           "uv": [
@@ -1133,7 +1134,7 @@
             14.4,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "west": {
           "uv": [
@@ -1142,7 +1143,7 @@
             14.4,
             15.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "up": {
           "uv": [
@@ -1151,7 +1152,7 @@
             14.4,
             14.4
           ],
-          "texture": "#copper"
+          "texture": "#nozzlec"
         },
         "down": {
           "uv": [
@@ -1159,6 +1160,74 @@
             1.6,
             14.4,
             14.4
+          ],
+          "texture": "#nozzlec"
+        }
+      }
+    },
+    {
+      "from": [
+        3.12,
+        5.6,
+        3.12
+      ],
+      "to": [
+        12.879999999999999,
+        6.2,
+        12.879999999999999
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3.12,
+            9.8,
+            12.88,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "south": {
+          "uv": [
+            3.12,
+            9.8,
+            12.88,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "east": {
+          "uv": [
+            3.12,
+            9.8,
+            12.88,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "west": {
+          "uv": [
+            3.12,
+            9.8,
+            12.88,
+            10.4
+          ],
+          "texture": "#copper"
+        },
+        "up": {
+          "uv": [
+            3.12,
+            3.12,
+            12.88,
+            12.88
+          ],
+          "texture": "#copper"
+        },
+        "down": {
+          "uv": [
+            3.12,
+            3.12,
+            12.88,
+            12.88
           ],
           "texture": "#copper"
         }
