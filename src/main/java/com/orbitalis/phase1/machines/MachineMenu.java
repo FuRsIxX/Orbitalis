@@ -26,8 +26,8 @@ public abstract class MachineMenu extends AbstractContainerMenu {
     /** Valeurs du surcadençage à la fin des données synchronisées : la vitesse, puis le plafond du module. */
     public static final int OVERCLOCK_DATA_COUNT = 2;
     /** Emplacement du module de surcadençage, dans l'onglet collé à gauche de la fenêtre. */
-    public static final int UPGRADE_X = -21;
-    public static final int UPGRADE_Y = 12;
+    public static final int UPGRADE_X = -19;
+    public static final int UPGRADE_Y = 10;
     /** Boutons de vitesse envoyés au serveur : ce numéro plus la vitesse voulue. */
     public static final int SPEED_BUTTON = 100;
 

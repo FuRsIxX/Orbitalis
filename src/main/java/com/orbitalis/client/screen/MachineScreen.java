@@ -39,14 +39,16 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     protected static final int BAR_PROGRESS_V = 0;
     protected static final int BAR_FUEL_V = 8;
 
-    // Onglet de surcadençage, collé à gauche de la fenêtre : l'emplacement du module, puis le bouton de vitesse.
-    private static final int TAB_X = -26;
+    // Onglet de surcadençage, collé à gauche de la fenêtre : l'emplacement du module, puis le bouton de vitesse, de la
+    // même largeur que l'emplacement et dans le même axe. Les marges sont celles de la fenêtre : un pixel de gris après
+    // le relief en haut et à gauche, comme sous le bouton.
+    private static final int TAB_X = -24;
     private static final int TAB_Y = 5;
-    private static final int TAB_W = 26;
-    private static final int TAB_H = 44;
-    private static final int SPEED_X = -24;
-    private static final int SPEED_Y = 32;
-    private static final int SPEED_W = 21;
+    private static final int TAB_W = 24;
+    private static final int TAB_H = 40;
+    private static final int SPEED_X = MachineMenu.UPGRADE_X - 1;
+    private static final int SPEED_Y = MachineMenu.UPGRADE_Y + 19;
+    private static final int SPEED_W = 18;
     private static final int SPEED_H = 12;
 
     // Écran d'état : zone de texte.
@@ -111,10 +113,29 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         graphics.fill(sx, sy, sx + 17, sy + 17, 0xFF373737);
         graphics.fill(sx + 1, sy + 1, sx + 17, sy + 17, 0xFF8B8B8B);
 
+        extractSpeedButton(graphics, overSpeed(mouseX, mouseY));
+    }
+
+    /**
+     * Bouton de vitesse, en relief comme les boutons du jeu : contour noir, arête claire en haut à gauche, sombre en bas
+     * à droite. Le chiffre est blanc à vitesse normale, jaune surcadencé, rouge à ×8 ; grisé et sans relief sans module.
+     */
+    private void extractSpeedButton(GuiGraphicsExtractor graphics, boolean hovered) {
+        int x = leftPos + SPEED_X;
+        int y = topPos + SPEED_Y;
         int speed = menu.getSpeed();
         boolean enabled = menu.getMaxSpeed() > 1;
-        Ui.button(graphics, font, Component.literal("×" + speed), leftPos + SPEED_X, topPos + SPEED_Y, SPEED_W, SPEED_H,
-                enabled && overSpeed(mouseX, mouseY), enabled, speed > 1, speed >= 8 ? Ui.BAD : Ui.WARN);
+        graphics.fill(x, y, x + SPEED_W, y + SPEED_H, 0xFF000000);
+        if (enabled) {
+            graphics.fill(x + 1, y + 1, x + SPEED_W - 1, y + SPEED_H - 1, 0xFFFFFFFF);
+            graphics.fill(x + 2, y + 2, x + SPEED_W - 1, y + SPEED_H - 1, 0xFF555555);
+            graphics.fill(x + 2, y + 2, x + SPEED_W - 2, y + SPEED_H - 2, hovered ? 0xFFA9B4C8 : 0xFF8B8B8B);
+        } else {
+            graphics.fill(x + 1, y + 1, x + SPEED_W - 1, y + SPEED_H - 1, 0xFFA6A6A6);
+        }
+        String label = "×" + speed;
+        int color = !enabled ? 0xFF7A7A7A : speed >= 8 ? 0xFFFF7A6A : speed > 1 ? 0xFFFFD45A : 0xFFFFFFFF;
+        graphics.text(font, label, x + (SPEED_W - font.width(label) + 1) / 2, y + 2, color, enabled);
     }
 
     private boolean overSpeed(double mouseX, double mouseY) {
