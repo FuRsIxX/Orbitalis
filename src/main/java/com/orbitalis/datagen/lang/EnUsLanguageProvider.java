@@ -2150,6 +2150,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("testmap.orbitalis.zone.test_pad", "Test pad");
         add("testmap.orbitalis.rocket.parts", "as blocks");
         add("testmap.orbitalis.rocket.assembled", "assembled");
+        add("testmap.orbitalis.rocket.boosters", "assembled, with boosters");
         add("testmap.orbitalis.zone.blocks", "Blocks");
         add("testmap.orbitalis.zone.items", "Items");
         add("testmap.orbitalis.zone.suits", "Spacesuits");

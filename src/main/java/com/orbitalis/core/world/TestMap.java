@@ -418,24 +418,52 @@ public final class TestMap {
                         level.setBlock(base.offset(piece.offset()).below(), piece.block().defaultBlockState(), Block.UPDATE_CLIENTS);
                     }
                 } else {
-                    // La fusée assemblée : sa colonne de tronçons, et ses boosters de part et d'autre.
-                    var shape = com.orbitalis.phase1.spaceport.RocketShape.of(design);
-                    BlockState rocket = ModBlocks.ROCKET.get().defaultBlockState();
-                    for (int i = 0; i < shape.parts().size(); i++) {
-                        level.setBlock(base.above(i), rocket.setValue(com.orbitalis.phase1.spaceport.RocketBlock.PART, shape.parts().get(i))
-                                .setValue(com.orbitalis.phase1.spaceport.RocketBlock.SIZE, shape.size()), Block.UPDATE_CLIENTS);
-                    }
-                    var boosters = shape.boosterOffsets(trench);
-                    for (int b = 0; b < boosters.size(); b++) {
-                        int height = shape.boosterHeight();
-                        level.setBlock(base.offset(boosters.get(b)).below(), rocket
-                                .setValue(com.orbitalis.phase1.spaceport.RocketBlock.PART, com.orbitalis.phase1.spaceport.RocketShape.boosterPart(b % height, height))
-                                .setValue(com.orbitalis.phase1.spaceport.RocketBlock.SIZE, shape.boosterSize()), Block.UPDATE_CLIENTS);
-                    }
+                    assembled(level, base, design, trench);
                 }
                 sign(level, new BlockPos(x - 2, Y, z - 4), Component.translatable(template.nameKey()),
                         Component.translatable(row == 0 ? "testmap.orbitalis.rocket.parts" : "testmap.orbitalis.rocket.assembled"), null);
             }
+        }
+        // Au bout de la rangée des fusées assemblées, deux lanceurs avec leurs boosters à poudre : un moyen et un lourd.
+        int extra = templates.size();
+        for (String id : List.of("orbital", "heavy")) {
+            var template = templates.stream().filter(candidate -> candidate.id().equals(id)).findFirst().orElse(null);
+            if (template == null) {
+                continue;
+            }
+            var plain = com.orbitalis.phase1.rocket.RocketDesign.fromSlots(
+                    com.orbitalis.phase1.rocket.RocketCatalog.build(template, 0, template.presets())::get);
+            var design = new com.orbitalis.phase1.rocket.RocketDesign(plain.stages(), plain.payload(), plain.nose(),
+                    new ItemStack(com.orbitalis.core.registry.ModItems.SOLID_BOOSTER.get(), com.orbitalis.phase1.rocket.RocketDesign.BOOSTER_PAIR));
+            int x = x0 + extra * ROCKET_SPACING;
+            int z = z0 + ROCKET_ROWS;
+            loadAround(level, x, z, 1);
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    level.setBlock(new BlockPos(x + dx, Y - 1, z + dz), slab, Block.UPDATE_ALL);
+                }
+            }
+            assembled(level, new BlockPos(x, Y, z), design, trench);
+            sign(level, new BlockPos(x - 2, Y, z - 4), Component.translatable(template.nameKey()),
+                    Component.translatable("testmap.orbitalis.rocket.boosters"), null);
+            extra++;
+        }
+    }
+
+    /** Une fusée assemblée : sa colonne de tronçons, et ses boosters de part et d'autre. */
+    private static void assembled(ServerLevel level, BlockPos base, com.orbitalis.phase1.rocket.RocketDesign design, Direction trench) {
+        var shape = com.orbitalis.phase1.spaceport.RocketShape.of(design);
+        BlockState rocket = ModBlocks.ROCKET.get().defaultBlockState();
+        for (int i = 0; i < shape.parts().size(); i++) {
+            level.setBlock(base.above(i), rocket.setValue(com.orbitalis.phase1.spaceport.RocketBlock.PART, shape.parts().get(i))
+                    .setValue(com.orbitalis.phase1.spaceport.RocketBlock.SIZE, shape.size()), Block.UPDATE_CLIENTS);
+        }
+        var boosters = shape.boosterOffsets(trench);
+        for (int b = 0; b < boosters.size(); b++) {
+            int height = shape.boosterHeight();
+            level.setBlock(base.offset(boosters.get(b)).below(), rocket
+                    .setValue(com.orbitalis.phase1.spaceport.RocketBlock.PART, com.orbitalis.phase1.spaceport.RocketShape.boosterPart(b % height, height))
+                    .setValue(com.orbitalis.phase1.spaceport.RocketBlock.SIZE, shape.boosterSize()), Block.UPDATE_CLIENTS);
         }
     }
 

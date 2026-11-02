@@ -2313,6 +2313,7 @@
   "testmap.orbitalis.click": "点击：前往",
   "testmap.orbitalis.normal": "运行中",
   "testmap.orbitalis.rocket.assembled": "已组装",
+  "testmap.orbitalis.rocket.boosters": "已组装，带助推器",
   "testmap.orbitalis.rocket.parts": "方块形式",
   "testmap.orbitalis.site.control_center": "控制中心",
   "testmap.orbitalis.site.observation_center": "观测",

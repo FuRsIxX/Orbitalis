@@ -2313,6 +2313,7 @@
   "testmap.orbitalis.click": "Щелчок: перейти туда",
   "testmap.orbitalis.normal": "Работает",
   "testmap.orbitalis.rocket.assembled": "собрана",
+  "testmap.orbitalis.rocket.boosters": "собрана, с ускорителями",
   "testmap.orbitalis.rocket.parts": "в блоках",
   "testmap.orbitalis.site.control_center": "Центр управления",
   "testmap.orbitalis.site.observation_center": "Наблюдение",

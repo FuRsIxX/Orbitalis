@@ -2313,6 +2313,7 @@
   "testmap.orbitalis.click": "クリック：移動",
   "testmap.orbitalis.normal": "稼働中",
   "testmap.orbitalis.rocket.assembled": "組み立て済み",
+  "testmap.orbitalis.rocket.boosters": "組立済み・ブースター付き",
   "testmap.orbitalis.rocket.parts": "ブロック状態",
   "testmap.orbitalis.site.control_center": "管制センター",
   "testmap.orbitalis.site.observation_center": "観測",

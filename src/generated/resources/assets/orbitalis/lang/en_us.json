@@ -2313,6 +2313,7 @@
   "testmap.orbitalis.click": "Click: go there",
   "testmap.orbitalis.normal": "In service",
   "testmap.orbitalis.rocket.assembled": "assembled",
+  "testmap.orbitalis.rocket.boosters": "assembled, with boosters",
   "testmap.orbitalis.rocket.parts": "as blocks",
   "testmap.orbitalis.site.control_center": "Control centre",
   "testmap.orbitalis.site.observation_center": "Observation",

@@ -2313,6 +2313,7 @@
   "testmap.orbitalis.click": "Клацання: перейти туди",
   "testmap.orbitalis.normal": "Працює",
   "testmap.orbitalis.rocket.assembled": "зібрана",
+  "testmap.orbitalis.rocket.boosters": "зібрана, з прискорювачами",
   "testmap.orbitalis.rocket.parts": "у блоках",
   "testmap.orbitalis.site.control_center": "Центр керування",
   "testmap.orbitalis.site.observation_center": "Спостереження",

@@ -2313,6 +2313,7 @@
   "testmap.orbitalis.click": "Clic: ir allí",
   "testmap.orbitalis.normal": "En servicio",
   "testmap.orbitalis.rocket.assembled": "ensamblado",
+  "testmap.orbitalis.rocket.boosters": "ensamblado, con propulsores",
   "testmap.orbitalis.rocket.parts": "en bloques",
   "testmap.orbitalis.site.control_center": "Centro de control",
   "testmap.orbitalis.site.observation_center": "Observación",

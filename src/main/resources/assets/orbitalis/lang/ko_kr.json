@@ -2313,6 +2313,7 @@
   "testmap.orbitalis.click": "클릭: 이동",
   "testmap.orbitalis.normal": "운용 중",
   "testmap.orbitalis.rocket.assembled": "조립됨",
+  "testmap.orbitalis.rocket.boosters": "조립됨, 부스터 포함",
   "testmap.orbitalis.rocket.parts": "블록 상태",
   "testmap.orbitalis.site.control_center": "관제 센터",
   "testmap.orbitalis.site.observation_center": "관측",

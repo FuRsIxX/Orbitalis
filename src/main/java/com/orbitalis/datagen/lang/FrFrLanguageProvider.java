@@ -2150,6 +2150,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("testmap.orbitalis.zone.test_pad", "Pas de tir d'essai");
         add("testmap.orbitalis.rocket.parts", "en blocs");
         add("testmap.orbitalis.rocket.assembled", "assemblée");
+        add("testmap.orbitalis.rocket.boosters", "assemblée, avec boosters");
         add("testmap.orbitalis.zone.blocks", "Les blocs");
         add("testmap.orbitalis.zone.items", "Les objets");
         add("testmap.orbitalis.zone.suits", "Combinaisons");
