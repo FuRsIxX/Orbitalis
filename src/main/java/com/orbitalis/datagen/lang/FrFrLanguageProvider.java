@@ -1911,6 +1911,9 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("spaceport.orbitalis.kit.aim", "Visez le sol · Molette : orientation · Clic droit : poser le plan");
         add("spaceport.orbitalis.kit.facing.now", "Carneau vers %s");
         add("spaceport.orbitalis.kit.no_room", "Il n'y a pas la place de poser la table de lancement ici.");
+        add("spaceport.orbitalis.kit.confirm.title", "Remplacer le bloc du dessous ?");
+        add("spaceport.orbitalis.kit.confirm.message", "Le bloc « %s » sous la table de lancement sera supprimé et remplacé par le déflecteur de flammes du kit.");
+        add("spaceport.orbitalis.kit.deflector_blocked", "Le bloc sous la table de lancement ne peut pas être remplacé : le déflecteur de flammes vous est rendu, posez-le à la main.");
         add("spaceport.orbitalis.kit.placed", "Plan du pas de tir %s×%s posé : %s blocs à placer, un à un.");
         add("spaceport.orbitalis.table.no_plan", "Cette table de lancement n'a pas de plan. Faites un clic droit dessus avec un kit de pas de tir.");
         add("spaceport.orbitalis.table.missing_header", "Pas de tir %s×%s · blocs restant à poser : %s");

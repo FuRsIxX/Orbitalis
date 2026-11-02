@@ -146,6 +146,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("drill_derrick", () -> OrbitalisGameTests::drillDerrick);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ACCUMULATOR =
             FUNCTIONS.register("accumulator", () -> OrbitalisGameTests::accumulator);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> PAD_KIT_DEFLECTOR =
+            FUNCTIONS.register("pad_kit_deflector", () -> OrbitalisGameTests::padKitDeflector);
 
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
@@ -321,6 +323,9 @@ public final class OrbitalisGameTests {
         // L'accumulateur : il reçoit par ses flancs, jamais par l'avant, et rend par l'avant à ce qui le touche.
         event.registerTest(Orbitalis.id("accumulator"), new FunctionGameTestInstance(
                 ACCUMULATOR.getKey(), spaced(environment, emptyStructure, 60)));
+        // Le kit pose la table, et son déflecteur de flammes à la place du bloc du dessous.
+        event.registerTest(Orbitalis.id("pad_kit_deflector"), new FunctionGameTestInstance(
+                PAD_KIT_DEFLECTOR.getKey(), spaced(environment, emptyStructure, 20)));
         // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
         event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
                 WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
@@ -4055,6 +4060,27 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(helper.getBlockState(first).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) == 2,
                     "la jauge du premier aurait dû montrer deux crans : " + helper.getBlockState(first));
         });
+    }
+
+    /**
+     * Kit de pas de tir : posé sur de la pierre, il pose la table de lancement, et le déflecteur de flammes à la place de
+     * la pierre, juste dessous ; le kit est consommé.
+     */
+    @SuppressWarnings("removal")
+    private static void padKitDeflector(GameTestHelper helper) {
+        BlockPos ground = new BlockPos(3, 1, 3);
+        helper.setBlock(ground, Blocks.STONE);
+        net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        BlockPos table = helper.absolutePos(ground.above());
+        player.setPos(table.getX() + 2.5, table.getY(), table.getZ() + 0.5);
+        player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(ModItems.PAD_KIT.get()));
+        com.orbitalis.phase1.spaceport.PadKitItem.handle(player, new com.orbitalis.core.network.PadKitPayload(table, 2, false, Direction.EAST));
+        helper.assertTrue(helper.getLevel().getBlockState(table).is(ModBlocks.LAUNCH_TABLE.get()), "le kit aurait dû poser la table de lancement");
+        helper.assertTrue(helper.getBlockState(ground).is(ModBlocks.FLAME_DEFLECTOR.get()),
+                "le déflecteur de flammes aurait dû remplacer la pierre sous la table : " + helper.getBlockState(ground));
+        helper.assertTrue(player.getMainHandItem().isEmpty(), "le kit aurait dû être consommé");
+        helper.succeed();
     }
 
     /**

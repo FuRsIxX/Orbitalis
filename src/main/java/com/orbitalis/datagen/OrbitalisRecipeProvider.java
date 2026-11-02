@@ -203,14 +203,22 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_tower_frame", has(ModBlocks.TOWER_FRAME))
                 .save(output, key("tower_elevator"));
 
-        // Kit de pas de tir : la table de lancement et son plan.
-        shaped(RecipeCategory.MISC, ModItems.PAD_KIT)
-                .pattern("P")
-                .pattern("T")
-                .define('P', Items.PAPER)
-                .define('T', ModBlocks.LAUNCH_TABLE)
-                .unlockedBy("has_launch_table", has(ModBlocks.LAUNCH_TABLE))
-                .save(output, key("pad_kit"));
+        // Kit de pas de tir : le plan (papier), la table de lancement et son déflecteur de flammes. Le déflecteur se pose
+        // n'importe où contre le reste : dessous, dessus, ou à côté du papier ou de la table (à gauche comme à droite).
+        String[][] kitShapes = {{"P", "T", "D"}, {"D", "P", "T"}, {"PD", "T "}, {"P ", "TD"}};
+        String[] kitNames = {"pad_kit", "pad_kit_deflector_top", "pad_kit_deflector_beside_plan", "pad_kit_deflector_beside_table"};
+        for (int k = 0; k < kitShapes.length; k++) {
+            var kit = shaped(RecipeCategory.MISC, ModItems.PAD_KIT);
+            for (String row : kitShapes[k]) {
+                kit.pattern(row);
+            }
+            kit.define('P', Items.PAPER)
+                    .define('T', ModBlocks.LAUNCH_TABLE)
+                    .define('D', ModBlocks.FLAME_DEFLECTOR)
+                    .group("pad_kit")
+                    .unlockedBy("has_launch_table", has(ModBlocks.LAUNCH_TABLE))
+                    .save(output, key(kitNames[k]));
+        }
         shaped(RecipeCategory.MISC, ModBlocks.TOWER_STAIRS, 4)
                 .pattern("P  ")
                 .pattern("FP ")

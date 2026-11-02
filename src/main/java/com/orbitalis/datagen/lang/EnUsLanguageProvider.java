@@ -1911,6 +1911,9 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("spaceport.orbitalis.kit.aim", "Aim at the ground · Scroll: rotate · Right-click: lay the blueprint");
         add("spaceport.orbitalis.kit.facing.now", "Flame trench towards %s");
         add("spaceport.orbitalis.kit.no_room", "There is no room to place the launch table here.");
+        add("spaceport.orbitalis.kit.confirm.title", "Replace the block below?");
+        add("spaceport.orbitalis.kit.confirm.message", "The %s under the launch table will be removed and replaced by the kit's flame deflector.");
+        add("spaceport.orbitalis.kit.deflector_blocked", "The block under the launch table can't be replaced: here's the flame deflector back, place it by hand.");
         add("spaceport.orbitalis.kit.placed", "%s×%s launch pad blueprint laid: %s blocks to place, one by one.");
         add("spaceport.orbitalis.table.no_plan", "This launch table has no blueprint. Right-click it with a launch pad kit.");
         add("spaceport.orbitalis.table.missing_header", "%s×%s launch pad · blocks left to place: %s");

@@ -69,7 +69,23 @@ public final class PadKitPlacement {
             use();
             return;
         }
-        ClientPacketDistributor.sendToServer(new PadKitPayload(tableAbove(clicked, face), radius, elevator, facing));
+        BlockPos table = tableAbove(clicked, face);
+        PadKitPayload payload = new PadKitPayload(table, radius, elevator, facing);
+        // Le déflecteur de flammes du kit prend la place du bloc sous la table : si ce n'est pas de l'air, on prévient.
+        net.minecraft.world.level.block.state.BlockState below = minecraft.level == null ? null : minecraft.level.getBlockState(table.below());
+        if (below != null && !below.isAir() && !below.is(ModBlocks.FLAME_DEFLECTOR.get())) {
+            Component name = below.getBlock().getName();
+            minecraft.gui.setScreen(new net.minecraft.client.gui.screens.ConfirmScreen(confirmed -> {
+                minecraft.gui.setScreen(null);
+                if (confirmed) {
+                    ClientPacketDistributor.sendToServer(payload);
+                    armed = false;
+                }
+            }, Component.translatable("spaceport.orbitalis.kit.confirm.title"),
+                    Component.translatable("spaceport.orbitalis.kit.confirm.message", name)));
+            return;
+        }
+        ClientPacketDistributor.sendToServer(payload);
         armed = false;
     }
 

@@ -21,13 +21,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Kit de pas de tir : le plan d'un pas de tir, et sa table de lancement.
+ * Kit de pas de tir : le plan d'un pas de tir, sa table de lancement et son déflecteur de flammes.
  * <p>
  * Un clic droit ouvre l'écran du kit : on y choisit la taille du tablier, la tour (à escalier ou à ascenseur) et
  * l'orientation, en voyant ce que le pas de tir pourra lancer et tous les blocs à réunir. Le plan choisi, le pas de
  * tir s'esquisse là où l'on regarde ; la molette le fait tourner, et un second clic droit, sur le sol, pose la table
- * de lancement un bloc au-dessus (le déflecteur ira dessous). Le plan se dessine alors en jeu : il reste à poser les
- * blocs, un à un. Un clic droit sur une table déjà posée change son plan.
+ * de lancement un bloc au-dessus et le déflecteur de flammes dessous, à la place du bloc visé (le joueur est prévenu
+ * avant). Le plan se dessine alors en jeu : il reste à poser les blocs, un à un. Un clic droit sur une table déjà posée
+ * change son plan.
  * <p>
  * Le choix et l'esquisse se passent chez le client (voir {@code PadKitPlacement}) ; le serveur ne fait que poser.
  */
@@ -84,6 +85,7 @@ public class PadKitItem extends Item {
                 return;
             }
             level.setBlockAndUpdate(pos, ModBlocks.LAUNCH_TABLE.get().defaultBlockState());
+            placeDeflector(player, level, pos, plan);
             level.playSound(null, pos, com.orbitalis.core.registry.ModSounds.PART_PLACED.get(), SoundSource.BLOCKS, 1.0F, 0.9F);
             // Le kit est la table et son plan : il est consommé quand la table est posée.
             if (!player.getAbilities().instabuild) {
@@ -102,6 +104,31 @@ public class PadKitItem extends Item {
             table.setPlan(plan);
             player.sendSystemMessage(Component.translatable("spaceport.orbitalis.kit.placed", plan.deckSize(), plan.deckSize(),
                     plan.pieces().size()).withStyle(ChatFormatting.GREEN));
+        }
+    }
+
+    /**
+     * Le déflecteur de flammes du kit, sous la table, à la place du bloc qui s'y trouvait (le joueur a confirmé). Un bloc
+     * incassable ou un conteneur n'est jamais supprimé : le déflecteur reste alors à poser à la main.
+     */
+    private static void placeDeflector(ServerPlayer player, ServerLevel level, BlockPos table, PadPlan plan) {
+        for (PadPlan.Piece piece : plan.pieces()) {
+            if (piece.role() != PadPlan.Role.DEFLECTOR) {
+                continue;
+            }
+            BlockPos at = table.offset(piece.offset());
+            BlockState current = level.getBlockState(at);
+            if (piece.accepts(current)) {
+                continue;
+            }
+            if (current.getDestroySpeed(level, at) < 0 || current.hasBlockEntity() || level.isOutsideBuildHeight(at)) {
+                player.sendSystemMessage(Component.translatable("spaceport.orbitalis.kit.deflector_blocked").withStyle(ChatFormatting.GOLD));
+                if (!player.getAbilities().instabuild) {
+                    player.getInventory().placeItemBackInInventory(new net.minecraft.world.item.ItemStack(ModBlocks.FLAME_DEFLECTOR.get()));
+                }
+                continue;
+            }
+            level.setBlockAndUpdate(at, piece.display());
         }
     }
 }

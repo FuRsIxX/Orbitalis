@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pad_kit",
+  "key": {
+    "D": "orbitalis:flame_deflector",
+    "P": "minecraft:paper",
+    "T": "orbitalis:launch_table"
+  },
+  "pattern": [
+    "D",
+    "P",
+    "T"
+  ],
+  "result": {
+    "id": "orbitalis:pad_kit"
+  }
+}
