@@ -15,7 +15,7 @@ Chaque étage a son habit, d'après ce qu'il emporte :
 - composite : le carbone tissé, noir ;
 - poudre : les segments blancs, leurs joints sombres et boulonnés.
 Les tronçons reprennent l'aspect des blocs de fusée qu'on pose à leur place (generate_rocket_parts.py) : leur peau, les
-deux frettes et la ligne de cuivre des réservoirs, la bague de cuivre des tuyères, la bande de danger
+deux frettes et la ligne de cuivre des réservoirs, les moteurs du bloc de moteur (chambre, turbopompes, tuyère en gradins), la bande de danger
 de l'interétage, les trappes cerclées de laiton de la coiffe, la pointe en gradins et sa sonde rouge. Les textures
 « rocket_hull_* » ne servent plus qu'aux lèvres des tuyères, aux rails et aux ailerons en grille.
 Les boosters latéraux ont leurs propres tronçons, calqués sur les blocs de booster qu'on pose : le corps de poudre
@@ -292,24 +292,54 @@ def cylinder(y0, y1, half, texture):
     return elements
 
 
-# Profil d'une tuyère, du col à la sortie : (bas, haut, demi-largeur). Sept paliers fins, pour qu'elle s'évase en douceur
-# au lieu de descendre en marches d'escalier.
-BELL = ((9.2, 10, 0.9), (8, 9.2, 1.15), (6.6, 8, 1.45), (5.2, 6.6, 1.75), (3.8, 5.2, 2.05), (2.3, 3.8, 2.32), (0.6, 2.3, 2.56))
+def round_at(cx, cz, y0, y1, radius, texture):
+    """
+    Corps rond centré sur ce point, comme ceux des blocs de fusée : trois pavés croisés dont la section approche un
+    cercle de ce rayon.
+    """
+    r, h, d = radius, radius * 0.5, radius * 0.82
+    out = []
+    for a, b in ((r, h), (h, r), (d, d)):
+        out += tiled_box(round(cx - a, 2), y0, round(cz - b, 2), round(cx + a, 2), y1, round(cz + b, 2), texture)
+    return out
 
 
-def bell(cx, cz, scale, texture="bell"):
+def engine_unit(cx, cz, scale, bell="bell", pumps=True):
     """
-    Tuyère : un col étroit qui s'évase vers le bas en paliers fins, cerclé d'une bague de cuivre comme sur les blocs de
-    moteur, et sa lèvre d'acier poli.
+    Un moteur à ergols liquides, tel le bloc de moteur, sous la jupe (qui commence à 13 pixels) : le cardan et la
+    chambre, la tuyère en trois gradins cerclée de sa bague de cuivre, et de chaque côté une turbopompe et sa conduite.
+    Le bloc a un rayon de tuyère de 6 pixels ; scale le met à la taille de la fusée, sans changer sa hauteur.
     """
-    elements = []
-    for y0, y1, half in BELL:
-        h = round(half * scale, 2)
-        elements += tiled_box(cx - h, y0, cz - h, cx + h, y1, cz + h, texture)
-    collar = round(1.95 * scale, 2)
-    elements += tiled_box(cx - collar, 5.6, cz - collar, cx + collar, 6.2, cz + collar, "copper")
-    lip = round(2.8 * scale, 2)
-    return elements + tiled_box(cx - lip, 0, cz - lip, cx + lip, 0.6, cz + lip, "lip")
+    def r(value):
+        return round(value * scale, 2)
+    out = round_at(cx, cz, 11, 13, r(3.2), "metal") + round_at(cx, cz, 8, 11, r(2.6), "mdark")
+    out += round_at(cx, cz, 5.5, 8, r(3.4), bell) + round_at(cx, cz, 3, 5.5, r(4.6), bell) + round_at(cx, cz, 0, 3, r(6), bell)
+    out += round_at(cx, cz, 5.2, 5.8, r(5), "copper")
+    if pumps:
+        # Les turbopompes du bloc (à 2,6 puis 3,4 pixels de l'axe), sur deux flancs opposés de la chambre.
+        for sign in (-1, 1):
+            x0, x1 = sorted((cx + sign * r(2.6), cx + sign * r(5.2)))
+            out += tiled_box(round(x0, 2), 8.5, round(cz - r(1.4), 2), round(x1, 2), 12.5, round(cz + r(1.4), 2), "copper")
+            x0, x1 = sorted((cx + sign * r(3.4), cx + sign * r(4.4)))
+            out += tiled_box(round(x0, 2), 6, round(cz - r(0.5), 2), round(x1, 2), 8.5, round(cz + r(0.5), 2), "copper")
+    return out
+
+
+def pressure_unit(cx, cz, scale):
+    """Moteur alimenté par pression, tel son bloc : sans pompes, une tuyère en trois gradins."""
+    def r(value):
+        return round(value * scale, 2)
+    return (round_at(cx, cz, 5.5, 8, r(3.2), "bell") + round_at(cx, cz, 3, 5.5, r(4.4), "bell")
+            + round_at(cx, cz, 0, 3, r(5.6), "bell"))
+
+
+def solid_nozzle(cx, cz, scale):
+    """Tuyère d'un moteur à poudre, telle celle du bloc : courte et large, en deux gradins."""
+    return round_at(cx, cz, 1.5, 4, round(3.6 * scale, 2), "bell") + round_at(cx, cz, 0, 1.5, round(4.8 * scale, 2), "bell")
+
+
+# Les moteurs d'un lanceur lourd : un au centre, quatre aux angles, assez écartés pour que leurs tuyères ne se touchent pas.
+HEAVY_ENGINES = ((0, 0), (-14, -14), (14, -14), (-14, 14), (14, 14))
 
 
 def around(boxes):
@@ -378,6 +408,7 @@ FILES = {
     "bell": "rocket_nozzle", "nozzlec": "rocket_nozzle_copper", "hazard": "pad_hazard", "frame": "machine_frame",
     "copper": "machine_copper", "brass": "pad_brass", "metal": "machine_metal", "red": "machine_red", "port": "machine_port",
     "lip": "rocket_hull_lip", "rail": "rocket_hull_rail", "gridfin": "rocket_hull_gridfin", "nozzle": "rocket_nozzle",
+    "mdark": "machine_dark",
 }
 
 
@@ -512,37 +543,25 @@ def rocket_model(part, half):
         elements = body(1, 16, half, [(7, 9, "hazard")]) + cylinder(0, 1, half if wide else half + 0.3, "lip")
         if not slim and not wide:
             elements += grid_fins(half)
-    elif part == "engine":
-        # Moteurs à turbopompes : la jupe, le bouclier thermique, et la grappe de tuyères.
-        elements = cylinder(10, 16, half, "body") + cylinder(9.4, 10, round(half * 0.96, 2), "rail")
+    elif part in ("engine", "engine_hydrolox"):
+        # Baie de moteurs à ergols liquides : la jupe et son bouclier thermique, et sous eux des moteurs tels les blocs
+        # de moteur (un seul pour un petit lanceur, cinq pour un lourd). Le moteur cryogénique a ses tuyères de cuivre.
+        nozzle = "nozzlec" if part == "engine_hydrolox" else "bell"
+        elements = cylinder(13, 16, half, "body") + cylinder(12.4, 13, round(half * 0.96, 2), "rail")
         if wide:
-            # Lanceur lourd : une grosse tuyère centrale entourée de quatre autres.
-            elements += bell(8, 8, 3.0)
-            for dx, dz in ((-13.5, -13.5), (13.5, -13.5), (-13.5, 13.5), (13.5, 13.5)):
-                elements += bell(8 + dx, 8 + dz, 3.0)
-        elif half >= 8:
-            # Lanceur moyen : neuf moteurs en carré, comme sous un lanceur réutilisable.
-            for dx in (-4.4, 0, 4.4):
-                for dz in (-4.4, 0, 4.4):
-                    elements += bell(8 + dx, 8 + dz, 0.78)
+            for dx, dz in HEAVY_ENGINES:
+                elements += engine_unit(8 + dx, 8 + dz, 1.5, nozzle)
         else:
-            elements += bell(8, 8, 1.3)
-    elif part == "engine_hydrolox":
-        # Moteur cryogénique : une jupe isolée, et une seule grande tuyère de cuivre.
-        elements = cylinder(10, 16, half, "body") + cylinder(9.4, 10, round(half * 0.96, 2), "rail") \
-            + bell(8, 8, 2.4 if wide else 2.5 if half >= 8 else 1.25, "nozzlec")
-        if wide:
-            for dx, dz in ((-13.5, -13.5), (13.5, -13.5), (-13.5, 13.5), (13.5, 13.5)):
-                elements += bell(8 + dx, 8 + dz, 2.4, "nozzlec")
+            elements += engine_unit(8, 8, 1.0 if half >= 8 else 0.55, nozzle, pumps=half >= 8)
     elif part == "engine_pressure":
-        # Moteur alimenté par pression : une jupe à damier, une petite tuyère et quatre ailerons en trapèze.
-        elements = cylinder(9, 16, half, "body") + bell(8, 8, 3.6 if wide else 1.9 if half >= 8 else 1.05)
+        # Moteur alimenté par pression : une jupe à damier, sa tuyère en gradins comme le bloc, et quatre ailerons.
+        elements = cylinder(9, 16, half, "body") + pressure_unit(8, 8, 2.6 if wide else 1.0 if half >= 8 else 0.6)
         if not wide:
             elements += fins(half, 11, "dark")
     elif part == "engine_solid":
-        # Moteur à poudre : le corps descend presque en bas, cerclé de sa frette comme le bloc ; la tuyère dépasse à
-        # peine, quatre ailerons le stabilisent.
-        elements = body(4, 16, half, [(12.5, 13.5, "frame")]) + bell(8, 8, 4.6 if wide else 2.2 if half >= 8 else 1.15)
+        # Moteur à poudre : le corps descend presque en bas, cerclé de sa frette ; sa tuyère courte et large, comme le
+        # bloc ; quatre ailerons le stabilisent.
+        elements = body(4, 16, half, [(12.5, 13.5, "frame")]) + solid_nozzle(8, 8, half / 6.5)
         if not wide:
             elements += fins(half, 12, "dark")
     else:
