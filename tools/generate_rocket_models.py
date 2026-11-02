@@ -269,6 +269,11 @@ def tiled_box(x0, y0, z0, x1, y1, z1, texture):
                 "up": {"uv": [ux0, uz0, ux1, uz1], "texture": "#" + texture},
                 "down": {"uv": [ux0, uz0, ux1, uz1], "texture": "#" + texture},
             }
+            # Les faces d'une coupe sont à l'intérieur du pavé : on ne les dessine pas. Elles tomberaient sinon pile sur
+            # la paroi d'un autre pavé (une bague contre le corps) et scintilleraient avec elle.
+            for face, at, edge in (("west", xa, x0), ("east", xb, x1), ("north", za, z0), ("south", zb, z1)):
+                if abs(at - edge) > 1e-6:
+                    del faces[face]
             elements.append({"from": [xa, y0, za], "to": [xb, y1, zb], "faces": faces})
     return elements
 
@@ -312,7 +317,8 @@ def engine_unit(cx, cz, scale, bell="bell", pumps=True):
     """
     def r(value):
         return round(value * scale, 2)
-    out = round_at(cx, cz, 11, 13, r(3.2), "metal") + round_at(cx, cz, 8, 11, r(2.6), "mdark")
+    # Le cardan s'arrête sous l'anneau de la jupe (à 12,4 pixels), pour ne pas partager son plan.
+    out = round_at(cx, cz, 11, 12.4, r(3.2), "metal") + round_at(cx, cz, 8, 11, r(2.6), "mdark")
     out += round_at(cx, cz, 5.5, 8, r(3.4), bell) + round_at(cx, cz, 3, 5.5, r(4.6), bell) + round_at(cx, cz, 0, 3, r(6), bell)
     out += round_at(cx, cz, 5.2, 5.8, r(5), "copper")
     if pumps:
@@ -338,8 +344,11 @@ def solid_nozzle(cx, cz, scale):
     return round_at(cx, cz, 1.5, 4, round(3.6 * scale, 2), "bell") + round_at(cx, cz, 0, 1.5, round(4.8 * scale, 2), "bell")
 
 
-# Les moteurs d'un lanceur lourd : un au centre, quatre aux angles, assez écartés pour que leurs tuyères ne se touchent pas.
-HEAVY_ENGINES = ((0, 0), (-14, -14), (14, -14), (-14, 14), (14, 14))
+# Les moteurs d'un lanceur lourd : un au centre, quatre en diagonale, assez écartés pour que leurs tuyères ne se touchent
+# pas, assez serrés pour rester dans le corps rond (à 10,5 pixels sur chaque axe, une tuyère de 7,2 pixels de rayon
+# s'arrête à 22 pixels de l'axe, sous les 23,5 du flanc du cylindre).
+HEAVY_ENGINES = ((0, 0), (-10.5, -10.5), (10.5, -10.5), (-10.5, 10.5), (10.5, 10.5))
+HEAVY_SCALE = 1.2
 
 
 def around(boxes):
@@ -371,11 +380,12 @@ def strip(half, side_width, depth, texture, y0=0, y1=16, angle=0):
     Une bande en saillie le long du corps (goulotte, rail, conduite), sur la face donnée par son quart de tour. Un
     lanceur lourd touche déjà les bords permis d'un modèle : sa bande longe alors un angle du cylindre.
     """
+    # La bande s'arrête à la surface du corps : enfoncée dedans, ses faces du haut et du bas tomberaient sur les siennes.
     if half > 16:
         corner = round(8 - half * 0.78, 2)
-        box = (corner - side_width, y0, corner - side_width, corner + 0.6, y1, corner + 0.6, texture)
+        box = (corner - side_width, y0, corner - side_width, corner, y1, corner, texture)
     else:
-        box = (8 - side_width / 2, y0, 8 - half - depth, 8 + side_width / 2, y1, 8 - half + 0.6, texture)
+        box = (8 - side_width / 2, y0, 8 - half - depth, 8 + side_width / 2, y1, 8 - half, texture)
     turned = around([box])
     x0, y0, z0, x1, y1, z1, texture = turned[angle]
     return tiled_box(round(x0, 2), y0, round(z0, 2), round(x1, 2), y1, round(z1, 2), texture)
@@ -465,14 +475,17 @@ def booster_model(part, half):
     k = half / 7.0
     # Les anneaux débordent un peu du corps, sans sortir des limites d'un modèle (pour la taille large, jamais montée).
     ring = min(round(half * 1.05, 2), 24.0)
+    # Une bague qui ne dépasse pas du corps (taille large) se confondrait avec lui : elle est alors omise.
+    rings = ring > half
     if part == "booster_engine":
         # Le corps de poudre, sa bande de danger, et la tuyère large en deux gradins, sans ailerons.
-        elements = (cylinder(4, 16, half, "solid") + cylinder(9, 10.5, ring, "hazard")
+        elements = (cylinder(4, 16, half, "solid") + (cylinder(9, 10.5, ring, "hazard") if rings else [])
                     + cylinder(1.5, 4, round(4.4 * k, 2), "nozzle") + cylinder(0, 1.5, round(5.6 * k, 2), "nozzle"))
     elif part == "booster_body":
         # Le corps de poudre, cerclé de deux frettes, et une ligne d'alimentation de cuivre de part et d'autre.
-        elements = (cylinder(0, 16, half, "solid") + cylinder(4, 5, ring, "frame")
-                    + cylinder(11, 12, ring, "frame"))
+        elements = cylinder(0, 16, half, "solid")
+        if rings:
+            elements += cylinder(4, 5, ring, "frame") + cylinder(11, 12, ring, "frame")
         if half >= 6:
             elements += strip(half, 1.2, 0.6, "copper") + strip(half, 1.2, 0.6, "copper", angle=2)
     else:
@@ -550,7 +563,7 @@ def rocket_model(part, half):
         elements = cylinder(13, 16, half, "body") + cylinder(12.4, 13, round(half * 0.96, 2), "rail")
         if wide:
             for dx, dz in HEAVY_ENGINES:
-                elements += engine_unit(8 + dx, 8 + dz, 1.5, nozzle)
+                elements += engine_unit(8 + dx, 8 + dz, HEAVY_SCALE, nozzle)
         else:
             elements += engine_unit(8, 8, 1.0 if half >= 8 else 0.55, nozzle, pumps=half >= 8)
     elif part == "engine_pressure":
