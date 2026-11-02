@@ -428,7 +428,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("spaceport.orbitalis.research_required", "Technology required: %s");
         add("spaceport.orbitalis.table.retired_size", "%s×%s launch pads no longer exist, so this one can't be used. Right-click the table with a kit to rebuild it as a 5×5, 9×9 or 11×11.");
         add("spaceport.orbitalis.table.sky_blocked", "The sky must be clear above the launch table.");
-        add("spaceport.orbitalis.console.not_linked", "No launch table within %s blocks");
+        add("spaceport.orbitalis.console.not_linked", "Not linked: connect a data cable to a launch pad's data port, or link it with a wireless module.");
         add("spaceport.orbitalis.console.linked", "Launch table linked, %s blocks away");
         add("spaceport.orbitalis.console.pad", "%s×%s launch pad");
         add("spaceport.orbitalis.console.no_tower", "No service tower (optional)");
@@ -1204,8 +1204,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("display.orbitalis.standby", "STANDBY");
         add("display.orbitalis.standby.link", "Pad link: none");
         add("display.orbitalis.lost", "LAUNCH PAD NOT FOUND");
-        add("display.orbitalis.hint", "This screen only shows what's plugged into it. Place it against a launch console, a tracking station or a tank, or link it with a data cable. Sneak and right-click to switch views.");
-        add("display.orbitalis.link_started", "Linking started: now right-click a mission display.");
+        add("display.orbitalis.hint", "This screen only shows what's plugged into it. Place it against a launch console, a tracking station or a tank, connect it with a data cable (to a console or a launch pad's data port), or link it with a wireless module. Sneak and right-click to switch views.");
         add("display.orbitalis.linked", "%s×%s screen linked to the launch pad.");
         add("launch.orbitalis.console.title_short", "MISSION CONTROL");
 
@@ -1886,7 +1885,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("block.orbitalis.tower_railing", "Tower Railing");
         add("block.orbitalis.pad_support", "Deck Support");
         add("block.orbitalis.deluge_pipe", "Deluge Line");
-        add("block.orbitalis.fuel_port", "Fuel Port");
+        add("block.orbitalis.fuel_port", "Launch Pad Port");
         add("item.orbitalis.pad_kit", "Launch Pad Kit");
         add("spaceport.orbitalis.kit.title", "Launch Pad Kit");
         add("spaceport.orbitalis.kit.size", "Deck size");
@@ -1911,6 +1910,15 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("spaceport.orbitalis.kit.aim", "Aim at the ground · Scroll: rotate · Right-click: lay the blueprint");
         add("spaceport.orbitalis.kit.facing.now", "Flame trench towards %s");
         add("spaceport.orbitalis.kit.no_room", "There is no room to place the launch table here.");
+        add("spaceport.orbitalis.fuel_port.energy", "electricity");
+        add("spaceport.orbitalis.fuel_port.data", "data");
+        add("item.orbitalis.wireless_module", "Wireless Module");
+        add("wireless.orbitalis.started.console", "Console selected: now right-click a launch pad (its table, a port or a deck slab) or a screen.");
+        add("wireless.orbitalis.started.display", "Screen selected: now right-click a launch pad, a launch console or a tracking station.");
+        add("wireless.orbitalis.started.station", "Tracking station selected: now right-click a screen.");
+        add("wireless.orbitalis.source_first", "First right-click what you want to link: a console, a screen or a tracking station.");
+        add("wireless.orbitalis.console_linked", "Console linked to the launch pad, wirelessly.");
+        add("wireless.orbitalis.display_linked", "Screen linked to the launch pad, wirelessly.");
         add("spaceport.orbitalis.kit.confirm.title", "Replace the block below?");
         add("spaceport.orbitalis.kit.confirm.message", "The %s under the launch table will be removed and replaced by the kit's flame deflector.");
         add("spaceport.orbitalis.kit.deflector_blocked", "The block under the launch table can't be replaced: here's the flame deflector back, place it by hand.");
@@ -1920,7 +1928,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("spaceport.orbitalis.table.layer_built", "Blocks placed from your inventory: %s.");
         add("spaceport.orbitalis.table.missing_line", "- %s × %s");
         add("spaceport.orbitalis.table.missing_more", "… and other kinds of blocks: %s.");
-        add("spaceport.orbitalis.fuel_port.kind", "Propellant of this port: %s");
+        add("spaceport.orbitalis.fuel_port.kind", "This port now carries: %s");
         add("spaceport.orbitalis.fuel_port.rp1", "kerosene (RP-1)");
         add("spaceport.orbitalis.fuel_port.lox", "liquid oxygen");
         add("spaceport.orbitalis.fuel_port.lh2", "liquid hydrogen");

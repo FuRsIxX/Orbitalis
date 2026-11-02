@@ -22,12 +22,15 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * Bloc de ravitaillement : la prise par laquelle un ergol entre dans le pas de tir. Il se pose au pied de la tour, à
- * la place d'un bloc de charpente, et ne laisse passer qu'un seul ergol : il en faut donc un par ergol que la
- * fusée embarque (kérosène, oxygène liquide, hydrogène liquide).
- * <p>
- * Un clic droit à main vide change son ergol. Les réservoirs et les tuyaux se branchent contre lui ; ce qu'il reçoit
- * est chargé dans la fusée de la table de lancement voisine (voir {@link UmbilicalFluidHandler}).
+ * Port de pas de tir : une prise du pas de tir, posée au pied de la tour à la place d'un bloc de charpente. Il ne fait
+ * passer qu'une chose à la fois, qu'un clic droit à main vide choisit, à tout moment, même posé sur un pas de tir :
+ * <ul>
+ * <li>un ergol (kérosène, oxygène, hydrogène, méthane, hélium-3) : les réservoirs et les tuyaux se branchent contre lui,
+ * et ce qu'il reçoit est chargé dans la fusée de la table de lancement voisine (voir {@link UmbilicalFluidHandler}) ;</li>
+ * <li>l'eau du déluge, qui va dans la réserve du pas de tir ;</li>
+ * <li>l'électricité, qui charge la réserve de la table ;</li>
+ * <li>les données : un câble de données le relie aux pupitres et aux écrans, qui suivent alors ce pas de tir.</li>
+ * </ul>
  */
 public class FuelPortBlock extends Block {
     /** Les ports d'ergols sont ceux de la ferme de réservoirs : il faut en maîtriser la technologie pour les poser. */
@@ -46,7 +49,11 @@ public class FuelPortBlock extends Block {
         /** Hélium-3, le combustible des moteurs à fusion. */
         HE3,
         /** L'eau du déluge : elle va dans la réserve du pas de tir, pas dans la fusée. */
-        WATER;
+        WATER,
+        /** L'électricité : elle charge la réserve de la table. */
+        ENERGY,
+        /** Les données : un câble de données y relie pupitres et écrans. */
+        DATA;
 
         @Override
         public String getSerializedName() {
@@ -62,7 +69,13 @@ public class FuelPortBlock extends Block {
                 case CH4 -> fluid == ModFluids.LIQUID_METHANE.get();
                 case HE3 -> fluid == ModFluids.HELIUM_3.get();
                 case WATER -> fluid == net.minecraft.world.level.material.Fluids.WATER;
+                case ENERGY, DATA -> false;
             };
+        }
+
+        /** Vrai si le port fait passer un fluide (un ergol ou l'eau du déluge). */
+        public boolean carriesFluid() {
+            return this != ENERGY && this != DATA;
         }
     }
 

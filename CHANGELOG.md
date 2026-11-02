@@ -4,6 +4,9 @@
 - Améliorer un accumulateur garde son énergie : la génération suivante, fabriquée autour de l'ancienne, reprend toute sa charge ; seule la capacité augmente.
 - Pas de tir : le plan prévoit maintenant un escalier d'accès de chaque côté du tablier, et ils sont facultatifs. On peut retirer l'un, l'autre ou les deux d'un pas de tir formé sans le défaire : il reste en service, ne les remontre pas en fantôme et ne les repose pas.
 - Kit de pas de tir : il contient maintenant le déflecteur de flammes. La recette demande un déflecteur collé au reste (dessous, dessus, ou à côté du papier ou de la table). À la pose, le kit place la table et, dessous, le déflecteur à la place du bloc visé ; une fenêtre de confirmation prévient avant de le remplacer. Un bloc incassable ou un conteneur n'est jamais supprimé : le déflecteur est alors rendu.
+- **Ports de pas de tir** (anciens blocs de ravitaillement) : un clic droit à main vide choisit à tout moment ce qu'ils font passer, même posés sur un pas de tir. Deux nouveaux réglages : l'électricité (le seul qui alimente la table) et les données. Leur recette prend une prise de chaque sorte : un tuyau de liquide, un câble électrique, un tuyau de gaz et un câble de données.
+- **Liaisons par câble de données** : un pupitre de lancement, un pupitre d'essai ou un mur d'écrans relié par un câble de données au port de données d'un pas de tir suit ce pas de tir, à toute distance. Un pupitre ne se relie plus tout seul à la table la plus proche.
+- **Module sans fil** : la seule façon de relier sans câble. Un clic droit sur un pupitre, un écran ou une station de poursuite, puis sur un pas de tir, un pupitre ou un écran : la liaison est faite et le module est consommé. Le clic droit accroupi ne relie plus rien.
 - Foreuse : elle ne perce plus de puits au milieu de la zone avant de forer. En mode « Filons » comme en mode « Tout miner », elle fouille directement la zone couche par couche.
 
 # Orbitalis — 0.10.0 (bêta)
@@ -136,6 +139,9 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Upgrading an accumulator keeps its energy: the next generation, crafted around the old one, takes over its whole charge; only the capacity goes up.
 - Launch pads: the plan now has an access stair on each side of the deck, and both are optional. You can remove either or both from a formed pad without breaking it: it stays in service, doesn't show them as ghosts again and doesn't put them back.
 - Launch pad kit: it now includes the flame deflector. The recipe needs a deflector touching the rest (below, above, or beside the paper or the table). When placed, the kit sets down the table and, under it, the deflector in place of the block you aimed at; a confirmation window warns you before it's replaced. An unbreakable block or a container is never removed: you get the deflector back instead.
+- **Launch pad ports** (formerly fuel ports): right-clicking with an empty hand picks what they carry at any time, even on a built pad. Two new settings: electricity (the only one that powers the table) and data. Their recipe takes one connector of each kind: a liquid pipe, an energy cable, a gas pipe and a data cable.
+- **Data cable links**: a launch console, a test console or a screen wall connected by a data cable to a launch pad's data port follows that pad, at any distance. A console no longer links itself to the nearest table.
+- **Wireless module**: the only way to link without a cable. Right-click a console, a screen or a tracking station, then a launch pad, a console or a screen: the link is made and the module is used up. Sneak-right-clicking no longer links anything.
 - Drill rig: it no longer bores a shaft in the middle of the area before drilling. In both "Ores" and "Mine all" modes, it goes straight through the area layer by layer.
 
 # Orbitalis — 0.10.0 (beta)

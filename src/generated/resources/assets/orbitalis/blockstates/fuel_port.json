@@ -3,6 +3,12 @@
     "kind=ch4": {
       "model": "orbitalis:block/machine/fuel_port_ch4"
     },
+    "kind=data": {
+      "model": "orbitalis:block/machine/fuel_port_data"
+    },
+    "kind=energy": {
+      "model": "orbitalis:block/machine/fuel_port_energy"
+    },
     "kind=he3": {
       "model": "orbitalis:block/machine/fuel_port_he3"
     },

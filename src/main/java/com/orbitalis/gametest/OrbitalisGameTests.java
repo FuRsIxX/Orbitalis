@@ -148,6 +148,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("accumulator", () -> OrbitalisGameTests::accumulator);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> PAD_KIT_DEFLECTOR =
             FUNCTIONS.register("pad_kit_deflector", () -> OrbitalisGameTests::padKitDeflector);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> PAD_DATA_LINK =
+            FUNCTIONS.register("pad_data_link", () -> OrbitalisGameTests::padDataLink);
 
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
@@ -326,6 +328,9 @@ public final class OrbitalisGameTests {
         // Le kit pose la table, et son déflecteur de flammes à la place du bloc du dessous.
         event.registerTest(Orbitalis.id("pad_kit_deflector"), new FunctionGameTestInstance(
                 PAD_KIT_DEFLECTOR.getKey(), spaced(environment, emptyStructure, 20)));
+        // Un pupitre suit le pas de tir que relie un câble de données à son port de données, ou un module sans fil.
+        event.registerTest(Orbitalis.id("pad_data_link"), new FunctionGameTestInstance(
+                PAD_DATA_LINK.getKey(), spaced(environment, emptyStructure, 20)));
         // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
         event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
                 WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
@@ -1173,6 +1178,7 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         table.setReliable(true);
         helper.assertTrue(table.stationGo(3), "sur le pas de tir d'essai, le poste « pas de tir » n'a pas de bras à attendre");
         BlockPos console = helper.absolutePos(tablePos.offset(0, 0, 10));
+        com.orbitalis.phase1.spaceport.PadLinks.linkWireless(helper.getLevel(), console, table.getBlockPos());
         helper.assertTrue(com.orbitalis.phase1.spaceport.LaunchConsoleBlock.status(helper.getLevel(), console, false).testPad(),
                 "l'écran du pupitre devrait savoir qu'il commande un pas de tir d'essai");
         String agency = "test:test_pad";
@@ -4060,6 +4066,57 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(helper.getBlockState(first).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) == 2,
                     "la jauge du premier aurait dû montrer deux crans : " + helper.getBlockState(first));
         });
+    }
+
+    /**
+     * Liaison d'un pupitre : seul, il n'est relié à rien ; un câble de données jusqu'au port de données d'un pas de tir le
+     * relie à sa table ; le câble coupé, il ne l'est plus ; une liaison sans fil le relie de nouveau. Un port réglé sur
+     * l'électricité ne prend pas de fluide, et un port d'ergol ne prend pas d'électricité.
+     */
+    private static void padDataLink(GameTestHelper helper) {
+        BlockPos tablePos = new BlockPos(2, 1, 2);
+        helper.setBlock(tablePos, ModBlocks.LAUNCH_TABLE.get());
+        BlockPos port = tablePos.south(2);
+        helper.setBlock(port, ModBlocks.FUEL_PORT.get().defaultBlockState()
+                .setValue(com.orbitalis.phase1.spaceport.FuelPortBlock.KIND, com.orbitalis.phase1.spaceport.FuelPortBlock.Kind.DATA));
+        BlockPos consolePos = port.south(4);
+        helper.setBlock(consolePos, ModBlocks.TEST_CONSOLE.get());
+        // La table ne compte parmi les tables chargées qu'au tick suivant sa pose.
+        helper.runAfterDelay(1, () -> checkDataLink(helper, tablePos, port, consolePos));
+    }
+
+    private static void checkDataLink(GameTestHelper helper, BlockPos tablePos, BlockPos port, BlockPos consolePos) {
+        BlockPos console = helper.absolutePos(consolePos);
+        var level = helper.getLevel();
+        LaunchTableBlockEntity table = helper.getBlockEntity(tablePos, LaunchTableBlockEntity.class);
+        helper.assertTrue(com.orbitalis.phase1.spaceport.LaunchConsoleBlock.linkedTable(level, console) == null,
+                "un pupitre sans câble ni module ne devrait être relié à rien");
+        for (int k = 1; k <= 3; k++) {
+            helper.setBlock(port.south(k), ModBlocks.DATA_CABLE.get());
+        }
+        helper.assertTrue(com.orbitalis.phase1.spaceport.LaunchConsoleBlock.linkedTable(level, console) == table,
+                "le câble de données jusqu'au port de données aurait dû relier le pupitre à la table");
+        helper.setBlock(port.south(2), Blocks.AIR);
+        helper.assertTrue(com.orbitalis.phase1.spaceport.LaunchConsoleBlock.linkedTable(level, console) == null,
+                "le câble coupé, le pupitre ne devrait plus être relié");
+        com.orbitalis.phase1.spaceport.PadLinks.linkWireless(level, console, table.getBlockPos());
+        helper.assertTrue(com.orbitalis.phase1.spaceport.LaunchConsoleBlock.linkedTable(level, console) == table,
+                "la liaison sans fil aurait dû relier le pupitre à la table");
+        // Le port ne fait passer que ce qu'on lui a choisi.
+        BlockPos energyPort = tablePos.north(2);
+        helper.setBlock(energyPort, ModBlocks.FUEL_PORT.get().defaultBlockState()
+                .setValue(com.orbitalis.phase1.spaceport.FuelPortBlock.KIND, com.orbitalis.phase1.spaceport.FuelPortBlock.Kind.ENERGY));
+        BlockPos fuelPort = tablePos.east(2);
+        helper.setBlock(fuelPort, ModBlocks.FUEL_PORT.get());
+        var energy = net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK;
+        var fluid = net.neoforged.neoforge.capabilities.Capabilities.Fluid.BLOCK;
+        helper.assertTrue(level.getCapability(energy, helper.absolutePos(energyPort), Direction.NORTH) != null
+                && level.getCapability(fluid, helper.absolutePos(energyPort), Direction.NORTH) == null,
+                "un port électrique devrait prendre l'électricité, et pas de fluide");
+        helper.assertTrue(level.getCapability(energy, helper.absolutePos(fuelPort), Direction.EAST) == null
+                && level.getCapability(fluid, helper.absolutePos(fuelPort), Direction.EAST) != null,
+                "un port d'ergol devrait prendre un fluide, et pas l'électricité");
+        helper.succeed();
     }
 
     /**

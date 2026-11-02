@@ -53,6 +53,26 @@ COMPONENTS = {
         "................",
         "................",
     ], {"o": "#14361F", "g": "#2E8B57", "G": "#22683F", "l": "#4FB27A", "y": "#E8C25A", "k": DARK, "h": "#4A515A"}),
+    # Un module sans fil : un boîtier sombre, sa bande de voyants, ses contacts dorés, une antenne et ses ondes.
+    "wireless_module": ([
+        "................",
+        "....a.....cc....",
+        "....a....c..c...",
+        "....a...c.cc.c..",
+        "....a.....cc....",
+        "..oaooooooooooo.",
+        "..olllllllllllGo",
+        "..olkkkkkkkkkkGo",
+        "..olkggggggkkkGo",
+        "..olkkkkkkkkkkGo",
+        "..olkkkkkkkhkkGo",
+        "..oGGGGGGGGGGGGo",
+        "..oyoyoyoyoyoyoo",
+        "..oooooooooooooo",
+        "................",
+        "................",
+    ], {"o": "#1B1E23", "l": "#AEB7C2", "G": "#5E6670", "k": "#2E3238", "g": "#5BE37D", "h": "#E8473F", "y": "#E8C25A",
+        "a": "#C9CFD6", "c": "#3FD8F2"}),
     # Une puce carrée, ses broches dorées sur les quatre côtés, son cœur qui luit.
     "flight_processor": ([
         "................",

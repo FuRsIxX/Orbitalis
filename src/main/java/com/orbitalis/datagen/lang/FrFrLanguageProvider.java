@@ -428,7 +428,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("spaceport.orbitalis.research_required", "Technologie requise : %s");
         add("spaceport.orbitalis.table.retired_size", "Les pas de tir %s×%s n'existent plus, celui-ci ne peut plus servir. Faites un clic droit sur la table avec un kit pour le refaire en 5×5, 9×9 ou 11×11.");
         add("spaceport.orbitalis.table.sky_blocked", "Le ciel doit être dégagé au-dessus de la table de lancement.");
-        add("spaceport.orbitalis.console.not_linked", "Aucune table de lancement à moins de %s blocs");
+        add("spaceport.orbitalis.console.not_linked", "Non relié : branchez un câble de données au port de données d'un pas de tir, ou reliez-le avec un module sans fil.");
         add("spaceport.orbitalis.console.linked", "Table de lancement reliée, à %s blocs");
         add("spaceport.orbitalis.console.pad", "Pas de tir de %s×%s dalles");
         add("spaceport.orbitalis.console.no_tower", "Pas de tour de service (facultative)");
@@ -1204,8 +1204,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("display.orbitalis.standby", "VEILLE");
         add("display.orbitalis.standby.link", "Liaison pas de tir : aucune");
         add("display.orbitalis.lost", "PAS DE TIR INTROUVABLE");
-        add("display.orbitalis.hint", "Cet écran n'affiche que ce qu'on lui branche. Posez-le contre un pupitre de lancement, une station de poursuite ou un réservoir, ou reliez-le avec un câble de données. Clic droit accroupi pour changer d'affichage.");
-        add("display.orbitalis.link_started", "Liaison lancée : faites maintenant un clic droit sur un écran de contrôle.");
+        add("display.orbitalis.hint", "Cet écran n'affiche que ce qu'on lui branche. Posez-le contre un pupitre de lancement, une station de poursuite ou un réservoir, reliez-le avec un câble de données (à un pupitre ou au port de données d'un pas de tir), ou avec un module sans fil. Clic droit accroupi pour changer d'affichage.");
         add("display.orbitalis.linked", "Écran de %s×%s relié au pas de tir.");
         add("launch.orbitalis.console.title_short", "CONTRÔLE MISSION");
 
@@ -1886,7 +1885,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("block.orbitalis.tower_railing", "Rambarde de tour");
         add("block.orbitalis.pad_support", "Appui de tablier");
         add("block.orbitalis.deluge_pipe", "Rampe de déluge");
-        add("block.orbitalis.fuel_port", "Bloc de ravitaillement");
+        add("block.orbitalis.fuel_port", "Port de pas de tir");
         add("item.orbitalis.pad_kit", "Kit de pas de tir");
         add("spaceport.orbitalis.kit.title", "Kit de pas de tir");
         add("spaceport.orbitalis.kit.size", "Taille du tablier");
@@ -1911,6 +1910,15 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("spaceport.orbitalis.kit.aim", "Visez le sol · Molette : orientation · Clic droit : poser le plan");
         add("spaceport.orbitalis.kit.facing.now", "Carneau vers %s");
         add("spaceport.orbitalis.kit.no_room", "Il n'y a pas la place de poser la table de lancement ici.");
+        add("spaceport.orbitalis.fuel_port.energy", "l'électricité");
+        add("spaceport.orbitalis.fuel_port.data", "les données");
+        add("item.orbitalis.wireless_module", "Module sans fil");
+        add("wireless.orbitalis.started.console", "Pupitre choisi : faites maintenant un clic droit sur un pas de tir (sa table, un port ou une dalle) ou sur un écran.");
+        add("wireless.orbitalis.started.display", "Écran choisi : faites maintenant un clic droit sur un pas de tir, un pupitre de lancement ou une station de poursuite.");
+        add("wireless.orbitalis.started.station", "Station de poursuite choisie : faites maintenant un clic droit sur un écran.");
+        add("wireless.orbitalis.source_first", "Faites d'abord un clic droit sur ce que vous voulez relier : un pupitre, un écran ou une station de poursuite.");
+        add("wireless.orbitalis.console_linked", "Pupitre relié au pas de tir, sans fil.");
+        add("wireless.orbitalis.display_linked", "Écran relié au pas de tir, sans fil.");
         add("spaceport.orbitalis.kit.confirm.title", "Remplacer le bloc du dessous ?");
         add("spaceport.orbitalis.kit.confirm.message", "Le bloc « %s » sous la table de lancement sera supprimé et remplacé par le déflecteur de flammes du kit.");
         add("spaceport.orbitalis.kit.deflector_blocked", "Le bloc sous la table de lancement ne peut pas être remplacé : le déflecteur de flammes vous est rendu, posez-le à la main.");
@@ -1920,7 +1928,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("spaceport.orbitalis.table.layer_built", "Blocs posés depuis votre inventaire : %s.");
         add("spaceport.orbitalis.table.missing_line", "- %s × %s");
         add("spaceport.orbitalis.table.missing_more", "… et d'autres sortes de blocs : %s.");
-        add("spaceport.orbitalis.fuel_port.kind", "Ergol de ce bloc : %s");
+        add("spaceport.orbitalis.fuel_port.kind", "Ce port fait passer : %s");
         add("spaceport.orbitalis.fuel_port.rp1", "kérosène (RP-1)");
         add("spaceport.orbitalis.fuel_port.lox", "oxygène liquide");
         add("spaceport.orbitalis.fuel_port.lh2", "hydrogène liquide");

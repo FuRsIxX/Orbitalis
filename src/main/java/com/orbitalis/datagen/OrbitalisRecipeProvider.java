@@ -265,12 +265,26 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('W', Items.WATER_BUCKET)
                 .unlockedBy("has_fluid_pipe", has(ModBlocks.FLUID_PIPE))
                 .save(output, key("deluge_pipe"));
-        shaped(RecipeCategory.MISC, ModBlocks.FUEL_PORT)
-                .pattern("SPS")
-                .pattern("PFP")
-                .pattern("SPS")
+        // Module sans fil : un émetteur radio et une carte, entre des tôles d'acier.
+        shaped(RecipeCategory.MISC, ModItems.WIRELESS_MODULE)
+                .pattern("STS")
+                .pattern("SCS")
                 .define('S', ModTags.Items.PLATES_STEEL)
-                .define('P', ModBlocks.FLUID_PIPE)
+                .define('T', ModItems.RADIO_TRANSMITTER)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .unlockedBy("has_radio_transmitter", has(ModItems.RADIO_TRANSMITTER))
+                .save(output, key("wireless_module"));
+        // Port de pas de tir : une prise de chaque sorte autour d'un bloc de charpente (liquide, électricité, gaz,
+        // données), puisqu'un clic droit choisit ensuite ce qu'il fait passer.
+        shaped(RecipeCategory.MISC, ModBlocks.FUEL_PORT)
+                .pattern("SLS")
+                .pattern("EFG")
+                .pattern("SDS")
+                .define('S', ModTags.Items.PLATES_STEEL)
+                .define('L', ModBlocks.FLUID_PIPE)
+                .define('E', ModBlocks.ENERGY_CABLE)
+                .define('G', ModBlocks.GAS_PIPE)
+                .define('D', ModBlocks.DATA_CABLE)
                 .define('F', ModBlocks.TOWER_FRAME)
                 .unlockedBy("has_tower_frame", has(ModBlocks.TOWER_FRAME))
                 .save(output, key("fuel_port"));

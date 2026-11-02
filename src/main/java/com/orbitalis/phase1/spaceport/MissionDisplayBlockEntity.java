@@ -245,9 +245,16 @@ public class MissionDisplayBlockEntity extends BlockEntity {
             if (!seen.add(pos)) {
                 continue;
             }
-            if (state.is(ModBlocks.LAUNCH_CONSOLE.get())) {
+            if (state.is(ModBlocks.LAUNCH_CONSOLE.get()) || state.is(ModBlocks.TEST_CONSOLE.get())) {
                 count++;
                 LaunchTableBlockEntity linked = LaunchConsoleBlock.linkedTable(serverLevel, pos);
+                if (table == null && linked != null) {
+                    table = linked.getBlockPos().immutable();
+                }
+            } else if (PadLinks.isDataPort(state)) {
+                // Le port de données d'un pas de tir : l'écran suit ce pas de tir.
+                count++;
+                LaunchTableBlockEntity linked = PadLinks.tableOfPort(serverLevel, pos);
                 if (table == null && linked != null) {
                     table = linked.getBlockPos().immutable();
                 }

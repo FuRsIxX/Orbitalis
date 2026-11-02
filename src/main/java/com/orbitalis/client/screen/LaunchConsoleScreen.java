@@ -446,7 +446,7 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         int listTop = panel(graphics, x, y, w, h, "launch.orbitalis.console.heading_sequence");
         if (!status.linked()) {
             int lineY = listTop;
-            for (var line : font.split(Component.translatable("spaceport.orbitalis.console.not_linked", LaunchConsoleBlock.RANGE), w - 12)) {
+            for (var line : font.split(Component.translatable("spaceport.orbitalis.console.not_linked"), w - 12)) {
                 graphics.text(font, line, x + 6, lineY, COLOR_BAD, false);
                 lineY += LINE_HEIGHT;
             }

@@ -198,36 +198,6 @@ public class MissionDisplayBlock extends HorizontalDirectionalBlock implements E
                     Component.translatable(next.nameKey())).withStyle(ChatFormatting.AQUA));
             return InteractionResult.SUCCESS;
         }
-        // Liaison à distance aux satellites : accroupi + clic droit sur une station de poursuite, puis clic droit sur l'écran.
-        String agency = TrackingStationBlock.takePendingLink(serverPlayer);
-        if (agency != null) {
-            for (BlockPos block : wall.blocks()) {
-                if (level.getBlockEntity(block) instanceof MissionDisplayBlockEntity display) {
-                    display.setSatelliteLink(agency);
-                    display.refreshSatellites(level.getServer());
-                }
-            }
-            serverPlayer.sendSystemMessage(Component.translatable("display.orbitalis.satellites_linked", wall.width(), wall.height())
-                    .withStyle(ChatFormatting.GREEN));
-            return InteractionResult.SUCCESS;
-        }
-        BlockPos console = LaunchConsoleBlock.takePendingLink(serverPlayer);
-        if (console != null) {
-            LaunchTableBlockEntity table = LaunchConsoleBlock.linkedTable(level, console);
-            if (table == null) {
-                serverPlayer.sendSystemMessage(Component.translatable("spaceport.orbitalis.console.not_linked", LaunchConsoleBlock.RANGE)
-                        .withStyle(ChatFormatting.RED));
-                return InteractionResult.SUCCESS;
-            }
-            for (BlockPos block : wall.blocks()) {
-                if (level.getBlockEntity(block) instanceof MissionDisplayBlockEntity display) {
-                    display.setLink(table.getBlockPos());
-                }
-            }
-            serverPlayer.sendSystemMessage(Component.translatable("display.orbitalis.linked", wall.width(), wall.height())
-                    .withStyle(ChatFormatting.GREEN));
-            return InteractionResult.SUCCESS;
-        }
         // L'écran prend l'agence de celui qui s'en sert s'il n'en a pas encore (écran posé avant cette règle).
         if (level instanceof ServerLevel serverLevel) {
             origin.adopt(ResearchManager.agencyKey(serverPlayer));

@@ -46,8 +46,6 @@ public class LaunchConsoleBlock extends HorizontalDirectionalBlock implements Wo
     public static final int RELAY_RANGE = 256;
     /** Distance maximale entre un joueur et le pupitre qu'il commande. */
     private static final double REACH = 8.0;
-    /** Liaisons d'écrans en cours : le pupitre désigné par chaque joueur, en attente du clic sur un mur d'écrans. */
-    private static final Map<UUID, BlockPos> PENDING_LINKS = new ConcurrentHashMap<>();
 
     public LaunchConsoleBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -93,12 +91,6 @@ public class LaunchConsoleBlock extends HorizontalDirectionalBlock implements Wo
         if (level.isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
             return InteractionResult.SUCCESS;
         }
-        // Accroupi : on ne consulte pas le pupitre, on commence à lui relier un mur d'écrans.
-        if (player.isShiftKeyDown()) {
-            PENDING_LINKS.put(player.getUUID(), pos.immutable());
-            serverPlayer.sendSystemMessage(Component.translatable("display.orbitalis.link_started").withStyle(ChatFormatting.AQUA));
-            return InteractionResult.SUCCESS;
-        }
         if (!isAuthorized(player)) {
             serverPlayer.sendSystemMessage(Component.translatable("spaceport.orbitalis.research_required",
                     Component.translatable("research.orbitalis.node." + LaunchTableBlock.RESEARCH_PAD)).withStyle(ChatFormatting.RED));
@@ -109,31 +101,40 @@ public class LaunchConsoleBlock extends HorizontalDirectionalBlock implements Wo
         return InteractionResult.SUCCESS;
     }
 
-    /** Pupitre désigné par un joueur pour y relier un mur d'écrans ; la désignation est consommée. */
-    public static BlockPos takePendingLink(ServerPlayer player) {
-        return PENDING_LINKS.remove(player.getUUID());
-    }
-
     private static boolean isAuthorized(Player player) {
         return player.getAbilities().instabuild || ResearchManager.isUnlocked(player, LaunchTableBlock.RESEARCH_PAD);
     }
 
-    /** Table de lancement reliée à un pupitre : la plus proche dans sa portée, ou {@code null}. */
+    /** Table de lancement reliée à un pupitre (voir {@link #linkedTable(Level, BlockPos, String)}), sans relais satellite. */
     public static LaunchTableBlockEntity linkedTable(Level level, BlockPos console) {
-        return LaunchTableBlockEntity.nearest(level, console, RANGE);
+        return linkedTable(level, console, null);
     }
 
     /**
-     * Table reliée au pupitre d'un joueur de cette agence. Au-delà de la portée ordinaire, il faut un satellite de
-     * télécommunications en service : il relaie les ordres jusqu'à un pas de tir bien plus lointain.
+     * Table reliée à un pupitre (de lancement ou d'essai) d'un joueur de cette agence, ou {@code null} :
+     * <ul>
+     * <li>une table elle-même est sa propre table (la capsule demande ainsi l'état de la sienne) ;</li>
+     * <li>par câble de données, jusqu'au port de données d'un pas de tir, à toute distance ;</li>
+     * <li>sans fil, par un module sans fil : dans la portée du pupitre, ou bien plus loin si un satellite de
+     * télécommunications de l'agence relaie les ordres.</li>
+     * </ul>
      */
     public static LaunchTableBlockEntity linkedTable(Level level, BlockPos console, String agency) {
-        LaunchTableBlockEntity table = linkedTable(level, console);
-        if (table == null && agency != null && level.getServer() != null
-                && com.orbitalis.phase1.satellite.SatelliteManager.hasRelay(level.getServer(), agency)) {
-            table = LaunchTableBlockEntity.nearest(level, console, RELAY_RANGE);
+        if (level.getBlockEntity(console) instanceof LaunchTableBlockEntity itself) {
+            return itself;
         }
-        return table;
+        LaunchTableBlockEntity table = PadLinks.byCable(level, console);
+        if (table != null || !(level instanceof net.minecraft.server.level.ServerLevel server)) {
+            return table;
+        }
+        BlockPos linked = PadLinks.wireless(server, console);
+        if (linked == null || !level.isLoaded(linked) || !(level.getBlockEntity(linked) instanceof LaunchTableBlockEntity wireless)) {
+            return null;
+        }
+        double distance = Math.sqrt(linked.distSqr(console));
+        boolean relayed = agency != null && distance <= RELAY_RANGE
+                && com.orbitalis.phase1.satellite.SatelliteManager.hasRelay(server.getServer(), agency);
+        return distance <= RANGE || relayed ? wireless : null;
     }
 
     /** Vrai si le pupitre est assez loin de la table pour commander un lancement. */

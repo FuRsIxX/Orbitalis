@@ -290,6 +290,14 @@ public final class WorldPreview {
     }
 
     /** Pose un bloc de la scène, à une position relative à son origine. */
+    /** Relie un pupitre, sans fil, à la table de lancement la plus proche : il n'y a pas de câble dans l'aperçu. */
+    private static void linkConsole(net.minecraft.server.level.ServerLevel level, BlockPos console) {
+        var table = com.orbitalis.phase1.spaceport.LaunchTableBlockEntity.nearest(level, console, LaunchConsoleBlock.RANGE);
+        if (table != null) {
+            com.orbitalis.phase1.spaceport.PadLinks.linkWireless(level, console, table.getBlockPos());
+        }
+    }
+
     private static void set(ServerLevel level, int x, int y, int z, String block) {
         run(level, "setblock %d %d %d %s".formatted(origin.getX() + x, origin.getY() + y, origin.getZ() + z, block));
     }
@@ -925,6 +933,7 @@ public final class WorldPreview {
         // Écran du centre de contrôle, ouvert depuis un pupitre relié au grand pas de tir.
         SHOTS.add(new Shot("console_screen", level -> {
             set(level, 22, 0, 6, "orbitalis:launch_console");
+            linkConsole(level, at(22, 0, 6));
             // L'écran est ouvert directement : le pupitre vient d'être posé, le client ne le connaît peut-être pas encore.
             com.orbitalis.core.network.LaunchStatusPayload status = LaunchConsoleBlock.status(level, at(22, 0, 6), true);
             net.minecraft.client.Minecraft.getInstance().execute(
@@ -945,6 +954,7 @@ public final class WorldPreview {
         // Le centre de contrôle suivi depuis le pupitre : le plein, puis l'allumage, puis le décollage, sur la maquette.
         SHOTS.add(new Shot("console_fill", level -> {
             set(level, 22, 0, 6, "orbitalis:launch_console");
+            linkConsole(level, at(22, 0, 6));
             // Le pupitre ne répond qu'à qui a la technologie du pas de tir.
             for (ServerPlayer player : level.players()) {
                 ResearchManager.of(player).forceUnlock(com.orbitalis.phase1.spaceport.LaunchTableBlock.RESEARCH_PAD);
@@ -1092,6 +1102,7 @@ public final class WorldPreview {
         // L'atlas, ouvert depuis le pupitre du grand pas de tir : le site, puis de plus en plus loin.
         SHOTS.add(new Shot("atlas_open", level -> {
             set(level, 22, 0, 6, "orbitalis:launch_console");
+            linkConsole(level, at(22, 0, 6));
             net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
             minecraft.execute(() -> {
                 atlasPreview = new com.orbitalis.client.screen.AtlasScreen(null, at(22, 0, 6), at(22, 1, 22));

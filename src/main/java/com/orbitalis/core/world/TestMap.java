@@ -455,6 +455,16 @@ public final class TestMap {
         BlockPos console = new BlockPos(x0, Y, z0 + 10);
         level.setBlock(console, ModBlocks.TEST_CONSOLE.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
                 Block.UPDATE_ALL);
+        // Le pupitre suit le pas de tir par un câble de données, branché au port de données posé au bord du tablier.
+        BlockPos port = tablePos.south(2);
+        level.setBlock(port, ModBlocks.FUEL_PORT.get().defaultBlockState()
+                .setValue(com.orbitalis.phase1.spaceport.FuelPortBlock.KIND, com.orbitalis.phase1.spaceport.FuelPortBlock.Kind.DATA), Block.UPDATE_ALL);
+        for (BlockPos cable = port.south(); !cable.equals(console); cable = cable.south()) {
+            level.setBlock(cable, ModBlocks.DATA_CABLE.get().defaultBlockState(), Block.UPDATE_ALL);
+        }
+        for (BlockPos cable = port.south(); !cable.equals(console); cable = cable.south()) {
+            level.setBlock(cable, Block.updateFromNeighbourShapes(level.getBlockState(cable), level, cable), Block.UPDATE_ALL);
+        }
         sign(level, console.east(2), Component.translatable("testmap.orbitalis.zone.test_pad"), null, null);
     }
 

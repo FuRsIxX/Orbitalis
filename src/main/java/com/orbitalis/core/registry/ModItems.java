@@ -321,6 +321,10 @@ public final class ModItems {
     /** Kit de pas de tir : le plan d'un pas de tir et sa table de lancement. */
     public static final DeferredItem<PadKitItem> PAD_KIT = ITEMS.registerItem("pad_kit", PadKitItem::new, properties -> properties.stacksTo(1));
 
+    /** Module sans fil : relie sans câble un pupitre ou un écran à un pas de tir ; il est consommé par la liaison. */
+    public static final DeferredItem<com.orbitalis.phase1.spaceport.WirelessModuleItem> WIRELESS_MODULE = ITEMS.registerItem("wireless_module",
+            com.orbitalis.phase1.spaceport.WirelessModuleItem::new);
+
     public static final DeferredItem<RecoveryRemoteItem> RECOVERY_REMOTE = ITEMS.registerItem("recovery_remote",
             RecoveryRemoteItem::new, properties -> properties.stacksTo(1));
     /** Tablette de mission : l'atlas partout à la surface, tant qu'un satellite de télécommunications relaie. */

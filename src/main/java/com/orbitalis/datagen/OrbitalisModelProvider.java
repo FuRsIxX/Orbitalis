@@ -449,6 +449,7 @@ public class OrbitalisModelProvider extends ModelProvider {
         // Items plats (une seule texture).
         itemModels.generateFlatItem(ModItems.GUIDE_BOOK.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.PAD_KIT.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.WIRELESS_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.ROCKET_BLUEPRINT.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RAW_BAUXITE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RAW_TITANIUM.get(), ModelTemplates.FLAT_ITEM);

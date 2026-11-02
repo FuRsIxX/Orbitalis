@@ -243,7 +243,7 @@ public final class ModBlockEntities {
                 side == null || side == state.getValue(MissionDisplayBlock.FACING).getOpposite() ? DataLink.PORT : null,
                 ModBlocks.MISSION_DISPLAY.get());
         event.registerBlock(DataLink.BLOCK, (level, pos, state, blockEntity, side) -> DataLink.PORT,
-                ModBlocks.LAUNCH_CONSOLE.get(), ModBlocks.TRACKING_STATION.get(),
+                ModBlocks.LAUNCH_CONSOLE.get(), ModBlocks.TEST_CONSOLE.get(), ModBlocks.TRACKING_STATION.get(),
                 ModBlocks.WORKSTATION_PART.get(), ModBlocks.FLUID_TANK.get(), ModBlocks.CRYOGENIC_TANK.get());
 
         // Stations : le panneau solaire fournit de l'électricité, le générateur d'air en reçoit.
@@ -259,8 +259,13 @@ public final class ModBlockEntities {
         // Blocs de ravitaillement, au pied de la tour : l'ergol qu'on leur envoie est chargé dans la fusée de la table
         // de lancement voisine. Chacun ne laisse passer que le sien.
         event.registerBlock(Capabilities.Fluid.BLOCK,
-                (level, pos, state, blockEntity, side) -> new UmbilicalFluidHandler(level, pos),
+                (level, pos, state, blockEntity, side) -> state.getValue(com.orbitalis.phase1.spaceport.FuelPortBlock.KIND).carriesFluid()
+                        ? new UmbilicalFluidHandler(level, pos) : null,
                 ModBlocks.FUEL_PORT.get());
+        // Port de données : un câble de données s'y branche, et relie au pas de tir les pupitres et les écrans.
+        event.registerBlock(DataLink.BLOCK, (level, pos, state, blockEntity, side) ->
+                state.getValue(com.orbitalis.phase1.spaceport.FuelPortBlock.KIND) == com.orbitalis.phase1.spaceport.FuelPortBlock.Kind.DATA
+                        ? DataLink.PORT : null, ModBlocks.FUEL_PORT.get());
         // Foreuse : elle prend l'électricité et l'eau de refroidissement, et on lui prend son butin, par son bloc de
         // commande comme par n'importe quel bloc de son socle.
         event.registerBlockEntity(Capabilities.Energy.BLOCK, DRILL_DERRICK.get(), (derrick, side) -> derrick.getEnergy());
@@ -280,7 +285,15 @@ public final class ModBlockEntities {
         event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, blockEntity, side) -> {
             LaunchTableBlockEntity table = LaunchTableBlockEntity.nearest(level, pos, com.orbitalis.phase1.spaceport.LaunchComplex.REACH + 2);
             return table == null ? null : table.getPower();
-        }, ModBlocks.LAUNCH_PAD.get(), ModBlocks.FLAME_TRENCH.get(), ModBlocks.FUEL_PORT.get());
+        }, ModBlocks.LAUNCH_PAD.get(), ModBlocks.FLAME_TRENCH.get());
+        // Un port de pas de tir ne prend l'électricité que réglé sur l'électricité.
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, blockEntity, side) -> {
+            if (state.getValue(com.orbitalis.phase1.spaceport.FuelPortBlock.KIND) != com.orbitalis.phase1.spaceport.FuelPortBlock.Kind.ENERGY) {
+                return null;
+            }
+            LaunchTableBlockEntity table = LaunchTableBlockEntity.nearest(level, pos, com.orbitalis.phase1.spaceport.LaunchComplex.REACH + 2);
+            return table == null ? null : table.getPower();
+        }, ModBlocks.FUEL_PORT.get());
 
         // Conduits : ils n'ont pas d'entité de bloc ; ce qu'on leur envoie est livré au réseau auquel ils appartiennent.
         event.registerBlock(Capabilities.Energy.BLOCK,
