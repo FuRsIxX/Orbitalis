@@ -136,7 +136,7 @@ public final class RocketBreakup {
     /** Sorte d'éclatement d'un tronçon de fusée. */
     public static Burst burstOf(RocketBlock.Part part, boolean cryogenic) {
         String name = part.name();
-        if (name.equals("TANK_SOLID") || name.equals("ENGINE_SOLID")) {
+        if (name.equals("TANK_SOLID") || name.equals("ENGINE_SOLID") || name.equals("BOOSTER_ENGINE") || name.equals("BOOSTER_BODY")) {
             return Burst.SOLID;
         }
         if (name.startsWith("TANK")) {

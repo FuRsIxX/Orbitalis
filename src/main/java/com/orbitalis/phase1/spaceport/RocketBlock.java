@@ -66,7 +66,13 @@ public class RocketBlock extends Block {
         /** Capsule habitée Mk2 « Horizon » (quatre places, tout en écrans), haute de deux blocs. */
         CAPSULE_MK2,
         /** Capsule habitée Mk3 « Odyssée » (quatre places, voyages lointains), haute de deux blocs. */
-        CAPSULE_MK3;
+        CAPSULE_MK3,
+        /** Pied d'un booster latéral : son corps de poudre, sa bande de danger et sa tuyère large, comme le bloc de booster. */
+        BOOSTER_ENGINE,
+        /** Corps d'un booster latéral : la poudre, cerclée de frettes. */
+        BOOSTER_BODY,
+        /** Pointe d'un booster latéral : un cône en gradins et sa sonde. */
+        BOOSTER_NOSE;
 
         /** Vrai si le tronçon fait partie de la capsule habitée et de sa tour : ils quittent le lanceur en vol. */
         public boolean isCrewModule() {

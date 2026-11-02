@@ -1,5 +1,32 @@
 {
   "variants": {
+    "part=booster_body,size=large": {
+      "model": "orbitalis:block/rocket/booster_body_large"
+    },
+    "part=booster_body,size=medium": {
+      "model": "orbitalis:block/rocket/booster_body_medium"
+    },
+    "part=booster_body,size=slim": {
+      "model": "orbitalis:block/rocket/booster_body_slim"
+    },
+    "part=booster_engine,size=large": {
+      "model": "orbitalis:block/rocket/booster_engine_large"
+    },
+    "part=booster_engine,size=medium": {
+      "model": "orbitalis:block/rocket/booster_engine_medium"
+    },
+    "part=booster_engine,size=slim": {
+      "model": "orbitalis:block/rocket/booster_engine_slim"
+    },
+    "part=booster_nose,size=large": {
+      "model": "orbitalis:block/rocket/booster_nose_large"
+    },
+    "part=booster_nose,size=medium": {
+      "model": "orbitalis:block/rocket/booster_nose_medium"
+    },
+    "part=booster_nose,size=slim": {
+      "model": "orbitalis:block/rocket/booster_nose_slim"
+    },
     "part=capsule,size=large": {
       "model": "orbitalis:block/rocket/capsule_large"
     },

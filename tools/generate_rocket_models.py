@@ -14,6 +14,8 @@ Chaque étage a son habit, d'après ce qu'il emporte :
 - aluminium-lithium : le métal clair, raidi de lisses verticales ;
 - composite : le carbone tissé, noir ;
 - poudre : les segments blancs, leurs joints sombres et boulonnés.
+Les boosters latéraux ont leurs propres tronçons, calqués sur les blocs de booster qu'on pose : le corps de poudre
+blanc cerclé de ses bagues, sa bande de danger, sa tuyère large rougie par la chaleur, et une pointe à sonde rouge.
 Les interétages sont noirs et nervurés, avec leurs quatre ailerons en grille ; la coiffe est blanche, avec ses rails
 de séparation. Le corps est un cylindre à seize pans, l'ogive se resserre par petits paliers, les tuyères ont leur
 lèvre. Les textures du corps ne portent aucune ligne horizontale qui découperait la fusée bloc par bloc, sauf là où
@@ -357,7 +359,44 @@ BODIES = {
     "engine": "dark", "engine_solid": "solid", "engine_pressure": "checker", "engine_hydrolox": "orange",
     "escape_tower": "dark",
 }
-PARTS = tuple(BODIES) + ("capsule", "capsule_upper", "capsule_mk2", "capsule_mk3")
+PARTS = tuple(BODIES) + ("capsule", "capsule_upper", "capsule_mk2", "capsule_mk3", "booster_engine", "booster_body", "booster_nose")
+
+# Les boosters latéraux reprennent les textures des blocs de booster (voir generate_rocket_parts.py).
+BOOSTER_TEXTURES = {"solid": "rocket_solid", "hazard": "pad_hazard", "nozzle": "rocket_nozzle", "frame": "machine_frame",
+                    "copper": "machine_copper", "metal": "machine_metal", "red": "machine_red"}
+
+
+def booster_model(part, half):
+    """
+    Un tronçon de booster latéral, à l'image des blocs de booster : le bloc a un rayon de 7 pixels, le tronçon reprend ses
+    proportions à son propre rayon.
+    """
+    k = half / 7.0
+    # Les anneaux débordent un peu du corps, sans sortir des limites d'un modèle (pour la taille large, jamais montée).
+    ring = min(round(half * 1.05, 2), 24.0)
+    if part == "booster_engine":
+        # Le corps de poudre, sa bande de danger, et la tuyère large en deux gradins, sans ailerons.
+        elements = (cylinder(4, 16, half, "solid") + cylinder(9, 10.5, ring, "hazard")
+                    + cylinder(1.5, 4, round(4.4 * k, 2), "nozzle") + cylinder(0, 1.5, round(5.6 * k, 2), "nozzle"))
+    elif part == "booster_body":
+        # Le corps de poudre, cerclé de deux frettes, et une ligne d'alimentation de cuivre de part et d'autre.
+        elements = (cylinder(0, 16, half, "solid") + cylinder(4, 5, ring, "frame")
+                    + cylinder(11, 12, ring, "frame"))
+        if half >= 6:
+            elements += strip(half, 1.2, 0.6, "copper") + strip(half, 1.2, 0.6, "copper", angle=2)
+    else:
+        # La pointe : un cône en quatre gradins sur son anneau, et la sonde au bout rouge.
+        elements = cylinder(0, 1, min(round(half * 1.02, 2), 24.0), "frame")
+        for y0, y1, ratio in ((1, 4.5, 1.0), (4.5, 8.5, 0.8), (8.5, 11.5, 0.57), (11.5, 14, 0.36)):
+            elements += cylinder(y0, y1, round(half * ratio, 2), "solid")
+        probe = max(0.5, round(0.8 * k, 2))
+        elements += tiled_box(8 - probe, 14, 8 - probe, 8 + probe, 15.2, 8 + probe, "metal")
+        elements += tiled_box(round(8 - probe * 0.5, 2), 15.2, round(8 - probe * 0.5, 2), round(8 + probe * 0.5, 2), 16,
+                              round(8 + probe * 0.5, 2), "red")
+    used = {face["texture"][1:] for element in elements for face in element["faces"].values()}
+    textures = {key: "orbitalis:block/" + BOOSTER_TEXTURES[key] for key in sorted(used)}
+    textures["particle"] = "orbitalis:block/rocket_solid"
+    return {"ambientocclusion": False, "textures": textures, "elements": elements}
 
 
 def rocket_model(part, half):
@@ -367,6 +406,8 @@ def rocket_model(part, half):
     if part == "capsule_upper":
         # Le haut de la capsule est dessiné par le tronçon du dessous, qui fait deux blocs de haut.
         return {"textures": {"particle": "orbitalis:block/capsule_hull"}}
+    if part.startswith("booster_"):
+        return booster_model(part, half)
     body = BODIES[part]
     wide = half > 8
     slim = half < 8

@@ -47,7 +47,7 @@ public record RocketShape(RocketBlock.Size size, List<RocketBlock.Part> parts, L
 
     /** Tronçon d'un booster à cette hauteur : sa tuyère en bas, sa pointe en haut, son corps de poudre entre les deux. */
     public static RocketBlock.Part boosterPart(int level, int height) {
-        return level == 0 ? RocketBlock.Part.ENGINE_SOLID : level == height - 1 ? RocketBlock.Part.NOSE : RocketBlock.Part.TANK_SOLID;
+        return level == 0 ? RocketBlock.Part.BOOSTER_ENGINE : level == height - 1 ? RocketBlock.Part.BOOSTER_NOSE : RocketBlock.Part.BOOSTER_BODY;
     }
 
     /**
