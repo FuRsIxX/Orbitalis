@@ -77,7 +77,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.FLUID_PIPE, "Liquid Pipe");
         addBlock(ModBlocks.GAS_PIPE, "Gas Pipe");
         add("guide.orbitalis.conduits.title", "Cables and Pipes");
-        add("guide.orbitalis.conduits.text", "Conduits link machines at a distance. Placed end to end, they connect on their own.\n- Energy cable: power, shared between the machines on the network.\n- Fluid pipe: water, RP-1, liquid propellants.\n- Gas pipe: hydrogen and oxygen gas.\n- Data cable: links consoles, screens and data ports.\n\nGive each liquid its own network if you fill several tanks.\n\nA machine pushes what it makes, a tank does not. To empty one, sneak and right-click the pipe touching it with an empty hand: it starts pulling. Same gesture to switch back.");
+        add("guide.orbitalis.conduits.text", "Conduits link machines at a distance. Placed end to end, they connect on their own.\n- Energy cable: power, shared between the machines on the network.\n- Fluid pipe: water, RP-1, liquid propellants.\n- Gas pipe: hydrogen and oxygen gas.\n- Data cable: links consoles, screens and data ports.\n\nGive each liquid its own network if you fill several tanks.\n\nA machine pushes what it makes, a tank does not. To empty one, sneak and right-click the pipe touching it with an empty hand: it starts pulling. Same gesture to switch back.\n\nRight-click a pipe with an empty hand to change its color. Two pipes of different colors never connect, even side by side; a pipe with no color connects to all. Placed against a launch pad port, a pipe takes its propellant's color, and a pipe placed on a colored pipe carries its color on.");
 
         // Manuel : interface et démonstrations animées
         add("guide.orbitalis.index", "Contents");
@@ -1944,6 +1944,16 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("pump.orbitalis.water_pump.no_power", "No power: the pump needs %s FE per tick.");
         add("launch.orbitalis.witness_points", "Your agency earns %s research points for this launch.");
         add("tank.orbitalis.tooltip", "Contains %s: %s mB");
+        add("conduit.orbitalis.color", "Pipe color: %s");
+        add("conduit.orbitalis.color.none", "no color");
+        add("conduit.orbitalis.color.orange", "orange");
+        add("conduit.orbitalis.color.light_blue", "light blue");
+        add("conduit.orbitalis.color.white", "white");
+        add("conduit.orbitalis.color.green", "green");
+        add("conduit.orbitalis.color.purple", "purple");
+        add("conduit.orbitalis.color.blue", "blue");
+        add("conduit.orbitalis.color.yellow", "yellow");
+        add("conduit.orbitalis.color.red", "red");
         add("item.orbitalis.overclock_module_x2", "Overclock Module ×2");
         add("item.orbitalis.overclock_module_x4", "Overclock Module ×4");
         add("item.orbitalis.overclock_module_x8", "Overclock Module ×8");

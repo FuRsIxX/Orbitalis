@@ -2270,6 +2270,17 @@ public final class WorldPreview {
         // Le pas de tir d'essai (table en -20 -59 40) et son pupitre, dix blocs au sud : vue d'ensemble, puis le pupitre
         // de près, son écran ouvert, et le kit réglé sur le 3×3.
         SHOTS.add(new Shot("tm_test_pad", null, -15.5, -55.0, 56.5, 150.0F, 18.0F, 80));
+        // Les deux conduites colorées du pas de tir d'essai, orange (RP-1) et bleu clair (oxygène), côte à côte.
+        SHOTS.add(new Shot("tm_pipes", null, -15.0, -58.6, 47.6, 125.0F, 38.0F, 60));
+        SHOTS.add(new Shot("tm_pipes_close", null, -17.0, -59.2, 45.0, 110.0F, 45.0F, 20));
+        // Des tuyaux sans couleur, à liquides puis à gaz : ils doivent garder leur aspect d'origine (nœuds bleus ou de
+        // laiton, arêtes sombres).
+        SHOTS.add(new Shot("tm_pipes_plain", level -> {
+            run(level, "fill 38 -60 34 44 -60 37 air");
+            run(level, "fill 38 -60 35 42 -60 35 orbitalis:fluid_pipe");
+            run(level, "fill 38 -60 37 42 -60 37 orbitalis:gas_pipe");
+            run(level, "setblock 42 -60 36 orbitalis:fluid_pipe");
+        }, 44.5, -59.0, 39.5, 135.0F, 40.0F, 40));
         // La charpente de près, près du point d'apparition de la carte de test : un anneau de 3×3 sur quatre étages, vu
         // du dehors puis du dedans en levant les yeux. Les poutres doivent montrer des pixels nets, pas des traînées.
         SHOTS.add(new Shot("tm_frames", level -> {

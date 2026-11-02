@@ -154,6 +154,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("electric_furnaces", () -> OrbitalisGameTests::electricFurnaces);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> OVERCLOCK =
             FUNCTIONS.register("overclock", () -> OrbitalisGameTests::overclock);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> PIPE_COLORS =
+            FUNCTIONS.register("pipe_colors", () -> OrbitalisGameTests::pipeColors);
 
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
@@ -341,6 +343,9 @@ public final class OrbitalisGameTests {
         // Le surcadençage : plus vite, beaucoup plus cher, plafonné par le module, gardé sur l'objet de la machine.
         event.registerTest(Orbitalis.id("overclock"), new FunctionGameTestInstance(
                 OVERCLOCK.getKey(), spaced(environment, emptyStructure, 100)));
+        // Les couleurs des tuyaux : deux couleurs différentes ne se raccordent pas, et ne font pas un seul réseau.
+        event.registerTest(Orbitalis.id("pipe_colors"), new FunctionGameTestInstance(
+                PIPE_COLORS.getKey(), spaced(environment, emptyStructure, 20)));
         // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
         event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
                 WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
@@ -4076,6 +4081,40 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(helper.getBlockState(first).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) == 2,
                     "la jauge du premier aurait dû montrer deux crans : " + helper.getBlockState(first));
         });
+    }
+
+    /**
+     * Couleurs des tuyaux : deux tuyaux côte à côte, l'un orange et l'autre bleu clair, ne se raccordent pas et
+     * forment deux réseaux ; de la même couleur, ou l'un sans couleur, ils se raccordent.
+     */
+    private static void pipeColors(GameTestHelper helper) {
+        BlockPos a = new BlockPos(1, 1, 1);
+        BlockPos b = a.east();
+        helper.setBlock(a, ModBlocks.FLUID_PIPE.get());
+        helper.setBlock(b, ModBlocks.FLUID_PIPE.get());
+        var level = helper.getLevel();
+        BlockPos worldA = helper.absolutePos(a);
+        BlockPos worldB = helper.absolutePos(b);
+        com.orbitalis.phase1.conduit.ConduitBlock pipe = ModBlocks.FLUID_PIPE.get();
+        java.util.function.BiConsumer<com.orbitalis.phase1.conduit.PipeColor, com.orbitalis.phase1.conduit.PipeColor> paint = (first, second) -> {
+            helper.getBlockEntity(a, com.orbitalis.phase1.conduit.PipeBlockEntity.class).setColor(first);
+            helper.getBlockEntity(b, com.orbitalis.phase1.conduit.PipeBlockEntity.class).setColor(second);
+            pipe.refreshLinks(level, worldA);
+        };
+        java.util.function.Supplier<Boolean> linked = () -> level.getBlockState(worldA)
+                .getValue(com.orbitalis.phase1.conduit.ConduitBlock.EAST) == com.orbitalis.phase1.conduit.ConduitBlock.Link.CONDUIT;
+        helper.assertTrue(linked.get(), "deux tuyaux sans couleur devraient se raccorder");
+        paint.accept(com.orbitalis.phase1.conduit.PipeColor.ORANGE, com.orbitalis.phase1.conduit.PipeColor.LIGHT_BLUE);
+        helper.assertTrue(!linked.get(), "un tuyau orange et un bleu clair ne devraient pas se raccorder");
+        helper.assertTrue(!com.orbitalis.phase1.conduit.ConduitBlock.joins(level, worldA, worldB),
+                "deux couleurs différentes devraient rester deux réseaux");
+        paint.accept(com.orbitalis.phase1.conduit.PipeColor.ORANGE, com.orbitalis.phase1.conduit.PipeColor.ORANGE);
+        helper.assertTrue(linked.get(), "deux tuyaux orange devraient se raccorder");
+        paint.accept(com.orbitalis.phase1.conduit.PipeColor.ORANGE, com.orbitalis.phase1.conduit.PipeColor.NONE);
+        helper.assertTrue(linked.get(), "un tuyau sans couleur devrait se raccorder à un tuyau orange");
+        helper.assertTrue(com.orbitalis.phase1.conduit.PipeColor.forPort(com.orbitalis.phase1.spaceport.FuelPortBlock.Kind.RP1)
+                == com.orbitalis.phase1.conduit.PipeColor.ORANGE, "un port de RP-1 devrait donner des tuyaux orange");
+        helper.succeed();
     }
 
     /**

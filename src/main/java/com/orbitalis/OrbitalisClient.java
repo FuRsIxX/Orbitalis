@@ -33,6 +33,7 @@ import com.orbitalis.client.render.FluidTankRenderer;
 import com.orbitalis.client.render.MissionDisplayRenderer;
 import com.orbitalis.client.research.ClientResearch;
 import com.orbitalis.core.registry.ModBlockEntities;
+import com.orbitalis.core.registry.ModBlocks;
 import com.orbitalis.client.screen.LaunchConsoleScreen;
 import com.orbitalis.client.screen.LaunchPadScreen;
 import com.orbitalis.client.screen.TrackingStationScreen;
@@ -88,6 +89,27 @@ public class OrbitalisClient {
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
         Orbitalis.LOGGER.info("Orbitalis : initialisation client terminée.");
+    }
+
+    /** Teinte des tuyaux : nœuds et colliers (0), arêtes (1), selon la couleur du tuyau (voir PipeColor). */
+    @SubscribeEvent
+    static void registerBlockTints(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(java.util.List.of(pipeTint(0), pipeTint(1)), ModBlocks.FLUID_PIPE.get(), ModBlocks.GAS_PIPE.get());
+    }
+
+    private static net.minecraft.client.color.block.BlockTintSource pipeTint(int index) {
+        return new net.minecraft.client.color.block.BlockTintSource() {
+            @Override
+            public int color(net.minecraft.world.level.block.state.BlockState state) {
+                return com.orbitalis.phase1.conduit.PipeColor.NONE.tint(index, state.is(ModBlocks.GAS_PIPE.get()));
+            }
+
+            @Override
+            public int colorInWorld(net.minecraft.world.level.block.state.BlockState state,
+                    net.minecraft.client.renderer.block.BlockAndTintGetter level, net.minecraft.core.BlockPos pos) {
+                return com.orbitalis.phase1.conduit.PipeBlockEntity.colorAt(level, pos).tint(index, state.is(ModBlocks.GAS_PIPE.get()));
+            }
+        };
     }
 
     /** Associe chaque interface (menu) à son écran. */

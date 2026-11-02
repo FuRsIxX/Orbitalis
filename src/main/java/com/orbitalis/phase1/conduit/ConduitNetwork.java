@@ -152,7 +152,8 @@ public final class ConduitNetwork {
             for (Direction direction : Direction.values()) {
                 BlockPos neighbour = current.relative(direction);
                 if (level.getBlockState(neighbour).is(conduit)) {
-                    if (visited.add(neighbour)) {
+                    // Deux tuyaux de couleurs différentes se touchent sans se raccorder : ils restent deux réseaux.
+                    if (ConduitBlock.joins(level, current, neighbour) && visited.add(neighbour)) {
                         queue.add(neighbour);
                     }
                 } else if (!(level.getBlockState(neighbour).getBlock() instanceof ConduitBlock)

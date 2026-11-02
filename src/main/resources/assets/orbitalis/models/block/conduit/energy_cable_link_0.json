@@ -1,6 +1,7 @@
 {
   "textures": {
     "frame": "orbitalis:block/conduit_frame",
+    "rail": "orbitalis:block/conduit_frame",
     "corner": "orbitalis:block/conduit_corner_cable",
     "panel_v": "orbitalis:block/cable_panel_0_v",
     "panel_h": "orbitalis:block/cable_panel_0_h",
@@ -84,22 +85,22 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail"
         }
       }
     },
@@ -116,22 +117,22 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail"
         }
       }
     },
@@ -148,22 +149,22 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail"
         }
       }
     },
@@ -180,22 +181,22 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail"
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail"
         }
       }
     },

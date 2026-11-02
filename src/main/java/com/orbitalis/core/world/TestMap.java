@@ -479,6 +479,28 @@ public final class TestMap {
             level.setBlock(cable, Block.updateFromNeighbourShapes(level.getBlockState(cable), level, cable), Block.UPDATE_ALL);
         }
         sign(level, console.east(2), Component.translatable("testmap.orbitalis.zone.test_pad"), null, null);
+        // Deux conduites colorées côte à côte, de deux ports jusqu'à leurs réservoirs : elles se touchent sans se
+        // raccorder, chaque ergol garde la sienne.
+        coloredLine(level, port.east(), com.orbitalis.phase1.spaceport.FuelPortBlock.Kind.RP1, "rp1");
+        coloredLine(level, port.east(2), com.orbitalis.phase1.spaceport.FuelPortBlock.Kind.LOX, "liquid_oxygen");
+    }
+
+    /** Un port de pas de tir, trois tuyaux de la couleur de son ergol vers le sud, puis le réservoir créatif de cet ergol. */
+    private static void coloredLine(ServerLevel level, BlockPos port, com.orbitalis.phase1.spaceport.FuelPortBlock.Kind kind, String fluid) {
+        level.setBlock(port, ModBlocks.FUEL_PORT.get().defaultBlockState().setValue(com.orbitalis.phase1.spaceport.FuelPortBlock.KIND, kind),
+                Block.UPDATE_ALL);
+        com.orbitalis.phase1.conduit.PipeColor color = com.orbitalis.phase1.conduit.PipeColor.forPort(kind);
+        for (int i = 1; i <= 3; i++) {
+            BlockPos pipe = port.south(i);
+            level.setBlock(pipe, ModBlocks.FLUID_PIPE.get().defaultBlockState(), Block.UPDATE_ALL);
+            if (level.getBlockEntity(pipe) instanceof com.orbitalis.phase1.conduit.PipeBlockEntity entity) {
+                entity.setColor(color);
+            }
+        }
+        level.setBlock(port.south(4), creativeTank(fluid), Block.UPDATE_ALL);
+        for (int i = 1; i <= 3; i++) {
+            ModBlocks.FLUID_PIPE.get().refreshLinks(level, port.south(i));
+        }
     }
 
     /** Pose une machine tournée vers le sud, et met dans sa première case ce qu'on lui donne à transformer. */

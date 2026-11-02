@@ -1,6 +1,7 @@
 {
   "textures": {
     "frame": "orbitalis:block/conduit_frame",
+    "rail": "orbitalis:block/pipe_rail",
     "panel_v": "orbitalis:block/pipe_glass",
     "panel_h": "orbitalis:block/pipe_glass",
     "pull": "orbitalis:block/conduit_pull",
@@ -85,22 +86,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         }
       }
     },
@@ -117,22 +124,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         }
       }
     },
@@ -149,22 +162,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         }
       }
     },
@@ -181,22 +200,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         }
       }
     },

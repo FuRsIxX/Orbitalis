@@ -21,6 +21,10 @@ Un conduit se dessine par morceaux :
   termine par un raccord : une platine contre la machine et un collier à la couleur du conduit. Sur un tuyau en
   extraction, le collier est orange et rayé.
 
+Un tuyau peut prendre une couleur (un clic droit à main vide la change) : ses nœuds, ses colliers et ses arêtes en sont
+teintés, et deux tuyaux de couleurs différentes ne se raccordent pas. Leurs modèles portent donc des textures grises
+marquées « teintables » ; sans couleur, la teinte rend le bleu des liquides ou le laiton des gaz, et les arêtes sombres.
+
 Les tuyaux laissent voir ce qui y circule, à sa couleur : un liquide remplit le tube, un gaz y passe en veine
 plus fine. Le verre est teinté, pas limpide : on voit le contenu sans que le tuyau disparaisse.
 
@@ -175,6 +179,9 @@ def write_textures():
     write_texture("conduit_corner_cable", [plain(212, "#C46A35", "#E08A52", "#9A4E24")])
     write_texture("conduit_corner_liquid", [plain(213, "#3F76E4", "#6A98F0", "#2F5FC4")])
     write_texture("conduit_corner_gas", [plain(214, "#C9A227", "#E6C65A", "#9C7A12")])
+    # Nœuds et arêtes des tuyaux, en gris clair : la couleur du tuyau les teinte en jeu (voir PipeColor).
+    write_texture("pipe_corner", [plain(213, "#D0D0D0", "#FFFFFF", "#A8A8A8")])
+    write_texture("pipe_rail", [plain(210, "#C8C8C8", "#F0F0F0", "#9C9C9C")])
     for glow in range(MAX_GLOW + 1):
         for suffix, branch in (("", "cross"), ("_v", "v"), ("_h", "h")):
             frames = [cable_panel_frame(glow, s, branch) for s in range(1 if glow == 0 else CABLE_FRAMES)]
@@ -216,7 +223,7 @@ def tube(light, inner, lo=TUBE_MIN):  # noqa: C901
 
     def run(z0, z1):
         """Un bout de tube le long de l'axe nord-sud : quatre arêtes, un flanc entre chaque paire d'arêtes."""
-        parts = [box(x, y, z0, x + 1, y + 1, z1, "frame") for x in (lo, hi - 1) for y in (lo, hi - 1)]
+        parts = [box(x, y, z0, x + 1, y + 1, z1, "rail") for x in (lo, hi - 1) for y in (lo, hi - 1)]
         # Les flancs du dessus et du dessous, puis ceux des côtés : chacun a sa texture, dont le filet court dans
         # le sens du câble.
         parts += [
@@ -235,9 +242,9 @@ def tube(light, inner, lo=TUBE_MIN):  # noqa: C901
                 core.append(box(x, y, z, x + 1, y + 1, z + 1, "corner"))
     for a in (lo, hi - 1):
         for b in (lo, hi - 1):
-            core.append(box(lo + 1, a, b, hi - 1, a + 1, b + 1, "frame"))
-            core.append(box(a, lo + 1, b, a + 1, hi - 1, b + 1, "frame"))
-            core.append(box(a, b, lo + 1, a + 1, b + 1, hi - 1, "frame"))
+            core.append(box(lo + 1, a, b, hi - 1, a + 1, b + 1, "rail"))
+            core.append(box(a, lo + 1, b, a + 1, hi - 1, b + 1, "rail"))
+            core.append(box(a, b, lo + 1, a + 1, b + 1, hi - 1, "rail"))
     core += [
         box(lo + 1, lo + 1, near, hi - 1, hi - 1, far, "panel", light),
         box(lo + 1, lo + 1, 16 - far, hi - 1, hi - 1, 16 - near, "panel", light),
@@ -267,16 +274,20 @@ def tube(light, inner, lo=TUBE_MIN):  # noqa: C901
     return core, straight, arm, link, pull
 
 
-def cable(glow):
+def cable(glow, tinted=False):
     """Câble : flancs sombres à filet lumineux, nœuds et raccords de cuivre."""
-    return tube(2 * glow, 0), {"frame": "conduit_frame", "corner": "conduit_corner_cable", "panel": "cable_panel_%d" % glow,
+    return tube(2 * glow, 0), {"frame": "conduit_frame", "rail": "conduit_frame", "corner": "conduit_corner_cable", "panel": "cable_panel_%d" % glow,
                                "panel_v": "cable_panel_%d_v" % glow, "panel_h": "cable_panel_%d_h" % glow,
                                "particle": "conduit_frame"}
 
 
-def liquid_pipe(content):
-    """Tuyau à liquides : flancs de verre teinté, nœuds et raccords bleus ; le liquide remplit le tube."""
-    textures = {"frame": "conduit_frame", "corner": "conduit_corner_liquid", "panel": "pipe_glass", "panel_v": "pipe_glass", "panel_h": "pipe_glass",
+def liquid_pipe(content, tinted=True):
+    """
+    Tuyau à liquides : flancs de verre teinté, nœuds et raccords bleus ; le liquide remplit le tube. En jeu
+    (tinted), nœuds et arêtes sont gris clair et prennent la couleur du tuyau.
+    """
+    textures = {"frame": "conduit_frame", "rail": "pipe_rail" if tinted else "conduit_frame",
+                "corner": "pipe_corner" if tinted else "conduit_corner_liquid", "panel": "pipe_glass", "panel_v": "pipe_glass", "panel_h": "pipe_glass",
                 "pull": "conduit_pull",
                 "particle": "conduit_frame"}
     if content:
@@ -284,9 +295,10 @@ def liquid_pipe(content):
     return tube(0, 1.75 if content else 0), textures
 
 
-def gas_pipe(content):
+def gas_pipe(content, tinted=True):
     """Tuyau à gaz : flancs de verre grillagé, nœuds et raccords de laiton ; le gaz passe en veine fine au milieu du tube."""
-    textures = {"frame": "conduit_frame", "corner": "conduit_corner_gas", "panel": "gas_glass", "panel_v": "gas_glass", "panel_h": "gas_glass",
+    textures = {"frame": "conduit_frame", "rail": "pipe_rail" if tinted else "conduit_frame",
+                "corner": "pipe_corner" if tinted else "conduit_corner_gas", "panel": "gas_glass", "panel_v": "gas_glass", "panel_h": "gas_glass",
                 "pull": "conduit_pull",
                 "particle": "conduit_frame"}
     if content:
@@ -294,9 +306,9 @@ def gas_pipe(content):
     return tube(0, 1.0 if content else 0), textures
 
 
-def data_cable(_):
+def data_cable(_, tinted=False):
     """Câble de données : la carrure des autres conduits, gaine noire à fibre lumineuse, nœuds et raccords turquoise."""
-    return tube(3, 0), {"frame": "conduit_frame", "corner": "conduit_corner_data", "panel": "data_panel", "panel_v": "data_panel_v",
+    return tube(3, 0), {"frame": "conduit_frame", "rail": "conduit_frame", "corner": "conduit_corner_data", "panel": "data_panel", "panel_v": "data_panel_v",
                          "panel_h": "data_panel_h", "particle": "conduit_frame"}
 
 
@@ -313,8 +325,18 @@ def mirrored(arm):
     return result
 
 
+# Faces teintées par la couleur du tuyau, et l'indice de leur teinte (voir PipeColor côté jeu).
+TINTS = {"pipe_corner": 0, "pipe_rail": 1}
+
+
 def write_model(name, elements, textures, parent=None):
     used = {face["texture"][1:] for element in elements for face in element["faces"].values()} | {"particle"}
+    elements = json.loads(json.dumps(elements))
+    for element in elements:
+        for face in element["faces"].values():
+            tint = TINTS.get(textures.get(face["texture"][1:]))
+            if tint is not None:
+                face["tintindex"] = tint
     model = {"textures": {key: "orbitalis:block/" + value for key, value in textures.items() if key in used}, "elements": elements}
     if parent:
         model = {"parent": parent, **model}
@@ -343,7 +365,7 @@ def write_models():
                                  ("extraction", core + pull + mirrored(arm))):
                 overlaps += check_overlaps("%s %d, %s" % (name, variant, label), parts)
         # Dans l'inventaire : un tronçon droit, au repos pour le câble, vide pour les tuyaux.
-        (core, straight, arm, link, pull), textures = build(0)
+        (core, straight, arm, link, pull), textures = build(0, tinted=False)
         write_model(name + "_inventory", straight + arm + mirrored(arm), textures, parent="minecraft:block/block")
         count += 1
     return count, overlaps

@@ -44,7 +44,8 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 /**
  * Conduit (câble d'énergie, tuyau de fluide ou câble de données) : un bloc fin qui se raccorde à ses voisins.
  * <p>
- * Il se raccorde aux conduits du même type et à tout bloc qui expose ce qu'il transporte. De chaque côté, il
+ * Il se raccorde aux conduits du même type (pour les tuyaux, s'ils n'ont pas deux couleurs différentes, voir
+ * {@link PipeColor}) et à tout bloc qui expose ce qu'il transporte. De chaque côté, il
  * retient à quoi il est raccordé ({@link Link}) : vers un autre conduit, le tube continue tel quel ; vers une
  * machine, il se termine par un raccord. Un conduit qui ne fait que passer tout droit n'a pas de nœud en son milieu.
  * <p>
@@ -208,7 +209,7 @@ public class ConduitBlock extends Block {
         BlockState state = defaultBlockState();
         for (Direction direction : Direction.values()) {
             state = state.setValue(LINKS.get(direction),
-                    linkTo(context.getLevel(), context.getClickedPos().relative(direction), direction));
+                    linkTo(context.getLevel(), context.getClickedPos(), context.getClickedPos().relative(direction), direction));
         }
         return state;
     }
@@ -219,7 +220,7 @@ public class ConduitBlock extends Block {
             Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
         if (level instanceof Level realLevel) {
             EnumProperty<Link> property = LINKS.get(directionToNeighbour);
-            Link link = linkTo(realLevel, neighbourPos, directionToNeighbour);
+            Link link = linkTo(realLevel, pos, neighbourPos, directionToNeighbour);
             if (link != state.getValue(property)) {
                 ConduitNetwork.invalidate(realLevel);
                 return state.setValue(property, link);
@@ -229,10 +230,10 @@ public class ConduitBlock extends Block {
     }
 
     /** Ce à quoi le conduit se raccorde de ce côté : un conduit du même type, un bloc qui expose ce qu'il transporte, ou rien. */
-    private Link linkTo(Level level, BlockPos neighbourPos, Direction directionToNeighbour) {
+    private Link linkTo(Level level, BlockPos pos, BlockPos neighbourPos, Direction directionToNeighbour) {
         BlockState neighbour = level.getBlockState(neighbourPos);
         if (neighbour.is(this)) {
-            return Link.CONDUIT;
+            return joins(level, pos, neighbourPos) ? Link.CONDUIT : Link.NONE;
         }
         // Un conduit d'un autre type n'est pas un raccord : un tuyau à gaz ne se branche pas sur un tuyau à liquides.
         if (neighbour.getBlock() instanceof ConduitBlock) {
@@ -262,9 +263,28 @@ public class ConduitBlock extends Block {
     private BlockState withLinks(BlockState state, Level level, BlockPos pos) {
         BlockState linked = state;
         for (Direction direction : Direction.values()) {
-            linked = linked.setValue(LINKS.get(direction), linkTo(level, pos.relative(direction), direction));
+            linked = linked.setValue(LINKS.get(direction), linkTo(level, pos, pos.relative(direction), direction));
         }
         return linked;
+    }
+
+    /** Vrai si deux conduits voisins du même type se raccordent : pour des tuyaux, leurs couleurs doivent s'accorder. */
+    public static boolean joins(BlockGetter level, BlockPos a, BlockPos b) {
+        return PipeBlockEntity.colorAt(level, a).joins(PipeBlockEntity.colorAt(level, b));
+    }
+
+    /** Recalcule les raccordements de ce conduit et de ses voisins du même type, après un changement de couleur. */
+    public void refreshLinks(Level level, BlockPos pos) {
+        for (BlockPos at : List.of(pos, pos.north(), pos.south(), pos.east(), pos.west(), pos.above(), pos.below())) {
+            BlockState state = level.getBlockState(at);
+            if (state.is(this)) {
+                BlockState linked = withLinks(state, level, at);
+                if (linked != state) {
+                    level.setBlock(at, linked, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+                }
+            }
+        }
+        ConduitNetwork.invalidate(level);
     }
 
     @Override
@@ -318,8 +338,14 @@ public class ConduitBlock extends Block {
      * Accroupi, un clic droit à main nue le fait passer en extraction : il aspire alors, deux fois par seconde, le
      * contenu des machines et des réservoirs qu'il touche, et le livre au reste du réseau. C'est ce qui vide un
      * réservoir, qui ne pousse rien de lui-même.
+     * <p>
+     * Debout, un clic droit à main nue change sa couleur (voir {@link PipeColor}). Posé contre un port de pas de tir,
+     * il prend d'office la couleur de son ergol ; posé sur un tuyau coloré, il en prolonge la couleur.
      */
-    public static class Pipe extends ConduitBlock {
+    public static class Pipe extends ConduitBlock implements net.minecraft.world.level.block.EntityBlock {
+        /** Couleur choisie pendant la pose, appliquée une fois l'entité du tuyau créée (voir {@link #setPlacedBy}). */
+        private static final ThreadLocal<Map.Entry<BlockPos, PipeColor>> PLACING = new ThreadLocal<>();
+
         /** Intervalle entre deux aspirations, en ticks, et quantité aspirée chaque fois par raccord, en mB. */
         public static final int PULL_INTERVAL = 10;
         public static final int PULL_AMOUNT = 1_000;
@@ -340,9 +366,80 @@ public class ConduitBlock extends Block {
         }
 
         @Override
+        public net.minecraft.world.level.block.entity.BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+            return new PipeBlockEntity(pos, state);
+        }
+
+        @Override
+        public BlockState getStateForPlacement(BlockPlaceContext context) {
+            PLACING.set(Map.entry(context.getClickedPos().immutable(), placementColor(context)));
+            return super.getStateForPlacement(context);
+        }
+
+        /**
+         * Couleur d'un tuyau qu'on pose : celle du tuyau sur lequel on l'a posé, ou celle de l'ergol du port de pas de
+         * tir qu'il touche (s'il n'en touche qu'une sorte), sinon aucune.
+         */
+        private PipeColor placementColor(BlockPlaceContext context) {
+            Level level = context.getLevel();
+            BlockPos pos = context.getClickedPos();
+            BlockPos clicked = pos.relative(context.getClickedFace().getOpposite());
+            if (level.getBlockState(clicked).is(this)) {
+                PipeColor color = PipeBlockEntity.colorAt(level, clicked);
+                if (color != PipeColor.NONE) {
+                    return color;
+                }
+            }
+            PipeColor found = portColor(level, clicked);
+            if (found != PipeColor.NONE) {
+                return found;
+            }
+            for (Direction direction : Direction.values()) {
+                PipeColor color = portColor(level, pos.relative(direction));
+                if (color != PipeColor.NONE) {
+                    if (found != PipeColor.NONE && found != color) {
+                        return PipeColor.NONE;
+                    }
+                    found = color;
+                }
+            }
+            return found;
+        }
+
+        private static PipeColor portColor(Level level, BlockPos pos) {
+            BlockState state = level.getBlockState(pos);
+            return state.getBlock() instanceof com.orbitalis.phase1.spaceport.FuelPortBlock
+                    ? PipeColor.forPort(state.getValue(com.orbitalis.phase1.spaceport.FuelPortBlock.KIND)) : PipeColor.NONE;
+        }
+
+        @Override
+        public void setPlacedBy(Level level, BlockPos pos, BlockState state, net.minecraft.world.entity.LivingEntity placer,
+                net.minecraft.world.item.ItemStack stack) {
+            super.setPlacedBy(level, pos, state, placer, stack);
+            Map.Entry<BlockPos, PipeColor> placing = PLACING.get();
+            PLACING.remove();
+            if (!level.isClientSide() && placing != null && placing.getKey().equals(pos) && placing.getValue() != PipeColor.NONE
+                    && level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
+                pipe.setColor(placing.getValue());
+                refreshLinks(level, pos);
+            }
+        }
+
+        @Override
         protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
             if (!player.isShiftKeyDown()) {
-                return InteractionResult.PASS;
+                // Debout, main vide : la couleur suivante. Un objet en main se pose normalement.
+                if (!player.getMainHandItem().isEmpty()) {
+                    return InteractionResult.PASS;
+                }
+                if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer
+                        && level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
+                    PipeColor color = pipe.color().next();
+                    pipe.setColor(color);
+                    refreshLinks(level, pos);
+                    serverPlayer.sendOverlayMessage(Component.translatable("conduit.orbitalis.color", color.displayName()));
+                }
+                return InteractionResult.SUCCESS;
             }
             if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
                 boolean pull = !state.getValue(PULL);

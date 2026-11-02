@@ -1,7 +1,8 @@
 {
   "textures": {
     "frame": "orbitalis:block/conduit_frame",
-    "corner": "orbitalis:block/conduit_corner_gas",
+    "rail": "orbitalis:block/pipe_rail",
+    "corner": "orbitalis:block/pipe_corner",
     "panel_v": "orbitalis:block/gas_glass",
     "panel_h": "orbitalis:block/gas_glass",
     "particle": "orbitalis:block/conduit_frame",
@@ -53,22 +54,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#corner"
+          "texture": "#corner",
+          "tintindex": 0
         },
         "south": {
-          "texture": "#corner"
+          "texture": "#corner",
+          "tintindex": 0
         },
         "east": {
-          "texture": "#corner"
+          "texture": "#corner",
+          "tintindex": 0
         },
         "west": {
-          "texture": "#corner"
+          "texture": "#corner",
+          "tintindex": 0
         },
         "up": {
-          "texture": "#corner"
+          "texture": "#corner",
+          "tintindex": 0
         },
         "down": {
-          "texture": "#corner"
+          "texture": "#corner",
+          "tintindex": 0
         }
       }
     },
@@ -85,22 +92,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         }
       }
     },
@@ -117,22 +130,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         }
       }
     },
@@ -149,22 +168,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         }
       }
     },
@@ -181,22 +206,28 @@
       ],
       "faces": {
         "north": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "south": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "east": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "west": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "up": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         },
         "down": {
-          "texture": "#frame"
+          "texture": "#rail",
+          "tintindex": 1
         }
       }
     },

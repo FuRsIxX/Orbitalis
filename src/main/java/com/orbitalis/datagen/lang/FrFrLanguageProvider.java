@@ -77,7 +77,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.FLUID_PIPE, "Tuyau à liquides");
         addBlock(ModBlocks.GAS_PIPE, "Tuyau à gaz");
         add("guide.orbitalis.conduits.title", "Câbles et tuyaux");
-        add("guide.orbitalis.conduits.text", "Les conduits relient les machines à distance. Posés bout à bout, ils se raccordent tout seuls.\n- Câble électrique : l'énergie, partagée entre les machines du réseau.\n- Tuyau à liquides : eau, RP-1, ergols liquides.\n- Tuyau à gaz : hydrogène et oxygène gazeux.\n- Câble de données : relie pupitres, écrans et ports de données.\n\nDonnez son propre réseau à chaque liquide si vous remplissez plusieurs réservoirs.\n\nUne machine pousse sa production, un réservoir non. Pour le vider, faites un clic droit accroupi, main vide, sur le tuyau qui le touche : il aspire. Même geste pour revenir.");
+        add("guide.orbitalis.conduits.text", "Les conduits relient les machines à distance. Posés bout à bout, ils se raccordent tout seuls.\n- Câble électrique : l'énergie, partagée entre les machines du réseau.\n- Tuyau à liquides : eau, RP-1, ergols liquides.\n- Tuyau à gaz : hydrogène et oxygène gazeux.\n- Câble de données : relie pupitres, écrans et ports de données.\n\nDonnez son propre réseau à chaque liquide si vous remplissez plusieurs réservoirs.\n\nUne machine pousse sa production, un réservoir non. Pour le vider, faites un clic droit accroupi, main vide, sur le tuyau qui le touche : il aspire. Même geste pour revenir.\n\nUn clic droit à main vide sur un tuyau change sa couleur. Deux tuyaux de couleurs différentes ne se raccordent pas, même collés ; un tuyau sans couleur se raccorde à tous. Posé contre un port de pas de tir, un tuyau prend la couleur de son ergol, et un tuyau posé sur un tuyau coloré en prolonge la couleur.");
 
         // Manuel : interface et démonstrations animées
         add("guide.orbitalis.index", "Sommaire");
@@ -1944,6 +1944,16 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("pump.orbitalis.water_pump.no_power", "Pas d'énergie : la pompe demande %s FE par tick.");
         add("launch.orbitalis.witness_points", "Votre agence gagne %s points de recherche pour ce lancement.");
         add("tank.orbitalis.tooltip", "Contient %s : %s mB");
+        add("conduit.orbitalis.color", "Couleur du tuyau : %s");
+        add("conduit.orbitalis.color.none", "sans couleur");
+        add("conduit.orbitalis.color.orange", "orange");
+        add("conduit.orbitalis.color.light_blue", "bleu clair");
+        add("conduit.orbitalis.color.white", "blanc");
+        add("conduit.orbitalis.color.green", "vert");
+        add("conduit.orbitalis.color.purple", "violet");
+        add("conduit.orbitalis.color.blue", "bleu");
+        add("conduit.orbitalis.color.yellow", "jaune");
+        add("conduit.orbitalis.color.red", "rouge");
         add("item.orbitalis.overclock_module_x2", "Module de surcadençage ×2");
         add("item.orbitalis.overclock_module_x4", "Module de surcadençage ×4");
         add("item.orbitalis.overclock_module_x8", "Module de surcadençage ×8");

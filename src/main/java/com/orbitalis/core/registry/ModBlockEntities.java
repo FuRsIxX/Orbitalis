@@ -127,6 +127,11 @@ public final class ModBlockEntities {
                             ModBlocks.CREATIVE_TANKS.stream().map(tank -> tank.get())).collect(java.util.stream.Collectors.toSet())));
 
     /** Réservoir modulable. */
+    /** Couleur des tuyaux à liquides et à gaz. */
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.orbitalis.phase1.conduit.PipeBlockEntity>> PIPE =
+            BLOCK_ENTITIES.register("pipe", () -> new BlockEntityType<>(com.orbitalis.phase1.conduit.PipeBlockEntity::new,
+                    ModBlocks.FLUID_PIPE.get(), ModBlocks.GAS_PIPE.get()));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
             BLOCK_ENTITIES.register("fluid_tank", () -> new BlockEntityType<>(FluidTankBlockEntity::new, ModBlocks.FLUID_TANK.get()));
 
