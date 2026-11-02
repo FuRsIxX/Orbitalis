@@ -75,6 +75,8 @@ public class OrbitalisModelProvider extends ModelProvider {
         // Machines : chacune a son modèle 3D, à l'arrêt et en marche.
         machine(blockModels, ModBlocks.COMBUSTION_GENERATOR.get());
         machine(blockModels, ModBlocks.ARC_FOUNDRY.get());
+        machine(blockModels, ModBlocks.INDUCTION_FURNACE.get());
+        machine(blockModels, ModBlocks.MELTING_FURNACE.get());
         machine(blockModels, ModBlocks.ROLLING_MILL.get());
         machine(blockModels, ModBlocks.ELECTROLYZER.get());
         machine(blockModels, ModBlocks.SABATIER_REACTOR.get());

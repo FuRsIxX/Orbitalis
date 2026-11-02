@@ -38,6 +38,8 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         // Machines : se lâchent elles-mêmes avec leur énergie (leur contenu tombe séparément).
         add(ModBlocks.COMBUSTION_GENERATOR.get(), this::keepingEnergy);
         add(ModBlocks.ARC_FOUNDRY.get(), this::keepingEnergy);
+        add(ModBlocks.INDUCTION_FURNACE.get(), this::keepingEnergy);
+        add(ModBlocks.MELTING_FURNACE.get(), this::keepingEnergy);
         add(ModBlocks.ROLLING_MILL.get(), this::keepingEnergy);
         add(ModBlocks.ELECTROLYZER.get(), this::keepingEnergy);
         add(ModBlocks.CRYOGENIC_LIQUEFIER.get(), this::keepingEnergy);

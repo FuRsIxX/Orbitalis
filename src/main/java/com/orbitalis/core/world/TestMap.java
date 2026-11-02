@@ -311,6 +311,14 @@ public final class TestMap {
         BlockPos extractor = reactor.east(3);
         machine(level, extractor, ModBlocks.HELIUM3_EXTRACTOR.get(), new ItemStack(ModBlocks.MOON_ILMENITE_ORE.get(), 64));
         level.setBlock(extractor.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+        // Les deux fours électriques, au bout de la rangée, chacun sous une source d'énergie créative : le four à
+        // induction cuit du fer brut, le four de fusion en tire le double.
+        BlockPos induction = reactor.east(5);
+        machine(level, induction, ModBlocks.INDUCTION_FURNACE.get(), new ItemStack(net.minecraft.world.item.Items.RAW_IRON, 32));
+        level.setBlock(induction.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
+        BlockPos melting = reactor.east(5).south(2);
+        machine(level, melting, ModBlocks.MELTING_FURNACE.get(), new ItemStack(net.minecraft.world.item.Items.RAW_IRON, 32));
+        level.setBlock(melting.above(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState(), Block.UPDATE_ALL);
         // Le panneau, sur le côté : il ne cache aucune machine.
         sign(level, new BlockPos(x0 - 2, Y, z0 + 2), Component.translatable("testmap.orbitalis.zone.machines"), null, null);
 

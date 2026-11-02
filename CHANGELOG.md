@@ -7,6 +7,8 @@
 - **Ports de pas de tir** (anciens blocs de ravitaillement) : un clic droit à main vide choisit à tout moment ce qu'ils font passer, même posés sur un pas de tir. Deux nouveaux réglages : l'électricité (le seul qui alimente la table) et les données. Leur recette prend une prise de chaque sorte : un tuyau de liquide, un câble électrique, un tuyau de gaz et un câble de données.
 - **Liaisons par câble de données** : un pupitre de lancement, un pupitre d'essai ou un mur d'écrans relié par un câble de données au port de données d'un pas de tir suit ce pas de tir, à toute distance. Un pupitre ne se relie plus tout seul à la table la plus proche.
 - **Module sans fil** : la seule façon de relier sans câble. Un clic droit sur un pupitre, un écran ou une station de poursuite, puis sur un pas de tir, un pupitre ou un écran : la liaison est faite et le module est consommé. Le clic droit accroupi ne relie plus rien.
+- **Four à induction** : il cuit à l'électricité (20 FE par tick) tout ce que cuit un four, minerais compris, deux fois plus vite, sans combustible.
+- **Four de fusion** : il ne prend que les minerais et les minerais bruts, et chacun donne le double de ce qu'il donne au four, pour 60 FE par tick et au rythme d'un four. Il se débloque avec la nouvelle technologie « Affinage des minerais » et se fabrique à partir d'un four à induction et d'un haut fourneau.
 - Foreuse : elle ne perce plus de puits au milieu de la zone avant de forer. En mode « Filons » comme en mode « Tout miner », elle fouille directement la zone couche par couche.
 
 # Orbitalis — 0.10.0 (bêta)
@@ -142,6 +144,8 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - **Launch pad ports** (formerly fuel ports): right-clicking with an empty hand picks what they carry at any time, even on a built pad. Two new settings: electricity (the only one that powers the table) and data. Their recipe takes one connector of each kind: a liquid pipe, an energy cable, a gas pipe and a data cable.
 - **Data cable links**: a launch console, a test console or a screen wall connected by a data cable to a launch pad's data port follows that pad, at any distance. A console no longer links itself to the nearest table.
 - **Wireless module**: the only way to link without a cable. Right-click a console, a screen or a tracking station, then a launch pad, a console or a screen: the link is made and the module is used up. Sneak-right-clicking no longer links anything.
+- **Induction furnace**: it cooks with electricity (20 FE per tick) everything a furnace cooks, ores included, twice as fast and without fuel.
+- **Melting furnace**: it only takes ores and raw ores, and each gives twice what it gives in a furnace, for 60 FE per tick at a furnace's pace. It unlocks with the new "Ore Refining" technology and is crafted from an induction furnace and a blast furnace.
 - Drill rig: it no longer bores a shaft in the middle of the area before drilling. In both "Ores" and "Mine all" modes, it goes straight through the area layer by layer.
 
 # Orbitalis — 0.10.0 (beta)

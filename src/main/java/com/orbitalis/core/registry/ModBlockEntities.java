@@ -43,6 +43,16 @@ public final class ModBlockEntities {
                     () -> new BlockEntityType<>(CombustionGeneratorBlockEntity::new, ModBlocks.COMBUSTION_GENERATOR.get()));
 
     /** Fonderie à arc : deux entrées, recettes d'alliage. */
+    /** Fours électriques : le four à induction, et le four de fusion qui double les minerais. */
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.orbitalis.phase1.machines.FurnaceMachineBlockEntity>> INDUCTION_FURNACE =
+            BLOCK_ENTITIES.register("induction_furnace", () -> new BlockEntityType<>(
+                    (pos, state) -> new com.orbitalis.phase1.machines.FurnaceMachineBlockEntity(ModBlockEntities.INDUCTION_FURNACE.get(), pos, state, false),
+                    ModBlocks.INDUCTION_FURNACE.get()));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.orbitalis.phase1.machines.FurnaceMachineBlockEntity>> MELTING_FURNACE =
+            BLOCK_ENTITIES.register("melting_furnace", () -> new BlockEntityType<>(
+                    (pos, state) -> new com.orbitalis.phase1.machines.FurnaceMachineBlockEntity(ModBlockEntities.MELTING_FURNACE.get(), pos, state, true),
+                    ModBlocks.MELTING_FURNACE.get()));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> ARC_FOUNDRY =
             BLOCK_ENTITIES.register("arc_foundry", () -> new BlockEntityType<>(
                     (pos, state) -> new ProcessingMachineBlockEntity(ModBlockEntities.ARC_FOUNDRY.get(), pos, state,
@@ -210,6 +220,10 @@ public final class ModBlockEntities {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ARC_FOUNDRY.get(), (machine, side) -> machine.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ROLLING_MILL.get(), (machine, side) -> machine.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, CASIMIR_CHAMBER.get(), (machine, side) -> machine.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, INDUCTION_FURNACE.get(), (machine, side) -> machine.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, MELTING_FURNACE.get(), (machine, side) -> machine.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, INDUCTION_FURNACE.get(), (machine, side) -> machine.getInventory().automationView());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, MELTING_FURNACE.get(), (machine, side) -> machine.getInventory().automationView());
 
         event.registerBlockEntity(Capabilities.Item.BLOCK, COMBUSTION_GENERATOR.get(), (machine, side) -> machine.getInventory().automationView());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ARC_FOUNDRY.get(), (machine, side) -> machine.getInventory().automationView());

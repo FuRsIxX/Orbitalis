@@ -57,6 +57,7 @@ ICONS = {
     "tank": [".###.", "#...#", "#####", "#####", ".###."],
     "rocket": ["..#..", ".###.", ".###.", ".###.", "#.#.#"],
     "drill": ["#####", ".###.", ".###.", "..#..", "..#.."],
+    "crucible": ["#...#", "#.#.#", "#####", ".###.", "..#.."],
 }
 
 
@@ -446,6 +447,8 @@ MACHINES = {
     "fusion_reactor": spec("#2E3036", "#F05AB4", "atom", 8, "hoops", "core", "mesh"),
     "cryogenic_tank": spec("#DCE8EF", "#9AD4F5", "tank", 8, "hoops", "cap", "slats"),
     "drill_derrick": spec("#B4652B", "#FFB347", "drill", 8, "hazard", "hatch", "bars"),
+    "induction_furnace": spec("#8A4B32", "#FF8A3D", "flame", 8, "fins", "vent", "coil"),
+    "melting_furnace": spec("#3E3A3C", "#FF5A2A", "crucible", 8, "ribs", "chimney", "bars", extra="#F2C14E"),
 }
 # Blocs du même style qui n'ont pas d'état allumé : leur fenêtre est toujours animée et lumineuse.
 ALWAYS_ON = {

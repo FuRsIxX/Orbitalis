@@ -195,6 +195,20 @@ public final class ModBlocks {
     /** Laminoir : transforme les lingots en tôles. */
     public static final DeferredBlock<MachineBlock> ROLLING_MILL =
             machine("rolling_mill", () -> ModBlockEntities.ROLLING_MILL.get());
+    /** Four à induction : cuit à l'électricité tout ce que cuit un four, deux fois plus vite. */
+    public static final DeferredBlock<MachineBlock> INDUCTION_FURNACE =
+            machine("induction_furnace", () -> ModBlockEntities.INDUCTION_FURNACE.get());
+    /** Four de fusion : un minerai donne le double de ce qu'il donne au four ; il faut l'affinage des minerais. */
+    public static final DeferredBlock<MachineBlock> MELTING_FURNACE = withItem(BLOCKS.registerBlock("melting_furnace",
+            properties -> new MachineBlock(properties, () -> ModBlockEntities.MELTING_FURNACE.get()).research("ore_refining"),
+            properties -> properties
+                    .mapColor(MapColor.METAL)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()
+                    .lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0)));
 
     // ------------------------------------------------------------------
     // Phase 1 - Carburants

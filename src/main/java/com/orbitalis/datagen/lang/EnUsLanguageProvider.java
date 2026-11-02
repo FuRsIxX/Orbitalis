@@ -1944,6 +1944,10 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("pump.orbitalis.water_pump.no_power", "No power: the pump needs %s FE per tick.");
         add("launch.orbitalis.witness_points", "Your agency earns %s research points for this launch.");
         add("tank.orbitalis.tooltip", "Contains %s: %s mB");
+        add("block.orbitalis.induction_furnace", "Induction Furnace");
+        add("block.orbitalis.melting_furnace", "Melting Furnace");
+        add("research.orbitalis.node.ore_refining", "Ore Refining");
+        add("research.orbitalis.node.ore_refining.desc", "The melting furnace, which gets twice as many ingots out of every ore.");
         add("block.orbitalis.accumulator", "Accumulator");
         add("block.orbitalis.accumulator_advanced", "Advanced Accumulator");
         add("block.orbitalis.accumulator_elite", "Elite Accumulator");

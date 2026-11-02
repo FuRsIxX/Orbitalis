@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "#c:ingots/copper",
+    "F": "minecraft:furnace",
+    "H": "orbitalis:heating_element",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "ICI",
+    "HFH",
+    "IRI"
+  ],
+  "result": {
+    "id": "orbitalis:induction_furnace"
+  }
+}

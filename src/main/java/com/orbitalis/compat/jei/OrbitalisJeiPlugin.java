@@ -92,6 +92,8 @@ public class OrbitalisJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addCraftingStation(alloying, ModBlocks.ARC_FOUNDRY);
+        // Les fours électriques cuisent les recettes du four du jeu.
+        registration.addCraftingStation(mezz.jei.api.constants.RecipeTypes.SMELTING, ModBlocks.INDUCTION_FURNACE, ModBlocks.MELTING_FURNACE);
         registration.addCraftingStation(rolling, ModBlocks.ROLLING_MILL);
         registration.addCraftingStation(casimir, ModBlocks.CASIMIR_CHAMBER);
         registration.addCraftingStation(electrolysis, ModBlocks.ELECTROLYZER);

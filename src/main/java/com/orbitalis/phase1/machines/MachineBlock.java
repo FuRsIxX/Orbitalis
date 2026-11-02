@@ -66,8 +66,20 @@ public class MachineBlock extends BaseEntityBlock {
     }
 
     /** La face avant regarde le joueur qui pose le bloc. */
+    /** Technologie à maîtriser pour poser cette machine, ou {@code null} : posée librement. */
+    private String research;
+
+    /** La machine ne se pose qu'une fois cette technologie maîtrisée. */
+    public MachineBlock research(String nodeId) {
+        this.research = nodeId;
+        return this;
+    }
+
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
+        if (research != null && !com.orbitalis.core.research.ResearchManager.mayPlace(context, research)) {
+            return null;
+        }
         return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 

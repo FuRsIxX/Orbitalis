@@ -150,6 +150,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("pad_kit_deflector", () -> OrbitalisGameTests::padKitDeflector);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> PAD_DATA_LINK =
             FUNCTIONS.register("pad_data_link", () -> OrbitalisGameTests::padDataLink);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ELECTRIC_FURNACES =
+            FUNCTIONS.register("electric_furnaces", () -> OrbitalisGameTests::electricFurnaces);
 
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUSION_POWER =
             FUNCTIONS.register("fusion_power", () -> OrbitalisGameTests::fusionPower);
@@ -331,6 +333,9 @@ public final class OrbitalisGameTests {
         // Un pupitre suit le pas de tir que relie un câble de données à son port de données, ou un module sans fil.
         event.registerTest(Orbitalis.id("pad_data_link"), new FunctionGameTestInstance(
                 PAD_DATA_LINK.getKey(), spaced(environment, emptyStructure, 20)));
+        // Les fours électriques : l'un cuit plus vite, l'autre double les minerais et refuse le reste.
+        event.registerTest(Orbitalis.id("electric_furnaces"), new FunctionGameTestInstance(
+                ELECTRIC_FURNACES.getKey(), spaced(environment, emptyStructure, 400)));
         // Les cases invisibles d'un grand meuble se cassent comme le meuble, et le rendent.
         event.registerTest(Orbitalis.id("workstation_wings"), new FunctionGameTestInstance(
                 WORKSTATION_WINGS.getKey(), spaced(environment, emptyStructure, 20)));
@@ -4065,6 +4070,31 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                     "la jauge du second aurait dû montrer sa charge");
             helper.assertTrue(helper.getBlockState(first).getValue(com.orbitalis.phase1.power.AccumulatorBlock.CHARGE) == 2,
                     "la jauge du premier aurait dû montrer deux crans : " + helper.getBlockState(first));
+        });
+    }
+
+    /**
+     * Fours électriques : le four à induction cuit le fer brut en lingot ; le four de fusion en tire deux lingots, et
+     * refuse ce qui n'est pas un minerai (du sable).
+     */
+    private static void electricFurnaces(GameTestHelper helper) {
+        BlockPos inductionPos = new BlockPos(1, 1, 1);
+        BlockPos meltingPos = new BlockPos(4, 1, 1);
+        helper.setBlock(inductionPos, ModBlocks.INDUCTION_FURNACE.get());
+        helper.setBlock(meltingPos, ModBlocks.MELTING_FURNACE.get());
+        var induction = helper.getBlockEntity(inductionPos, com.orbitalis.phase1.machines.FurnaceMachineBlockEntity.class);
+        var melting = helper.getBlockEntity(meltingPos, com.orbitalis.phase1.machines.FurnaceMachineBlockEntity.class);
+        induction.getEnergy().generate(com.orbitalis.phase1.machines.MachineBlockEntity.ENERGY_CAPACITY);
+        melting.getEnergy().generate(com.orbitalis.phase1.machines.MachineBlockEntity.ENERGY_CAPACITY);
+        helper.assertTrue(!melting.acceptsInput(new ItemStack(Items.SAND)), "le four de fusion ne devrait prendre que des minerais");
+        helper.assertTrue(induction.acceptsInput(new ItemStack(Items.SAND)), "le four à induction devrait cuire le sable");
+        induction.getInventory().setStack(0, new ItemStack(Items.RAW_IRON));
+        melting.getInventory().setStack(0, new ItemStack(Items.RAW_IRON));
+        helper.succeedWhen(() -> {
+            ItemStack cooked = induction.getInventory().getStack(1);
+            ItemStack doubled = melting.getInventory().getStack(1);
+            helper.assertTrue(cooked.is(Items.IRON_INGOT) && cooked.getCount() == 1, "le four à induction aurait dû cuire un lingot : " + cooked);
+            helper.assertTrue(doubled.is(Items.IRON_INGOT) && doubled.getCount() == 2, "le four de fusion aurait dû donner deux lingots : " + doubled);
         });
     }
 

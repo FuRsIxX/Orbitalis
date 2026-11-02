@@ -42,6 +42,7 @@ public final class ResearchNodes {
         node(ResearchTree.STRUCTURES, "superalloys", ModItems.VACUUM_ENGINE, 70, 4, 0, "titanium_parts");
         node(ResearchTree.STRUCTURES, "stainless_steel", ModItems.STAINLESS_TANK, 100, 5, 0, "superalloys");
         node(ResearchTree.STRUCTURES, "composites", ModItems.COMPOSITE_TANK, 80, 3, 1, "aluminum_lithium");
+        node(ResearchTree.STRUCTURES, "ore_refining", ModBlocks.MELTING_FURNACE, 30, 2, 1, "aluminum_structures");
         node(ResearchTree.STRUCTURES, "heat_shields", ModItems.HEAT_SHIELD_TILE, 110, 4, 1, "composites");
 
         // --- Électronique et avionique ---

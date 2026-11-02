@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "minecraft:blast_furnace",
+    "C": "orbitalis:circuit_board",
+    "H": "orbitalis:heating_element",
+    "I": "orbitalis:induction_furnace",
+    "S": "#c:plates/steel"
+  },
+  "pattern": [
+    "SBS",
+    "HIH",
+    "SCS"
+  ],
+  "result": {
+    "id": "orbitalis:melting_furnace"
+  }
+}

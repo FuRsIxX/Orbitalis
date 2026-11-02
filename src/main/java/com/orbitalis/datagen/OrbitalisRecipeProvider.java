@@ -2093,6 +2093,31 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_heating_element", has(ModItems.HEATING_ELEMENT))
                 .save(output, key("arc_foundry"));
 
+        // Les fours électriques : un four du jeu entre deux résistances chauffantes ; le four de fusion part d'un four à
+        // induction et d'un haut fourneau.
+        shaped(RecipeCategory.MISC, ModBlocks.INDUCTION_FURNACE)
+                .pattern("ICI")
+                .pattern("HFH")
+                .pattern("IRI")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('C', Tags.Items.INGOTS_COPPER)
+                .define('H', ModItems.HEATING_ELEMENT)
+                .define('F', Items.FURNACE)
+                .define('R', Tags.Items.DUSTS_REDSTONE)
+                .unlockedBy("has_heating_element", has(ModItems.HEATING_ELEMENT))
+                .save(output, key("induction_furnace"));
+        shaped(RecipeCategory.MISC, ModBlocks.MELTING_FURNACE)
+                .pattern("SBS")
+                .pattern("HIH")
+                .pattern("SCS")
+                .define('S', ModTags.Items.PLATES_STEEL)
+                .define('B', Items.BLAST_FURNACE)
+                .define('H', ModItems.HEATING_ELEMENT)
+                .define('I', ModBlocks.INDUCTION_FURNACE)
+                .define('C', ModItems.CIRCUIT_BOARD)
+                .unlockedBy("has_induction_furnace", has(ModBlocks.INDUCTION_FURNACE))
+                .save(output, key("melting_furnace"));
+
         shaped(RecipeCategory.MISC, ModBlocks.ROLLING_MILL)
                 .pattern("SPS")
                 .pattern("I I")

@@ -12,6 +12,8 @@
     "orbitalis:combustion_generator",
     "orbitalis:arc_foundry",
     "orbitalis:rolling_mill",
+    "orbitalis:induction_furnace",
+    "orbitalis:melting_furnace",
     "orbitalis:electrolyzer",
     "orbitalis:cryogenic_liquefier",
     "orbitalis:refinery",

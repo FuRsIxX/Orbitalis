@@ -1944,6 +1944,10 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("pump.orbitalis.water_pump.no_power", "Pas d'énergie : la pompe demande %s FE par tick.");
         add("launch.orbitalis.witness_points", "Votre agence gagne %s points de recherche pour ce lancement.");
         add("tank.orbitalis.tooltip", "Contient %s : %s mB");
+        add("block.orbitalis.induction_furnace", "Four à induction");
+        add("block.orbitalis.melting_furnace", "Four de fusion");
+        add("research.orbitalis.node.ore_refining", "Affinage des minerais");
+        add("research.orbitalis.node.ore_refining.desc", "Le four de fusion, qui tire de chaque minerai deux fois plus de lingots.");
         add("block.orbitalis.accumulator", "Accumulateur");
         add("block.orbitalis.accumulator_advanced", "Accumulateur avancé");
         add("block.orbitalis.accumulator_elite", "Accumulateur d'élite");
