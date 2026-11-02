@@ -45,11 +45,11 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     private static final int TAB_X = -24;
     private static final int TAB_Y = 5;
     private static final int TAB_W = 24;
-    private static final int TAB_H = 40;
+    private static final int TAB_H = 42;
     private static final int SPEED_X = MachineMenu.UPGRADE_X - 1;
     private static final int SPEED_Y = MachineMenu.UPGRADE_Y + 19;
     private static final int SPEED_W = 18;
-    private static final int SPEED_H = 12;
+    private static final int SPEED_H = 14;
 
     // Écran d'état : zone de texte.
     private static final int STATUS_LEFT = 12;
@@ -135,7 +135,9 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         }
         String label = "×" + speed;
         int color = !enabled ? 0xFF7A7A7A : speed >= 8 ? 0xFFFF7A6A : speed > 1 ? 0xFFFFD45A : 0xFFFFFFFF;
-        graphics.text(font, label, x + (SPEED_W - font.width(label) + 1) / 2, y + 2, color, enabled);
+        // Le chiffre et son ombre font 12 pixels sur 8 : un pixel d'air de chaque côté dans la face, et une ligne en haut
+        // comme en bas. Éteint, il garde son ombre, comme les boutons désactivés du jeu, pour rester centré.
+        graphics.text(font, label, x + (SPEED_W - font.width(label) + 1) / 2, y + 3, color, true);
     }
 
     private boolean overSpeed(double mouseX, double mouseY) {

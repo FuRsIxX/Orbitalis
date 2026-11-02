@@ -298,6 +298,43 @@ public final class WorldPreview {
         }
     }
 
+    /**
+     * Ouvre l'écran de l'électrolyseur avec un état fictif : sorties pleines, purges à 50 %% et totale, un état long à
+     * côté de la consommation, et le surcadençage à cette vitesse sous ce plafond (1 : pas de module).
+     */
+    private static void openElectrolyzer(int speed, int maxSpeed) {
+        net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            var minecraft = net.minecraft.client.Minecraft.getInstance();
+            var data = new net.minecraft.world.inventory.SimpleContainerData(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT);
+            int base = com.orbitalis.phase1.machines.MachineMenu.BASE_DATA_COUNT;
+            data.set(0, 300);
+            data.set(2, 20_000);
+            data.set(base + 1, 100);
+            data.set(base + 2, 400);
+            int[][] tanks = {{net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(net.minecraft.world.level.material.Fluids.WATER), 6000},
+                    {net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(ModFluids.HYDROGEN.get()), 4000},
+                    {net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(ModFluids.OXYGEN.get()), 8000}};
+            for (int tank = 0; tank < 3; tank++) {
+                data.set(base + 3 + tank * 2, tanks[tank][0]);
+                data.set(base + 4 + tank * 2, tanks[tank][1]);
+            }
+            data.set(base + 9, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.HALF.ordinal());
+            data.set(base + 10, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.FULL.ordinal());
+            // Surcadençage : la vitesse choisie et le plafond du module.
+            data.set(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT - 2, speed);
+            data.set(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT - 1, maxSpeed);
+            var upgrades = com.orbitalis.phase1.machines.MachineBlockEntity.upgradeInventory(() -> {
+            });
+            upgrades.setStack(0, com.orbitalis.phase1.machines.OverclockModuleItem.forSpeed(maxSpeed));
+            var inventory = minecraft.player.getInventory();
+            var menu = new com.orbitalis.phase1.fuel.FluidMachineMenu(0, inventory, null,
+                    new com.orbitalis.phase1.machines.MachineInventory(1, (slot, stack) -> true, slot -> true, () -> {
+                    }), upgrades, data, com.orbitalis.phase1.fuel.FluidMachineLayout.ELECTROLYZER);
+            minecraft.gui.setScreen(new com.orbitalis.client.screen.FluidMachineScreen(menu, inventory,
+                    net.minecraft.network.chat.Component.translatable("block.orbitalis.electrolyzer")));
+        });
+    }
+
     private static void set(ServerLevel level, int x, int y, int z, String block) {
         run(level, "setblock %d %d %d %s".formatted(origin.getX() + x, origin.getY() + y, origin.getZ() + z, block));
     }
@@ -1542,36 +1579,12 @@ public final class WorldPreview {
         // L'eau d'un réservoir à côté d'une vraie eau, dans un trou du dallage : même texture, même teinte.
         SHOTS.add(new Shot("depot_water", level -> set(level, 27, -1, -19, "minecraft:water"), 27.5, 1.6, -16.4, 180.0F, 30.0F, 20));
         // L'écran de l'électrolyseur : sorties pleines, purges à 50 % et totale, et un état long à côté de la consommation.
-        SHOTS.add(new Shot("purge_screen", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
-            var minecraft = net.minecraft.client.Minecraft.getInstance();
-            var data = new net.minecraft.world.inventory.SimpleContainerData(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT);
-            int base = com.orbitalis.phase1.machines.MachineMenu.BASE_DATA_COUNT;
-            data.set(0, 300);
-            data.set(2, 20_000);
-            data.set(base + 1, 100);
-            data.set(base + 2, 400);
-            int[][] tanks = {{net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(net.minecraft.world.level.material.Fluids.WATER), 6000},
-                    {net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(ModFluids.HYDROGEN.get()), 4000},
-                    {net.minecraft.core.registries.BuiltInRegistries.FLUID.getId(ModFluids.OXYGEN.get()), 8000}};
-            for (int tank = 0; tank < 3; tank++) {
-                data.set(base + 3 + tank * 2, tanks[tank][0]);
-                data.set(base + 4 + tank * 2, tanks[tank][1]);
-            }
-            data.set(base + 9, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.HALF.ordinal());
-            data.set(base + 10, com.orbitalis.phase1.fuel.FluidMachineBlockEntity.Purge.FULL.ordinal());
-            // Surcadençage : un module ×8, réglé sur ×4.
-            data.set(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT - 2, 4);
-            data.set(com.orbitalis.phase1.fuel.FluidMachineMenu.DATA_COUNT - 1, 8);
-            var upgrades = com.orbitalis.phase1.machines.MachineBlockEntity.upgradeInventory(() -> {
-            });
-            upgrades.setStack(0, new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.OVERCLOCK_MODULE_X8.get()));
-            var inventory = minecraft.player.getInventory();
-            var menu = new com.orbitalis.phase1.fuel.FluidMachineMenu(0, inventory, null,
-                    new com.orbitalis.phase1.machines.MachineInventory(1, (slot, stack) -> true, slot -> true, () -> {
-                    }), upgrades, data, com.orbitalis.phase1.fuel.FluidMachineLayout.ELECTROLYZER);
-            minecraft.gui.setScreen(new com.orbitalis.client.screen.FluidMachineScreen(menu, inventory,
-                    net.minecraft.network.chat.Component.translatable("block.orbitalis.electrolyzer")));
-        }), 27.5, 1.6, -16.4, 180.0F, 30.0F, 20));
+        SHOTS.add(new Shot("purge_screen", level -> openElectrolyzer(4, 8), 27.5, 1.6, -16.4, 180.0F, 30.0F, 20));
+        // L'onglet de surcadençage à chaque vitesse, et sans module : le multiplicateur doit rester centré dans son bouton.
+        SHOTS.add(new Shot("overclock_none", level -> openElectrolyzer(1, 1), 27.5, 1.6, -16.4, 180.0F, 30.0F, 12));
+        for (int speed : new int[] {1, 2, 4, 8}) {
+            SHOTS.add(new Shot("overclock_x" + speed, level -> openElectrolyzer(speed, 8), 27.5, 1.6, -16.4, 180.0F, 30.0F, 12));
+        }
         SHOTS.add(new Shot("purge_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
                 () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), 27.5, 1.6, -16.4, 180.0F, 30.0F, 6));
         // Les réservoirs créatifs, de près : chacun doit montrer la couleur de son fluide.
