@@ -2273,6 +2273,18 @@ public final class WorldPreview {
         // Les deux conduites colorées du pas de tir d'essai, orange (RP-1) et bleu clair (oxygène), côte à côte.
         SHOTS.add(new Shot("tm_pipes", null, -15.0, -58.6, 47.6, 125.0F, 38.0F, 60));
         SHOTS.add(new Shot("tm_pipes_close", null, -17.0, -59.2, 45.0, 110.0F, 45.0F, 20));
+        // Les quatre accumulateurs de la carte de test : de face (jauges), de dos et de côté, puis l'écran du premier.
+        SHOTS.add(new Shot("tm_accumulators", null, -1.0, -59.4, 11.0, 180.0F, 22.0F, 60));
+        SHOTS.add(new Shot("tm_accumulators_back", null, 2.6, -58.6, 3.2, 35.0F, 35.0F, 20));
+        SHOTS.add(new Shot("tm_accumulator_screen", level -> {
+            var players = level.getServer().getPlayerList().getPlayers();
+            if (!players.isEmpty() && level.getBlockEntity(new net.minecraft.core.BlockPos(-4, -60, 7))
+                    instanceof com.orbitalis.phase1.power.AccumulatorBlockEntity accumulator) {
+                players.get(0).openMenu(accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
+            }
+        }, -1.0, -59.4, 11.0, 180.0F, 22.0F, 30));
+        SHOTS.add(new Shot("tm_accumulator_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
+                () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), -1.0, -59.4, 11.0, 180.0F, 22.0F, 4));
         // Des tuyaux sans couleur, à liquides puis à gaz : ils doivent garder leur aspect d'origine (nœuds bleus ou de
         // laiton, arêtes sombres).
         SHOTS.add(new Shot("tm_pipes_plain", level -> {

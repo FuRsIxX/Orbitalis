@@ -11,6 +11,7 @@ Outils communs aux générateurs de modèles d'Orbitalis.
   qu'un bloc ou dont le centre n'est pas celui du bloc.
 """
 import math
+import re
 
 FACES = ("north", "south", "west", "east", "up", "down")
 # Axe et sens de chaque face.
@@ -43,15 +44,22 @@ def _uv(face, lo, hi):
 _FACE_AXES = {"north": (0, 1), "south": (0, 1), "east": (2, 1), "west": (2, 1), "up": (0, 2), "down": (0, 2)}
 # En dessous de cette épaisseur, une face ne reçoit plus la texture entière : elle serait tassée en traînées lisses.
 _THIN = 8
+# Textures de matière (aciers, laiton, caillebotis, châssis, poutres) : elles se découpent sans rien perdre. Les autres
+# sont des dessins à voir en entier (panneaux, écrans, cadrans, plantes, hublots...) et gardent l'image entière.
+_MATERIAL = re.compile(r"steel|stainless|brass|tread|hazard|machine_(metal|dark|light)|capsule_(side|trim)|shell|frame|"
+                       r"truss|workbench_(alu|accent|tube|top|light)|insulator|pad_cable$|conduit|alu|metal")
 
 
-def whole_uv(face, lo, hi):
+def whole_uv(face, lo, hi, texture=None):
     """
     Portion de texture d'une face qui ne suit pas la grille (pièce tournée ou qui dépasse du bloc). Sur un axe où la
     face est large, la texture entière ; sur un axe où elle est fine (une poutre, un rebord), une tranche du milieu de
     la texture, de la même taille que la face : un pixel de texture y reste un pixel de bloc, comme dans le jeu, au lieu
-    d'une texture de 16 pixels tassée en traînées.
+    d'une texture de 16 pixels tassée en traînées. Seulement pour une texture de matière (texture : le nom du
+    fichier) : un dessin (panneau, écran, cadran) garde son image entière, quitte à être tassé.
     """
+    if texture is not None and not _MATERIAL.search(texture):
+        return [0, 0, 16, 16]
     spans = []
     for axis in _FACE_AXES[face]:
         size = abs(hi[axis] - lo[axis])
@@ -93,7 +101,7 @@ def build_tiled(parts, textures, emissive=(), particle="orbitalis:block/machine_
                     continue
                 name = own.get(face, part["texture"])
                 used.add(name)
-                uv = forced.get(face) or (whole_uv(face, a, b) if whole else [round(v, 4) for v in _uv(face, a, b)])
+                uv = forced.get(face) or (whole_uv(face, a, b, textures[name]) if whole else [round(v, 4) for v in _uv(face, a, b)])
                 faces[face] = {"texture": "#" + name, "uv": uv}
             if not faces:
                 continue

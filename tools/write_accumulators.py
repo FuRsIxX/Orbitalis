@@ -13,7 +13,8 @@ amélioration :
 
 La face avant, celle qui regarde le joueur à la pose, porte la jauge : cinq crans qui s'allument de bas en haut. Le dos
 porte la sortie, un connecteur rond orange ; les flancs, des entrées, un connecteur bleu entre deux grilles. Le dessus
-porte quatre crans qui disent la génération. Un modèle par cran de charge (de 0 à 5) ; le jeu le tourne vers l'avant.
+porte quatre crans qui disent la génération ; le dessous, quatre patins et une grille. Chaque face est un panneau en
+creux dans son cadre. Un modèle par cran de charge (de 0 à 5) ; le jeu le tourne vers l'avant.
 
 Usage : python tools/write_accumulators.py
 """
@@ -69,6 +70,12 @@ def chassis(t):
         dot(img, 1, k, mix(t["trim"], "#FFFFFF", 0.12))
         dot(img, k, 14, mix(t["trim"], "#000000", 0.3))
         dot(img, 14, k, mix(t["trim"], "#000000", 0.2))
+    # Le panneau en creux, dans le cadre : une ombre en haut à gauche, une lumière en bas à droite.
+    for k in range(2, 14):
+        dot(img, k, 2, mix(body, "#000000", 0.28))
+        dot(img, 2, k, mix(body, "#000000", 0.2))
+        dot(img, k, 13, mix(body, "#FFFFFF", 0.14))
+        dot(img, 13, k, mix(body, "#FFFFFF", 0.1))
     if t["tier"] >= 2:
         for cx, cy in ((1, 1), (12, 1), (1, 12), (12, 12)):
             for y in range(cy, cy + 3):
@@ -117,6 +124,10 @@ def front(t, charge):
     for y in (8, 9, 10):
         for x in (12, 13):
             dot(img, x, y, "#F2C14E" if (x + y) % 2 == 0 else SEAM)
+    # L'interrupteur, sous la plaquette : un boîtier sombre et sa manette claire, levée quand il y a du courant.
+    for x in (12, 13):
+        dot(img, x, 12, SEAM)
+    dot(img, 12 if on else 13, 12, mix(t["trim"], "#FFFFFF", 0.5))
     return img
 
 
@@ -144,6 +155,11 @@ def back(t):
         dot(img, x, 4, mix(t["trim"], "#FFFFFF", 0.3))
     for x in range(4, 12):
         dot(img, x, 13, "#F2C14E" if x % 2 == 0 else SEAM)
+    # Deux boulons de fixation, sous le connecteur.
+    for x in (4, 11):
+        dot(img, x, 11, mix(t["trim"], "#FFFFFF", 0.45))
+        dot(img, x + 1, 11, mix(t["trim"], "#000000", 0.2))
+        dot(img, x, 12, mix(t["trim"], "#000000", 0.35))
     return img
 
 
@@ -160,6 +176,12 @@ def side(t):
     for x in (2, 13):
         for y in (5, 6, 9, 10):
             dot(img, x, y, mix(t["body"], "#000000", 0.25))
+    # Un liseré de la couleur de la génération sous la grille du bas, et deux voyants de part et d'autre de la prise.
+    for x in range(5, 11):
+        dot(img, x, 13, mix(t["accent"], t["body"], 0.45))
+    for x in (3, 12):
+        dot(img, x, 7, mix(t["accent"], "#FFFFFF", 0.3))
+        dot(img, x, 8, mix(t["accent"], "#000000", 0.25))
     return img
 
 
@@ -181,6 +203,25 @@ def top(t):
         for x in (3 + 3 * k, 4 + 3 * k):
             dot(img, x, 10, mix(t["accent"], "#FFFFFF", 0.35) if lit else "#2A3036")
             dot(img, x, 11, t["accent"] if lit else "#222930")
+    # Deux boulons de fixation, sous les crans.
+    for x in (4, 11):
+        dot(img, x, 13, mix(t["trim"], "#FFFFFF", 0.45))
+        dot(img, x + 1, 13, mix(t["trim"], "#000000", 0.25))
+    return img
+
+
+def bottom(t):
+    """Le dessous : quatre patins sombres aux coins du panneau, et une grille d'évacuation au milieu."""
+    img = chassis(t)
+    for cx, cy in ((3, 3), (11, 3), (3, 11), (11, 11)):
+        for y in (cy, cy + 1):
+            for x in (cx, cx + 1):
+                dot(img, x, y, "#1A1D21")
+        dot(img, cx, cy, "#2C3036")
+    for y in (6, 8):
+        for x in range(6, 10):
+            dot(img, x, y, SEAM)
+            dot(img, x, y + 1, mix(t["body"], "#FFFFFF", 0.15))
     return img
 
 
@@ -198,7 +239,7 @@ def main():
         gm.write_texture("accumulator%s_back" % suffix, [back(t)])
         gm.write_texture("accumulator%s_side" % suffix, [side(t)])
         gm.write_texture("accumulator%s_top" % suffix, [top(t)])
-        gm.write_texture("accumulator%s_bottom" % suffix, [chassis(t)])
+        gm.write_texture("accumulator%s_bottom" % suffix, [bottom(t)])
         for charge in range(MAX_CHARGE + 1):
             gm.write_texture("accumulator%s_front_%d" % (suffix, charge), [front(t, charge)])
             with open(os.path.join(gm.MODEL_DIR, "accumulator%s_%d.json" % (suffix, charge)), "w", newline="\n") as f:

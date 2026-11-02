@@ -98,10 +98,7 @@ public class AccumulatorScreen extends AbstractContainerScreen<AccumulatorMenu> 
         int y = topPos;
         AccumulatorBlock.Tier tier = menu.tier();
         Ui.panel(graphics, x, y, WIDTH, HEIGHT);
-        // Les crans de la génération, en haut à droite, puis un filet sous l'en-tête.
-        for (int k = 0; k < AccumulatorBlock.Tier.values().length; k++) {
-            Ui.round(graphics, x + WIDTH - PAD - 4 * 8 + 1 + k * 8, y + 9, 6, 4, k <= tier.ordinal() ? tier.color : Ui.LINE_HI);
-        }
+        // Un filet sous l'en-tête.
         Ui.hline(graphics, x + PAD, y + 21, INNER);
         // La barre de charge, sur toute la largeur, graduée tous les dixièmes.
         Ui.round(graphics, x + PAD, y + BAR_Y, INNER, BAR_H, Ui.LINE);

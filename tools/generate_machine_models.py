@@ -555,7 +555,7 @@ def build_extra(parts, own_textures, emissive):
         if part.get("stretch") or any(c < 0 or c > 16 for c in part["from"] + part["to"]):
             # Pièce qui dépasse du bloc : la texture entière sur chaque face, sauf en travers d'une face fine.
             for name, face in faces.items():
-                face["uv"] = whole_uv(name, part["from"], part["to"])
+                face["uv"] = whole_uv(name, part["from"], part["to"], names[face["texture"][1:]])
         # Portion de texture imposée à certaines faces (une conduite garde ainsi des pixels de la taille de ceux des blocs).
         for face, uv in part.get("uv", {}).items():
             faces[face]["uv"] = uv
