@@ -28,6 +28,8 @@ public final class GuideScenes {
     private static final int HYDROGEN = ModFluids.LIQUID_HYDROGEN.color();
     private static final int OXYGEN = ModFluids.LIQUID_OXYGEN.color();
     private static final int VAPOR = 0xFFE8F4FF;
+    private static final int WATER = 0xFF3F76E4;
+    private static final int DATA = 0xFF3FD8F2;
 
     private static final Map<String, GuideScene> SCENES = new HashMap<>();
 
@@ -39,6 +41,8 @@ public final class GuideScenes {
         register(fuels());
         register(cryogenics());
         register(storage());
+        register(quarry());
+        register(testPad());
         // Un pas de tir par taille : le 5×5 dans le chapitre du pas de tir, puis un chapitre pour chacune des autres.
         register(launchPad("launch_complex", 2));
         register(launchPad("pad_9x9", 4));
@@ -146,7 +150,7 @@ public final class GuideScenes {
         GuideScene.Builder builder = GuideScene.builder(chapterId).step().block(ModBlocks.LAUNCH_TABLE, 0, 1, 0);
         List<java.util.function.Predicate<PadPlan.Piece>> steps = List.of(
                 piece -> piece.role() == PadPlan.Role.DEFLECTOR || piece.role() == PadPlan.Role.SUPPORT,
-                piece -> piece.role() == PadPlan.Role.DECK,
+                piece -> piece.role() == PadPlan.Role.DECK || piece.role() == PadPlan.Role.ACCESS,
                 piece -> piece.role() == PadPlan.Role.TRENCH,
                 piece -> piece.role() == PadPlan.Role.MAST || piece.role() == PadPlan.Role.DELUGE,
                 piece -> piece.role() == PadPlan.Role.TOWER && piece.block() == ModBlocks.SERVICE_TOWER.get(),
@@ -174,6 +178,73 @@ public final class GuideScenes {
                         // Le pupitre est rapproché pour tenir dans l'image : en jeu, il se pose à 8 blocs au moins.
                         .block(ModBlocks.LAUNCH_CONSOLE, 0, 0, radius + 3)
                 .build();
+    }
+
+    /** Pose les blocs du plan dont le rôle est l'un de ceux-là, un bloc plus haut que le plan (le sol est en y = 0). */
+    private static void padPieces(GuideScene.Builder builder, PadPlan plan, PadPlan.Role... roles) {
+        List<PadPlan.Role> wanted = List.of(roles);
+        for (PadPlan.Piece piece : plan.pieces()) {
+            if (wanted.contains(piece.role())) {
+                Block block = piece.block();
+                BlockPos at = piece.offset();
+                builder.block(() -> block, at.getX(), at.getY() + 1, at.getZ(), piece.facing() != null ? piece.facing() : Direction.SOUTH);
+            }
+        }
+    }
+
+    /**
+     * Pas de tir d'essai : la table, le déflecteur, les huit dalles, le carneau, la mise en service, puis l'électricité
+     * et le pupitre d'essai relié par câble de données à un port de données.
+     */
+    private static GuideScene testPad() {
+        PadPlan plan = PadPlan.test(Direction.EAST);
+        GuideScene.Builder builder = GuideScene.builder("test_pad").step().block(ModBlocks.LAUNCH_TABLE, 0, 1, 0);
+        builder.step();
+        padPieces(builder, plan, PadPlan.Role.DEFLECTOR, PadPlan.Role.SUPPORT);
+        builder.step();
+        padPieces(builder, plan, PadPlan.Role.DECK, PadPlan.Role.ACCESS);
+        builder.step();
+        padPieces(builder, plan, PadPlan.Role.TRENCH);
+        return builder
+                .step().lit(0, 1, 0)
+                .step().block(ModBlocks.COMBUSTION_GENERATOR, 1, 1, 2).lit(1, 1, 2)
+                        .flow(ENERGY, at(1, 1, 2), at(1, 1, 1))
+                        .block(ModBlocks.FUEL_PORT, -1, 1, 2)
+                        .block(ModBlocks.DATA_CABLE, -1, 1, 3).block(ModBlocks.DATA_CABLE, -1, 1, 4)
+                        .block(ModBlocks.TEST_CONSOLE, -1, 1, 5, Direction.NORTH)
+                        .flow(DATA, at(-1, 1, 5), at(-1, 1, 2))
+                .build();
+    }
+
+    /**
+     * Foreuse : elle regarde le sud (la zone forée est devant elle, vers la caméra). Le socle, deux étages de mâts
+     * pour la plus petite tour, les raccords, puis deux étages de plus.
+     */
+    private static GuideScene quarry() {
+        GuideScene.Builder builder = GuideScene.builder("quarry").step().block(ModBlocks.DRILL_DERRICK, 0, 0, 0, Direction.SOUTH);
+        List<com.orbitalis.phase1.quarry.DerrickPlan.Piece> pieces = com.orbitalis.phase1.quarry.DerrickPlan.pieces(Direction.SOUTH, 4);
+        // Étape par hauteur : le socle (y = 0), puis chaque étage de mâts ; les deux derniers vont ensemble.
+        for (int y = 0; y <= 4; y++) {
+            if (y != 4) {
+                builder.step();
+            }
+            for (com.orbitalis.phase1.quarry.DerrickPlan.Piece piece : pieces) {
+                if (piece.offset().getY() == y) {
+                    Block block = piece.block();
+                    builder.block(() -> block, piece.offset().getX(), y, piece.offset().getZ());
+                }
+            }
+            if (y == 2) {
+                // La plus petite tour est complète : elle fore. Puis ses raccords, avant les étages de plus.
+                builder.lit(0, 0, 0)
+                        .step().block(ModBlocks.COMBUSTION_GENERATOR, 2, 0, -1).lit(2, 0, -1)
+                        .flow(ENERGY, at(2, 0, -1), at(1, 0, -1))
+                        .block(ModBlocks.WATER_PUMP, -2, 0, -1)
+                        .flow(WATER, at(-2, 0, -1), at(-1, 0, -1))
+                        .block(() -> net.minecraft.world.level.block.Blocks.BARREL, 0, 0, -3);
+            }
+        }
+        return builder.build();
     }
 
     /** Stockage : alimenté, le réservoir conserve son contenu ; sans énergie, l'ergol s'évapore. */

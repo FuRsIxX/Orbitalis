@@ -30,6 +30,8 @@ public final class GuideChapters {
             new GuideChapter("accumulators", MACHINES, ModBlocks.ACCUMULATOR),
             new GuideChapter("arc_foundry", MACHINES, ModBlocks.ARC_FOUNDRY),
             new GuideChapter("rolling_mill", MACHINES, ModBlocks.ROLLING_MILL),
+            new GuideChapter("furnaces", MACHINES, ModBlocks.INDUCTION_FURNACE),
+            new GuideChapter("overclocking", MACHINES, ModItems.OVERCLOCK_MODULE_X4),
             new GuideChapter("conduits", MACHINES, ModBlocks.ENERGY_CABLE),
             new GuideChapter("automation", MACHINES, () -> Items.HOPPER),
             new GuideChapter("quarry", MACHINES, ModBlocks.DRILL_DERRICK),
