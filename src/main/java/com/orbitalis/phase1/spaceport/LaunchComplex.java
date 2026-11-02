@@ -155,15 +155,21 @@ public record LaunchComplex(int radius, int missingPads, boolean skyClear, int t
         return state.is(ModBlocks.ROCKET.get()) || state.getBlock() instanceof RocketPartBlock;
     }
 
-    /** Blocs du plan qui ne sont pas encore en place autour de la table, du bas vers le haut. */
+    /**
+     * Blocs du plan qui ne sont pas encore en place autour de la table, du bas vers le haut. Les escaliers d'accès,
+     * facultatifs, n'en sont que tant que le pas de tir se construit : une fois tout le reste posé, il est formé avec ou
+     * sans eux, et un escalier retiré ne manque plus (ni fantôme, ni pose automatique, ni pas de tir défait).
+     */
     public static List<PadPlan.Piece> missingPieces(Level level, BlockPos table, PadPlan plan) {
         List<PadPlan.Piece> missing = new ArrayList<>();
+        boolean required = false;
         for (PadPlan.Piece piece : plan.pieces()) {
             if (!piece.accepts(level.getBlockState(table.offset(piece.offset())))) {
                 missing.add(piece);
+                required |= !piece.optional();
             }
         }
-        return missing;
+        return required ? missing : List.of();
     }
 
     /** Ce qu'il reste à poser : le nombre de blocs de chaque sorte. */

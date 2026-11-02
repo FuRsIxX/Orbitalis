@@ -1799,6 +1799,14 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                     "le bloc du bras ombilical aurait dû s'effacer sur un pas de tir en service");
         }
 
+        // Aucun plan ne pose deux blocs au même endroit, avec les deux escaliers d'accès, quelle que soit sa taille.
+        for (int radius = 1; radius <= 5; radius++) {
+            for (boolean lift : new boolean[] {false, true}) {
+                PadPlan sized = new PadPlan(radius, lift, Direction.EAST, 3, 4, false, false);
+                long distinct = sized.pieces().stream().map(PadPlan.Piece::offset).distinct().count();
+                helper.assertTrue(distinct == sized.pieces().size(), "deux blocs du plan " + radius + (lift ? " (ascenseur)" : "") + " au même endroit");
+            }
+        }
         // Un bloc de chaque rôle est indispensable : on le retire, on vérifie que le pas de tir n'est plus validé et
         // que la table dit ce qui manque, puis on le remet.
         java.util.Set<PadPlan.Role> seen = java.util.EnumSet.noneOf(PadPlan.Role.class);
@@ -1808,6 +1816,13 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             }
             BlockPos pos = helper.absolutePos(tablePos).offset(piece.offset());
             helper.getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+            if (piece.optional()) {
+                // Un escalier d'accès est facultatif : sans lui, le pas de tir reste formé, et rien ne manque.
+                helper.assertTrue(table.getComplex().isComplete() && LaunchTableBlock.missingParts(helper.getLevel(), table).isEmpty(),
+                        "retirer un escalier d'accès ne devrait pas défaire le pas de tir");
+                helper.getLevel().setBlockAndUpdate(pos, piece.display());
+                continue;
+            }
             helper.assertTrue(!table.getComplex().isComplete(), "le pas de tir ne devrait plus être validé sans : " + piece.block().getName().getString());
             helper.assertTrue(LaunchTableBlock.missingParts(helper.getLevel(), table).size() == 2, "la table devrait dire ce qui manque");
             helper.getLevel().setBlockAndUpdate(pos, piece.display());
@@ -1819,9 +1834,9 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         PadPlan raised = plan.raised(true);
         helper.assertTrue(raised.pieces().stream().anyMatch(piece -> piece.role() == PadPlan.Role.SUPPORT)
                 && raised.riserBase().getY() == -1 && plan.riserBase().getY() == 0
-                && raised.pieces().stream().filter(piece -> piece.role() == PadPlan.Role.ACCESS).count() == 2
-                && plan.pieces().stream().filter(piece -> piece.role() == PadPlan.Role.ACCESS).count() == 1,
-                "l'ancienne forme surélevée devrait garder ses appuis, sa tour plus basse et ses deux marches");
+                && raised.pieces().stream().filter(piece -> piece.role() == PadPlan.Role.ACCESS).count() == 4
+                && plan.pieces().stream().filter(piece -> piece.role() == PadPlan.Role.ACCESS).count() == 2,
+                "l'ancienne forme surélevée devrait garder ses appuis, sa tour plus basse et ses deux marches de chaque côté");
         helper.assertTrue(table.getComplex().isComplete(), "le pas de tir devrait être de nouveau complet");
 
         // Une table sans plan ne forme rien, et le dit.

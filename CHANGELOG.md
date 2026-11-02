@@ -2,6 +2,7 @@
 
 ## Changements
 - Améliorer un accumulateur garde son énergie : la génération suivante, fabriquée autour de l'ancienne, reprend toute sa charge ; seule la capacité augmente.
+- Pas de tir : le plan prévoit maintenant un escalier d'accès de chaque côté du tablier, et ils sont facultatifs. On peut retirer l'un, l'autre ou les deux d'un pas de tir formé sans le défaire : il reste en service, ne les remontre pas en fantôme et ne les repose pas.
 - Foreuse : elle ne perce plus de puits au milieu de la zone avant de forer. En mode « Filons » comme en mode « Tout miner », elle fouille directement la zone couche par couche.
 
 # Orbitalis — 0.10.0 (bêta)
@@ -132,6 +133,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 ## Changes
 - Upgrading an accumulator keeps its energy: the next generation, crafted around the old one, takes over its whole charge; only the capacity goes up.
+- Launch pads: the plan now has an access stair on each side of the deck, and both are optional. You can remove either or both from a formed pad without breaking it: it stays in service, doesn't show them as ghosts again and doesn't put them back.
 - Drill rig: it no longer bores a shaft in the middle of the area before drilling. In both "Ores" and "Mine all" modes, it goes straight through the area layer by layer.
 
 # Orbitalis — 0.10.0 (beta)

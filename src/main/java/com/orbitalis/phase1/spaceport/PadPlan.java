@@ -90,6 +90,14 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
             return state.is(block) || (alternative != null && state.is(alternative));
         }
 
+        /**
+         * Vrai pour un escalier d'accès au tablier : il est du plan, mais facultatif. On peut le retirer d'un pas de tir
+         * formé sans le défaire (voir {@link LaunchComplex#missingPieces}).
+         */
+        public boolean optional() {
+            return role == Role.ACCESS;
+        }
+
         /** État du bloc tel que le plan le montre. */
         public BlockState display() {
             if (shown != null) {
@@ -427,13 +435,15 @@ public record PadPlan(int radius, boolean elevator, Direction facing, int gate, 
                 }
             }
         }
-        // Escalier d'accès contre le flanc gauche du tablier, du sol jusqu'à son dessus : une marche, ou deux pour
-        // l'ancienne forme surélevée.
-        Direction up = front.getClockWise();
-        if (plan.raised) {
-            pieces.add(new Piece(plan.at(0, -1, -r - 2), Role.ACCESS, ModBlocks.TOWER_STAIRS.get(), null, up, -1));
+        // Escaliers d'accès contre les deux flancs du tablier, du sol jusqu'à son dessus : une marche, ou deux pour
+        // l'ancienne forme surélevée. Ils sont facultatifs : on peut retirer l'un ou l'autre, ou les deux.
+        for (int side : new int[] {-1, 1}) {
+            Direction up = side < 0 ? front.getClockWise() : front.getCounterClockWise();
+            if (plan.raised) {
+                pieces.add(new Piece(plan.at(0, -1, side * (r + 2)), Role.ACCESS, ModBlocks.TOWER_STAIRS.get(), null, up, -1));
+            }
+            pieces.add(new Piece(plan.at(0, 0, side * (r + 1)), Role.ACCESS, ModBlocks.TOWER_STAIRS.get(), null, up, -1));
         }
-        pieces.add(new Piece(plan.at(0, 0, -r - 1), Role.ACCESS, ModBlocks.TOWER_STAIRS.get(), null, up, -1));
         // Le bras ombilical, accroché à la colonne technique et tourné vers la fusée.
         pieces.add(new Piece(plan.armOffset(), Role.ARM, ModBlocks.UMBILICAL_ARM.get(), null, front, plan.armLevel()));
         return List.copyOf(pieces);
