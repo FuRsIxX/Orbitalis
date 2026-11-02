@@ -1,4 +1,6 @@
-# Orbitalis — prochaine version
+# Orbitalis — 0.10.1 (bêta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
 
 ## Changements
 - Améliorer un accumulateur garde son énergie : la génération suivante, fabriquée autour de l'ancienne, reprend toute sa charge ; seule la capacité augmente.
@@ -15,7 +17,6 @@
 - **Tuyaux colorés** : un clic droit à main vide sur un tuyau à liquides ou à gaz change sa couleur (orange, bleu clair, blanc, vert, violet, bleu, jaune, rouge, puis sans couleur) ; ses nœuds, ses colliers et ses arêtes en prennent la teinte. Deux tuyaux de couleurs différentes ne se raccordent jamais, même collés, et restent deux réseaux ; un tuyau sans couleur se raccorde à tous. Posé contre un port de pas de tir, un tuyau prend la couleur de son ergol (orange pour le RP-1, bleu clair pour l'oxygène, blanc pour l'hydrogène, vert pour le méthane, violet pour l'hélium-3, bleu pour l'eau), et un tuyau posé sur un tuyau coloré en prolonge la couleur : les conduites des ports côte à côte ne se mélangent plus. Le clic droit accroupi garde le mode aspiration.
 - Accumulateurs : plus de détails sur toutes les faces, en restant simple (panneau en creux dans le cadre, interrupteur, boulons, voyants et liseré de la génération sur les flancs, patins et grille dessous). L'écran ne montre plus les crans de la génération.
 - Les panneaux des ports de pas de tir (RP1, LOX, H2O...), les panneaux de sortie et de danger, les écrans, les cadrans, les plans et les plantes des bacs retrouvent leur dessin entier : seules les textures de matière (aciers, laiton, caillebotis, châssis) gardent les pixels nets des pièces fines.
-- Fusées assemblées, étages comme boosters, dans un même style : chaque panneau du corps a son joint vertical, son arête claire et sa file de rivets ; seule la matière change d'un étage à l'autre. L'aluminium-lithium perd son quadrillage en losanges pour des lisses verticales, les segments de poudre des boosters ont un vrai joint boulonné, et toutes les tuyères s'évasent en sept paliers fins, parcourues de leurs tubes de refroidissement, au lieu de descendre en marches.
 - Boosters latéraux des fusées assemblées : ils reprennent l'aspect des blocs de booster qu'on pose. Corps de poudre blanc cerclé de bagues noires et d'un filet rouge, ligne d'alimentation en cuivre, bande de danger au pied, tuyère large rougie par la chaleur, et une pointe en gradins à sonde rouge ; plus d'ailerons de fusée-sonde. Un booster déjà dressé prend ce nouvel aspect la prochaine fois que sa fusée est assemblée.
 - Étages des fusées assemblées : comme les boosters, ils reprennent l'aspect des blocs de fusée qu'on pose. Chaque tronçon a la peau de son bloc ; les réservoirs sont cerclés de deux frettes et longés d'une ligne de cuivre, les tuyères prennent la texture des blocs de moteur et leur bague de cuivre, l'interétage sa bande de danger, la coiffe ses coutures et ses trappes cerclées de laiton, la pointe ses gradins et sa sonde rouge. Sur un lanceur lourd, les bagues affleurent le corps.
 - Moteurs des fusées assemblées : sous la jupe, ce sont maintenant de vrais moteurs, tels les blocs de moteur (le cardan, la chambre, deux turbopompes de cuivre, la tuyère en trois gradins cerclée de cuivre), au lieu de plaques empilées. Un seul moteur sous un lanceur moyen, cinq sous un lanceur lourd ; tuyères orangées au kérosène, cuivrées à l'hydrogène. Les moteurs à pression et à poudre prennent la tuyère de leur bloc.
@@ -146,7 +147,9 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 ---
 
-# Orbitalis — next version
+# Orbitalis — 0.10.1 (beta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommended*
 
 ## Changes
 - Upgrading an accumulator keeps its energy: the next generation, crafted around the old one, takes over its whole charge; only the capacity goes up.
@@ -163,7 +166,6 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - **Colored pipes**: right-click a fluid or gas pipe with an empty hand to change its color (orange, light blue, white, green, purple, blue, yellow, red, then no color); its nodes, collars and rails take the tint. Two pipes of different colors never connect, even side by side, and stay two networks; a pipe with no color connects to all. Placed against a launch pad port, a pipe takes its propellant's color (orange for RP-1, light blue for oxygen, white for hydrogen, green for methane, purple for helium-3, blue for water), and a pipe placed on a colored pipe carries its color on: lines from side-by-side ports no longer merge. Sneak right-click still toggles pull mode.
 - Accumulators: more detail on every face while staying simple (a recessed panel in the frame, a switch, bolts, side lights and a tier-colored strip, feet and a grille underneath). The screen no longer shows the tier pips.
 - Launch pad port signs (RP1, LOX, H2O...), exit and warning signs, screens, dials, blueprints and tray plants show their whole picture again: only material textures (steels, brass, grating, frames) keep crisp pixels on thin parts.
-- Assembled rockets, stages and boosters alike, share one style: every body panel has its vertical seam, a light edge and a line of rivets; only the material changes from stage to stage. Aluminum-lithium loses its diamond grid for vertical stringers, booster solid segments get a proper bolted joint, and every nozzle flares in seven fine steps with its cooling tubes instead of going down like stairs.
 - Side boosters on assembled rockets now look like the booster blocks you place: a white solid body ringed in black with a red stripe, a copper feed line, a hazard band at the foot, a wide heat-reddened nozzle and a stepped nose with a red-tipped probe; no more sounding-rocket fins. A booster already standing takes the new look the next time its rocket is assembled.
 - Assembled rocket stages, like the boosters, now look like the rocket blocks you place. Each section wears its block's skin; tanks get two frames and a copper feed line, nozzles take the engine blocks' texture and copper collar, the interstage its hazard band, the fairing its seams and brass-rimmed hatches, the nose its steps and red-tipped probe. On a heavy launcher the rings sit flush with the body.
 - Assembled rocket engines: under the skirt they are now real engines like the engine blocks (gimbal, chamber, two copper turbopumps, a three-step nozzle with its copper collar) instead of stacked plates. One engine under a medium launcher, five under a heavy one; orange nozzles for kerosene, copper for hydrogen. Pressure-fed and solid engines take their block's nozzle.
