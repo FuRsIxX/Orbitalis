@@ -308,6 +308,31 @@ public final class WorldPreview {
                 new com.orbitalis.client.screen.ShipHelmScreen(new com.orbitalis.core.network.ShipHelmPayload(new BlockPos(39, 99, -4), values))));
     }
 
+    /**
+     * Le poste de pilotage du vaisseau de la carte de test, là où se trouve le joueur : au chantier (poupe en 15 100 -4)
+     * ou à la place de l'agence en orbite de Proxima b. Proxima b est d'abord découverte ; puis l'écran s'ouvre, ou le
+     * saut est ordonné.
+     */
+    private static void helm(ServerLevel level, boolean jump) {
+        net.minecraft.server.MinecraftServer server = level.getServer();
+        net.minecraft.server.level.ServerPlayer player = server.getPlayerList().getPlayers().get(0);
+        String agency = ResearchManager.agencyKey(player);
+        com.orbitalis.phase1.satellite.SatelliteManager.of(server, agency).discover(com.orbitalis.phase1.satellite.CelestialBody.PROXIMA_B);
+        com.orbitalis.phase3.interstellar.ShipVoyages.Voyage voyage = com.orbitalis.phase3.interstellar.ShipVoyages.of(server).of(agency);
+        BlockPos origin = player.level().dimension() == SpaceRules.PROXIMA_ORBIT && voyage != null ? voyage.awayOrigin() : new BlockPos(15, 100, -4);
+        BlockPos helm = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                com.orbitalis.phase3.interstellar.ShipPlan.HELM_A, 0, com.orbitalis.phase3.interstellar.ShipPlan.HELM_Y));
+        if (jump) {
+            com.orbitalis.phase3.interstellar.ShipJump.request(player, helm);
+        } else {
+            com.orbitalis.core.network.ModNetwork.send(player, com.orbitalis.phase3.interstellar.ShipJump.status(player, helm, origin, Direction.EAST));
+        }
+    }
+
+    private static void closeScreen() {
+        net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null));
+    }
+
     private static void openElectrolyzer(int speed, int maxSpeed) {
         net.minecraft.client.Minecraft.getInstance().execute(() -> {
             var minecraft = net.minecraft.client.Minecraft.getInstance();
@@ -2433,6 +2458,20 @@ public final class WorldPreview {
                 39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
         SHOTS.add(new Shot("tm_helm_away", level -> openHelm(java.util.List.of(412, 412, 1, 4, 1, 4, 4, 8, 8, 1, 1, 0, 61)),
                 39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
+        // Le saut, en vrai, après tm_orbit_ship : l'écran du poste, le compte à rebours, l'arrivée en orbite de Proxima b
+        // (place 0 de l'agence, poupe en 0 120 0), le berceau vide, puis le retour au chantier.
+        SHOTS.add(new Shot("tm_orbit_jump_helm", level -> helm(level, false), 39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
+        SHOTS.add(new Shot("tm_orbit_jump_order", level -> helm(level, true), 39.5, 99.0, -3.5, -90.0F, 6.0F, 30));
+        SHOTS.add(new Shot("tm_orbit_jump_countdown", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 15));
+        SHOTS.add(new Shot("tm_orbit_jump_arrived", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
+        SHOTS.add(new Shot("tm_orbit_cradle_empty", null, 29.0, 110.0, 14.0, 200.0F, 25.0F, 100));
+        SHOTS.add(new Shot("tm_proxima_orbit_ship", null, 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
+        SHOTS.add(new Shot("tm_proxima_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));
+        SHOTS.add(new Shot("tm_proxima_orbit_return", level -> {
+            closeScreen();
+            helm(level, true);
+        }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
+        SHOTS.add(new Shot("tm_orbit_ship_back", level -> closeScreen(), 29.0, 110.0, 14.0, 200.0F, 25.0F, 100));
 
         // Seules les vues demandées sont prises, s'il y en a (-Porbitalis.previewOnly=vue1,vue2).
         String only = System.getProperty("orbitalis.previewOnly", "");
