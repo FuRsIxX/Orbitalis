@@ -68,6 +68,8 @@ public class Orbitalis {
                 event -> event.put(ModEntities.ROVER.get(), com.orbitalis.phase3.exploration.RoverEntity.createAttributes().build()));
         // Lueur des câbles et tuyaux en service.
         NeoForge.EVENT_BUS.addListener(ConduitNetwork::onLevelTick);
+        // Compte à rebours et saut des vaisseaux interstellaires.
+        NeoForge.EVENT_BUS.addListener(com.orbitalis.phase3.interstellar.ShipJump::onServerTick);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

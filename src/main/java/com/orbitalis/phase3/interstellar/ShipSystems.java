@@ -76,9 +76,14 @@ public record ShipSystems(int[] hull, boolean core, int charge, boolean ringDriv
         return hull[1] > 0 && hull[0] >= hull[1] * ABOARD;
     }
 
-    /** Vrai si tous les systèmes sont prêts : coque achevée, cœur chargé, anneau, caissons, serre et poste de pilotage. */
+    /** Vrai si tous les systèmes sont en place : coque achevée, cœur, anneau, caissons, serre et poste de pilotage. */
+    public boolean complete() {
+        return hull[0] >= hull[1] && core && ringDrive && pods[0] >= pods[1] && trays[0] >= trays[1] && helm;
+    }
+
+    /** Vrai si le vaisseau peut sauter : tous ses systèmes en place, et de quoi faire un saut dans le cœur. */
     public boolean ready() {
-        return hull[0] >= hull[1] && core && charge >= WarpCoreBlock.MAX_CHARGE && ringDrive && pods[0] >= pods[1] && trays[0] >= trays[1] && helm;
+        return complete() && charge >= ShipJump.JUMP_COST;
     }
 
     /** Le bilan en lignes : une par système, en vert s'il est prêt, puis le verdict. */
@@ -86,7 +91,7 @@ public record ShipSystems(int[] hull, boolean core, int charge, boolean ringDriv
         List<Component> lines = new ArrayList<>();
         lines.add(Component.translatable("ship.orbitalis.report.title").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD));
         lines.add(line("ship.orbitalis.report.hull", hull[0] >= hull[1], hull[0], hull[1]));
-        lines.add(core ? line("ship.orbitalis.report.core", charge >= WarpCoreBlock.MAX_CHARGE, charge, WarpCoreBlock.MAX_CHARGE)
+        lines.add(core ? line("ship.orbitalis.report.core", charge >= ShipJump.JUMP_COST, charge, WarpCoreBlock.MAX_CHARGE)
                 : line("ship.orbitalis.report.core_missing", false));
         lines.add(line(ringDrive ? "ship.orbitalis.report.ring" : "ship.orbitalis.report.ring_missing", ringDrive));
         lines.add(line("ship.orbitalis.report.pods", pods[0] >= pods[1], pods[0], pods[1]));

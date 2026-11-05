@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * Le poste de pilotage, sur la passerelle, face à la verrière de la proue. Un clic droit y fait le bilan du vaisseau :
- * sa coque et chacun de ses systèmes, puis s'il est prêt à partir.
+ * Le poste de pilotage, sur la passerelle, face à la verrière de la proue. Un clic droit ouvre son écran : le bilan du
+ * vaisseau (sa coque et chacun de ses systèmes), sa destination, et le saut (voir {@link ShipJump}).
  */
 public class ShipHelmBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<ShipHelmBlock> CODEC = simpleCodec(ShipHelmBlock::new);
@@ -59,7 +59,8 @@ public class ShipHelmBlock extends HorizontalDirectionalBlock {
             if (!systems.aboard()) {
                 serverPlayer.sendSystemMessage(Component.translatable("ship.orbitalis.helm.not_aboard").withStyle(ChatFormatting.GOLD));
             } else {
-                systems.report().forEach(serverPlayer::sendSystemMessage);
+                com.orbitalis.core.network.ModNetwork.send(serverPlayer,
+                        ShipJump.status(serverPlayer, pos, shipOrigin(pos, state.getValue(FACING)), out));
             }
         }
         return InteractionResult.SUCCESS;

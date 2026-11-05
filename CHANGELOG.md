@@ -1,3 +1,8 @@
+# Orbitalis — prochaine version
+
+## Changements
+- **Saut du vaisseau interstellaire** (avec `interstellar = true`) : un clic droit sur le poste de pilotage ouvre la passerelle. Elle montre où est le vaisseau, le voyant de chacun de ses systèmes, la destination et, en une phrase, ce qui empêche de partir. Le bouton « Sauter » lance un compte à rebours de cinq secondes ; le vaisseau entier quitte alors son berceau, avec ses blocs, leur contenu et tout l'équipage à bord, et réapparaît en orbite de Proxima b. Le saut consomme 4 matières exotiques du cœur de distorsion. Il faut avoir découvert Proxima b à l'observatoire, et l'espace d'arrivée doit être libre. Depuis l'orbite de Proxima b, le même poste ramène le vaisseau à son chantier naval.
+
 # Orbitalis — 0.10.1 (bêta)
 
 *Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
@@ -146,6 +151,11 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Les réglages de jeu (réalisme, pannes, évaporation des ergols, dégâts des accidents…) sont dans la configuration serveur du monde.
 
 ---
+
+# Orbitalis — next version
+
+## Changes
+- **Interstellar ship jump** (with `interstellar = true`): right-clicking the helm opens the bridge. It shows where the ship is, a light for each of its systems, the destination and, in one sentence, what stops it from leaving. The "Jump" button starts a five-second countdown; then the whole ship leaves its cradle, with its blocks, their contents and the whole crew aboard, and reappears in orbit of Proxima b. The jump uses 4 exotic matter from the warp core. Proxima b must have been discovered at the observatory, and the arrival space must be clear. From Proxima b orbit, the same helm brings the ship back to its shipyard.
 
 # Orbitalis — 0.10.1 (beta)
 

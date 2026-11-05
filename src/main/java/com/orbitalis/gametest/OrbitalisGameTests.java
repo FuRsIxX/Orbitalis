@@ -3767,6 +3767,16 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 == com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE, "la charge n'a pas gagné la moitié basse du cœur");
         helper.assertTrue(com.orbitalis.phase3.interstellar.ShipSystems.check(level, origin, Direction.EAST).ready(),
                 "le vaisseau devrait être prêt, cœur chargé");
+        // Le saut, ici dans le même monde : le vaisseau quitte son berceau entier, cœur chargé, et sa place reste vide.
+        BlockPos target = origin.above(2 * com.orbitalis.phase3.interstellar.ShipPlan.RING_RADIUS + 3);
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipJump.clear(level, target, Direction.EAST), "l'arrivée n'est pas libre");
+        com.orbitalis.phase3.interstellar.ShipJump.transfer(level, origin, level, target, Direction.EAST);
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipJump.clear(level, origin, Direction.EAST),
+                "le vaisseau a laissé des blocs au berceau");
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipSystems.check(level, target, Direction.EAST).ready(),
+                "le vaisseau n'est pas arrivé entier");
+        helper.assertTrue(level.getBlockState(target.offset(corePos.subtract(origin))).getValue(com.orbitalis.phase3.interstellar.WarpCoreBlock.CHARGE)
+                == com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE, "le cœur a perdu sa charge en route");
         helper.succeed();
     }
 

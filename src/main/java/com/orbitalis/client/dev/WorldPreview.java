@@ -302,6 +302,12 @@ public final class WorldPreview {
      * Ouvre l'écran de l'électrolyseur avec un état fictif : sorties pleines, purges à 50 %% et totale, un état long à
      * côté de la consommation, et le surcadençage à cette vitesse sous ce plafond (1 : pas de module).
      */
+    /** Ouvre l'écran du poste de pilotage avec un bilan donné (voir ShipHelmPayload pour l'ordre des valeurs). */
+    private static void openHelm(java.util.List<Integer> values) {
+        net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(
+                new com.orbitalis.client.screen.ShipHelmScreen(new com.orbitalis.core.network.ShipHelmPayload(new BlockPos(39, 99, -4), values))));
+    }
+
     private static void openElectrolyzer(int speed, int maxSpeed) {
         net.minecraft.client.Minecraft.getInstance().execute(() -> {
             var minecraft = net.minecraft.client.Minecraft.getInstance();
@@ -2420,6 +2426,13 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_orbit_yard_screen", level -> net.minecraft.client.Minecraft.getInstance().execute(() ->
                 net.minecraft.client.Minecraft.getInstance().gui.setScreen(new com.orbitalis.client.screen.ShipyardScreen(new BlockPos(12, 99, -4)))),
                 10.6, 99.0, -3.5, -90.0F, 8.0F, 40));
+        // Le poste de pilotage : prêt à sauter, puis en attente de charge, puis en orbite de Proxima b.
+        SHOTS.add(new Shot("tm_helm_ready", level -> openHelm(java.util.List.of(412, 412, 1, 8, 1, 4, 4, 8, 8, 1, 0, 0, 0)),
+                39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
+        SHOTS.add(new Shot("tm_helm_charge", level -> openHelm(java.util.List.of(412, 412, 1, 2, 1, 4, 4, 8, 8, 1, 0, 3, 0)),
+                39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
+        SHOTS.add(new Shot("tm_helm_away", level -> openHelm(java.util.List.of(412, 412, 1, 4, 1, 4, 4, 8, 8, 1, 1, 0, 61)),
+                39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
 
         // Seules les vues demandées sont prises, s'il y en a (-Porbitalis.previewOnly=vue1,vue2).
         String only = System.getProperty("orbitalis.previewOnly", "");
