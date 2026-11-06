@@ -38,9 +38,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /**
- * Le saut du vaisseau interstellaire. Depuis le poste de pilotage, quand tous ses systèmes sont prêts et que Proxima b a
- * été découverte à l'observatoire, le vaisseau quitte son berceau du chantier naval et réapparaît en orbite de Proxima b,
- * avec tout ce qu'il contient et son équipage ; le saut retour le ramène à son berceau.
+ * Le saut du vaisseau interstellaire. Depuis le poste de pilotage, quand tous ses systèmes sont prêts, le vaisseau
+ * quitte son berceau du chantier naval et réapparaît en orbite du monde choisi (voir {@link ShipDestination}), s'il a
+ * été découvert à l'observatoire, avec tout ce qu'il contient et son équipage ; le saut retour le ramène à son berceau.
  * <p>
  * Un saut coûte {@link #JUMP_COST} matières exotiques au cœur de distorsion : un cœur plein fait l'aller et le retour.
  * Après l'ordre de saut, un compte à rebours de {@link #COUNTDOWN} ticks laisse à l'équipage le temps d'embarquer.
@@ -60,7 +60,7 @@ public final class ShipJump {
         }
     }
 
-    /** Où se trouve le vaisseau : à son berceau (dans l'orbite de la planète), en orbite de Proxima b, ou ailleurs. */
+    /** Où se trouve le vaisseau : à son berceau (dans l'orbite de la planète), en orbite de sa destination, ou ailleurs. */
     public enum Place {
         HOME, AWAY, ELSEWHERE
     }
@@ -71,15 +71,16 @@ public final class ShipJump {
         final BlockPos origin;
         final Direction out;
         final String agency;
-        final boolean toProxima;
+        /** Le monde où va le vaisseau, ou rien s'il rentre à son berceau. */
+        final ShipDestination outbound;
         int ticks = COUNTDOWN;
 
-        Pending(ResourceKey<Level> dimension, BlockPos origin, Direction out, String agency, boolean toProxima) {
+        Pending(ResourceKey<Level> dimension, BlockPos origin, Direction out, String agency, ShipDestination outbound) {
             this.dimension = dimension;
             this.origin = origin;
             this.out = out;
             this.agency = agency;
-            this.toProxima = toProxima;
+            this.outbound = outbound;
         }
     }
 
@@ -97,17 +98,19 @@ public final class ShipJump {
         if (level.dimension() == SpaceRules.ORBIT) {
             return Place.HOME;
         }
-        if (level.dimension() == SpaceRules.PROXIMA_ORBIT) {
-            ShipVoyages.Voyage voyage = ShipVoyages.of(level.getServer()).of(agency);
-            if (voyage != null && voyage.away() && voyage.out() == out && voyage.awayOrigin().equals(origin)) {
-                return Place.AWAY;
-            }
+        ShipVoyages.Voyage voyage = ShipVoyages.of(level.getServer()).of(agency);
+        if (voyage != null && voyage.away() && level.dimension() == voyage.destination().orbit() && voyage.out() == out
+                && voyage.awayOrigin().equals(origin)) {
+            return Place.AWAY;
         }
         return Place.ELSEWHERE;
     }
 
-    /** Ce qui empêche ce vaisseau de sauter, ou {@link Hold#NONE}. */
-    public static Hold blocker(ServerLevel level, BlockPos origin, Direction out, String agency, ShipSystems systems) {
+    /**
+     * Ce qui empêche ce vaisseau de sauter, ou {@link Hold#NONE}. À son berceau, il part pour {@code wanted} ; ailleurs,
+     * il rentre.
+     */
+    public static Hold blocker(ServerLevel level, BlockPos origin, Direction out, String agency, ShipSystems systems, ShipDestination wanted) {
         if (pending(level.dimension(), origin) != null) {
             return Hold.JUMPING;
         }
@@ -121,10 +124,10 @@ public final class ShipJump {
         if (systems.charge() < JUMP_COST) {
             return Hold.CHARGE;
         }
-        if (place == Place.HOME && !SatelliteManager.of(level.getServer(), agency).isDiscovered(CelestialBody.PROXIMA_B)) {
+        if (place == Place.HOME && !SatelliteManager.of(level.getServer(), agency).isDiscovered(wanted.body())) {
             return Hold.UNDISCOVERED;
         }
-        ServerLevel to = destination(level.getServer(), place);
+        ServerLevel to = destination(level.getServer(), place, wanted);
         BlockPos target = destinationOrigin(level.getServer(), place, agency);
         if (to == null || target == null || !clear(to, target, out)) {
             return Hold.BLOCKED;
@@ -132,18 +135,18 @@ public final class ShipJump {
         return Hold.NONE;
     }
 
-    private static ServerLevel destination(MinecraftServer server, Place place) {
-        return server.getLevel(place == Place.HOME ? SpaceRules.PROXIMA_ORBIT : SpaceRules.ORBIT);
+    private static ServerLevel destination(MinecraftServer server, Place place, ShipDestination wanted) {
+        return server.getLevel(place == Place.HOME ? wanted.orbit() : SpaceRules.ORBIT);
     }
 
-    /** Centre de la poupe à l'arrivée : la place de l'agence en orbite de Proxima b, ou le berceau d'où le vaisseau était parti. */
+    /** Centre de la poupe à l'arrivée : la place de l'agence en orbite de sa destination, ou le berceau d'où le vaisseau était parti. */
     private static BlockPos destinationOrigin(MinecraftServer server, Place place, String agency) {
         ShipVoyages voyages = ShipVoyages.of(server);
         ShipVoyages.Voyage voyage = voyages.of(agency);
         if (place == Place.AWAY) {
             return voyage == null ? null : voyage.home();
         }
-        // Une agence garde sa place en orbite de Proxima b d'un voyage à l'autre ; la première fois, la suivante libre.
+        // Une agence garde sa place en orbite d'un voyage à l'autre ; la première fois, la suivante libre.
         return voyage != null ? voyage.awayOrigin() : voyages.peekAwayOrigin();
     }
 
@@ -184,21 +187,34 @@ public final class ShipJump {
     // Poste de pilotage
     // ------------------------------------------------------------------
 
-    /** L'état du vaisseau pour l'écran du poste de pilotage. */
+    /**
+     * L'état du vaisseau pour l'écran du poste de pilotage : ce qui l'empêche de partir vers chaque destination, et celle
+     * qu'il faut montrer (celle du voyage en cours, sinon la première).
+     */
     public static ShipHelmPayload status(ServerPlayer player, BlockPos helm, BlockPos origin, Direction out) {
         ServerLevel level = player.level();
         String agency = ResearchManager.agencyKey(player);
         ShipSystems systems = ShipSystems.check(level, origin, out);
         Place place = place(level, origin, out, agency);
-        Hold blocker = blocker(level, origin, out, agency, systems);
         Pending pending = pending(level.dimension(), origin);
+        ShipVoyages.Voyage voyage = ShipVoyages.of(level.getServer()).of(agency);
+        ShipDestination shown = pending != null && pending.outbound != null ? pending.outbound
+                : voyage != null && place == Place.AWAY ? voyage.destination() : ShipDestination.PROXIMA;
+        java.util.List<Integer> holds = new java.util.ArrayList<>();
+        for (ShipDestination destination : ShipDestination.values()) {
+            holds.add(blocker(level, origin, out, agency, systems, destination).ordinal());
+        }
         boolean spinning = level.getBlockEntity(origin.offset(ShipPlan.local(out, ShipPlan.RING_A, 0, ShipPlan.RING_DRIVE_Y)))
                 instanceof RingDriveBlockEntity drive && drive.spinning();
-        return ShipHelmPayload.of(helm, systems, place.ordinal(), blocker.ordinal(), pending == null ? -1 : pending.ticks, spinning);
+        return ShipHelmPayload.of(helm, systems, place.ordinal(), blocker(level, origin, out, agency, systems, shown).ordinal(),
+                pending == null ? -1 : pending.ticks, spinning, shown.ordinal(), holds);
     }
 
-    /** Le joueur ordonne le saut depuis le poste de pilotage : le compte à rebours commence, si rien ne l'empêche. */
-    public static void request(ServerPlayer player, BlockPos helm) {
+    /**
+     * Le joueur ordonne le saut depuis le poste de pilotage, vers la destination de ce rang s'il est à son berceau : le
+     * compte à rebours commence, si rien ne l'empêche.
+     */
+    public static void request(ServerPlayer player, BlockPos helm, int destinationIndex) {
         ServerLevel level = player.level();
         BlockState state = level.getBlockState(helm);
         if (!Features.interstellar() || !state.is(ModBlocks.SHIP_HELM.get()) || player.distanceToSqr(Vec3.atCenterOf(helm)) > 64) {
@@ -208,19 +224,26 @@ public final class ShipJump {
         BlockPos origin = ShipHelmBlock.shipOrigin(helm, state.getValue(ShipHelmBlock.FACING));
         String agency = ResearchManager.agencyKey(player);
         ShipSystems systems = ShipSystems.check(level, origin, out);
-        Hold blocker = blocker(level, origin, out, agency, systems);
+        ShipDestination wanted = ShipDestination.byIndex(destinationIndex);
+        Hold blocker = blocker(level, origin, out, agency, systems, wanted);
         if (blocker != Hold.NONE) {
-            player.sendSystemMessage(Component.translatable(blocker.key(), systems.charge(), JUMP_COST).withStyle(ChatFormatting.GOLD), true);
+            player.sendSystemMessage(holdMessage(blocker, systems, wanted).withStyle(ChatFormatting.GOLD), true);
             return;
         }
         Place place = place(level, origin, out, agency);
-        PENDING.add(new Pending(level.dimension(), origin.immutable(), out, agency, place == Place.HOME));
+        ShipDestination outbound = place == Place.HOME ? wanted : null;
+        PENDING.add(new Pending(level.dimension(), origin.immutable(), out, agency, outbound));
         level.playSound(null, helm, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0F, 0.6F);
         for (ServerPlayer crew : crew(level, origin, out)) {
             title(crew, Component.translatable("ship.orbitalis.jump.countdown", COUNTDOWN / 20),
-                    Component.translatable(place == Place.HOME ? "ship.orbitalis.jump.to_proxima" : "ship.orbitalis.jump.to_home"));
+                    Component.translatable(outbound != null ? outbound.toKey() : "ship.orbitalis.jump.to_home"));
         }
         ModNetwork.send(player, status(player, helm, origin, out));
+    }
+
+    /** Ce qui empêche le saut, en une phrase : la charge du cœur, ce qu'il faut, et le monde visé. */
+    public static net.minecraft.network.chat.MutableComponent holdMessage(Hold hold, ShipSystems systems, ShipDestination wanted) {
+        return Component.translatable(hold.key(), systems.charge(), JUMP_COST, Component.translatable(wanted.nameKey()));
     }
 
     // ------------------------------------------------------------------
@@ -228,7 +251,7 @@ public final class ShipJump {
     // ------------------------------------------------------------------
 
     /**
-     * Le joueur prend la navette depuis le poste de pilotage, le vaisseau en orbite de Proxima b : une capsule se
+     * Le joueur prend la navette depuis le poste de pilotage, le vaisseau en orbite d'un autre monde : une capsule se
      * détache du flanc du vaisseau, le joueur aux commandes. D'autres équipiers peuvent y monter avant le freinage.
      */
     public static void launchShuttle(ServerPlayer player, BlockPos helm) {
@@ -312,28 +335,29 @@ public final class ShipJump {
     private static void jump(ServerLevel level, Pending pending) {
         MinecraftServer server = level.getServer();
         ShipSystems systems = ShipSystems.check(level, pending.origin, pending.out);
-        Hold blocker = blocker(level, pending.origin, pending.out, pending.agency, systems);
+        ShipDestination wanted = pending.outbound != null ? pending.outbound : ShipDestination.PROXIMA;
+        Hold blocker = blocker(level, pending.origin, pending.out, pending.agency, systems, wanted);
         List<ServerPlayer> crew = crew(level, pending.origin, pending.out);
         if (blocker != Hold.NONE) {
             for (ServerPlayer player : crew) {
-                title(player, Component.translatable("ship.orbitalis.jump.cancelled"), Component.translatable(blocker.key(), systems.charge(), JUMP_COST));
+                title(player, Component.translatable("ship.orbitalis.jump.cancelled"), holdMessage(blocker, systems, wanted));
             }
             return;
         }
-        Place place = pending.toProxima ? Place.HOME : Place.AWAY;
-        ServerLevel to = destination(server, place);
+        Place place = pending.outbound != null ? Place.HOME : Place.AWAY;
+        ServerLevel to = destination(server, place, wanted);
         BlockPos target = destinationOrigin(server, place, pending.agency);
         transfer(level, pending.origin, to, target, pending.out);
         spendCharge(to, target, pending.out);
         ShipVoyages voyages = ShipVoyages.of(server);
-        if (pending.toProxima) {
-            voyages.depart(pending.agency, pending.origin, pending.out);
+        if (pending.outbound != null) {
+            voyages.depart(pending.agency, pending.origin, pending.out, pending.outbound);
         } else {
             voyages.back(pending.agency);
         }
         to.playSound(null, target, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 1.0F, 1.2F);
         for (ServerPlayer player : crew) {
-            title(player, Component.translatable(pending.toProxima ? "ship.orbitalis.jump.arrived_proxima" : "ship.orbitalis.jump.arrived_home"),
+            title(player, Component.translatable(pending.outbound != null ? pending.outbound.arrivedKey() : "ship.orbitalis.jump.arrived_home"),
                     Component.translatable("ship.orbitalis.jump.arrived_sub"));
         }
     }

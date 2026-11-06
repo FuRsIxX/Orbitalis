@@ -17,12 +17,12 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 
 /**
  * Les voyages des vaisseaux interstellaires, agence par agence : d'où chaque vaisseau est parti (son berceau au
- * chantier naval), s'il est en ce moment en orbite de Proxima b, et sa place là-bas. Gardé avec le monde principal.
+ * chantier naval), vers quel monde, s'il y est en ce moment, et sa place en orbite. Gardé avec le monde principal.
  */
 public final class ShipVoyages extends SavedData {
-    /** Écart entre les places de deux agences en orbite de Proxima b, en blocs : leurs vaisseaux ne se touchent pas. */
+    /** Écart entre les places de deux agences en orbite d'un autre monde, en blocs : leurs vaisseaux ne se touchent pas. */
     private static final int SLOT_SPACING = 256;
-    /** Hauteur de l'axe des vaisseaux en orbite de Proxima b. */
+    /** Hauteur de l'axe des vaisseaux en orbite d'un autre monde. */
     private static final int AWAY_Y = 120;
 
     /**
@@ -30,17 +30,23 @@ public final class ShipVoyages extends SavedData {
      *
      * @param home  centre de la poupe du vaisseau à son berceau, dans la dimension d'orbite
      * @param out   sens de la proue (le vaisseau garde son orientation d'un bout à l'autre du voyage)
-     * @param away  vrai tant que le vaisseau est en orbite de Proxima b
-     * @param slot  place de l'agence en orbite de Proxima b
+     * @param away  vrai tant que le vaisseau est en orbite de sa destination
+     * @param slot  place de l'agence en orbite (la même pour chaque destination)
+     * @param to    nom de la destination du dernier départ (voir {@link ShipDestination})
      */
-    public record Voyage(BlockPos home, Direction out, boolean away, int slot) {
+    public record Voyage(BlockPos home, Direction out, boolean away, int slot, String to) {
         static final Codec<Voyage> CODEC = RecordCodecBuilder.create(i -> i.group(
                 BlockPos.CODEC.fieldOf("home").forGetter(Voyage::home),
                 Direction.CODEC.fieldOf("out").forGetter(Voyage::out),
                 Codec.BOOL.fieldOf("away").forGetter(Voyage::away),
-                Codec.INT.fieldOf("slot").forGetter(Voyage::slot)).apply(i, Voyage::new));
+                Codec.INT.fieldOf("slot").forGetter(Voyage::slot),
+                Codec.STRING.optionalFieldOf("to", "proxima").forGetter(Voyage::to)).apply(i, Voyage::new));
 
-        /** Centre de la poupe du vaisseau en orbite de Proxima b. */
+        public ShipDestination destination() {
+            return ShipDestination.byId(to);
+        }
+
+        /** Centre de la poupe du vaisseau en orbite de sa destination. */
         public BlockPos awayOrigin() {
             return new BlockPos(slot * SLOT_SPACING, AWAY_Y, 0);
         }
@@ -68,26 +74,26 @@ public final class ShipVoyages extends SavedData {
         return voyages.get(agency);
     }
 
-    /** Le vaisseau de cette agence part de son berceau : il prend une place en orbite de Proxima b (la même qu'avant s'il en a déjà une). */
-    public Voyage depart(String agency, BlockPos home, Direction out) {
+    /** Le vaisseau de cette agence part de son berceau : il prend une place en orbite de sa destination (la même qu'avant s'il en a déjà une). */
+    public Voyage depart(String agency, BlockPos home, Direction out, ShipDestination destination) {
         Voyage known = voyages.get(agency);
         int slot = known != null ? known.slot() : nextSlot();
-        Voyage voyage = new Voyage(home.immutable(), out, true, slot);
+        Voyage voyage = new Voyage(home.immutable(), out, true, slot, destination.id());
         voyages.put(agency, voyage);
         setDirty();
         return voyage;
     }
 
-    /** La place qu'aurait en orbite de Proxima b une agence qui n'est jamais partie : la suivante libre. */
+    /** La place qu'aurait en orbite une agence qui n'est jamais partie : la suivante libre. */
     public BlockPos peekAwayOrigin() {
-        return new Voyage(BlockPos.ZERO, Direction.NORTH, true, nextSlot()).awayOrigin();
+        return new Voyage(BlockPos.ZERO, Direction.NORTH, true, nextSlot(), ShipDestination.PROXIMA.id()).awayOrigin();
     }
 
     /** Le vaisseau de cette agence est revenu à son berceau. */
     public void back(String agency) {
         Voyage known = voyages.get(agency);
         if (known != null) {
-            voyages.put(agency, new Voyage(known.home(), known.out(), false, known.slot()));
+            voyages.put(agency, new Voyage(known.home(), known.out(), false, known.slot(), known.to()));
             setDirty();
         }
     }

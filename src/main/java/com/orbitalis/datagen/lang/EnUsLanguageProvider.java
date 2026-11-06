@@ -1535,6 +1535,16 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "The core is full: %s exotic matter.");
         add("ship.orbitalis.pod.status", "Hibernation pod: ready. The crew will sleep here during the journey.");
         add("ship.orbitalis.helm.not_aboard", "This helm isn't aboard a ship. It goes on the bridge, where the shipyard blueprint shows.");
+        add("capsule.orbitalis.hud.proxima_hint", "Proxima b · launch 3 s: back to the ship");
+        add("capsule.orbitalis.hud.trappist_hint", "TRAPPIST-1 e · launch 3 s: back to the ship");
+        add("ship.orbitalis.helm.place.away_trappist", "TRAPPIST-1 e orbit");
+        add("ship.orbitalis.helm.dest.trappist", "TRAPPIST-1 e");
+        add("ship.orbitalis.jump.to_trappist", "Heading for TRAPPIST-1 e");
+        add("ship.orbitalis.jump.arrived_trappist", "TRAPPIST-1 e orbit");
+        add("ship.orbitalis.helm.block.undiscovered", "Discover %3$s at the observatory first.");
+        add("capsule.orbitalis.trappist_landed", "Contact, you're on an island of TRAPPIST-1 e. Sneak to get out, in a suit. To go back to the ship, hold the launch key on board (Jump by default).");
+        add("capsule.orbitalis.trappist_splashdown", "Splashdown: the shuttle is floating on the sea of TRAPPIST-1 e. To go back to the ship, hold the launch key on board (Jump by default).");
+        add("capsule.orbitalis.trappist_liftoff", "Liftoff from TRAPPIST-1 e: heading for the ship.");
         add("biome.orbitalis.trappist_sea", "TRAPPIST-1 e Sea");
         add("block.orbitalis.trappist_rock", "TRAPPIST-1 e Rock");
         add("block.orbitalis.trappist_sand", "TRAPPIST-1 e Sand");
@@ -1553,7 +1563,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("capsule.orbitalis.hud.parked_shuttle", "Shuttle in Proxima b orbit · return key: plan the deorbit burn");
         add("capsule.orbitalis.shuttle_deorbit", "Deorbit burn: the shuttle dives toward Proxima b");
         add("capsule.orbitalis.proxima_landed", "Contact, you're on Proxima b. Sneak to get out, in a suit. To go back to the ship, hold the launch key on board (Jump by default).");
-        add("capsule.orbitalis.hud.proxima_hint", "Down on Proxima b · hold the launch key for 3 s to go back to the ship");
         add("capsule.orbitalis.proxima_liftoff", "Liftoff from Proxima b: heading for the ship.");
         add("capsule.orbitalis.shuttle_docked", "The shuttle docks with the ship: you're back on the bridge.");
         add("capsule.orbitalis.shuttle_lost", "The ship is no longer in orbit: the shuttle stays there alone.");
@@ -1566,7 +1575,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.helm.spinning", "spinning");
         add("ship.orbitalis.helm.title", "Bridge");
         add("ship.orbitalis.helm.place.home", "At the shipyard");
-        add("ship.orbitalis.helm.place.away", "Proxima b orbit");
+        add("ship.orbitalis.helm.place.away_proxima", "Proxima b orbit");
         add("ship.orbitalis.helm.place.elsewhere", "Out of range");
         add("ship.orbitalis.helm.systems", "Systems");
         add("ship.orbitalis.helm.system.hull", "Hull");
@@ -1587,7 +1596,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.helm.block.place", "The ship must be at its shipyard or in orbit of Proxima b.");
         add("ship.orbitalis.helm.block.systems", "Some systems are missing: finish the ship at the shipyard.");
         add("ship.orbitalis.helm.block.charge", "Recharge the warp core: %s exotic matter, it needs %s.");
-        add("ship.orbitalis.helm.block.undiscovered", "Discover Proxima b at the observatory first.");
         add("ship.orbitalis.helm.block.blocked", "The arrival space is not clear.");
         add("ship.orbitalis.helm.block.jumping", "Jump in progress.");
         add("ship.orbitalis.jump.countdown", "Jump in %s");

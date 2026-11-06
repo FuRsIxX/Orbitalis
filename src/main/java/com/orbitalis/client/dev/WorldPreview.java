@@ -312,20 +312,26 @@ public final class WorldPreview {
 
     /**
      * Le poste de pilotage du vaisseau de la carte de test, là où se trouve le joueur : au chantier (poupe en 15 100 -4)
-     * ou à la place de l'agence en orbite de Proxima b. Proxima b est d'abord découverte ; puis l'écran s'ouvre, ou le
-     * saut est ordonné.
+     * ou à la place de l'agence en orbite de sa destination. Les deux mondes sont d'abord découverts ; puis l'écran s'ouvre,
+     * ou le saut est ordonné vers la destination de ce rang.
      */
     private static void helm(ServerLevel level, boolean jump) {
+        helm(level, jump, 0);
+    }
+
+    private static void helm(ServerLevel level, boolean jump, int destination) {
         net.minecraft.server.MinecraftServer server = level.getServer();
         net.minecraft.server.level.ServerPlayer player = server.getPlayerList().getPlayers().get(0);
         String agency = ResearchManager.agencyKey(player);
-        com.orbitalis.phase1.satellite.SatelliteManager.of(server, agency).discover(com.orbitalis.phase1.satellite.CelestialBody.PROXIMA_B);
+        for (com.orbitalis.phase3.interstellar.ShipDestination world : com.orbitalis.phase3.interstellar.ShipDestination.values()) {
+            com.orbitalis.phase1.satellite.SatelliteManager.of(server, agency).discover(world.body());
+        }
         com.orbitalis.phase3.interstellar.ShipVoyages.Voyage voyage = com.orbitalis.phase3.interstellar.ShipVoyages.of(server).of(agency);
-        BlockPos origin = player.level().dimension() == SpaceRules.PROXIMA_ORBIT && voyage != null ? voyage.awayOrigin() : new BlockPos(15, 100, -4);
+        BlockPos origin = player.level().dimension() != SpaceRules.ORBIT && voyage != null ? voyage.awayOrigin() : new BlockPos(15, 100, -4);
         BlockPos helm = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
                 com.orbitalis.phase3.interstellar.ShipPlan.HELM_A, 0, com.orbitalis.phase3.interstellar.ShipPlan.HELM_Y));
         if (jump) {
-            com.orbitalis.phase3.interstellar.ShipJump.request(player, helm);
+            com.orbitalis.phase3.interstellar.ShipJump.request(player, helm, destination);
         } else {
             com.orbitalis.core.network.ModNetwork.send(player, com.orbitalis.phase3.interstellar.ShipJump.status(player, helm, origin, Direction.EAST));
         }
@@ -2566,9 +2572,22 @@ public final class WorldPreview {
             ringDrive(level);
         }, 33.5, 105.0, 4.5, 24.5, 100.5, -3.5, 20));
         SHOTS.add(new Shot("tm_orbit_jump_helm", level -> helm(level, false), 39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
+        // Vers TRAPPIST-1 e : la destination choisie à l'écran, puis le saut (à la place de tm_orbit_jump_order).
+        SHOTS.add(new Shot("tm_orbit_jump_choose", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            if (net.minecraft.client.Minecraft.getInstance().gui.screen() instanceof com.orbitalis.client.screen.ShipHelmScreen screen) {
+                screen.choose(1);
+            }
+        }), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 10));
+        SHOTS.add(new Shot("tm_orbit_jump_trappist", level -> {
+            closeScreen();
+            helm(level, true, 1);
+        }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 30));
         SHOTS.add(new Shot("tm_orbit_jump_order", level -> helm(level, true), 39.5, 99.0, -3.5, -90.0F, 6.0F, 30));
         SHOTS.add(new Shot("tm_orbit_jump_countdown", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 15));
         SHOTS.add(new Shot("tm_orbit_jump_arrived", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
+        // Arrivé en orbite de TRAPPIST-1 e (poupe en 0 120 0) : le vaisseau vu du dehors, puis la passerelle.
+        SHOTS.add(new Shot("tm_trappist_orbit_ship", level -> hover(level), 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
+        SHOTS.add(new Shot("tm_trappist_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));
         SHOTS.add(new Shot("tm_orbit_cradle_empty", null, 29.0, 110.0, 14.0, 200.0F, 25.0F, 100));
         SHOTS.add(new Shot("tm_proxima_orbit_ship", null, 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
         SHOTS.add(new Shot("tm_proxima_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));

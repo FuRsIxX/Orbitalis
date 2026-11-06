@@ -3,6 +3,7 @@ package com.orbitalis.client.screen;
 import com.orbitalis.core.network.ShipHelmPayload;
 import com.orbitalis.core.network.ShipJumpPayload;
 import com.orbitalis.core.network.ShipShuttlePayload;
+import com.orbitalis.phase3.interstellar.ShipDestination;
 import com.orbitalis.phase3.interstellar.ShipJump;
 import com.orbitalis.phase3.interstellar.WarpCoreBlock;
 
@@ -25,11 +26,44 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
     private static final int BUTTON_W = 110;
     private static final int BUTTON_H = 18;
 
+    private static final int ARROW = 14;
+
     private final ShipHelmPayload ship;
+    /** La destination choisie pour le prochain départ du berceau. */
+    private int selected;
 
     public ShipHelmScreen(ShipHelmPayload ship) {
         super(Component.translatable("ship.orbitalis.helm.title"));
         this.ship = ship;
+        this.selected = ship.destination();
+    }
+
+    /** Choisit la destination de ce rang (outil de capture). */
+    public void choose(int destination) {
+        selected = Math.floorMod(destination, ShipDestination.values().length);
+    }
+
+    private ShipJump.Place place() {
+        return ShipJump.Place.values()[Math.clamp(ship.place(), 0, ShipJump.Place.values().length - 1)];
+    }
+
+    /** Au berceau, sans saut en cours, on choisit où aller. */
+    private boolean choosing() {
+        return place() == ShipJump.Place.HOME && ship.countdown() < 0 && ShipDestination.values().length > 1;
+    }
+
+    /** Ce qui empêche le saut : vers la destination choisie, au berceau ; sinon, pour rentrer. */
+    private ShipJump.Hold hold() {
+        int hold = place() == ShipJump.Place.HOME && ship.countdown() < 0 ? ship.holdFor(selected) : ship.hold();
+        return ShipJump.Hold.values()[Math.clamp(hold, 0, ShipJump.Hold.values().length - 1)];
+    }
+
+    private int arrowY() {
+        return top() + 46 + 6 * ROW + 9 + 13;
+    }
+
+    private int arrowX(boolean next) {
+        return left() + WIDTH - PAD - (next ? ARROW : 2 * ARROW + 4);
     }
 
     private int left() {
@@ -41,7 +75,7 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
     }
 
     private boolean canJump() {
-        return ship.hold() == ShipJump.Hold.NONE.ordinal() && ship.countdown() < 0;
+        return hold() == ShipJump.Hold.NONE && ship.countdown() < 0;
     }
 
     private int buttonX() {
@@ -75,8 +109,9 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
 
         // En-tête : le titre, et où se trouve le vaisseau.
         graphics.text(font, title.copy().withStyle(ChatFormatting.BOLD), x + PAD, y + 10, Ui.TEXT, false);
-        ShipJump.Place place = ShipJump.Place.values()[Math.clamp(ship.place(), 0, ShipJump.Place.values().length - 1)];
-        String where = Component.translatable("ship.orbitalis.helm.place." + place.name().toLowerCase(java.util.Locale.ROOT)).getString();
+        ShipJump.Place place = place();
+        String where = Component.translatable(place == ShipJump.Place.AWAY ? ShipDestination.byIndex(ship.destination()).placeKey()
+                : "ship.orbitalis.helm.place." + place.name().toLowerCase(java.util.Locale.ROOT)).getString();
         Ui.pillRight(graphics, font, where, x + WIDTH - PAD, y + 8, place == ShipJump.Place.ELSEWHERE ? Ui.WARN : Ui.ACCENT);
         Ui.hline(graphics, x + 1, y + 25, WIDTH - 2);
 
@@ -96,9 +131,16 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
         // La destination du prochain saut, en grand.
         int destY = rowY + 6 * ROW + 9;
         Ui.heading(graphics, font, Component.translatable("ship.orbitalis.helm.destination"), x + PAD, destY);
-        String destination = Component.translatable(place == ShipJump.Place.AWAY ? "ship.orbitalis.helm.dest.home"
-                : "ship.orbitalis.helm.dest.proxima").getString();
-        Ui.big(graphics, font, Ui.fit(font, destination, (int) (inner / 1.5F)), x + PAD, destY + 13, 1.5F, Ui.TEXT);
+        ShipDestination wanted = ShipDestination.byIndex(place == ShipJump.Place.HOME && ship.countdown() < 0 ? selected : ship.destination());
+        String destination = Component.translatable(place == ShipJump.Place.AWAY ? "ship.orbitalis.helm.dest.home" : wanted.nameKey()).getString();
+        int nameRoom = choosing() ? inner - 2 * ARROW - 10 : inner;
+        Ui.big(graphics, font, Ui.fit(font, destination, (int) (nameRoom / 1.5F)), x + PAD, destY + 13, 1.5F, Ui.TEXT);
+        if (choosing()) {
+            for (boolean next : new boolean[] {false, true}) {
+                boolean over = Ui.inside(mouseX, mouseY, arrowX(next), arrowY(), ARROW, ARROW);
+                Ui.button(graphics, font, Component.literal(next ? ">" : "<"), arrowX(next), arrowY(), ARROW, ARROW, over, true, false, Ui.ACCENT);
+            }
+        }
 
         // Le verdict, en une phrase : prêt (et ce que coûte le saut), en cours, ou ce qui l'empêche.
         int sayY = destY + 32;
@@ -111,8 +153,7 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
             say = Component.translatable("ship.orbitalis.helm.ready", ShipJump.JUMP_COST, ship.charge());
             color = Ui.OK;
         } else {
-            ShipJump.Hold hold = ShipJump.Hold.values()[Math.clamp(ship.hold(), 0, ShipJump.Hold.values().length - 1)];
-            say = Component.translatable(hold.key(), ship.charge(), ShipJump.JUMP_COST);
+            say = Component.translatable(hold().key(), ship.charge(), ShipJump.JUMP_COST, Component.translatable(wanted.nameKey()));
             color = Ui.WARN;
         }
         Ui.dot(graphics, x + PAD, sayY + 1, color);
@@ -151,10 +192,19 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (event.button() == 0 && canJump() && Ui.inside(event.x(), event.y(), buttonX(), buttonY(), BUTTON_W, BUTTON_H)) {
-            ClientPacketDistributor.sendToServer(new ShipJumpPayload(ship.helm()));
+            ClientPacketDistributor.sendToServer(new ShipJumpPayload(ship.helm(), selected));
             Ui.click();
             onClose();
             return true;
+        }
+        if (event.button() == 0 && choosing()) {
+            for (boolean next : new boolean[] {false, true}) {
+                if (Ui.inside(event.x(), event.y(), arrowX(next), arrowY(), ARROW, ARROW)) {
+                    selected = Math.floorMod(selected + (next ? 1 : -1), ShipDestination.values().length);
+                    Ui.click();
+                    return true;
+                }
+            }
         }
         if (event.button() == 0 && canShuttle() && Ui.inside(event.x(), event.y(), shuttleX(), buttonY(), BUTTON_W, BUTTON_H)) {
             ClientPacketDistributor.sendToServer(new ShipShuttlePayload(ship.helm()));

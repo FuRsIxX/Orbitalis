@@ -18,7 +18,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * @param helm   le poste de pilotage
  * @param values dans l'ordre : coque posée et en tout, cœur présent (1), charge du cœur, moteur de l'anneau (1),
  *               caissons posés et en tout, bacs posés et en tout, poste de pilotage (1), place (ShipJump.Place),
- *               empêchement (ShipJump.Hold), ticks du compte à rebours (-1 sans saut en cours), anneau en rotation (1)
+ *               empêchement (ShipJump.Hold) pour la destination montrée, ticks du compte à rebours (-1 sans saut en
+ *               cours), anneau en rotation (1), destination montrée (ShipDestination), puis l'empêchement pour chaque
+ *               destination, dans l'ordre
  */
 public record ShipHelmPayload(BlockPos helm, List<Integer> values) implements CustomPacketPayload {
     public static final Type<ShipHelmPayload> TYPE = new Type<>(Orbitalis.id("ship_helm"));
@@ -28,10 +30,13 @@ public record ShipHelmPayload(BlockPos helm, List<Integer> values) implements Cu
             ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), ShipHelmPayload::values,
             ShipHelmPayload::new);
 
-    public static ShipHelmPayload of(BlockPos helm, ShipSystems systems, int place, int hold, int countdown, boolean ringSpinning) {
-        return new ShipHelmPayload(helm, List.of(systems.hull()[0], systems.hull()[1], systems.core() ? 1 : 0, systems.charge(),
-                systems.ringDrive() ? 1 : 0, systems.pods()[0], systems.pods()[1], systems.trays()[0], systems.trays()[1],
-                systems.helm() ? 1 : 0, place, hold, countdown + 1, ringSpinning ? 1 : 0));
+    public static ShipHelmPayload of(BlockPos helm, ShipSystems systems, int place, int hold, int countdown, boolean ringSpinning,
+            int destination, List<Integer> holds) {
+        List<Integer> values = new java.util.ArrayList<>(List.of(systems.hull()[0], systems.hull()[1], systems.core() ? 1 : 0,
+                systems.charge(), systems.ringDrive() ? 1 : 0, systems.pods()[0], systems.pods()[1], systems.trays()[0],
+                systems.trays()[1], systems.helm() ? 1 : 0, place, hold, countdown + 1, ringSpinning ? 1 : 0, destination));
+        values.addAll(holds);
+        return new ShipHelmPayload(helm, List.copyOf(values));
     }
 
     private int at(int index) {
@@ -95,6 +100,16 @@ public record ShipHelmPayload(BlockPos helm, List<Integer> values) implements Cu
 
     public boolean ringSpinning() {
         return at(13) != 0;
+    }
+
+    /** Rang de la destination à montrer : celle du voyage en cours, sinon la première. */
+    public int destination() {
+        return at(14);
+    }
+
+    /** Rang de ShipJump.Hold pour un départ vers la destination de ce rang. */
+    public int holdFor(int destination) {
+        return at(15 + destination);
     }
 
     @Override

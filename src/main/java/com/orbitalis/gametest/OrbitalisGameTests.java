@@ -3758,6 +3758,13 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         helper.assertTrue(ModBlocks.TIDE_GRASS.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(seabed.above())),
                 "l'herbe des marées devrait tenir au fond de l'eau");
         helper.assertTrue(Math.abs(com.orbitalis.phase2.survival.SpaceRules.TRAPPIST_GRAVITY - 0.93) < 1.0E-9, "pesanteur de TRAPPIST-1 e");
+        // Le vaisseau peut y aller : son orbite mène à elle, et un voyage d'avant (sans destination gardée) allait à Proxima b.
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipDestination.byOrbit(com.orbitalis.phase2.survival.SpaceRules.TRAPPIST_ORBIT)
+                == com.orbitalis.phase3.interstellar.ShipDestination.TRAPPIST, "l'orbite de TRAPPIST-1 e ne mène pas à elle");
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipDestination.TRAPPIST.planet() == com.orbitalis.phase2.survival.SpaceRules.TRAPPIST_1E,
+                "la navette ne descendrait pas sur TRAPPIST-1 e");
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipDestination.byId("") == com.orbitalis.phase3.interstellar.ShipDestination.PROXIMA,
+                "un ancien voyage devrait aller à Proxima b");
         helper.succeed();
     }
 

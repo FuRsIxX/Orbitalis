@@ -1535,6 +1535,16 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "Le cœur est plein : %s matières exotiques.");
         add("ship.orbitalis.pod.status", "Caisson d'hibernation : prêt. L'équipage s'y endormira pendant le voyage.");
         add("ship.orbitalis.helm.not_aboard", "Ce poste n'est pas à bord d'un vaisseau. Il se pose sur la passerelle, à l'endroit prévu par le plan du chantier naval.");
+        add("capsule.orbitalis.hud.proxima_hint", "Proxima b · lancement 3 s : retour au vaisseau");
+        add("capsule.orbitalis.hud.trappist_hint", "TRAPPIST-1 e · lancement 3 s : retour au vaisseau");
+        add("ship.orbitalis.helm.place.away_trappist", "Orbite de TRAPPIST-1 e");
+        add("ship.orbitalis.helm.dest.trappist", "TRAPPIST-1 e");
+        add("ship.orbitalis.jump.to_trappist", "Cap sur TRAPPIST-1 e");
+        add("ship.orbitalis.jump.arrived_trappist", "Orbite de TRAPPIST-1 e");
+        add("ship.orbitalis.helm.block.undiscovered", "Découvrez d'abord %3$s à l'observatoire.");
+        add("capsule.orbitalis.trappist_landed", "Contact, vous êtes sur une île de TRAPPIST-1 e. Accroupissez-vous pour sortir, en combinaison. Pour remonter au vaisseau, maintenez à bord la touche de lancement (Sauter, par défaut).");
+        add("capsule.orbitalis.trappist_splashdown", "Amerrissage : la navette flotte sur la mer de TRAPPIST-1 e. Pour remonter au vaisseau, maintenez à bord la touche de lancement (Sauter, par défaut).");
+        add("capsule.orbitalis.trappist_liftoff", "Décollage de TRAPPIST-1 e : cap sur le vaisseau.");
         add("biome.orbitalis.trappist_sea", "Mer de TRAPPIST-1 e");
         add("block.orbitalis.trappist_rock", "Roche de TRAPPIST-1 e");
         add("block.orbitalis.trappist_sand", "Sable de TRAPPIST-1 e");
@@ -1553,7 +1563,6 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("capsule.orbitalis.hud.parked_shuttle", "Navette en orbite de Proxima b · touche de retour : préparer le freinage");
         add("capsule.orbitalis.shuttle_deorbit", "Freinage : la navette plonge vers Proxima b");
         add("capsule.orbitalis.proxima_landed", "Contact, vous êtes sur Proxima b. Accroupissez-vous pour sortir, en combinaison. Pour remonter au vaisseau, maintenez à bord la touche de lancement (Sauter, par défaut).");
-        add("capsule.orbitalis.hud.proxima_hint", "Posée sur Proxima b · maintenez la touche de lancement 3 s pour remonter au vaisseau");
         add("capsule.orbitalis.proxima_liftoff", "Décollage de Proxima b : cap sur le vaisseau.");
         add("capsule.orbitalis.shuttle_docked", "La navette s'amarre au vaisseau : vous voilà sur la passerelle.");
         add("capsule.orbitalis.shuttle_lost", "Le vaisseau n'est plus en orbite : la navette y reste seule.");
@@ -1566,7 +1575,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.helm.spinning", "en rotation");
         add("ship.orbitalis.helm.title", "Passerelle");
         add("ship.orbitalis.helm.place.home", "Au chantier naval");
-        add("ship.orbitalis.helm.place.away", "Orbite de Proxima b");
+        add("ship.orbitalis.helm.place.away_proxima", "Orbite de Proxima b");
         add("ship.orbitalis.helm.place.elsewhere", "Hors de portée");
         add("ship.orbitalis.helm.systems", "Systèmes");
         add("ship.orbitalis.helm.system.hull", "Coque");
@@ -1587,7 +1596,6 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.helm.block.place", "Le vaisseau doit être à son chantier naval ou en orbite de Proxima b.");
         add("ship.orbitalis.helm.block.systems", "Des systèmes manquent : terminez le vaisseau au chantier.");
         add("ship.orbitalis.helm.block.charge", "Rechargez le cœur de distorsion : %s matières exotiques, il en faut %s.");
-        add("ship.orbitalis.helm.block.undiscovered", "Découvrez d'abord Proxima b à l'observatoire.");
         add("ship.orbitalis.helm.block.blocked", "L'espace d'arrivée est encombré.");
         add("ship.orbitalis.helm.block.jumping", "Saut en cours.");
         add("ship.orbitalis.jump.countdown", "Saut dans %s");
