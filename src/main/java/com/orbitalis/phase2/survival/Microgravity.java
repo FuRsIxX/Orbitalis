@@ -36,7 +36,7 @@ public final class Microgravity {
     /** Vrai si ce joueur flotte en apesanteur : en orbite, ni créatif, ni spectateur, ni assis dans un vaisseau. */
     public static boolean applies(Player player) {
         return SpaceRules.isOrbit(player.level()) && !player.isCreative() && !player.isSpectator() && !player.isPassenger()
-                && !player.isSleeping();
+                && !player.isSleeping() && !com.orbitalis.phase3.interstellar.RingDriveBlockEntity.gravityAt(player);
     }
 
     /**

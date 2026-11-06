@@ -78,7 +78,7 @@ public class ShipyardConsoleBlockEntity extends BlockEntity {
 
     private boolean placed(ShipPlan.Piece piece) {
         BlockPos pos = shipOrigin().offset(piece.offset());
-        return level != null && level.isLoaded(pos) && level.getBlockState(pos).is(piece.state().getBlock());
+        return level != null && level.isLoaded(pos) && ShipPlan.matches(level.getBlockState(pos), piece.state());
     }
 
     /** L'avancement de chaque section, de la poupe à la proue. */

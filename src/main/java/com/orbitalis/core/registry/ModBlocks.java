@@ -788,6 +788,15 @@ public final class ModBlocks {
                     .sound(SoundType.METAL)
                     .noOcclusion()
                     .lightLevel(state -> 7)));
+    /** Segment de l'anneau en rotation : invisible, plein, incassable tant que l'anneau tourne (il n'a pas d'objet). */
+    public static final DeferredBlock<com.orbitalis.phase3.interstellar.RingSegmentBlock> RING_SEGMENT = BLOCKS.registerBlock(
+            "ring_segment", com.orbitalis.phase3.interstellar.RingSegmentBlock::new,
+            properties -> properties
+                    .mapColor(MapColor.SNOW)
+                    .strength(-1.0F, 3600000.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()
+                    .noLootTable());
     /** Pupitre du chantier naval : il tient le plan du vaisseau interstellaire. */
     public static final DeferredBlock<com.orbitalis.phase3.interstellar.ShipyardConsoleBlock> SHIPYARD_CONSOLE = withItem(BLOCKS.registerBlock(
             "shipyard_console", com.orbitalis.phase3.interstellar.ShipyardConsoleBlock::new,

@@ -1534,8 +1534,14 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.charged", "Exotic matter loaded: %s / %s");
         add("ship.orbitalis.core.full", "The core is full: %s exotic matter.");
         add("ship.orbitalis.pod.status", "Hibernation pod: ready. The crew will sleep here during the journey.");
-        add("ship.orbitalis.ring_drive.status", "Ring drive: ready. It will spin the ring at departure, to give the crew gravity.");
         add("ship.orbitalis.helm.not_aboard", "This helm isn't aboard a ship. It goes on the bridge, where the shipyard blueprint shows.");
+        add("block.orbitalis.ring_segment", "Spinning Ring Segment");
+        add("ship.orbitalis.ring.start", "The ring starts spinning: gravity returns aboard.");
+        add("ship.orbitalis.ring.stop", "The ring is slowing down and will stop in a few seconds.");
+        add("ship.orbitalis.ring.stopping", "The ring is already stopping.");
+        add("ship.orbitalis.ring.incomplete", "The ring is incomplete: finish it at the shipyard before starting it.");
+        add("ship.orbitalis.ring.no_ship", "This drive is not aboard a ship: it needs a helm in its place.");
+        add("ship.orbitalis.helm.spinning", "spinning");
         add("ship.orbitalis.helm.title", "Bridge");
         add("ship.orbitalis.helm.place.home", "At the shipyard");
         add("ship.orbitalis.helm.place.away", "Proxima b orbit");

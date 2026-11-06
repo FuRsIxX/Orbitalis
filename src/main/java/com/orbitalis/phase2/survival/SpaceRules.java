@@ -192,7 +192,8 @@ public final class SpaceRules {
         boolean onTitan = isTitan(player.level());
         boolean onEuropa = isEuropa(player.level());
         boolean onProxima = isProxima(player.level());
-        updateMicrogravity(player, inOrbit);
+        // À bord d'un vaisseau dont l'anneau tourne, l'équipage retrouve la pesanteur.
+        updateMicrogravity(player, inOrbit && !com.orbitalis.phase3.interstellar.RingDriveBlockEntity.gravityAt(player));
         updateLowGravity(player, gravityOf(player.level()));
         if (player.tickCount % 20 != 0) {
             return;

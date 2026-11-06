@@ -1534,8 +1534,14 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.charged", "Matière exotique chargée : %s / %s");
         add("ship.orbitalis.core.full", "Le cœur est plein : %s matières exotiques.");
         add("ship.orbitalis.pod.status", "Caisson d'hibernation : prêt. L'équipage s'y endormira pendant le voyage.");
-        add("ship.orbitalis.ring_drive.status", "Moteur de l'anneau : prêt. Il fera tourner l'anneau au départ, pour donner une pesanteur à l'équipage.");
         add("ship.orbitalis.helm.not_aboard", "Ce poste n'est pas à bord d'un vaisseau. Il se pose sur la passerelle, à l'endroit prévu par le plan du chantier naval.");
+        add("block.orbitalis.ring_segment", "Segment d'anneau en rotation");
+        add("ship.orbitalis.ring.start", "L'anneau se met à tourner : la pesanteur revient à bord.");
+        add("ship.orbitalis.ring.stop", "L'anneau ralentit et s'arrêtera dans quelques secondes.");
+        add("ship.orbitalis.ring.stopping", "L'anneau est déjà en train de s'arrêter.");
+        add("ship.orbitalis.ring.incomplete", "L'anneau est incomplet : terminez-le au chantier avant de le lancer.");
+        add("ship.orbitalis.ring.no_ship", "Ce moteur n'est pas à bord d'un vaisseau : il lui faut un poste de pilotage à sa place.");
+        add("ship.orbitalis.helm.spinning", "en rotation");
         add("ship.orbitalis.helm.title", "Passerelle");
         add("ship.orbitalis.helm.place.home", "Au chantier naval");
         add("ship.orbitalis.helm.place.away", "Orbite de Proxima b");

@@ -355,6 +355,14 @@ public class OrbitalisModelProvider extends ModelProvider {
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.RING_DRIVE.get(),
                 BlockModelGenerators.plainVariant(Orbitalis.id("block/ship/ring_drive"))));
         blockModels.registerSimpleItemModel(ModBlocks.RING_DRIVE.get(), Orbitalis.id("block/ship/ring_drive_item"));
+        // Segment de l'anneau en rotation : invisible ; son modèle, celui du bloc qu'il remplace, ne sert qu'aux particules.
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.RING_SEGMENT.get())
+                .with(PropertyDispatch.initial(com.orbitalis.phase3.interstellar.RingSegmentBlock.KIND).generate(kind -> BlockModelGenerators.plainVariant(
+                        switch (kind) {
+                            case HULL -> Orbitalis.id("block/station_hull");
+                            case WINDOW -> Orbitalis.id("block/station_window");
+                            case TRUSS -> Orbitalis.id("block/station/station_truss");
+                        }))));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.SHIP_HELM.get(),
                 BlockModelGenerators.plainVariant(Orbitalis.id("block/ship/ship_helm"))).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
         blockModels.registerSimpleItemModel(ModBlocks.SHIP_HELM.get(), Orbitalis.id("block/ship/ship_helm"));

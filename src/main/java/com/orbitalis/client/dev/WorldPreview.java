@@ -329,6 +329,41 @@ public final class WorldPreview {
         }
     }
 
+    /** Un clic droit sur le moteur de l'anneau du vaisseau de la carte de test : il démarre, ou il ralentit. */
+    private static void ringDrive(ServerLevel level) {
+        ServerLevel orbit = level.getServer().getLevel(SpaceRules.ORBIT);
+        if (orbit != null && orbit.getBlockEntity(new BlockPos(24, 102, -4)) instanceof com.orbitalis.phase3.interstellar.RingDriveBlockEntity drive) {
+            net.minecraft.network.chat.Component answer = drive.toggle();
+            if (answer != null) {
+                Orbitalis.LOGGER.info("Moteur de l'anneau : {}", answer.getString());
+            }
+        }
+    }
+
+    /** Le joueur de la carte de test, en créatif, vole : placé dans le vide pour une vue, il n'y tombe pas. */
+    private static void hover(ServerLevel level) {
+        for (net.minecraft.server.level.ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+            if (player.getAbilities().mayfly && !player.getAbilities().flying) {
+                player.getAbilities().flying = true;
+                player.onUpdateAbilities();
+            }
+        }
+    }
+
+    /** Ce que le client sait du moteur de l'anneau, dans le journal. */
+    private static void ringReport() {
+        net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
+        minecraft.execute(() -> {
+            var level = minecraft.level;
+            if (level != null && level.getBlockEntity(new BlockPos(24, 102, -4)) instanceof com.orbitalis.phase3.interstellar.RingDriveBlockEntity drive) {
+                Orbitalis.LOGGER.info("Anneau côté client : en marche {}, angle {}, segment en haut {}", drive.spinning(),
+                        drive.angle(level.getGameTime()), level.getBlockState(new BlockPos(24, 105, -4)));
+            } else {
+                Orbitalis.LOGGER.info("Anneau côté client : pas de moteur en 24 102 -4");
+            }
+        });
+    }
+
     private static void closeScreen() {
         net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null));
     }
@@ -2460,6 +2495,11 @@ public final class WorldPreview {
                 39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
         // Le saut, en vrai, après tm_orbit_ship : l'écran du poste, le compte à rebours, l'arrivée en orbite de Proxima b
         // (place 0 de l'agence, poupe en 0 120 0), le berceau vide, puis le retour au chantier.
+        // Pour sauter anneau en marche : le lancer d'abord (voir tm_proxima_orbit_ring).
+        SHOTS.add(look("tm_orbit_ring_on", level -> {
+            hover(level);
+            ringDrive(level);
+        }, 33.5, 105.0, 4.5, 24.5, 100.5, -3.5, 20));
         SHOTS.add(new Shot("tm_orbit_jump_helm", level -> helm(level, false), 39.5, 99.0, -3.5, -90.0F, 6.0F, 40));
         SHOTS.add(new Shot("tm_orbit_jump_order", level -> helm(level, true), 39.5, 99.0, -3.5, -90.0F, 6.0F, 30));
         SHOTS.add(new Shot("tm_orbit_jump_countdown", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 15));
@@ -2472,6 +2512,27 @@ public final class WorldPreview {
             helm(level, true);
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         SHOTS.add(new Shot("tm_orbit_ship_back", level -> closeScreen(), 29.0, 110.0, 14.0, 200.0F, 25.0F, 100));
+        // L'anneau, après tm_orbit_ship : lancé (moteur en 24 102 -4, axe en 24 100 -4), vu de biais puis dans l'axe ;
+        // l'écran du poste ; puis arrêté, revenu à ses blocs.
+        SHOTS.add(look("tm_orbit_ring_start", level -> {
+            hover(level);
+            ringDrive(level);
+        }, 33.5, 105.0, 4.5, 24.5, 100.5, -3.5, 110));
+        SHOTS.add(look("tm_orbit_ring_turning", level -> hover(level), 33.5, 105.0, 4.5, 24.5, 100.5, -3.5, 15));
+        SHOTS.add(look("tm_orbit_ring_below", level -> {
+            hover(level);
+            ringReport();
+        }, 31.5, 93.0, 3.5, 24.5, 100.5, -3.5, 12));
+        SHOTS.add(new Shot("tm_orbit_ring_helm", level -> helm(level, false), 39.5, 99.0, -3.5, -90.0F, 6.0F, 30));
+        SHOTS.add(look("tm_orbit_ring_stop", level -> {
+            closeScreen();
+            hover(level);
+            ringDrive(level);
+        }, 33.5, 105.0, 4.5, 24.5, 100.5, -3.5, 220));
+        // L'anneau en marche, en orbite de Proxima b, sans berceau autour (après un saut : poupe en 0 120 0, axe en 9 120 0).
+        SHOTS.add(look("tm_proxima_orbit_ring", level -> hover(level), 21.5, 127.0, 12.5, 9.5, 120.5, 0.5, 100));
+        SHOTS.add(look("tm_proxima_orbit_ring_turning", level -> hover(level), 21.5, 127.0, 12.5, 9.5, 120.5, 0.5, 12));
+        SHOTS.add(look("tm_proxima_orbit_ring_below", level -> hover(level), 17.5, 112.0, 10.5, 9.5, 120.5, 0.5, 12));
 
         // Seules les vues demandées sont prises, s'il y en a (-Porbitalis.previewOnly=vue1,vue2).
         String only = System.getProperty("orbitalis.previewOnly", "");

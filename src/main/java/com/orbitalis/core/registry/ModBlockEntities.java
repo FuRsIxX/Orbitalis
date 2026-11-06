@@ -196,6 +196,11 @@ public final class ModBlockEntities {
             BLOCK_ENTITIES.register("shipyard_console", () -> new BlockEntityType<>(com.orbitalis.phase3.interstellar.ShipyardConsoleBlockEntity::new,
                     ModBlocks.SHIPYARD_CONSOLE.get()));
 
+    /** Moteur de l'anneau du vaisseau : sa marche, et l'anneau qu'il fait tourner. */
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.orbitalis.phase3.interstellar.RingDriveBlockEntity>> RING_DRIVE =
+            BLOCK_ENTITIES.register("ring_drive", () -> new BlockEntityType<>(com.orbitalis.phase3.interstellar.RingDriveBlockEntity::new,
+                    ModBlocks.RING_DRIVE.get()));
+
     /** Chambre de Casimir : une entrée, la matière exotique. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CASIMIR_CHAMBER =
             BLOCK_ENTITIES.register("casimir_chamber", () -> new BlockEntityType<>(

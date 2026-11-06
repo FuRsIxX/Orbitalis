@@ -3767,6 +3767,19 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 == com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE, "la charge n'a pas gagné la moitié basse du cœur");
         helper.assertTrue(com.orbitalis.phase3.interstellar.ShipSystems.check(level, origin, Direction.EAST).ready(),
                 "le vaisseau devrait être prêt, cœur chargé");
+        // L'anneau se lance : ses blocs deviennent des segments en rotation, et le vaisseau reste complet.
+        BlockPos drivePos = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                com.orbitalis.phase3.interstellar.ShipPlan.RING_A, 0, com.orbitalis.phase3.interstellar.ShipPlan.RING_DRIVE_Y));
+        BlockPos ringTop = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                com.orbitalis.phase3.interstellar.ShipPlan.RING_A, 0, com.orbitalis.phase3.interstellar.ShipPlan.RING_RADIUS));
+        com.orbitalis.phase3.interstellar.RingDriveBlockEntity drive =
+                (com.orbitalis.phase3.interstellar.RingDriveBlockEntity) level.getBlockEntity(drivePos);
+        Component ringProblem = drive.start(level);
+        helper.assertTrue(ringProblem == null, "l'anneau aurait dû se lancer : " + (ringProblem == null ? "" : ringProblem.getString()));
+        helper.assertTrue(drive.out() == Direction.EAST, "le moteur ne retrouve pas le sens de la proue");
+        helper.assertTrue(level.getBlockState(ringTop).is(ModBlocks.RING_SEGMENT.get()), "le hublot de l'anneau n'est pas devenu un segment");
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipSystems.check(level, origin, Direction.EAST).ready(),
+                "le vaisseau devrait rester complet, anneau en marche");
         // Le saut, ici dans le même monde : le vaisseau quitte son berceau entier, cœur chargé, et sa place reste vide.
         BlockPos target = origin.above(2 * com.orbitalis.phase3.interstellar.ShipPlan.RING_RADIUS + 3);
         helper.assertTrue(com.orbitalis.phase3.interstellar.ShipJump.clear(level, target, Direction.EAST), "l'arrivée n'est pas libre");
@@ -3777,6 +3790,13 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 "le vaisseau n'est pas arrivé entier");
         helper.assertTrue(level.getBlockState(target.offset(corePos.subtract(origin))).getValue(com.orbitalis.phase3.interstellar.WarpCoreBlock.CHARGE)
                 == com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE, "le cœur a perdu sa charge en route");
+        // L'anneau a voyagé en marche ; arrêté, il retrouve son hublot.
+        BlockPos movedDrive = target.offset(drivePos.subtract(origin));
+        helper.assertTrue(level.getBlockEntity(movedDrive) instanceof com.orbitalis.phase3.interstellar.RingDriveBlockEntity moved && moved.spinning(),
+                "l'anneau ne tourne plus après le saut");
+        ((com.orbitalis.phase3.interstellar.RingDriveBlockEntity) level.getBlockEntity(movedDrive)).halt();
+        helper.assertTrue(level.getBlockState(target.offset(ringTop.subtract(origin))).is(ModBlocks.STATION_WINDOW.get()),
+                "l'anneau arrêté n'a pas retrouvé son hublot");
         helper.succeed();
     }
 

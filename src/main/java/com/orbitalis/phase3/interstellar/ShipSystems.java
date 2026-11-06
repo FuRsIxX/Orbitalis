@@ -41,7 +41,7 @@ public record ShipSystems(int[] hull, boolean core, int charge, boolean ringDriv
             BlockPos pos = origin.offset(piece.offset());
             BlockState there = level.isLoaded(pos) ? level.getBlockState(pos) : null;
             Block block = piece.state().getBlock();
-            boolean placed = there != null && there.is(block);
+            boolean placed = there != null && ShipPlan.matches(there, piece.state());
             if (block == ModBlocks.WARP_CORE.get()) {
                 if (lower(piece) && placed) {
                     core = true;

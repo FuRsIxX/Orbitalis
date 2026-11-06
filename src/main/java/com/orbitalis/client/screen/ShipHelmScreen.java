@@ -72,7 +72,8 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
         system(graphics, "hull", ship.hullPlaced() >= ship.hullTotal(), ship.hullPlaced() + " / " + ship.hullTotal(), x, rowY, inner);
         system(graphics, "core", ship.core() && ship.charge() >= ShipJump.JUMP_COST,
                 ship.core() ? ship.charge() + " / " + WarpCoreBlock.MAX_CHARGE : missing(), x, rowY + ROW, inner);
-        system(graphics, "ring", ship.ringDrive(), ship.ringDrive() ? ok() : missing(), x, rowY + 2 * ROW, inner);
+        system(graphics, "ring", ship.ringDrive(), !ship.ringDrive() ? missing() : ship.ringSpinning()
+                ? Component.translatable("ship.orbitalis.helm.spinning").getString() : ok(), x, rowY + 2 * ROW, inner);
         system(graphics, "pods", ship.podsPlaced() >= ship.podsTotal(), ship.podsPlaced() + " / " + ship.podsTotal(), x, rowY + 3 * ROW, inner);
         system(graphics, "trays", ship.traysPlaced() >= ship.traysTotal(), ship.traysPlaced() + " / " + ship.traysTotal(), x, rowY + 4 * ROW, inner);
         system(graphics, "helm", ship.helmPlaced(), ship.helmPlaced() ? ok() : missing(), x, rowY + 5 * ROW, inner);

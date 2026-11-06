@@ -121,25 +121,7 @@ public final class ShipPlan {
                     }
                 }
             }
-            // L'anneau : trois rangs de coque autour de l'axe, le rang du milieu vitré ; au milieu, ses quatre rayons.
-            if (a >= 8 && a <= 10) {
-                for (int s = -RING_RADIUS; s <= RING_RADIUS; s++) {
-                    for (int y = -RING_RADIUS; y <= RING_RADIUS; y++) {
-                        double d = Math.sqrt(s * s + y * y);
-                        if (d >= RING_RADIUS - 0.5 && d < RING_RADIUS + 0.5) {
-                            BlockState ring = a == 9 ? ModBlocks.STATION_WINDOW.get().defaultBlockState() : ModBlocks.STATION_HULL.get().defaultBlockState();
-                            pieces.add(new Piece(local(out, a, s, y), ring, section));
-                        }
-                    }
-                }
-            }
-            if (a == 9) {
-                for (int k = 3; k < RING_RADIUS; k++) {
-                    for (int[] spoke : new int[][] {{k, 0}, {-k, 0}, {0, k}, {0, -k}}) {
-                        pieces.add(new Piece(local(out, a, spoke[0], spoke[1]), ModBlocks.STATION_TRUSS.get().defaultBlockState(), section));
-                    }
-                }
-            }
+            addRing(pieces, out, a);
         }
         for (Piece fitting : fittings.values()) {
             bySection.get(fitting.section()).add(fitting);
@@ -149,6 +131,51 @@ public final class ShipPlan {
         return Collections.unmodifiableList(all);
     }
 
+    /** Place de l'axe de l'anneau le long du vaisseau ; son moteur est au plafond, au droit de cet axe. */
+    public static final int RING_A = 9;
+    /** Le moteur de l'anneau, depuis la poupe. */
+    public static final int RING_DRIVE_Y = 2;
+
+    /**
+     * L'anneau à la hauteur {@code a} : trois rangs de coque autour de l'axe, le rang du milieu vitré ; au milieu, ses
+     * quatre rayons. C'est ce qui tourne quand le moteur de l'anneau est en marche.
+     */
+    private static void addRing(List<Piece> pieces, Direction out, int a) {
+        if (a >= RING_A - 1 && a <= RING_A + 1) {
+            for (int s = -RING_RADIUS; s <= RING_RADIUS; s++) {
+                for (int y = -RING_RADIUS; y <= RING_RADIUS; y++) {
+                    double d = Math.sqrt(s * s + y * y);
+                    if (d >= RING_RADIUS - 0.5 && d < RING_RADIUS + 0.5) {
+                        BlockState ring = a == RING_A ? ModBlocks.STATION_WINDOW.get().defaultBlockState() : ModBlocks.STATION_HULL.get().defaultBlockState();
+                        pieces.add(new Piece(local(out, a, s, y), ring, Section.RING));
+                    }
+                }
+            }
+        }
+        if (a == RING_A) {
+            for (int k = 3; k < RING_RADIUS; k++) {
+                for (int[] spoke : new int[][] {{k, 0}, {-k, 0}, {0, k}, {0, -k}}) {
+                    pieces.add(new Piece(local(out, a, spoke[0], spoke[1]), ModBlocks.STATION_TRUSS.get().defaultBlockState(), Section.RING));
+                }
+            }
+        }
+    }
+
+    /** Les pièces de l'anneau et de ses rayons, pour un vaisseau dont la proue regarde {@code out}. */
+    public static List<Piece> ring(Direction out) {
+        List<Piece> ring = new ArrayList<>();
+        for (int a = RING_A - 1; a <= RING_A + 1; a++) {
+            addRing(ring, out, a);
+        }
+        return ring;
+    }
+
+    /** Le bloc posé là tient-il lieu de cette pièce ? Un segment d'anneau en rotation compte pour le bloc qu'il remplace. */
+    public static boolean matches(BlockState there, BlockState planned) {
+        return there.is(planned.getBlock())
+                || there.getBlock() instanceof RingSegmentBlock && RingSegmentBlock.original(there).is(planned.getBlock());
+    }
+
     /** L'aménagement du vaisseau, section par section. */
     private static List<Piece> fittings(Direction out, Direction right) {
         List<Piece> list = new ArrayList<>();
@@ -156,7 +183,7 @@ public final class ShipPlan {
         // Salle des machines : le cœur de distorsion, dressé au milieu du couloir, sa face vers la proue.
         tall(list, out, 2, 0, ModBlocks.WARP_CORE.get().defaultBlockState().setValue(TwoHighBlock.FACING, back));
         // Anneau : son moteur, au plafond, au droit des rayons.
-        add(list, out, 9, 0, 2, ModBlocks.RING_DRIVE.get().defaultBlockState());
+        add(list, out, RING_A, 0, RING_DRIVE_Y, ModBlocks.RING_DRIVE.get().defaultBlockState());
         // Hibernation : quatre caissons dressés le long des flancs, tournés vers le couloir.
         for (int a : new int[] {14, 16}) {
             for (int s : new int[] {-1, 1}) {

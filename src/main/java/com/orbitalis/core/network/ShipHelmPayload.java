@@ -18,7 +18,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * @param helm   le poste de pilotage
  * @param values dans l'ordre : coque posée et en tout, cœur présent (1), charge du cœur, moteur de l'anneau (1),
  *               caissons posés et en tout, bacs posés et en tout, poste de pilotage (1), place (ShipJump.Place),
- *               empêchement (ShipJump.Hold), ticks du compte à rebours (-1 sans saut en cours)
+ *               empêchement (ShipJump.Hold), ticks du compte à rebours (-1 sans saut en cours), anneau en rotation (1)
  */
 public record ShipHelmPayload(BlockPos helm, List<Integer> values) implements CustomPacketPayload {
     public static final Type<ShipHelmPayload> TYPE = new Type<>(Orbitalis.id("ship_helm"));
@@ -28,10 +28,10 @@ public record ShipHelmPayload(BlockPos helm, List<Integer> values) implements Cu
             ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), ShipHelmPayload::values,
             ShipHelmPayload::new);
 
-    public static ShipHelmPayload of(BlockPos helm, ShipSystems systems, int place, int hold, int countdown) {
+    public static ShipHelmPayload of(BlockPos helm, ShipSystems systems, int place, int hold, int countdown, boolean ringSpinning) {
         return new ShipHelmPayload(helm, List.of(systems.hull()[0], systems.hull()[1], systems.core() ? 1 : 0, systems.charge(),
                 systems.ringDrive() ? 1 : 0, systems.pods()[0], systems.pods()[1], systems.trays()[0], systems.trays()[1],
-                systems.helm() ? 1 : 0, place, hold, countdown + 1));
+                systems.helm() ? 1 : 0, place, hold, countdown + 1, ringSpinning ? 1 : 0));
     }
 
     private int at(int index) {
@@ -91,6 +91,10 @@ public record ShipHelmPayload(BlockPos helm, List<Integer> values) implements Cu
     /** Ticks avant le saut, ou -1 sans saut en cours (le décalage d'un garde les valeurs positives pour le codec). */
     public int countdown() {
         return at(12) - 1;
+    }
+
+    public boolean ringSpinning() {
+        return at(13) != 0;
     }
 
     @Override

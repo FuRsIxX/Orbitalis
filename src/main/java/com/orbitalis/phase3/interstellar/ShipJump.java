@@ -172,7 +172,7 @@ public final class ShipJump {
     }
 
     /** La boîte du vaisseau, bord extérieur des cases compris. */
-    private static AABB box(BlockPos origin, Direction out) {
+    static AABB box(BlockPos origin, Direction out) {
         int r = ShipPlan.RING_RADIUS;
         BlockPos a = origin.offset(ShipPlan.local(out, 0, -r, -r));
         BlockPos b = origin.offset(ShipPlan.local(out, ShipPlan.LENGTH - 1, r, r));
@@ -192,7 +192,9 @@ public final class ShipJump {
         Place place = place(level, origin, out, agency);
         Hold blocker = blocker(level, origin, out, agency, systems);
         Pending pending = pending(level.dimension(), origin);
-        return ShipHelmPayload.of(helm, systems, place.ordinal(), blocker.ordinal(), pending == null ? -1 : pending.ticks);
+        boolean spinning = level.getBlockEntity(origin.offset(ShipPlan.local(out, ShipPlan.RING_A, 0, ShipPlan.RING_DRIVE_Y)))
+                instanceof RingDriveBlockEntity drive && drive.spinning();
+        return ShipHelmPayload.of(helm, systems, place.ordinal(), blocker.ordinal(), pending == null ? -1 : pending.ticks, spinning);
     }
 
     /** Le joueur ordonne le saut depuis le poste de pilotage : le compte à rebours commence, si rien ne l'empêche. */

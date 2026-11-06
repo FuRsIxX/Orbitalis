@@ -145,6 +145,7 @@ public class OrbitalisClient {
         event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), FluidTankRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.DRILL_DERRICK.get(), com.orbitalis.client.render.DerrickRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.GLASS_DOOR.get(), com.orbitalis.client.render.GlassDoorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.RING_DRIVE.get(), com.orbitalis.client.render.RingDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.CAPSULE.get(), CapsuleRenderer::new);
         event.registerEntityRenderer(ModEntities.ELEVATOR_CABIN.get(), ElevatorCabinRenderer::new);
         event.registerEntityRenderer(ModEntities.ROVER.get(), com.orbitalis.client.render.RoverRenderer::new);

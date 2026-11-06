@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "kind=hull": {
+      "model": "orbitalis:block/station_hull"
+    },
+    "kind=truss": {
+      "model": "orbitalis:block/station/station_truss"
+    },
+    "kind=window": {
+      "model": "orbitalis:block/station_window"
+    }
+  }
+}
