@@ -60,6 +60,7 @@ final class SkyBodies {
     private static DynamicTexture earth;
     private static DynamicTexture proxima;
     private static DynamicTexture trappist;
+    private static DynamicTexture kepler;
     private static DynamicTexture clouds;
     private static DynamicTexture white;
     private static DynamicTexture earthDisc;
@@ -80,6 +81,8 @@ final class SkyBodies {
             planetBelow(minecraft, proximaTexture(), time, sun, 0xFF8A70, 0xFFB09A);
         } else if (SpaceRules.isTrappistOrbit(level)) {
             planetBelow(minecraft, trappistTexture(), time, sun, 0xC890A8, 0xE8B8C8);
+        } else if (SpaceRules.isKeplerOrbit(level)) {
+            planetBelow(minecraft, keplerTexture(), time, sun, 0xD8C890, 0xF0E4B8);
         } else if (SpaceRules.isOrbit(level)) {
             // La Lune, haute dans le ciel, puis la planète.
             disc(minecraft, moonTexture(), new Vector3f(-0.45F, 0.62F, -0.64F), 4.5F);
@@ -256,6 +259,29 @@ final class SkyBodies {
             proxima.upload();
         }
         return proxima;
+    }
+
+    /** Kepler-452b vue d'orbite : des mers et des continents, comme la planète, mais aux terres bronze et olive. */
+    private static DynamicTexture keplerTexture() {
+        if (kepler == null) {
+            kepler = texture("kepler ground", GROUND, true);
+            NativeImage image = kepler.getPixels();
+            paintGround(image, GROUND, 4521L, false);
+            for (int y = 0; y < GROUND; y++) {
+                for (int x = 0; x < GROUND; x++) {
+                    int argb = image.getPixel(x, y);
+                    int r = argb >> 16 & 0xFF;
+                    int g = argb >> 8 & 0xFF;
+                    int b = argb & 0xFF;
+                    // Les terres vertes virent au bronze ; les mers et les glaces restent ce qu'elles sont.
+                    if (g > r && g > b) {
+                        image.setPixel(x, y, 0xFF000000 | Math.min(255, (int) (g * 0.95F)) << 16 | (int) (g * 0.82F) << 8 | (int) (r * 0.6F));
+                    }
+                }
+            }
+            kepler.upload();
+        }
+        return kepler;
     }
 
     private static DynamicTexture trappistTexture() {

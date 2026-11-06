@@ -118,6 +118,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("proxima_world", () -> OrbitalisGameTests::proximaWorld);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> TRAPPIST_WORLD =
             FUNCTIONS.register("trappist_world", () -> OrbitalisGameTests::trappistWorld);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> KEPLER_WORLD =
+            FUNCTIONS.register("kepler_world", () -> OrbitalisGameTests::keplerWorld);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ORBITAL_SHIPYARD =
             FUNCTIONS.register("orbital_shipyard", () -> OrbitalisGameTests::orbitalShipyard);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SHUTTLE_STOWS =
@@ -317,6 +319,9 @@ public final class OrbitalisGameTests {
         // TRAPPIST-1 e : la flore des îles sur leur tapis d'algues et leur sable, l'herbe des marées seulement sous l'eau.
         event.registerTest(Orbitalis.id("trappist_world"), new FunctionGameTestInstance(
                 TRAPPIST_WORLD.getKey(), spaced(environment, emptyStructure, 40)));
+        // Kepler-452b : sa flore sur le gazon et le sol, sa pesanteur, et le vaisseau qui peut y aller.
+        event.registerTest(Orbitalis.id("kepler_world"), new FunctionGameTestInstance(
+                KEPLER_WORLD.getKey(), spaced(environment, emptyStructure, 40)));
         // Le chantier naval s'accole à une station ; son pupitre pose tout le vaisseau.
         event.registerTest(Orbitalis.id("orbital_shipyard"), new FunctionGameTestInstance(
                 ORBITAL_SHIPYARD.getKey(), spaced(environment, emptyStructure, 100)));
@@ -3765,6 +3770,35 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 "la navette ne descendrait pas sur TRAPPIST-1 e");
         helper.assertTrue(com.orbitalis.phase3.interstellar.ShipDestination.byId("") == com.orbitalis.phase3.interstellar.ShipDestination.PROXIMA,
                 "un ancien voyage devrait aller à Proxima b");
+        helper.succeed();
+    }
+
+    /**
+     * Kepler-452b : la fougère bronze pousse sur le gazon, la touffe d'ambre sur le sol, mais rien sur la roche nue. Le
+     * monde est une fois et demie plus pesant que la planète ; il se découvre à l'observatoire après TRAPPIST-1 e, et le
+     * vaisseau peut y aller.
+     */
+    private static void keplerWorld(GameTestHelper helper) {
+        BlockPos turf = new BlockPos(1, 1, 1);
+        helper.setBlock(turf, ModBlocks.KEPLER_TURF.get());
+        helper.assertTrue(ModBlocks.BRONZE_FERN.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(turf.above())),
+                "la fougère bronze devrait pousser sur le gazon");
+        BlockPos soil = new BlockPos(3, 1, 1);
+        helper.setBlock(soil, ModBlocks.KEPLER_SOIL.get());
+        helper.assertTrue(ModBlocks.AMBER_TUFT.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(soil.above())),
+                "la touffe d'ambre devrait pousser sur le sol");
+        BlockPos rock = new BlockPos(5, 1, 1);
+        helper.setBlock(rock, ModBlocks.KEPLER_ROCK.get());
+        helper.assertTrue(!ModBlocks.BRONZE_FERN.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(rock.above())),
+                "la fougère bronze ne pousse pas sur la roche nue");
+        helper.assertTrue(Math.abs(com.orbitalis.phase2.survival.SpaceRules.KEPLER_GRAVITY - 1.5) < 1.0E-9, "pesanteur de Kepler-452b");
+        helper.assertTrue(com.orbitalis.phase1.satellite.CelestialBody.KEPLER_452B.travel().gravity() == 1.5,
+                "la fiche de voyage de Kepler-452b ne dit pas sa pesanteur");
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipDestination.KEPLER.body() == com.orbitalis.phase1.satellite.CelestialBody.KEPLER_452B
+                && com.orbitalis.phase3.interstellar.ShipDestination.byPlanet(com.orbitalis.phase2.survival.SpaceRules.KEPLER_452B)
+                == com.orbitalis.phase3.interstellar.ShipDestination.KEPLER, "le vaisseau ne mène pas à Kepler-452b");
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipDestination.KEPLER.shuttleKey("hud.hint").equals("capsule.orbitalis.hud.kepler_hint"),
+                "consigne de la navette sur Kepler-452b");
         helper.succeed();
     }
 

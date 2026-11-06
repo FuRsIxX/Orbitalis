@@ -623,6 +623,7 @@ public final class SpacePhotoPainter {
             case "andromeda" -> andromeda();
             case "proxima_b" -> proxima();
             case "trappist_1e" -> trappist();
+            case "kepler_452b" -> kepler();
             case "sagittarius_a" -> blackHole();
             default -> stars(300, 1.0F);
         }
@@ -991,6 +992,36 @@ public final class SpacePhotoPainter {
         atmosphere(WIDTH * 0.62F, HEIGHT * 0.55F, 24.5F * scale, 0.03F, 1.0F, 0.45F, 0.3F, -1.0F, 0.2F);
     }
 
+    private void kepler() {
+        stars(240, 0.7F);
+        squareSun(WIDTH * 0.12F, HEIGHT * 0.16F, 6, 1.0F, 0.92F, 0.62F, 24);
+        // Une super-Terre : des mers, de larges continents bronze et olive, des nuages en blocs une couche au-dessus.
+        int radius = 26;
+        Grid grid = planet(radius, 4, (x, y, z) -> {
+            float land = smoothstep(0.5F, 0.55F, fbm(x * 2 + 7, y * 2, z * 2, 5));
+            float bronze = fbm(x * 3, y * 3 + 5, z * 3, 3);
+            return mix(rgb(0.1F, 0.24F, 0.42F), mix(rgb(0.42F, 0.4F, 0.18F), rgb(0.48F, 0.34F, 0.18F), bronze), land);
+        }, (x, y, z) -> smoothstep(0.5F, 0.57F, fbm(x * 2 + 7, y * 2, z * 2, 5)));
+        float centre = grid.nx / 2.0F;
+        for (int z = 0; z < grid.nz; z++) {
+            for (int y = 0; y < grid.ny; y++) {
+                for (int x = 0; x < grid.nx; x++) {
+                    float px = x + 0.5F - centre;
+                    float py = y + 0.5F - centre;
+                    float pz = z + 0.5F - centre;
+                    float d = (float) Math.sqrt(px * px + py * py + pz * pz);
+                    if (d > radius + 2.0F && d <= radius + 3.0F && fbm(px / d * 3 + 9, py / d * 5, pz / d * 3, 4) > 0.58F) {
+                        grid.set(x, y, z, SOLID, rgb(0.96F, 0.97F, 0.98F), 0.0F);
+                    }
+                }
+            }
+        }
+        Light gold = new Light(normalize(-0.6F, 0.5F, 0.6F), new float[] {1.25F, 1.12F, 0.9F}, new float[] {0.025F, 0.03F, 0.04F});
+        float scale = 150.0F / grid.nx;
+        Camera camera = new Camera(0.62F, 0.35F, scale, WIDTH * 0.55F, HEIGHT * 0.56F);
+        render(grid, camera, gold);
+    }
+
     private void trappist() {
         stars(260, 0.75F);
         squareSun(WIDTH * 0.9F, HEIGHT * 0.14F, 7, 1.0F, 0.56F, 0.3F, 26);
@@ -1149,7 +1180,7 @@ public final class SpacePhotoPainter {
         folder.mkdirs();
         String[] bodies = args.length > 1 ? java.util.Arrays.copyOfRange(args, 1, args.length)
                 : new String[] {"moon", "comet", "mars", "venus", "mercury", "jupiter", "europa", "saturn", "titan", "pleiades", "orion_nebula",
-                        "eagle_nebula", "crab_pulsar", "andromeda", "proxima_b", "trappist_1e", "sagittarius_a"};
+                        "eagle_nebula", "crab_pulsar", "andromeda", "proxima_b", "trappist_1e", "kepler_452b", "sagittarius_a"};
         for (String body : bodies) {
             long start = System.nanoTime();
             int[] pixels = paint(body);

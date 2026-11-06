@@ -46,6 +46,8 @@ public enum CelestialBody {
             new Travel(4.24, true, 0, 0, 0, 1.1, "unknown", -39, null, List.of("fusion", "warp_drive", "closed_loop_life_support"))),
     TRAPPIST_1E(Kind.EXOPLANET, true, 12_000, 180, "proxima_b",
             new Travel(39.5, true, 0, 0, 0, 0.93, "unknown", -22, null, List.of("warp_drive", "closed_loop_life_support", "isru"))),
+    KEPLER_452B(Kind.EXOPLANET, true, 13_200, 200, "trappist_1e",
+            new Travel(1_400.0, true, 0, 0, 0, 1.5, "unknown", 18, null, List.of("warp_drive", "closed_loop_life_support", "fusion"))),
     SAGITTARIUS_A(Kind.BLACK_HOLE, true, 14_400, 250, "andromeda", null);
 
     /** Nature d'un astre : elle dit comment il est montré et décrit. */

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "orbitalis:block/kepler_soil",
+    "side": "orbitalis:block/kepler_turf_side",
+    "top": "orbitalis:block/kepler_turf_top"
+  }
+}

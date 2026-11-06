@@ -137,6 +137,8 @@ public final class TestMap {
             destinations.add(new String[] {"testmap.orbitalis.zone.proxima_orbit", "execute in orbitalis:proxima_orbit run tp @s 0 100 0"});
             destinations.add(new String[] {"testmap.orbitalis.zone.trappist", "execute in orbitalis:trappist_1e run tp @s 0 140 0"});
             destinations.add(new String[] {"testmap.orbitalis.zone.trappist_orbit", "execute in orbitalis:trappist_orbit run tp @s 0 100 0"});
+            destinations.add(new String[] {"testmap.orbitalis.zone.kepler", "execute in orbitalis:kepler_452b run tp @s 0 150 0"});
+            destinations.add(new String[] {"testmap.orbitalis.zone.kepler_orbit", "execute in orbitalis:kepler_orbit run tp @s 0 100 0"});
         }
         welcome(level, destinations);
         Orbitalis.LOGGER.info("Carte de test : galerie jusqu'à x = {}, {} centres posés", galleryEnd, sites.length);

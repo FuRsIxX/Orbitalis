@@ -197,6 +197,8 @@ public final class WorldPreview {
                         : shot.name().startsWith("tm_proxima") ? "execute in orbitalis:proxima_b run "
                         : shot.name().startsWith("tm_trappist_orbit") ? "execute in orbitalis:trappist_orbit run "
                         : shot.name().startsWith("tm_trappist") ? "execute in orbitalis:trappist_1e run "
+                        : shot.name().startsWith("tm_kepler_orbit") ? "execute in orbitalis:kepler_orbit run "
+                        : shot.name().startsWith("tm_kepler") ? "execute in orbitalis:kepler_452b run "
                         : shot.name().equals("tm_station") || shot.name().startsWith("tm_orbit")
                         ? "execute in orbitalis:orbit run " : "execute in minecraft:overworld run ";
                 run(level, (where + "tp @a %.2f %.2f %.2f %.1f %.1f").formatted(shot.x(), shot.y(), shot.z(), shot.yaw(), shot.pitch())
@@ -426,6 +428,29 @@ public final class WorldPreview {
             }
         }
         Orbitalis.LOGGER.info("TRAPPIST-1 e : rien trouvé pour la vue {}", island ? "de l'île" : "du fond");
+    }
+
+    /** Une vue au ras du gazon de Kepler-452b : le premier trouvé en cercles autour de l'origine. */
+    private static void keplerSpot(ServerLevel level) {
+        hover(level);
+        ServerLevel kepler = level.getServer().getLevel(SpaceRules.KEPLER_452B);
+        if (kepler == null) {
+            return;
+        }
+        for (int ring = 0; ring <= 64; ring++) {
+            for (int step = 0; step < Math.max(1, ring * 8); step++) {
+                double angle = Math.PI * 2.0 * step / Math.max(1, ring * 8);
+                int x = (int) Math.round(Math.cos(angle) * ring * 16);
+                int z = (int) Math.round(Math.sin(angle) * ring * 16);
+                kepler.getChunkAt(new BlockPos(x, 0, z));
+                int ground = kepler.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+                if (kepler.getBlockState(new BlockPos(x, ground - 1, z)).is(ModBlocks.KEPLER_TURF.get())) {
+                    run(level, ("execute in orbitalis:kepler_452b run tp @a %d.5 %d %d.5 -60 18").formatted(x - 6, ground + 2, z - 4));
+                    return;
+                }
+            }
+        }
+        Orbitalis.LOGGER.info("Kepler-452b : pas de gazon trouvé pour la vue");
     }
 
     private static void closeScreen() {
@@ -2551,6 +2576,10 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_trappist_island", level -> trappistSpot(level, true), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         SHOTS.add(new Shot("tm_trappist_seabed", level -> trappistSpot(level, false), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 120));
         SHOTS.add(new Shot("tm_trappist_orbit_view", level -> hover(level), 0.5, 100.0, 0.5, -90.0F, 55.0F, 80));
+        // Kepler-452b : ses plaines, de haut puis au ras du sol (le premier gazon trouvé autour de l'origine), puis d'orbite.
+        SHOTS.add(new Shot("tm_kepler_sky", level -> hover(level), 0.5, 150.0, 0.5, 225.0F, 12.0F, 200));
+        SHOTS.add(new Shot("tm_kepler_plain", level -> keplerSpot(level), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
+        SHOTS.add(new Shot("tm_kepler_orbit_view", level -> hover(level), 0.5, 100.0, 0.5, -90.0F, 55.0F, 80));
         SHOTS.add(new Shot("tm_orbit_ship_pods", null, 27.5, 99.0, -3.5, -90.0F, 8.0F, 60));
         SHOTS.add(new Shot("tm_orbit_ship_greenhouse", null, 33.5, 99.0, -3.5, -90.0F, 14.0F, 60));
         SHOTS.add(new Shot("tm_orbit_ship_bridge", null, 39.5, 99.0, -3.5, -90.0F, 6.0F, 60));
@@ -2582,12 +2611,24 @@ public final class WorldPreview {
             closeScreen();
             helm(level, true, 1);
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 30));
+        // Vers Kepler-452b, de même.
+        SHOTS.add(new Shot("tm_orbit_jump_choose_kepler", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            if (net.minecraft.client.Minecraft.getInstance().gui.screen() instanceof com.orbitalis.client.screen.ShipHelmScreen screen) {
+                screen.choose(2);
+            }
+        }), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 10));
+        SHOTS.add(new Shot("tm_orbit_jump_kepler", level -> {
+            closeScreen();
+            helm(level, true, 2);
+        }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 30));
         SHOTS.add(new Shot("tm_orbit_jump_order", level -> helm(level, true), 39.5, 99.0, -3.5, -90.0F, 6.0F, 30));
         SHOTS.add(new Shot("tm_orbit_jump_countdown", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 15));
         SHOTS.add(new Shot("tm_orbit_jump_arrived", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         // Arrivé en orbite de TRAPPIST-1 e (poupe en 0 120 0) : le vaisseau vu du dehors, puis la passerelle.
         SHOTS.add(new Shot("tm_trappist_orbit_ship", level -> hover(level), 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
         SHOTS.add(new Shot("tm_trappist_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));
+        SHOTS.add(new Shot("tm_kepler_orbit_ship", level -> hover(level), 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
+        SHOTS.add(new Shot("tm_kepler_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));
         SHOTS.add(new Shot("tm_orbit_cradle_empty", null, 29.0, 110.0, 14.0, 200.0F, 25.0F, 100));
         SHOTS.add(new Shot("tm_proxima_orbit_ship", null, 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
         SHOTS.add(new Shot("tm_proxima_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));

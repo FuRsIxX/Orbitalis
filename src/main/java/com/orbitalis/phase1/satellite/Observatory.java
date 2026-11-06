@@ -69,6 +69,7 @@ public final class Observatory {
             case PROXIMA_B -> new Window(20, 6, 2);
             case SAGITTARIUS_A -> new Window(16, 6, 5);
             case TRAPPIST_1E -> new Window(18, 5, 7);
+            case KEPLER_452B -> new Window(20, 5, 11);
         };
     }
 

@@ -254,6 +254,15 @@ public class OrbitalisModelProvider extends ModelProvider {
         for (Block plant : List.of(ModBlocks.SPIRE_REED.get(), ModBlocks.GLEAM_CUP.get())) {
             blockModels.createCrossBlockWithDefaultItem(plant, BlockModelGenerators.PlantType.NOT_TINTED);
         }
+        // Kepler-452b : sa roche et son sol ; le gazon a son dessus, ses flancs frangés et, dessous, le sol. Sa flore est en croix.
+        blockModels.createTrivialCube(ModBlocks.KEPLER_ROCK.get());
+        blockModels.createTrivialCube(ModBlocks.KEPLER_SOIL.get());
+        blockModels.createTrivialBlock(ModBlocks.KEPLER_TURF.get(), net.minecraft.client.data.models.model.TexturedModel.CUBE_TOP_BOTTOM
+                .updateTexture(mapping -> mapping.put(net.minecraft.client.data.models.model.TextureSlot.BOTTOM,
+                        net.minecraft.client.data.models.model.TextureMapping.getBlockTexture(ModBlocks.KEPLER_SOIL.get()))));
+        for (Block plant : List.of(ModBlocks.BRONZE_FERN.get(), ModBlocks.AMBER_TUFT.get())) {
+            blockModels.createCrossBlockWithDefaultItem(plant, BlockModelGenerators.PlantType.NOT_TINTED);
+        }
         Block tide = ModBlocks.TIDE_GRASS.get();
         Identifier tideModel = new net.minecraft.client.data.models.model.ModelTemplate(
                 java.util.Optional.of(Identifier.withDefaultNamespace("block/template_seagrass")), java.util.Optional.empty(),

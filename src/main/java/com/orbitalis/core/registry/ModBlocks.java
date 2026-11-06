@@ -189,6 +189,22 @@ public final class ModBlocks {
     /** La flore des îles : le roseau-flèche des rivages et la coupe-lueur, qui luit. */
     public static final DeferredBlock<com.orbitalis.phase3.celestial.TrappistPlantBlock> SPIRE_REED = trappistPlant("spire_reed", 0, true);
     public static final DeferredBlock<com.orbitalis.phase3.celestial.TrappistPlantBlock> GLEAM_CUP = trappistPlant("gleam_cup", 9, false);
+    // ------------------------------------------------------------------
+    // Kepler-452b
+    // ------------------------------------------------------------------
+    /** Roche de Kepler-452b : un basalte brun-gris, tassé par la pesanteur. */
+    public static final DeferredBlock<Block> KEPLER_ROCK = withItem(BLOCKS.registerSimpleBlock("kepler_rock",
+            properties -> properties.mapColor(MapColor.TERRACOTTA_GRAY).instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops().strength(1.8F, 6.0F).sound(SoundType.DEEPSLATE)));
+    /** Sol de Kepler-452b : une terre brun sombre. */
+    public static final DeferredBlock<Block> KEPLER_SOIL = withItem(BLOCKS.registerSimpleBlock("kepler_soil",
+            properties -> properties.mapColor(MapColor.DIRT).strength(0.6F).sound(SoundType.ROOTED_DIRT)));
+    /** Gazon bronze : le sol couvert d'une herbe rase, bronze et olive, là où vit la flore. */
+    public static final DeferredBlock<Block> KEPLER_TURF = withItem(BLOCKS.registerSimpleBlock("kepler_turf",
+            properties -> properties.mapColor(MapColor.TERRACOTTA_YELLOW).strength(0.6F).sound(SoundType.GRASS)));
+    /** La flore des plaines : la fougère bronze et la touffe d'ambre, basses et étalées. */
+    public static final DeferredBlock<com.orbitalis.phase3.celestial.KeplerPlantBlock> BRONZE_FERN = keplerPlant("bronze_fern", true);
+    public static final DeferredBlock<com.orbitalis.phase3.celestial.KeplerPlantBlock> AMBER_TUFT = keplerPlant("amber_tuft", false);
     /** L'herbe des marées : des rubans pourpres au fond des mers. */
     public static final DeferredBlock<com.orbitalis.phase3.celestial.TideGrassBlock> TIDE_GRASS = withItem(BLOCKS.registerBlock("tide_grass",
             com.orbitalis.phase3.celestial.TideGrassBlock::new,
@@ -1485,6 +1501,14 @@ public final class ModBlocks {
         return withItem(BLOCKS.registerBlock(name, com.orbitalis.phase3.celestial.ProximaPlantBlock::new, properties -> {
             properties.mapColor(MapColor.COLOR_PURPLE).noCollision().instabreak().sound(SoundType.GRASS)
                     .offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY).lightLevel(state -> light);
+            return replaceable ? properties.replaceable() : properties;
+        }));
+    }
+
+    private static DeferredBlock<com.orbitalis.phase3.celestial.KeplerPlantBlock> keplerPlant(String name, boolean replaceable) {
+        return withItem(BLOCKS.registerBlock(name, com.orbitalis.phase3.celestial.KeplerPlantBlock::new, properties -> {
+            properties.mapColor(MapColor.TERRACOTTA_YELLOW).noCollision().instabreak().sound(SoundType.GRASS)
+                    .offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY);
             return replaceable ? properties.replaceable() : properties;
         }));
     }

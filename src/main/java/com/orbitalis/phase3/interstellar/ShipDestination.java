@@ -13,17 +13,30 @@ import net.minecraft.world.level.Level;
  * vaisseau saute de son berceau jusqu'à l'orbite de l'un d'eux, et la navette en descend sur la planète.
  */
 public enum ShipDestination {
-    PROXIMA(CelestialBody.PROXIMA_B, SpaceRules.PROXIMA_ORBIT, SpaceRules.PROXIMA_B),
-    TRAPPIST(CelestialBody.TRAPPIST_1E, SpaceRules.TRAPPIST_ORBIT, SpaceRules.TRAPPIST_1E);
+    PROXIMA(CelestialBody.PROXIMA_B, SpaceRules.PROXIMA_ORBIT, SpaceRules.PROXIMA_B, false),
+    TRAPPIST(CelestialBody.TRAPPIST_1E, SpaceRules.TRAPPIST_ORBIT, SpaceRules.TRAPPIST_1E, true),
+    KEPLER(CelestialBody.KEPLER_452B, SpaceRules.KEPLER_ORBIT, SpaceRules.KEPLER_452B, true);
 
     private final CelestialBody body;
     private final ResourceKey<Level> orbit;
     private final ResourceKey<Level> planet;
+    private final boolean seas;
 
-    ShipDestination(CelestialBody body, ResourceKey<Level> orbit, ResourceKey<Level> planet) {
+    ShipDestination(CelestialBody body, ResourceKey<Level> orbit, ResourceKey<Level> planet, boolean seas) {
         this.body = body;
         this.orbit = orbit;
         this.planet = planet;
+        this.seas = seas;
+    }
+
+    /** Vrai si la planète a des mers : la navette peut y amerrir. */
+    public boolean seas() {
+        return seas;
+    }
+
+    /** Ce qui s'affiche à la navette, posée sur cette planète : {@code landed}, {@code splashdown}, {@code liftoff}, {@code hud.hint}. */
+    public String shuttleKey(String what) {
+        return what.startsWith("hud.") ? "capsule.orbitalis.hud." + id() + "_" + what.substring(4) : "capsule.orbitalis." + id() + "_" + what;
     }
 
     public String id() {
@@ -75,6 +88,16 @@ public enum ShipDestination {
 
     public static ShipDestination byIndex(int index) {
         return values()[Math.floorMod(index, values().length)];
+    }
+
+    /** La destination dont c'est la planète, ou rien. */
+    public static ShipDestination byPlanet(ResourceKey<Level> dimension) {
+        for (ShipDestination destination : values()) {
+            if (destination.planet == dimension) {
+                return destination;
+            }
+        }
+        return null;
     }
 
     /** La destination dont c'est l'orbite, ou rien. */

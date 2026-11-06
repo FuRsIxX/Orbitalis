@@ -370,6 +370,12 @@ public class CapsuleEntity extends Entity {
         return shuttle;
     }
 
+    /** Le monde où est posée la navette (Proxima b à défaut). */
+    private com.orbitalis.phase3.interstellar.ShipDestination shuttleWorld() {
+        com.orbitalis.phase3.interstellar.ShipDestination world = com.orbitalis.phase3.interstellar.ShipDestination.byPlanet(level().dimension());
+        return world != null ? world : com.orbitalis.phase3.interstellar.ShipDestination.PROXIMA;
+    }
+
     /**
      * Le nom de l'étape en cours, pour les écrans de bord. La montée et la descente propulsée servent aussi ailleurs
      * que sur la Lune (Mars, Titan, Europe, Proxima b) : elles n'y parlent pas de la Lune.
@@ -904,7 +910,7 @@ public class CapsuleEntity extends Entity {
             case POWERED_DESCENT -> tickPoweredDescent(level);
             case LANDED -> {
                 if ((isLunar() && SpaceRules.isMoon(level)) || (isMartian() && SpaceRules.isMars(level)) || (isTitanian() && SpaceRules.isTitan(level))
-                        || (isEuropan() && SpaceRules.isEuropa(level)) || (shuttle && (SpaceRules.isProxima(level) || SpaceRules.isTrappist(level)))) {
+                        || (isEuropan() && SpaceRules.isEuropa(level)) || (shuttle && com.orbitalis.phase3.interstellar.ShipDestination.byPlanet(level.dimension()) != null)) {
                     tickMoonDeparture();
                 }
                 // Posée : elle reste soumise à la pesanteur si le sol disparaît sous elle.
@@ -1330,8 +1336,7 @@ public class CapsuleEntity extends Entity {
         if (!control(PilotInputPayload.LAUNCH)) {
             launchHold = 0;
             if (timer % 40 == 0) {
-                tell(Component.translatable(shuttle ? (SpaceRules.isTrappist(level()) ? "capsule.orbitalis.hud.trappist_hint"
-                        : "capsule.orbitalis.hud.proxima_hint") : isEuropan() ? "capsule.orbitalis.hud.europa_hint"
+                tell(Component.translatable(shuttle ? shuttleWorld().shuttleKey("hud.hint") : isEuropan() ? "capsule.orbitalis.hud.europa_hint"
                         : isTitanian() ? "capsule.orbitalis.hud.titan_hint"
                         : isMartian() ? "capsule.orbitalis.hud.mars_hint" : "capsule.orbitalis.hud.moon_hint"));
             }
@@ -1342,8 +1347,7 @@ public class CapsuleEntity extends Entity {
         if (launchHold >= LAUNCH_HOLD_TICKS) {
             launchHold = 0;
             setPhase(Phase.LUNAR_ASCENT);
-            player.sendSystemMessage(Component.translatable(shuttle ? (SpaceRules.isTrappist(level()) ? "capsule.orbitalis.trappist_liftoff"
-                    : "capsule.orbitalis.proxima_liftoff")
+            player.sendSystemMessage(Component.translatable(shuttle ? shuttleWorld().shuttleKey("liftoff")
                     : isEuropan() ? "capsule.orbitalis.europa_liftoff" : isTitanian() ? "capsule.orbitalis.titan_liftoff"
                     : isMartian() ? "capsule.orbitalis.mars_liftoff" : "capsule.orbitalis.moon_liftoff")
                     .withStyle(ChatFormatting.AQUA));
@@ -1725,7 +1729,7 @@ public class CapsuleEntity extends Entity {
         // Posée, pour que l'équipage puisse en sortir : en vol, il y est retenu.
         setPhase(Phase.LANDED);
         boolean otherWorld = SpaceRules.isMoon(level) || SpaceRules.isMars(level) || SpaceRules.isTitan(level) || SpaceRules.isEuropa(level)
-                || SpaceRules.isProxima(level) || SpaceRules.isTrappist(level);
+                || com.orbitalis.phase3.interstellar.ShipDestination.byPlanet(level.dimension()) != null;
         if (otherWorld && crew instanceof ServerPlayer spared && spared.getAbilities().invulnerable) {
             // En mode créatif, rien ne tue le pilote : son vaisseau est épargné lui aussi, sans quoi il resterait
             // seul sur un autre monde, sans moyen d'en repartir.
@@ -1793,11 +1797,11 @@ public class CapsuleEntity extends Entity {
             titanLanded();
             return;
         }
-        if (SpaceRules.isProxima(level()) || SpaceRules.isTrappist(level())) {
+        com.orbitalis.phase3.interstellar.ShipDestination world = com.orbitalis.phase3.interstellar.ShipDestination.byPlanet(level().dimension());
+        if (world != null) {
             if (getFirstPassenger() instanceof ServerPlayer player) {
-                // Sur TRAPPIST-1 e, la navette se pose sur une île, ou flotte si elle est tombée en mer.
-                String key = !SpaceRules.isTrappist(level()) ? "capsule.orbitalis.proxima_landed"
-                        : isInWater() ? "capsule.orbitalis.trappist_splashdown" : "capsule.orbitalis.trappist_landed";
+                // Sur un monde qui a des mers, la navette se pose sur la terre, ou flotte si elle est tombée en mer.
+                String key = world.shuttleKey(world.seas() && isInWater() ? "splashdown" : "landed");
                 player.sendSystemMessage(Component.translatable(key).withStyle(ChatFormatting.GREEN));
             }
             return;
@@ -1832,12 +1836,7 @@ public class CapsuleEntity extends Entity {
         com.orbitalis.phase3.interstellar.ShipVoyages.Voyage voyage = agency == null ? null
                 : com.orbitalis.phase3.interstellar.ShipVoyages.of(level.getServer()).of(agency);
         // L'orbite de ce monde : celle où attend le vaisseau, s'il est bien parti pour celui-ci.
-        com.orbitalis.phase3.interstellar.ShipDestination here = null;
-        for (com.orbitalis.phase3.interstellar.ShipDestination destination : com.orbitalis.phase3.interstellar.ShipDestination.values()) {
-            if (destination.planet() == level.dimension()) {
-                here = destination;
-            }
-        }
+        com.orbitalis.phase3.interstellar.ShipDestination here = com.orbitalis.phase3.interstellar.ShipDestination.byPlanet(level.dimension());
         ServerLevel orbit = here == null ? null : level.getServer().getLevel(here.orbit());
         if (orbit == null) {
             setPhase(Phase.LUNAR_DESCENT);

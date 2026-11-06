@@ -1,0 +1,40 @@
+{
+  "attributes": {
+    "minecraft:visual/sky_color": "#8CB4C8",
+    "minecraft:visual/fog_color": "#C8C0A0",
+    "minecraft:visual/water_fog_color": "#1E3A4A"
+  },
+  "carvers": [],
+  "downfall": 0.0,
+  "effects": {
+    "water_color": "#3A6A86"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "orbitalis:kepler_bronze_fern",
+      "orbitalis:kepler_amber_tuft"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.7
+}

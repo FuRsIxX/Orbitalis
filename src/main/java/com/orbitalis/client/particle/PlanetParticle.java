@@ -62,7 +62,8 @@ public class PlanetParticle extends SingleQuadParticle {
     private static final int SPRITE_TRAPPIST_D = 6;
     private static final int SPRITE_TRAPPIST_F = 7;
     private static final int SPRITE_TRAPPIST_G = 8;
-    private static final int SPRITES = 9;
+    private static final int SPRITE_KEPLER_452B = 9;
+    private static final int SPRITES = 10;
     /**
      * Les trois sœurs de TRAPPIST-1 e dans son ciel : leur image, leur direction (x vers l'est, y vers le haut, z vers le
      * sud) et leur demi-largeur. Elles sont si proches qu'elles s'y montrent grandes comme des lunes.
@@ -156,7 +157,7 @@ public class PlanetParticle extends SingleQuadParticle {
         // Sous l'orbite de Proxima, ce n'est pas la planète bleue, mais Proxima b.
         if (images != null) {
             setSprite(sprite(SpaceRules.isProximaOrbit(level) ? SPRITE_PROXIMA_B : SpaceRules.isTrappistOrbit(level) ? SPRITE_TRAPPIST_1E
-                    : SPRITE_PLANET));
+                    : SpaceRules.isKeplerOrbit(level) ? SPRITE_KEPLER_452B : SPRITE_PLANET));
         }
         float turn = (level.getGameTime() % (long) TURN_TICKS + partialTick) / TURN_TICKS * (float) (Math.PI * 2);
         // Deux faces dos à dos : le disque se voit quel que soit le sens dans lequel le jeu dessine ses particules.

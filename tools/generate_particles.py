@@ -283,11 +283,12 @@ if __name__ == "__main__":
         with open(os.path.join(PARTICLE_DIR, alias + ".json"), "w", newline=chr(10)) as f:
             json.dump({"textures": ["orbitalis:%s_%d" % (source, k) for k in range(len(PARTICLES[source]))]}, f, indent=2)
     write_png(os.path.join(TEXTURE_DIR, "planet.png"), planet_texture())
-    # Les images de Jupiter, de Proxima et de TRAPPIST-1 sont dessinées par generate_europa.py, generate_proxima.py et
-    # generate_trappist.py.
+    # Les images de Jupiter, de Proxima, de TRAPPIST-1 et de Kepler-452b sont dessinées par generate_europa.py,
+    # generate_proxima.py, generate_trappist.py et generate_kepler.py.
     with open(os.path.join(PARTICLE_DIR, "planet.json"), "w", newline=chr(10)) as f:
         json.dump({"textures": ["orbitalis:planet", "orbitalis:jupiter", "orbitalis:proxima_b",
                                 "orbitalis:proxima_star", "orbitalis:trappist_star", "orbitalis:trappist_1e",
-                                "orbitalis:trappist_d", "orbitalis:trappist_f", "orbitalis:trappist_g"]}, f, indent=2)
+                                "orbitalis:trappist_d", "orbitalis:trappist_f", "orbitalis:trappist_g",
+                                "orbitalis:kepler_452b"]}, f, indent=2)
 
     print(f"{len(PARTICLES) + 1} particules, {count + 1} images écrites.")

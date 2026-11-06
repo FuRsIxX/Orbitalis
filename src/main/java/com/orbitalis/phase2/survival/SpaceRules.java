@@ -52,6 +52,12 @@ public final class SpaceRules {
     public static final ResourceKey<Level> TRAPPIST_1E = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("trappist_1e"));
     public static final double TRAPPIST_GRAVITY = 0.93;
     private static final int REWARD_TRAPPISTWALK = 3000;
+    /** L'orbite de Kepler-452b, à 1 400 années-lumière, sous une étoile semblable au Soleil. */
+    public static final ResourceKey<Level> KEPLER_ORBIT = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("kepler_orbit"));
+    /** Kepler-452b : une super-Terre de mers et de plaines, une fois et demie plus pesante, à l'air irrespirable. */
+    public static final ResourceKey<Level> KEPLER_452B = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("kepler_452b"));
+    public static final double KEPLER_GRAVITY = 1.5;
+    private static final int REWARD_KEPLERWALK = 3500;
     /** Hauteur à laquelle les capsules arrivent dans la dimension d'orbite. */
     public static final double PARKING_HEIGHT = 100.0;
 
@@ -80,7 +86,8 @@ public final class SpaceRules {
     }
 
     public static boolean isOrbit(Level level) {
-        return level.dimension() == ORBIT || level.dimension() == PROXIMA_ORBIT || level.dimension() == TRAPPIST_ORBIT;
+        return level.dimension() == ORBIT || level.dimension() == PROXIMA_ORBIT || level.dimension() == TRAPPIST_ORBIT
+                || level.dimension() == KEPLER_ORBIT;
     }
 
     /** Dimension de la Lune : un sol de régolithe, un sixième de la pesanteur, pas d'air. */
@@ -151,15 +158,26 @@ public final class SpaceRules {
         return level.dimension() == TRAPPIST_1E;
     }
 
+    /** Vrai en orbite de Kepler-452b. */
+    public static boolean isKeplerOrbit(Level level) {
+        return level.dimension() == KEPLER_ORBIT;
+    }
+
+    /** Vrai sur Kepler-452b. */
+    public static boolean isKepler(Level level) {
+        return level.dimension() == KEPLER_452B;
+    }
+
     /** Vrai si l'on ne peut pas respirer dans ce monde sans combinaison : le vide, l'air de Mars ou celui de Titan. */
     public static boolean isUnbreathable(Level level) {
-        return isVacuum(level) || isMars(level) || isTitan(level) || isProxima(level) || isTrappist(level);
+        return isVacuum(level) || isMars(level) || isTitan(level) || isProxima(level) || isTrappist(level) || isKepler(level);
     }
 
     /** Pesanteur de ce monde, en part de celle de la planète. */
     public static double gravityOf(Level level) {
         return isMoon(level) ? MOON_GRAVITY : isMars(level) ? MARS_GRAVITY : isTitan(level) ? TITAN_GRAVITY
-                : isEuropa(level) ? EUROPA_GRAVITY : isProxima(level) ? PROXIMA_GRAVITY : isTrappist(level) ? TRAPPIST_GRAVITY : 1.0;
+                : isEuropa(level) ? EUROPA_GRAVITY : isProxima(level) ? PROXIMA_GRAVITY : isTrappist(level) ? TRAPPIST_GRAVITY
+                : isKepler(level) ? KEPLER_GRAVITY : 1.0;
     }
 
     /** Vrai s'il n'y a pas d'air dans ce monde : en orbite, sur la Lune et sur Europe. */
@@ -209,6 +227,7 @@ public final class SpaceRules {
         boolean onEuropa = isEuropa(player.level());
         boolean onProxima = isProxima(player.level());
         boolean onTrappist = isTrappist(player.level());
+        boolean onKepler = isKepler(player.level());
         // À bord d'un vaisseau dont l'anneau tourne, l'équipage retrouve la pesanteur.
         updateMicrogravity(player, inOrbit && !com.orbitalis.phase3.interstellar.RingDriveBlockEntity.gravityAt(player));
         updateLowGravity(player, gravityOf(player.level()));
@@ -216,7 +235,7 @@ public final class SpaceRules {
             return;
         }
         ItemStack suit = player.getItemBySlot(EquipmentSlot.CHEST);
-        boolean outdoors = inOrbit || onMoon || onMars || onTitan || onEuropa || onProxima || onTrappist;
+        boolean outdoors = inOrbit || onMoon || onMars || onTitan || onEuropa || onProxima || onTrappist || onKepler;
         // La capsule est pressurisée, comme les pièces d'une station dont le générateur d'air tourne.
         boolean sheltered = outdoors && (player.getVehicle() instanceof CapsuleEntity
                 || StationAir.isBreathable(player.level(), BlockPos.containing(player.getEyePosition())));
@@ -264,6 +283,8 @@ public final class SpaceRules {
                 rewardProximawalk(player);
             } else if (onTrappist) {
                 rewardTrappistwalk(player);
+            } else if (onKepler) {
+                rewardKeplerwalk(player);
             } else {
                 rewardSpacewalk(player);
             }
@@ -327,14 +348,15 @@ public final class SpaceRules {
             return;
         }
         AttributeModifier current = gravity.getModifier(LOW_GRAVITY);
-        boolean light = share < 1.0;
+        // Plus légère ou plus lourde que celle de la planète : sur Kepler-452b, on saute moins haut et l'on tombe plus vite.
+        boolean other = Math.abs(share - 1.0) > 1.0E-6;
         // Rien à faire si le joueur porte déjà la pesanteur de ce monde.
-        if (light ? current != null && Math.abs(current.amount() - (share - 1.0)) < 1.0E-6 : current == null) {
+        if (other ? current != null && Math.abs(current.amount() - (share - 1.0)) < 1.0E-6 : current == null) {
             return;
         }
         gravity.removeModifier(LOW_GRAVITY);
         safeFall.removeModifier(LOW_GRAVITY);
-        if (light) {
+        if (other) {
             gravity.addTransientModifier(new AttributeModifier(LOW_GRAVITY, share - 1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
             safeFall.addTransientModifier(new AttributeModifier(LOW_GRAVITY, 3.0 / share - 3.0, AttributeModifier.Operation.ADD_VALUE));
         }
@@ -357,6 +379,16 @@ public final class SpaceRules {
             research.addPoints(REWARD_TRAPPISTWALK);
             ResearchManager.changed(player);
             player.sendSystemMessage(Component.translatable("space.orbitalis.first_trappistwalk", REWARD_TRAPPISTWALK).withStyle(ChatFormatting.AQUA));
+        }
+    }
+
+    /** Premiers pas sur Kepler-452b d'une agence : sous une pesanteur une fois et demie plus forte, en combinaison. */
+    private static void rewardKeplerwalk(ServerPlayer player) {
+        AgencyResearch research = ResearchManager.of(player);
+        if (research.completeMilestone("first_keplerwalk")) {
+            research.addPoints(REWARD_KEPLERWALK);
+            ResearchManager.changed(player);
+            player.sendSystemMessage(Component.translatable("space.orbitalis.first_keplerwalk", REWARD_KEPLERWALK).withStyle(ChatFormatting.AQUA));
         }
     }
 

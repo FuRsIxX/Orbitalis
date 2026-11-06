@@ -31,7 +31,8 @@ public final class Features {
             ModItems.SHIPYARD_MODULE, ModBlocks.SHIPYARD_CONSOLE, ModBlocks.WARP_CORE, ModBlocks.RING_DRIVE, ModBlocks.HIBERNATION_POD,
             ModBlocks.SHIP_HELM, ModBlocks.PROXIMA_ROCK, ModBlocks.PROXIMA_REGOLITH, ModBlocks.PROXIMA_MOSS, ModBlocks.PROXIMA_ASH,
             ModBlocks.PROXIMA_FROST, ModBlocks.RED_SEDGE, ModBlocks.UMBRA_FERN, ModBlocks.LANTERN_BULB, ModBlocks.TRAPPIST_ROCK,
-            ModBlocks.TRAPPIST_SAND, ModBlocks.TRAPPIST_MOSS, ModBlocks.SPIRE_REED, ModBlocks.GLEAM_CUP, ModBlocks.TIDE_GRASS);
+            ModBlocks.TRAPPIST_SAND, ModBlocks.TRAPPIST_MOSS, ModBlocks.SPIRE_REED, ModBlocks.GLEAM_CUP, ModBlocks.TIDE_GRASS,
+            ModBlocks.KEPLER_ROCK, ModBlocks.KEPLER_SOIL, ModBlocks.KEPLER_TURF, ModBlocks.BRONZE_FERN, ModBlocks.AMBER_TUFT);
 
     /** Vrai si cet objet est en réserve : il fait partie d'un contenu qui n'est pas montré. */
     public static boolean hidden(ItemLike item) {
