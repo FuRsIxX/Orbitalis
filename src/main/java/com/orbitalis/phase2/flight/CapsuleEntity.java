@@ -282,6 +282,14 @@ public class CapsuleEntity extends Entity {
     private int lunarHold;
     /** Vrai quand les touches de départ et de retour ont été relâchées : le prochain appui prépare ou annule une manœuvre. */
     private boolean nodeArmed = true;
+    /**
+     * Vrai pour la navette d'un vaisseau interstellaire : partie du vaisseau en orbite de Proxima b, elle freine vers
+     * Proxima b, s'y pose sous parachutes, puis remonte s'amarrer au vaisseau.
+     */
+    private boolean shuttle;
+    /** Ticks depuis lesquels la navette attend vide en orbite ; au bout de {@link #SHUTTLE_STOW_TICKS}, elle rentre en soute. */
+    private int stowing;
+    private static final int SHUTTLE_STOW_TICKS = 100;
 
     public CapsuleEntity(EntityType<?> type, Level level) {
         super(type, level);
@@ -349,6 +357,46 @@ public class CapsuleEntity extends Entity {
         originX = getX();
         originZ = getZ();
         setPhase(Phase.ORBIT);
+    }
+
+    /** La navette se détache de son vaisseau, en orbite de Proxima b : elle y attend que son pilote prépare le freinage. */
+    public void startShuttle() {
+        shuttle = true;
+        reach = RocketStats.Reach.LOW_ORBIT.ordinal();
+        parkInOrbit();
+    }
+
+    public boolean isShuttle() {
+        return shuttle;
+    }
+
+    /**
+     * Le nom de l'étape en cours, pour les écrans de bord. La montée et la descente propulsée servent aussi ailleurs
+     * que sur la Lune (Mars, Titan, Europe, Proxima b) : elles n'y parlent pas de la Lune.
+     */
+    public String phaseKey() {
+        Phase phase = getPhase();
+        if (!SpaceRules.isMoon(level())) {
+            if (phase == Phase.LUNAR_ASCENT) {
+                return "capsule.orbitalis.phase.liftoff";
+            }
+            if (phase == Phase.LUNAR_DESCENT) {
+                return "capsule.orbitalis.phase.landing";
+            }
+        }
+        return phase.messageKey();
+    }
+
+    /** Le freinage, sans la manœuvre qui le prépare (outil de capture). */
+    public void deorbitNow() {
+        if (level() instanceof ServerLevel level) {
+            deorbit(level);
+        }
+    }
+
+    /** Le décollage d'un autre monde, sans tenir la touche (outil de capture). */
+    public void liftoffNow() {
+        setPhase(Phase.LUNAR_ASCENT);
     }
 
     /** Supprime la dérive de la descente (tests automatiques). */
@@ -856,7 +904,7 @@ public class CapsuleEntity extends Entity {
             case POWERED_DESCENT -> tickPoweredDescent(level);
             case LANDED -> {
                 if ((isLunar() && SpaceRules.isMoon(level)) || (isMartian() && SpaceRules.isMars(level)) || (isTitanian() && SpaceRules.isTitan(level))
-                        || (isEuropan() && SpaceRules.isEuropa(level))) {
+                        || (isEuropan() && SpaceRules.isEuropa(level)) || (shuttle && SpaceRules.isProxima(level))) {
                     tickMoonDeparture();
                 }
                 // Posée : elle reste soumise à la pesanteur si le sol disparaît sous elle.
@@ -1282,7 +1330,8 @@ public class CapsuleEntity extends Entity {
         if (!control(PilotInputPayload.LAUNCH)) {
             launchHold = 0;
             if (timer % 40 == 0) {
-                tell(Component.translatable(isEuropan() ? "capsule.orbitalis.hud.europa_hint" : isTitanian() ? "capsule.orbitalis.hud.titan_hint"
+                tell(Component.translatable(shuttle ? "capsule.orbitalis.hud.proxima_hint" : isEuropan() ? "capsule.orbitalis.hud.europa_hint"
+                        : isTitanian() ? "capsule.orbitalis.hud.titan_hint"
                         : isMartian() ? "capsule.orbitalis.hud.mars_hint" : "capsule.orbitalis.hud.moon_hint"));
             }
             return;
@@ -1292,7 +1341,8 @@ public class CapsuleEntity extends Entity {
         if (launchHold >= LAUNCH_HOLD_TICKS) {
             launchHold = 0;
             setPhase(Phase.LUNAR_ASCENT);
-            player.sendSystemMessage(Component.translatable(isEuropan() ? "capsule.orbitalis.europa_liftoff" : isTitanian() ? "capsule.orbitalis.titan_liftoff"
+            player.sendSystemMessage(Component.translatable(shuttle ? "capsule.orbitalis.proxima_liftoff"
+                    : isEuropan() ? "capsule.orbitalis.europa_liftoff" : isTitanian() ? "capsule.orbitalis.titan_liftoff"
                     : isMartian() ? "capsule.orbitalis.mars_liftoff" : "capsule.orbitalis.moon_liftoff")
                     .withStyle(ChatFormatting.AQUA));
         }
@@ -1305,6 +1355,10 @@ public class CapsuleEntity extends Entity {
             tell(Component.translatable("capsule.orbitalis.hud.lunar_ascent", (int) (getY() - groundHeight())));
         }
         if (timer >= MOON_ASCENT_TICKS) {
+            if (shuttle) {
+                returnToShip(level);
+                return;
+            }
             if (getFirstPassenger() instanceof ServerPlayer player && enterOrbit(level, player, true)) {
                 return;
             }
@@ -1331,6 +1385,12 @@ public class CapsuleEntity extends Entity {
      */
     private void tickOrbit(ServerLevel level) {
         boolean aboard = getFirstPassenger() instanceof ServerPlayer;
+        // La navette laissée vide rentre dans sa soute : on la ressortira depuis la passerelle.
+        stowing = shuttle && !isVehicle() ? stowing + 1 : 0;
+        if (stowing >= SHUTTLE_STOW_TICKS) {
+            discard();
+            return;
+        }
         boolean transferKey = aboard && control(PilotInputPayload.MOON);
         boolean returnKey = aboard && control(PilotInputPayload.RETURN);
         boolean armed = nodeArmed;
@@ -1364,7 +1424,8 @@ public class CapsuleEntity extends Entity {
         if (!returnKey) {
             deorbitHold = 0;
             if (timer % 20 == 0) {
-                tell(canReachMoon()
+                tell(shuttle ? Component.translatable("capsule.orbitalis.hud.parked_shuttle")
+                        : canReachMoon()
                         ? Component.translatable("capsule.orbitalis.hud.parked_lunar")
                         : canReachMars() ? Component.translatable("capsule.orbitalis.hud.parked_mars")
                         : canReachTitan() ? Component.translatable("capsule.orbitalis.hud.parked_titan")
@@ -1531,9 +1592,12 @@ public class CapsuleEntity extends Entity {
 
     /** Freinage : la capsule quitte l'orbite et réapparaît au-dessus de son pas de tir, pour sa rentrée. */
     private void deorbit(ServerLevel level) {
-        ServerLevel planet = level.getServer().overworld();
+        ServerLevel planet = shuttle ? level.getServer().getLevel(SpaceRules.PROXIMA_B) : level.getServer().overworld();
+        if (planet == null) {
+            return;
+        }
         setPhase(Phase.REENTRY);
-        tell(Component.translatable("capsule.orbitalis.deorbit").withStyle(ChatFormatting.GOLD));
+        tell(Component.translatable(shuttle ? "capsule.orbitalis.shuttle_deorbit" : "capsule.orbitalis.deorbit").withStyle(ChatFormatting.GOLD));
         teleport(new TeleportTransition(planet, new Vec3(originX, REENTRY_HEIGHT, originZ), Vec3.ZERO,
                 getYRot(), getXRot(), TeleportTransition.DO_NOTHING));
     }
@@ -1657,7 +1721,8 @@ public class CapsuleEntity extends Entity {
         Entity crew = getFirstPassenger();
         // Posée, pour que l'équipage puisse en sortir : en vol, il y est retenu.
         setPhase(Phase.LANDED);
-        boolean otherWorld = SpaceRules.isMoon(level) || SpaceRules.isMars(level) || SpaceRules.isTitan(level) || SpaceRules.isEuropa(level);
+        boolean otherWorld = SpaceRules.isMoon(level) || SpaceRules.isMars(level) || SpaceRules.isTitan(level) || SpaceRules.isEuropa(level)
+                || SpaceRules.isProxima(level);
         if (otherWorld && crew instanceof ServerPlayer spared && spared.getAbilities().invulnerable) {
             // En mode créatif, rien ne tue le pilote : son vaisseau est épargné lui aussi, sans quoi il resterait
             // seul sur un autre monde, sans moyen d'en repartir.
@@ -1725,6 +1790,12 @@ public class CapsuleEntity extends Entity {
             titanLanded();
             return;
         }
+        if (SpaceRules.isProxima(level())) {
+            if (getFirstPassenger() instanceof ServerPlayer player) {
+                player.sendSystemMessage(Component.translatable("capsule.orbitalis.proxima_landed").withStyle(ChatFormatting.GREEN));
+            }
+            return;
+        }
         if (!(getFirstPassenger() instanceof ServerPlayer player)) {
             return;
         }
@@ -1744,6 +1815,40 @@ public class CapsuleEntity extends Entity {
             research.addPoints(points);
             ResearchManager.changed(player.level().getServer(), agency);
         }
+    }
+
+    /**
+     * Fin de la montée de la navette : elle s'amarre à son vaisseau, en orbite de Proxima b, et l'équipage passe à bord,
+     * sur la passerelle ; la navette rentre en soute. Si le vaisseau n'est plus là, elle reste en orbite de Proxima b.
+     */
+    private void returnToShip(ServerLevel level) {
+        ServerLevel orbit = level.getServer().getLevel(SpaceRules.PROXIMA_ORBIT);
+        if (orbit == null) {
+            setPhase(Phase.LUNAR_DESCENT);
+            return;
+        }
+        String agency = getFirstPassenger() instanceof ServerPlayer pilot ? ResearchManager.agencyKey(pilot) : null;
+        com.orbitalis.phase3.interstellar.ShipVoyages.Voyage voyage = agency == null ? null
+                : com.orbitalis.phase3.interstellar.ShipVoyages.of(level.getServer()).of(agency);
+        Vec3 bridge = voyage != null && voyage.away() ? com.orbitalis.phase3.interstellar.ShipJump.bridge(orbit, voyage.awayOrigin(), voyage.out()) : null;
+        if (bridge == null) {
+            setPhase(Phase.ORBIT);
+            tell(Component.translatable("capsule.orbitalis.shuttle_lost").withStyle(ChatFormatting.GOLD));
+            teleport(new TeleportTransition(orbit, new Vec3(originX, SpaceRules.PARKING_HEIGHT, originZ), Vec3.ZERO,
+                    getYRot(), getXRot(), TeleportTransition.DO_NOTHING));
+            return;
+        }
+        float yaw = voyage.out().toYRot();
+        // Amarrée, pour que l'équipage puisse en sortir : en vol, il y est retenu.
+        setPhase(Phase.LANDED);
+        for (Entity passenger : java.util.List.copyOf(getPassengers())) {
+            passenger.stopRiding();
+            passenger.teleport(new TeleportTransition(orbit, bridge, Vec3.ZERO, yaw, 0.0F, TeleportTransition.DO_NOTHING));
+            if (passenger instanceof ServerPlayer player) {
+                player.sendSystemMessage(Component.translatable("capsule.orbitalis.shuttle_docked").withStyle(ChatFormatting.AQUA));
+            }
+        }
+        discard();
     }
 
     /** Déplacement sans collision : la capsule traverse l'air, et sa fusée au départ. */
@@ -1895,7 +2000,7 @@ public class CapsuleEntity extends Entity {
         }
         if (!level().isClientSide()) {
             // Une capsule ne se récupère qu'au sol : en orbite, c'est le seul moyen de rentrer.
-            if (player.isSecondaryUseActive() && phase == Phase.LANDED && !isVehicle()) {
+            if (player.isSecondaryUseActive() && phase == Phase.LANDED && !isVehicle() && !shuttle) {
                 ItemStack capsule = asItem();
                 if (!player.getInventory().add(capsule)) {
                     player.drop(capsule, false);
@@ -1937,6 +2042,7 @@ public class CapsuleEntity extends Entity {
         output.putBoolean("martian", isMartian());
         output.putBoolean("titanian", isTitanian());
         output.putBoolean("europan", isEuropan());
+        output.putBoolean("shuttle", shuttle);
         output.putDouble("descent_fuel", descentFuel);
         output.putDouble("descent_vx", descentVelocity.x);
         output.putDouble("descent_vy", descentVelocity.y);
@@ -1968,6 +2074,7 @@ public class CapsuleEntity extends Entity {
         setMartian(input.getBooleanOr("martian", false));
         setTitanian(input.getBooleanOr("titanian", false));
         setEuropan(input.getBooleanOr("europan", false));
+        shuttle = input.getBooleanOr("shuttle", false);
         descentFuel = input.getDoubleOr("descent_fuel", DESCENT_FUEL);
         descentVelocity = new Vec3(input.getDoubleOr("descent_vx", 0.0), input.getDoubleOr("descent_vy", 0.0), input.getDoubleOr("descent_vz", 0.0));
         lander.reset(Direction.EAST);

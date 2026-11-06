@@ -1535,6 +1535,17 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "Le cœur est plein : %s matières exotiques.");
         add("ship.orbitalis.pod.status", "Caisson d'hibernation : prêt. L'équipage s'y endormira pendant le voyage.");
         add("ship.orbitalis.helm.not_aboard", "Ce poste n'est pas à bord d'un vaisseau. Il se pose sur la passerelle, à l'endroit prévu par le plan du chantier naval.");
+        add("capsule.orbitalis.phase.liftoff", "DÉCOLLAGE");
+        add("capsule.orbitalis.phase.landing", "ATTERRISSAGE");
+        add("ship.orbitalis.helm.shuttle", "Navette");
+        add("capsule.orbitalis.shuttle_away", "La navette se détache du vaisseau. D'autres équipiers peuvent encore monter à bord.");
+        add("capsule.orbitalis.hud.parked_shuttle", "Navette en orbite de Proxima b · touche de retour : préparer le freinage");
+        add("capsule.orbitalis.shuttle_deorbit", "Freinage : la navette plonge vers Proxima b");
+        add("capsule.orbitalis.proxima_landed", "Contact, vous êtes sur Proxima b. Accroupissez-vous pour sortir, en combinaison. Pour remonter au vaisseau, maintenez à bord la touche de lancement (Sauter, par défaut).");
+        add("capsule.orbitalis.hud.proxima_hint", "Posée sur Proxima b · maintenez la touche de lancement 3 s pour remonter au vaisseau");
+        add("capsule.orbitalis.proxima_liftoff", "Décollage de Proxima b : cap sur le vaisseau.");
+        add("capsule.orbitalis.shuttle_docked", "La navette s'amarre au vaisseau : vous voilà sur la passerelle.");
+        add("capsule.orbitalis.shuttle_lost", "Le vaisseau n'est plus en orbite : la navette y reste seule.");
         add("block.orbitalis.ring_segment", "Segment d'anneau en rotation");
         add("ship.orbitalis.ring.start", "L'anneau se met à tourner : la pesanteur revient à bord.");
         add("ship.orbitalis.ring.stop", "L'anneau ralentit et s'arrêtera dans quelques secondes.");

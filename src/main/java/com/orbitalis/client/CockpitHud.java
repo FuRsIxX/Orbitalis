@@ -970,7 +970,7 @@ public final class CockpitHud {
         int x = tx + 6;
         int w = tw - 12;
         int y = ty + 5;
-        graphics.text(font, Component.translatable(phase.messageKey()), x, y, phase == CapsuleEntity.Phase.ABORT ? COLOR_BAD : COLOR_ACCENT, false);
+        graphics.text(font, Component.translatable(capsule.phaseKey()), x, y, phase == CapsuleEntity.Phase.ABORT ? COLOR_BAD : COLOR_ACCENT, false);
         y += 14;
         boolean space = phase == CapsuleEntity.Phase.ORBIT || phase == CapsuleEntity.Phase.COAST;
         if (space) {

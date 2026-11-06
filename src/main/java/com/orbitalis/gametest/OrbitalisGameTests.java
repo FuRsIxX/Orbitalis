@@ -118,6 +118,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("proxima_world", () -> OrbitalisGameTests::proximaWorld);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ORBITAL_SHIPYARD =
             FUNCTIONS.register("orbital_shipyard", () -> OrbitalisGameTests::orbitalShipyard);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SHUTTLE_STOWS =
+            FUNCTIONS.register("shuttle_stows", () -> OrbitalisGameTests::shuttleStows);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> WATER_PUMP =
             FUNCTIONS.register("water_pump", () -> OrbitalisGameTests::waterPump);
 
@@ -313,6 +315,9 @@ public final class OrbitalisGameTests {
         // Le chantier naval s'accole à une station ; son pupitre pose tout le vaisseau.
         event.registerTest(Orbitalis.id("orbital_shipyard"), new FunctionGameTestInstance(
                 ORBITAL_SHIPYARD.getKey(), spaced(environment, emptyStructure, 100)));
+        // La navette du vaisseau, laissée vide en orbite, rentre en soute.
+        event.registerTest(Orbitalis.id("shuttle_stows"), new FunctionGameTestInstance(
+                SHUTTLE_STOWS.getKey(), spaced(environment, emptyStructure, 200)));
         // Le réacteur à fusion alimente, seul, une chambre de Casimir qui fait de la matière exotique.
         event.registerTest(Orbitalis.id("fusion_power"), new FunctionGameTestInstance(
                 FUSION_POWER.getKey(), spaced(environment, emptyStructure, 1600)));
@@ -3790,6 +3795,13 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 "le vaisseau n'est pas arrivé entier");
         helper.assertTrue(level.getBlockState(target.offset(corePos.subtract(origin))).getValue(com.orbitalis.phase3.interstellar.WarpCoreBlock.CHARGE)
                 == com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE, "le cœur a perdu sa charge en route");
+        // L'équipage qui revient en navette se retrouve sur la passerelle, derrière le poste ; plus rien au berceau.
+        net.minecraft.world.phys.Vec3 bridge = com.orbitalis.phase3.interstellar.ShipJump.bridge(level, target, Direction.EAST);
+        helper.assertTrue(bridge != null && bridge.equals(net.minecraft.world.phys.Vec3.atBottomCenterOf(target.offset(
+                com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST, com.orbitalis.phase3.interstellar.ShipPlan.HELM_A - 2, 0,
+                        com.orbitalis.phase3.interstellar.ShipPlan.HELM_Y)))), "l'équipage ne revient pas sur la passerelle : " + bridge);
+        helper.assertTrue(com.orbitalis.phase3.interstellar.ShipJump.bridge(level, origin, Direction.EAST) == null,
+                "une passerelle au berceau vide");
         // L'anneau a voyagé en marche ; arrêté, il retrouve son hublot.
         BlockPos movedDrive = target.offset(drivePos.subtract(origin));
         helper.assertTrue(level.getBlockEntity(movedDrive) instanceof com.orbitalis.phase3.interstellar.RingDriveBlockEntity moved && moved.spinning(),
@@ -3798,6 +3810,20 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         helper.assertTrue(level.getBlockState(target.offset(ringTop.subtract(origin))).is(ModBlocks.STATION_WINDOW.get()),
                 "l'anneau arrêté n'a pas retrouvé son hublot");
         helper.succeed();
+    }
+
+    /** La navette, partie du vaisseau puis laissée vide en orbite, rentre en soute : elle ne traîne pas dans le vide. */
+    private static void shuttleStows(GameTestHelper helper) {
+        net.minecraft.server.level.ServerLevel level = helper.getLevel();
+        com.orbitalis.phase2.flight.CapsuleEntity shuttle = new com.orbitalis.phase2.flight.CapsuleEntity(
+                com.orbitalis.core.registry.ModEntities.CAPSULE.get(), level);
+        BlockPos at = helper.absolutePos(new BlockPos(1, 4, 1));
+        shuttle.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+        shuttle.startShuttle();
+        level.addFreshEntity(shuttle);
+        helper.assertTrue(shuttle.isShuttle() && shuttle.getPhase() == com.orbitalis.phase2.flight.CapsuleEntity.Phase.ORBIT,
+                "la navette devrait attendre en orbite");
+        helper.succeedWhen(() -> helper.assertTrue(shuttle.isRemoved(), "la navette vide n'est pas rentrée en soute"));
     }
 
     /**

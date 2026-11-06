@@ -364,6 +364,27 @@ public final class WorldPreview {
         });
     }
 
+    /** Le joueur prend la navette depuis le poste de pilotage du vaisseau, en orbite de Proxima b (poupe en 0 120 0). */
+    private static void shuttle(ServerLevel level) {
+        net.minecraft.server.level.ServerPlayer player = level.getServer().getPlayerList().getPlayers().get(0);
+        BlockPos helm = new BlockPos(0, 120, 0).offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                com.orbitalis.phase3.interstellar.ShipPlan.HELM_A, 0, com.orbitalis.phase3.interstellar.ShipPlan.HELM_Y));
+        com.orbitalis.phase3.interstellar.ShipJump.launchShuttle(player, helm);
+    }
+
+    /** La navette où est assis le joueur, s'il y en a une. */
+    private static java.util.Optional<CapsuleEntity> shuttleCapsule(ServerLevel level) {
+        net.minecraft.server.level.ServerPlayer player = level.getServer().getPlayerList().getPlayers().get(0);
+        return player.getVehicle() instanceof CapsuleEntity capsule ? java.util.Optional.of(capsule) : java.util.Optional.empty();
+    }
+
+    /** Vue de dehors, derrière le joueur, ou de ses yeux. */
+    private static void camera(boolean outside) {
+        net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
+        minecraft.execute(() -> minecraft.options.setCameraType(outside ? net.minecraft.client.CameraType.THIRD_PERSON_BACK
+                : net.minecraft.client.CameraType.FIRST_PERSON));
+    }
+
     private static void closeScreen() {
         net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null));
     }
@@ -2512,6 +2533,25 @@ public final class WorldPreview {
             helm(level, true);
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         SHOTS.add(new Shot("tm_orbit_ship_back", level -> closeScreen(), 29.0, 110.0, 14.0, 200.0F, 25.0F, 100));
+        // La navette, après tm_proxima_orbit_helm (le joueur sur la passerelle, en orbite de Proxima b) : elle se détache
+        // du vaisseau, freine, rentre dans l'air de Proxima b, ouvre ses parachutes, se pose, puis remonte au vaisseau.
+        SHOTS.add(new Shot("tm_proxima_orbit_shuttle", level -> {
+            closeScreen();
+            shuttle(level);
+        }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 40));
+        SHOTS.add(new Shot("tm_proxima_orbit_shuttle_out", level -> camera(true), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 20));
+        SHOTS.add(new Shot("tm_proxima_shuttle_entry", level -> shuttleCapsule(level).ifPresent(
+                com.orbitalis.phase2.flight.CapsuleEntity::deorbitNow), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 60));
+        SHOTS.add(new Shot("tm_proxima_shuttle_chutes", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 190));
+        SHOTS.add(new Shot("tm_proxima_shuttle_landed", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 380));
+        SHOTS.add(new Shot("tm_proxima_shuttle_liftoff", level -> shuttleCapsule(level).ifPresent(
+                com.orbitalis.phase2.flight.CapsuleEntity::liftoffNow), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 60));
+        SHOTS.add(new Shot("tm_proxima_shuttle_aboard", level -> camera(false), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 100));
+        SHOTS.add(new Shot("tm_proxima_shuttle_check", level -> {
+            net.minecraft.server.level.ServerPlayer player = level.getServer().getPlayerList().getPlayers().get(0);
+            Orbitalis.LOGGER.info("Retour de navette : {} en {}, sous les pieds {}, véhicule {}", player.position(), player.level().dimension(),
+                    player.level().getBlockState(player.blockPosition().below()), player.getVehicle());
+        }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 100));
         // L'anneau, après tm_orbit_ship : lancé (moteur en 24 102 -4, axe en 24 100 -4), vu de biais puis dans l'axe ;
         // l'écran du poste ; puis arrêté, revenu à ses blocs.
         SHOTS.add(look("tm_orbit_ring_start", level -> {

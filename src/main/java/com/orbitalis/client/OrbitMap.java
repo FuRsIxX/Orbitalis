@@ -111,7 +111,7 @@ public final class OrbitMap {
             }
             marker(graphics, cx + Math.round((float) Math.cos(at) * r), cy - Math.round((float) Math.sin(at) * r), 0xFFFFFFFF);
         } else {
-            title = Component.translatable(capsule.getPhase().messageKey()).getString();
+            title = Component.translatable(capsule.phaseKey()).getString();
             altitude = Math.max(0.0, capsule.getY() - capsule.level().getSeaLevel()) / 1000.0;
             apoapsis = periapsis = -1.0;
         }

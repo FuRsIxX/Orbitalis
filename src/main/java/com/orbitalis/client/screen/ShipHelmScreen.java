@@ -2,6 +2,7 @@ package com.orbitalis.client.screen;
 
 import com.orbitalis.core.network.ShipHelmPayload;
 import com.orbitalis.core.network.ShipJumpPayload;
+import com.orbitalis.core.network.ShipShuttlePayload;
 import com.orbitalis.phase3.interstellar.ShipJump;
 import com.orbitalis.phase3.interstellar.WarpCoreBlock;
 
@@ -45,6 +46,19 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
 
     private int buttonX() {
         return left() + WIDTH - PAD - BUTTON_W;
+    }
+
+    /** La navette ne part que du vaisseau en orbite de Proxima b, hors d'un saut en cours. */
+    private boolean shuttleShown() {
+        return ship.place() == ShipJump.Place.AWAY.ordinal();
+    }
+
+    private boolean canShuttle() {
+        return shuttleShown() && ship.countdown() < 0;
+    }
+
+    private int shuttleX() {
+        return left() + PAD;
     }
 
     private int buttonY() {
@@ -111,6 +125,11 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
         boolean hovered = Ui.inside(mouseX, mouseY, buttonX(), buttonY(), BUTTON_W, BUTTON_H);
         Ui.button(graphics, font, Component.translatable("ship.orbitalis.helm.jump"), buttonX(), buttonY(), BUTTON_W, BUTTON_H,
                 hovered && canJump(), canJump(), true, Ui.ACCENT);
+        if (shuttleShown()) {
+            boolean shuttleHovered = Ui.inside(mouseX, mouseY, shuttleX(), buttonY(), BUTTON_W, BUTTON_H);
+            Ui.button(graphics, font, Component.translatable("ship.orbitalis.helm.shuttle"), shuttleX(), buttonY(), BUTTON_W, BUTTON_H,
+                    shuttleHovered && canShuttle(), canShuttle(), false, Ui.ACCENT);
+        }
     }
 
     /** Une ligne de système : son voyant, son nom, et sa valeur à droite. */
@@ -133,6 +152,12 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (event.button() == 0 && canJump() && Ui.inside(event.x(), event.y(), buttonX(), buttonY(), BUTTON_W, BUTTON_H)) {
             ClientPacketDistributor.sendToServer(new ShipJumpPayload(ship.helm()));
+            Ui.click();
+            onClose();
+            return true;
+        }
+        if (event.button() == 0 && canShuttle() && Ui.inside(event.x(), event.y(), shuttleX(), buttonY(), BUTTON_W, BUTTON_H)) {
+            ClientPacketDistributor.sendToServer(new ShipShuttlePayload(ship.helm()));
             Ui.click();
             onClose();
             return true;

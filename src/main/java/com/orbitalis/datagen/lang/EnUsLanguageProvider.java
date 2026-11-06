@@ -1535,6 +1535,17 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "The core is full: %s exotic matter.");
         add("ship.orbitalis.pod.status", "Hibernation pod: ready. The crew will sleep here during the journey.");
         add("ship.orbitalis.helm.not_aboard", "This helm isn't aboard a ship. It goes on the bridge, where the shipyard blueprint shows.");
+        add("capsule.orbitalis.phase.liftoff", "LIFTOFF");
+        add("capsule.orbitalis.phase.landing", "LANDING");
+        add("ship.orbitalis.helm.shuttle", "Shuttle");
+        add("capsule.orbitalis.shuttle_away", "The shuttle leaves the ship. Other crew members can still climb aboard.");
+        add("capsule.orbitalis.hud.parked_shuttle", "Shuttle in Proxima b orbit · return key: plan the deorbit burn");
+        add("capsule.orbitalis.shuttle_deorbit", "Deorbit burn: the shuttle dives toward Proxima b");
+        add("capsule.orbitalis.proxima_landed", "Contact, you're on Proxima b. Sneak to get out, in a suit. To go back to the ship, hold the launch key on board (Jump by default).");
+        add("capsule.orbitalis.hud.proxima_hint", "Down on Proxima b · hold the launch key for 3 s to go back to the ship");
+        add("capsule.orbitalis.proxima_liftoff", "Liftoff from Proxima b: heading for the ship.");
+        add("capsule.orbitalis.shuttle_docked", "The shuttle docks with the ship: you're back on the bridge.");
+        add("capsule.orbitalis.shuttle_lost", "The ship is no longer in orbit: the shuttle stays there alone.");
         add("block.orbitalis.ring_segment", "Spinning Ring Segment");
         add("ship.orbitalis.ring.start", "The ring starts spinning: gravity returns aboard.");
         add("ship.orbitalis.ring.stop", "The ring is slowing down and will stop in a few seconds.");

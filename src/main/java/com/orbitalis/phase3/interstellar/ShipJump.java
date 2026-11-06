@@ -223,6 +223,50 @@ public final class ShipJump {
         ModNetwork.send(player, status(player, helm, origin, out));
     }
 
+    // ------------------------------------------------------------------
+    // Navette
+    // ------------------------------------------------------------------
+
+    /**
+     * Le joueur prend la navette depuis le poste de pilotage, le vaisseau en orbite de Proxima b : une capsule se
+     * détache du flanc du vaisseau, le joueur aux commandes. D'autres équipiers peuvent y monter avant le freinage.
+     */
+    public static void launchShuttle(ServerPlayer player, BlockPos helm) {
+        ServerLevel level = player.level();
+        BlockState state = level.getBlockState(helm);
+        if (!Features.interstellar() || !state.is(ModBlocks.SHIP_HELM.get()) || player.distanceToSqr(Vec3.atCenterOf(helm)) > 64
+                || player.isPassenger()) {
+            return;
+        }
+        Direction out = state.getValue(ShipHelmBlock.FACING).getOpposite();
+        BlockPos origin = ShipHelmBlock.shipOrigin(helm, state.getValue(ShipHelmBlock.FACING));
+        if (place(level, origin, out, ResearchManager.agencyKey(player)) != Place.AWAY || pending(level.dimension(), origin) != null) {
+            return;
+        }
+        // Au flanc gauche du vaisseau, à hauteur de la serre, à l'écart de la coque.
+        BlockPos dock = origin.offset(ShipPlan.local(out, ShipPlan.HELM_A - 3, -7, 0));
+        com.orbitalis.phase2.flight.CapsuleEntity shuttle = new com.orbitalis.phase2.flight.CapsuleEntity(
+                com.orbitalis.core.registry.ModEntities.CAPSULE.get(), level);
+        shuttle.setPos(dock.getX() + 0.5, dock.getY(), dock.getZ() + 0.5);
+        shuttle.startShuttle();
+        level.addFreshEntity(shuttle);
+        player.startRiding(shuttle);
+        level.playSound(null, dock, com.orbitalis.core.registry.ModSounds.UNDOCKING.get(), SoundSource.BLOCKS, 2.0F, 1.0F);
+        player.sendSystemMessage(Component.translatable("capsule.orbitalis.shuttle_away").withStyle(ChatFormatting.AQUA));
+    }
+
+    /**
+     * Où se tient l'équipage qui revient à bord : sur la passerelle, derrière le poste de pilotage. Rien si le vaisseau
+     * n'est plus là.
+     */
+    public static Vec3 bridge(ServerLevel level, BlockPos origin, Direction out) {
+        BlockPos helm = origin.offset(ShipPlan.local(out, ShipPlan.HELM_A, 0, ShipPlan.HELM_Y));
+        if (!level.getBlockState(helm).is(ModBlocks.SHIP_HELM.get())) {
+            return null;
+        }
+        return Vec3.atBottomCenterOf(origin.offset(ShipPlan.local(out, ShipPlan.HELM_A - 2, 0, ShipPlan.HELM_Y)));
+    }
+
     private static Pending pending(ResourceKey<Level> dimension, BlockPos origin) {
         for (Pending pending : PENDING) {
             if (pending.dimension == dimension && pending.origin.equals(origin)) {

@@ -50,6 +50,11 @@ public final class ModNetwork {
                 com.orbitalis.phase3.interstellar.ShipJump.request(player, payload.helm());
             }
         });
+        registrar.playToServer(ShipShuttlePayload.TYPE, ShipShuttlePayload.STREAM_CODEC, (payload, context) -> {
+            if (context.player() instanceof ServerPlayer player) {
+                com.orbitalis.phase3.interstellar.ShipJump.launchShuttle(player, payload.helm());
+            }
+        });
         registrar.playToClient(SuitStatusPayload.TYPE, SuitStatusPayload.STREAM_CODEC);
         registrar.playToClient(DesignStatePayload.TYPE, DesignStatePayload.STREAM_CODEC);
         registrar.playToClient(DerrickStatusPayload.TYPE, DerrickStatusPayload.STREAM_CODEC);

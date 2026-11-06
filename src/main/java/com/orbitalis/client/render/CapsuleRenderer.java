@@ -286,7 +286,7 @@ public class CapsuleRenderer extends EntityRenderer<CapsuleEntity, CapsuleRender
             step = 0;
         } else {
             // Capsule seule : en orbite, ou sur le chemin du retour.
-            clock = translate(phase.messageKey());
+            clock = translate(capsule.phaseKey());
             clockColor = phase == CapsuleEntity.Phase.ABORT ? COLOR_BAD : COLOR_ACCENT;
             status = "";
             progress = 1.0F;
