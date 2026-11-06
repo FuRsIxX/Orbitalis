@@ -59,6 +59,7 @@ final class SkyBodies {
 
     private static DynamicTexture earth;
     private static DynamicTexture proxima;
+    private static DynamicTexture trappist;
     private static DynamicTexture clouds;
     private static DynamicTexture white;
     private static DynamicTexture earthDisc;
@@ -77,6 +78,8 @@ final class SkyBodies {
         float time = level.getGameTime();
         if (SpaceRules.isProximaOrbit(level)) {
             planetBelow(minecraft, proximaTexture(), time, sun, 0xFF8A70, 0xFFB09A);
+        } else if (SpaceRules.isTrappistOrbit(level)) {
+            planetBelow(minecraft, trappistTexture(), time, sun, 0xC890A8, 0xE8B8C8);
         } else if (SpaceRules.isOrbit(level)) {
             // La Lune, haute dans le ciel, puis la planète.
             disc(minecraft, moonTexture(), new Vector3f(-0.45F, 0.62F, -0.64F), 4.5F);
@@ -253,6 +256,43 @@ final class SkyBodies {
             proxima.upload();
         }
         return proxima;
+    }
+
+    private static DynamicTexture trappistTexture() {
+        if (trappist == null) {
+            trappist = texture("trappist ground", GROUND, true);
+            paintOcean(trappist.getPixels(), GROUND, 3901L);
+            trappist.upload();
+        }
+        return trappist;
+    }
+
+    /**
+     * Le sol d'un monde-océan, vu d'orbite (TRAPPIST-1 e) : une mer presque sans fin, bleu sombre, plus claire sur les hauts
+     * fonds ; des îles de mousse vert-bleu bordées de sable pâle ; des glaces aux pôles du froid.
+     */
+    private static void paintOcean(NativeImage image, int size, long seed) {
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                float u = x / (float) size;
+                float v = y / (float) size;
+                float warp = fbm(u, v, 3, seed + 5, 2) - 0.5F;
+                float h = fbm(u + warp * 0.25F, v - warp * 0.2F, 4, seed, 5);
+                float cold = fbm(u, v, 2, seed + 23, 3);
+                float sea = 0.7F;
+                int color;
+                if (cold > 0.8F) {
+                    color = 0xDCE6EE;
+                } else if (h < sea) {
+                    float depth = (sea - h) / sea;
+                    color = depth < 0.02F ? 0x3E8A96 : depth < 0.07F ? 0x2A6A82 : depth < 0.2F ? 0x1E4E6E : 0x16385A;
+                } else {
+                    float land = (h - sea) / (1.0F - sea);
+                    color = land < 0.04F ? 0xB8A6A0 : land < 0.3F ? 0x2E6A5E : land < 0.55F ? 0x275A50 : 0x4A5660;
+                }
+                image.setPixel(x, y, 0xFF000000 | color);
+            }
+        }
     }
 
     private static DynamicTexture cloudTexture() {

@@ -1535,6 +1535,17 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "Le cœur est plein : %s matières exotiques.");
         add("ship.orbitalis.pod.status", "Caisson d'hibernation : prêt. L'équipage s'y endormira pendant le voyage.");
         add("ship.orbitalis.helm.not_aboard", "Ce poste n'est pas à bord d'un vaisseau. Il se pose sur la passerelle, à l'endroit prévu par le plan du chantier naval.");
+        add("biome.orbitalis.trappist_sea", "Mer de TRAPPIST-1 e");
+        add("block.orbitalis.trappist_rock", "Roche de TRAPPIST-1 e");
+        add("block.orbitalis.trappist_sand", "Sable de TRAPPIST-1 e");
+        add("block.orbitalis.trappist_moss", "Tapis d'algues");
+        add("block.orbitalis.spire_reed", "Roseau-flèche");
+        add("block.orbitalis.gleam_cup", "Coupe-lueur");
+        add("block.orbitalis.tide_grass", "Herbe des marées");
+        add("goals.orbitalis.first_trappistwalk", "Premiers pas sur TRAPPIST-1 e");
+        add("space.orbitalis.first_trappistwalk", "Premiers pas sur TRAPPIST-1 e, un monde-océan à 39 années-lumière : +%s points de recherche.");
+        add("testmap.orbitalis.zone.trappist", "TRAPPIST-1 e");
+        add("testmap.orbitalis.zone.trappist_orbit", "Orbite de TRAPPIST-1 e");
         add("capsule.orbitalis.phase.liftoff", "DÉCOLLAGE");
         add("capsule.orbitalis.phase.landing", "ATTERRISSAGE");
         add("ship.orbitalis.helm.shuttle", "Navette");

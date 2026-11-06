@@ -112,7 +112,8 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.THOLIN_SAND.get());
         for (net.minecraft.world.level.block.Block block : java.util.List.of(ModBlocks.PROXIMA_ROCK.get(), ModBlocks.PROXIMA_REGOLITH.get(),
                 ModBlocks.PROXIMA_MOSS.get(), ModBlocks.PROXIMA_ASH.get(), ModBlocks.PROXIMA_FROST.get(), ModBlocks.RED_SEDGE.get(),
-                ModBlocks.UMBRA_FERN.get(), ModBlocks.LANTERN_BULB.get())) {
+                ModBlocks.UMBRA_FERN.get(), ModBlocks.LANTERN_BULB.get(), ModBlocks.TRAPPIST_ROCK.get(), ModBlocks.TRAPPIST_SAND.get(),
+                ModBlocks.TRAPPIST_MOSS.get(), ModBlocks.SPIRE_REED.get(), ModBlocks.GLEAM_CUP.get(), ModBlocks.TIDE_GRASS.get())) {
             dropSelf(block);
         }
         dropSelf(ModBlocks.EUROPA_ICE.get());

@@ -195,6 +195,8 @@ public final class WorldPreview {
             if (shot.name().startsWith("tm_")) {
                 String where = shot.name().startsWith("tm_proxima_orbit") ? "execute in orbitalis:proxima_orbit run "
                         : shot.name().startsWith("tm_proxima") ? "execute in orbitalis:proxima_b run "
+                        : shot.name().startsWith("tm_trappist_orbit") ? "execute in orbitalis:trappist_orbit run "
+                        : shot.name().startsWith("tm_trappist") ? "execute in orbitalis:trappist_1e run "
                         : shot.name().equals("tm_station") || shot.name().startsWith("tm_orbit")
                         ? "execute in orbitalis:orbit run " : "execute in minecraft:overworld run ";
                 run(level, (where + "tp @a %.2f %.2f %.2f %.1f %.1f").formatted(shot.x(), shot.y(), shot.z(), shot.yaw(), shot.pitch())
@@ -383,6 +385,41 @@ public final class WorldPreview {
         net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
         minecraft.execute(() -> minecraft.options.setCameraType(outside ? net.minecraft.client.CameraType.THIRD_PERSON_BACK
                 : net.minecraft.client.CameraType.FIRST_PERSON));
+    }
+
+    /**
+     * Une vue de TRAPPIST-1 e là où elle se trouve : une île (le premier tapis d'algues au bord de l'eau, en partant de
+     * l'origine vers l'est) ou le fond de la mer (la première herbe des marées), cherchés de proche en proche.
+     */
+    private static void trappistSpot(ServerLevel level, boolean island) {
+        hover(level);
+        ServerLevel trappist = level.getServer().getLevel(SpaceRules.TRAPPIST_1E);
+        if (trappist == null) {
+            return;
+        }
+        // En cercles autour de l'origine, de plus en plus larges : les îles ne sont pas toutes du même côté.
+        for (int ring = 0; ring <= 64; ring++) {
+            for (int step = 0; step < Math.max(1, ring * 8); step++) {
+                double angle = Math.PI * 2.0 * step / Math.max(1, ring * 8);
+                int x = (int) Math.round(Math.cos(angle) * ring * 16);
+                int z = (int) Math.round(Math.sin(angle) * ring * 16);
+                trappist.getChunkAt(new BlockPos(x, 0, z));
+                if (island) {
+                    int ground = trappist.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+                    if (trappist.getBlockState(new BlockPos(x, ground - 1, z)).is(ModBlocks.TRAPPIST_MOSS.get())) {
+                        run(level, ("execute in orbitalis:trappist_1e run tp @a %d.5 %d %d.5 -60 28").formatted(x - 6, ground + 3, z - 4));
+                        return;
+                    }
+                } else {
+                    int floor = trappist.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.OCEAN_FLOOR, x, z);
+                    if (floor >= 73 && floor <= 77 && trappist.getBlockState(new BlockPos(x, floor, z)).is(ModBlocks.TIDE_GRASS.get())) {
+                        run(level, ("execute in orbitalis:trappist_1e run tp @a %d.5 %d %d.5 -90 20").formatted(x - 5, floor + 2, z));
+                        return;
+                    }
+                }
+            }
+        }
+        Orbitalis.LOGGER.info("TRAPPIST-1 e : rien trouvé pour la vue {}", island ? "de l'île" : "du fond");
     }
 
     private static void closeScreen() {
@@ -2501,6 +2538,13 @@ public final class WorldPreview {
             }
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         SHOTS.add(new Shot("tm_proxima_orbit_view", null, 0.5, 100.0, 0.5, -90.0F, 55.0F, 80));
+        // TRAPPIST-1 e : son étoile à l'est, ses trois sœurs plus haut ; une île, sa flore ; le fond de la mer et son herbe
+        // des marées ; enfin la planète vue d'orbite.
+        SHOTS.add(new Shot("tm_trappist_sky", level -> hover(level), 0.5, 150.0, 0.5, -90.0F, -22.0F, 200));
+        SHOTS.add(new Shot("tm_trappist_sisters", level -> hover(level), 0.5, 150.0, 0.5, 150.0F, -42.0F, 30));
+        SHOTS.add(new Shot("tm_trappist_island", level -> trappistSpot(level, true), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
+        SHOTS.add(new Shot("tm_trappist_seabed", level -> trappistSpot(level, false), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 120));
+        SHOTS.add(new Shot("tm_trappist_orbit_view", level -> hover(level), 0.5, 100.0, 0.5, -90.0F, 55.0F, 80));
         SHOTS.add(new Shot("tm_orbit_ship_pods", null, 27.5, 99.0, -3.5, -90.0F, 8.0F, 60));
         SHOTS.add(new Shot("tm_orbit_ship_greenhouse", null, 33.5, 99.0, -3.5, -90.0F, 14.0F, 60));
         SHOTS.add(new Shot("tm_orbit_ship_bridge", null, 39.5, 99.0, -3.5, -90.0F, 6.0F, 60));

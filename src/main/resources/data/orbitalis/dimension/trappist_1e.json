@@ -1,0 +1,11 @@
+{
+  "type": "orbitalis:trappist_1e",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "orbitalis:trappist_1e",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "orbitalis:trappist_sea"
+    }
+  }
+}

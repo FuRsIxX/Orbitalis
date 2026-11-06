@@ -264,7 +264,8 @@ public final class SpaceSky implements CustomSkyboxRenderer {
         // sous l'horizon, pour que les packs de shaders y dessinent la nuit de l'espace.
         Minecraft client = Minecraft.getInstance();
         float sunAngle = (client.level != null && com.orbitalis.phase2.survival.SpaceRules.isMoon(client.level) ? 40.0F : 55.0F) * Mth.DEG_TO_RAD;
-        boolean red = client.level != null && com.orbitalis.phase2.survival.SpaceRules.isProximaOrbit(client.level);
+        boolean red = client.level != null && (com.orbitalis.phase2.survival.SpaceRules.isProximaOrbit(client.level)
+                || com.orbitalis.phase2.survival.SpaceRules.isTrappistOrbit(client.level));
         if (mesh == null || Math.abs(sunAngle - builtForSun) > 0.01F || red != builtRed) {
             build(sunAngle, red);
         }

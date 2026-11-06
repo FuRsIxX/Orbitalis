@@ -116,6 +116,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("helium3_and_methane", () -> OrbitalisGameTests::helium3AndMethane);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> PROXIMA_WORLD =
             FUNCTIONS.register("proxima_world", () -> OrbitalisGameTests::proximaWorld);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> TRAPPIST_WORLD =
+            FUNCTIONS.register("trappist_world", () -> OrbitalisGameTests::trappistWorld);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ORBITAL_SHIPYARD =
             FUNCTIONS.register("orbital_shipyard", () -> OrbitalisGameTests::orbitalShipyard);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SHUTTLE_STOWS =
@@ -312,6 +314,9 @@ public final class OrbitalisGameTests {
         // Proxima b : ses trois zones d'est en ouest, et sa flore qui ne pousse que sur la mousse et le régolithe.
         event.registerTest(Orbitalis.id("proxima_world"), new FunctionGameTestInstance(
                 PROXIMA_WORLD.getKey(), spaced(environment, emptyStructure, 40)));
+        // TRAPPIST-1 e : la flore des îles sur leur tapis d'algues et leur sable, l'herbe des marées seulement sous l'eau.
+        event.registerTest(Orbitalis.id("trappist_world"), new FunctionGameTestInstance(
+                TRAPPIST_WORLD.getKey(), spaced(environment, emptyStructure, 40)));
         // Le chantier naval s'accole à une station ; son pupitre pose tout le vaisseau.
         event.registerTest(Orbitalis.id("orbital_shipyard"), new FunctionGameTestInstance(
                 ORBITAL_SHIPYARD.getKey(), spaced(environment, emptyStructure, 100)));
@@ -3724,6 +3729,35 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         helper.setBlock(rock, ModBlocks.PROXIMA_ROCK.get());
         helper.assertTrue(!ModBlocks.RED_SEDGE.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(rock.above())),
                 "la laîche ne pousse pas sur la roche nue");
+        helper.succeed();
+    }
+
+    /**
+     * TRAPPIST-1 e : la coupe-lueur pousse sur le tapis d'algues, le roseau-flèche sur le sable des rivages, mais pas sur
+     * la roche nue ; l'herbe des marées tient au fond de l'eau, pas à l'air libre. Le monde est un peu moins pesant que la
+     * planète, et irrespirable.
+     */
+    private static void trappistWorld(GameTestHelper helper) {
+        BlockPos moss = new BlockPos(1, 1, 1);
+        helper.setBlock(moss, ModBlocks.TRAPPIST_MOSS.get());
+        helper.assertTrue(ModBlocks.GLEAM_CUP.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(moss.above())),
+                "la coupe-lueur devrait pousser sur le tapis d'algues");
+        BlockPos sand = new BlockPos(3, 1, 1);
+        helper.setBlock(sand, ModBlocks.TRAPPIST_SAND.get());
+        helper.assertTrue(ModBlocks.SPIRE_REED.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(sand.above())),
+                "le roseau-flèche devrait pousser sur le sable");
+        BlockPos rock = new BlockPos(5, 1, 1);
+        helper.setBlock(rock, ModBlocks.TRAPPIST_ROCK.get());
+        helper.assertTrue(!ModBlocks.SPIRE_REED.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(rock.above())),
+                "le roseau-flèche ne pousse pas sur la roche nue");
+        BlockPos seabed = new BlockPos(1, 1, 3);
+        helper.setBlock(seabed, ModBlocks.TRAPPIST_SAND.get());
+        helper.assertTrue(!ModBlocks.TIDE_GRASS.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(seabed.above())),
+                "l'herbe des marées ne tient pas à l'air libre");
+        helper.setBlock(seabed.above(), Blocks.WATER);
+        helper.assertTrue(ModBlocks.TIDE_GRASS.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(seabed.above())),
+                "l'herbe des marées devrait tenir au fond de l'eau");
+        helper.assertTrue(Math.abs(com.orbitalis.phase2.survival.SpaceRules.TRAPPIST_GRAVITY - 0.93) < 1.0E-9, "pesanteur de TRAPPIST-1 e");
         helper.succeed();
     }
 

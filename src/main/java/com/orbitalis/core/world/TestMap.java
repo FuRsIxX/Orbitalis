@@ -135,6 +135,8 @@ public final class TestMap {
         if (com.orbitalis.core.Features.interstellar()) {
             destinations.add(new String[] {"testmap.orbitalis.zone.proxima", "execute in orbitalis:proxima_b run tp @s 0 180 0"});
             destinations.add(new String[] {"testmap.orbitalis.zone.proxima_orbit", "execute in orbitalis:proxima_orbit run tp @s 0 100 0"});
+            destinations.add(new String[] {"testmap.orbitalis.zone.trappist", "execute in orbitalis:trappist_1e run tp @s 0 140 0"});
+            destinations.add(new String[] {"testmap.orbitalis.zone.trappist_orbit", "execute in orbitalis:trappist_orbit run tp @s 0 100 0"});
         }
         welcome(level, destinations);
         Orbitalis.LOGGER.info("Carte de test : galerie jusqu'à x = {}, {} centres posés", galleryEnd, sites.length);

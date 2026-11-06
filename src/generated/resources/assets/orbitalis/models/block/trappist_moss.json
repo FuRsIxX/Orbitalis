@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "orbitalis:block/trappist_sand",
+    "side": "orbitalis:block/trappist_moss_side",
+    "top": "orbitalis:block/trappist_moss_top"
+  }
+}

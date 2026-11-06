@@ -3,6 +3,11 @@
     "orbitalis:planet",
     "orbitalis:jupiter",
     "orbitalis:proxima_b",
-    "orbitalis:proxima_star"
+    "orbitalis:proxima_star",
+    "orbitalis:trappist_star",
+    "orbitalis:trappist_1e",
+    "orbitalis:trappist_d",
+    "orbitalis:trappist_f",
+    "orbitalis:trappist_g"
   ]
 }

@@ -1535,6 +1535,17 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "The core is full: %s exotic matter.");
         add("ship.orbitalis.pod.status", "Hibernation pod: ready. The crew will sleep here during the journey.");
         add("ship.orbitalis.helm.not_aboard", "This helm isn't aboard a ship. It goes on the bridge, where the shipyard blueprint shows.");
+        add("biome.orbitalis.trappist_sea", "TRAPPIST-1 e Sea");
+        add("block.orbitalis.trappist_rock", "TRAPPIST-1 e Rock");
+        add("block.orbitalis.trappist_sand", "TRAPPIST-1 e Sand");
+        add("block.orbitalis.trappist_moss", "Algal Mat");
+        add("block.orbitalis.spire_reed", "Spire Reed");
+        add("block.orbitalis.gleam_cup", "Gleam Cup");
+        add("block.orbitalis.tide_grass", "Tide Grass");
+        add("goals.orbitalis.first_trappistwalk", "First steps on TRAPPIST-1 e");
+        add("space.orbitalis.first_trappistwalk", "First steps on TRAPPIST-1 e, an ocean world 39 light-years away: +%s research points.");
+        add("testmap.orbitalis.zone.trappist", "TRAPPIST-1 e");
+        add("testmap.orbitalis.zone.trappist_orbit", "TRAPPIST-1 e Orbit");
         add("capsule.orbitalis.phase.liftoff", "LIFTOFF");
         add("capsule.orbitalis.phase.landing", "LANDING");
         add("ship.orbitalis.helm.shuttle", "Shuttle");

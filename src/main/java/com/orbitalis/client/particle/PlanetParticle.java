@@ -46,9 +46,30 @@ public class PlanetParticle extends SingleQuadParticle {
 
     /** Demi-largeur de la naine rouge vue de Proxima b, halo compris, en part de la distance d'affichage. */
     private static final float PROXIMA_STAR_SIZE = 0.3F;
+    /** Demi-largeur de TRAPPIST-1 vue de sa planète e, halo compris, en part de la distance d'affichage. */
+    private static final float TRAPPIST_STAR_SIZE = 0.24F;
 
     /** Demi-largeur de Jupiter vue d'Europe, en part de la distance d'affichage : elle occupe une grande part du ciel. */
     private static final float EUROPA_SKY_SIZE = 0.3F;
+
+    /** Les images de la particule, dans l'ordre de particles/planet.json. */
+    private static final int SPRITE_PLANET = 0;
+    private static final int SPRITE_JUPITER = 1;
+    private static final int SPRITE_PROXIMA_B = 2;
+    private static final int SPRITE_PROXIMA_STAR = 3;
+    private static final int SPRITE_TRAPPIST_STAR = 4;
+    private static final int SPRITE_TRAPPIST_1E = 5;
+    private static final int SPRITE_TRAPPIST_D = 6;
+    private static final int SPRITE_TRAPPIST_F = 7;
+    private static final int SPRITE_TRAPPIST_G = 8;
+    private static final int SPRITES = 9;
+    /**
+     * Les trois sœurs de TRAPPIST-1 e dans son ciel : leur image, leur direction (x vers l'est, y vers le haut, z vers le
+     * sud) et leur demi-largeur. Elles sont si proches qu'elles s'y montrent grandes comme des lunes.
+     */
+    private static final int[] SISTERS = {SPRITE_TRAPPIST_D, SPRITE_TRAPPIST_F, SPRITE_TRAPPIST_G};
+    private static final float[][] SISTER_DIRECTIONS = {{0.42F, 0.78F, 0.46F}, {-0.62F, 0.48F, -0.62F}, {-0.18F, 0.74F, -0.64F}};
+    private static final float[] SISTER_SIZES = {0.045F, 0.075F, 0.055F};
 
     /** La planète affichée en ce moment, s'il y en a une ; ses images (la planète, puis Jupiter). */
     private static PlanetParticle current;
@@ -90,16 +111,34 @@ public class PlanetParticle extends SingleQuadParticle {
             // Vue de Proxima b, la naine rouge : un grand disque rouge dans son halo, à 20° au-dessus de l'horizon, à l'est,
             // immobile (la planète lui tourne toujours la même face). Elle couvre le soleil du jeu, placé au même endroit
             // par le type de la dimension pour que la lumière soit celle du jour.
-            setSprite(images.get(3, 3));
+            setSprite(sprite(SPRITE_PROXIMA_STAR));
             quadSize = PROXIMA_STAR_SIZE * view;
             float distance = 0.6F * view;
             extractRotatedQuad(state, new Quaternionf(camera.rotation()), distance * 0.9397F, distance * 0.3420F, 0.0F, partialTick);
             anchor(camera);
             return;
         }
+        if (SpaceRules.isTrappist(level) && images != null) {
+            // Vue de TRAPPIST-1 e, son étoile : un disque rouge sombre à 35° au-dessus de l'horizon, à l'est, immobile, qui
+            // couvre le soleil du jeu ; puis ses trois sœurs, éclairées de côté, plus haut dans le ciel.
+            float distance = 0.6F * view;
+            setSprite(sprite(SPRITE_TRAPPIST_STAR));
+            quadSize = TRAPPIST_STAR_SIZE * view;
+            extractRotatedQuad(state, new Quaternionf(camera.rotation()), distance * 0.8192F, distance * 0.5736F, 0.0F, partialTick);
+            for (int i = 0; i < SISTERS.length; i++) {
+                float[] to = SISTER_DIRECTIONS[i];
+                float length = (float) Math.sqrt(to[0] * to[0] + to[1] * to[1] + to[2] * to[2]);
+                setSprite(sprite(SISTERS[i]));
+                quadSize = SISTER_SIZES[i] * view;
+                extractRotatedQuad(state, new Quaternionf(camera.rotation()), distance * to[0] / length, distance * to[1] / length,
+                        distance * to[2] / length, partialTick);
+            }
+            anchor(camera);
+            return;
+        }
         if (SpaceRules.isEuropa(level) && images != null) {
             // Vue d'Europe, Jupiter : un disque immense, bas sur l'horizon, toujours au même endroit du ciel.
-            setSprite(images.get(1, 3));
+            setSprite(sprite(SPRITE_JUPITER));
             quadSize = EUROPA_SKY_SIZE * view;
             extractRotatedQuad(state, new Quaternionf(camera.rotation()), -0.45F * view, 0.32F * view, 0.5F * view, partialTick);
             anchor(camera);
@@ -116,7 +155,8 @@ public class PlanetParticle extends SingleQuadParticle {
         quadSize = HALF_SIZE * view;
         // Sous l'orbite de Proxima, ce n'est pas la planète bleue, mais Proxima b.
         if (images != null) {
-            setSprite(SpaceRules.isProximaOrbit(level) ? images.get(2, 3) : images.get(0, 3));
+            setSprite(sprite(SpaceRules.isProximaOrbit(level) ? SPRITE_PROXIMA_B : SpaceRules.isTrappistOrbit(level) ? SPRITE_TRAPPIST_1E
+                    : SPRITE_PLANET));
         }
         float turn = (level.getGameTime() % (long) TURN_TICKS + partialTick) / TURN_TICKS * (float) (Math.PI * 2);
         // Deux faces dos à dos : le disque se voit quel que soit le sens dans lequel le jeu dessine ses particules.
@@ -124,6 +164,10 @@ public class PlanetParticle extends SingleQuadParticle {
         extractRotatedQuad(state, new Quaternionf().rotateY(turn).rotateX((float) (Math.PI / 2)), 0.0F, -depth - 0.05F, 0.0F, partialTick);
 
         anchor(camera);
+    }
+
+    private static TextureAtlasSprite sprite(int index) {
+        return images.get(index, SPRITES - 1);
     }
 
     @Override
@@ -142,7 +186,8 @@ public class PlanetParticle extends SingleQuadParticle {
      * pack de shaders a pris la main sur le ciel.
      */
     private static boolean shown(net.minecraft.world.level.Level level) {
-        return SpaceRules.isProxima(level) || SpaceRules.isVacuum(level) && com.orbitalis.client.SpaceSky.shadersActive();
+        return SpaceRules.isProxima(level) || SpaceRules.isTrappist(level)
+                || SpaceRules.isVacuum(level) && com.orbitalis.client.SpaceSky.shadersActive();
     }
 
     public static ParticleProvider<SimpleParticleType> provider(SpriteSet sprites) {

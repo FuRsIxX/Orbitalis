@@ -173,6 +173,28 @@ public final class ModBlocks {
     public static final DeferredBlock<com.orbitalis.phase3.celestial.ProximaPlantBlock> UMBRA_FERN = plant("umbra_fern", 0, false);
     public static final DeferredBlock<com.orbitalis.phase3.celestial.ProximaPlantBlock> LANTERN_BULB = plant("lantern_bulb", 10, false);
 
+    // ------------------------------------------------------------------
+    // TRAPPIST-1 e
+    // ------------------------------------------------------------------
+    /** Roche de TRAPPIST-1 e : un basalte gris-bleu, le socle des îles et le fond des mers. */
+    public static final DeferredBlock<Block> TRAPPIST_ROCK = withItem(BLOCKS.registerSimpleBlock("trappist_rock",
+            properties -> properties.mapColor(MapColor.COLOR_CYAN).instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops().strength(1.5F, 6.0F).sound(SoundType.BASALT)));
+    /** Sable des rivages de TRAPPIST-1 e : pâle, teinté de lilas ; il tapisse aussi le fond des mers. */
+    public static final DeferredBlock<Block> TRAPPIST_SAND = withItem(BLOCKS.registerSimpleBlock("trappist_sand",
+            properties -> properties.mapColor(MapColor.TERRACOTTA_WHITE).strength(0.5F).sound(SoundType.SAND)));
+    /** Tapis d'algues des îles : le sable couvert d'une mousse vert-bleu, là où vit la flore. */
+    public static final DeferredBlock<Block> TRAPPIST_MOSS = withItem(BLOCKS.registerSimpleBlock("trappist_moss",
+            properties -> properties.mapColor(MapColor.WARPED_NYLIUM).strength(0.6F).sound(SoundType.MOSS)));
+    /** La flore des îles : le roseau-flèche des rivages et la coupe-lueur, qui luit. */
+    public static final DeferredBlock<com.orbitalis.phase3.celestial.TrappistPlantBlock> SPIRE_REED = trappistPlant("spire_reed", 0, true);
+    public static final DeferredBlock<com.orbitalis.phase3.celestial.TrappistPlantBlock> GLEAM_CUP = trappistPlant("gleam_cup", 9, false);
+    /** L'herbe des marées : des rubans pourpres au fond des mers. */
+    public static final DeferredBlock<com.orbitalis.phase3.celestial.TideGrassBlock> TIDE_GRASS = withItem(BLOCKS.registerBlock("tide_grass",
+            com.orbitalis.phase3.celestial.TideGrassBlock::new,
+            properties -> properties.mapColor(MapColor.WATER).replaceable().noCollision().instabreak().sound(SoundType.WET_GRASS)
+                    .pushReaction(PushReaction.DESTROY)));
+
     /** Cryobot : la sonde foreuse qui fond la banquise d'Europe jusqu'à l'océan. */
     public static final DeferredBlock<com.orbitalis.phase3.exploration.CryobotBlock> CRYOBOT = withItem(BLOCKS.registerBlock("cryobot",
             com.orbitalis.phase3.exploration.CryobotBlock::new,
@@ -1462,6 +1484,14 @@ public final class ModBlocks {
     private static DeferredBlock<com.orbitalis.phase3.celestial.ProximaPlantBlock> plant(String name, int light, boolean replaceable) {
         return withItem(BLOCKS.registerBlock(name, com.orbitalis.phase3.celestial.ProximaPlantBlock::new, properties -> {
             properties.mapColor(MapColor.COLOR_PURPLE).noCollision().instabreak().sound(SoundType.GRASS)
+                    .offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY).lightLevel(state -> light);
+            return replaceable ? properties.replaceable() : properties;
+        }));
+    }
+
+    private static DeferredBlock<com.orbitalis.phase3.celestial.TrappistPlantBlock> trappistPlant(String name, int light, boolean replaceable) {
+        return withItem(BLOCKS.registerBlock(name, com.orbitalis.phase3.celestial.TrappistPlantBlock::new, properties -> {
+            properties.mapColor(MapColor.COLOR_CYAN).noCollision().instabreak().sound(SoundType.GRASS)
                     .offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY).lightLevel(state -> light);
             return replaceable ? properties.replaceable() : properties;
         }));

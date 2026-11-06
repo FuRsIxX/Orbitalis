@@ -46,6 +46,12 @@ public final class SpaceRules {
     public static final ResourceKey<Level> PROXIMA_B = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("proxima_b"));
     public static final double PROXIMA_GRAVITY = 1.1;
     private static final int REWARD_PROXIMAWALK = 2500;
+    /** L'orbite de TRAPPIST-1 e, à 39 années-lumière : le vide, sous une petite étoile rouge et ses six autres planètes. */
+    public static final ResourceKey<Level> TRAPPIST_ORBIT = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("trappist_orbit"));
+    /** TRAPPIST-1 e : un monde-océan un peu plus petit que la Terre, semé d'îles, à l'air irrespirable. */
+    public static final ResourceKey<Level> TRAPPIST_1E = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("trappist_1e"));
+    public static final double TRAPPIST_GRAVITY = 0.93;
+    private static final int REWARD_TRAPPISTWALK = 3000;
     /** Hauteur à laquelle les capsules arrivent dans la dimension d'orbite. */
     public static final double PARKING_HEIGHT = 100.0;
 
@@ -74,7 +80,7 @@ public final class SpaceRules {
     }
 
     public static boolean isOrbit(Level level) {
-        return level.dimension() == ORBIT || level.dimension() == PROXIMA_ORBIT;
+        return level.dimension() == ORBIT || level.dimension() == PROXIMA_ORBIT || level.dimension() == TRAPPIST_ORBIT;
     }
 
     /** Dimension de la Lune : un sol de régolithe, un sixième de la pesanteur, pas d'air. */
@@ -135,15 +141,25 @@ public final class SpaceRules {
         return level.dimension() == PROXIMA_B;
     }
 
+    /** Vrai en orbite de TRAPPIST-1 e. */
+    public static boolean isTrappistOrbit(Level level) {
+        return level.dimension() == TRAPPIST_ORBIT;
+    }
+
+    /** Vrai sur TRAPPIST-1 e. */
+    public static boolean isTrappist(Level level) {
+        return level.dimension() == TRAPPIST_1E;
+    }
+
     /** Vrai si l'on ne peut pas respirer dans ce monde sans combinaison : le vide, l'air de Mars ou celui de Titan. */
     public static boolean isUnbreathable(Level level) {
-        return isVacuum(level) || isMars(level) || isTitan(level) || isProxima(level);
+        return isVacuum(level) || isMars(level) || isTitan(level) || isProxima(level) || isTrappist(level);
     }
 
     /** Pesanteur de ce monde, en part de celle de la planète. */
     public static double gravityOf(Level level) {
         return isMoon(level) ? MOON_GRAVITY : isMars(level) ? MARS_GRAVITY : isTitan(level) ? TITAN_GRAVITY
-                : isEuropa(level) ? EUROPA_GRAVITY : isProxima(level) ? PROXIMA_GRAVITY : 1.0;
+                : isEuropa(level) ? EUROPA_GRAVITY : isProxima(level) ? PROXIMA_GRAVITY : isTrappist(level) ? TRAPPIST_GRAVITY : 1.0;
     }
 
     /** Vrai s'il n'y a pas d'air dans ce monde : en orbite, sur la Lune et sur Europe. */
@@ -192,6 +208,7 @@ public final class SpaceRules {
         boolean onTitan = isTitan(player.level());
         boolean onEuropa = isEuropa(player.level());
         boolean onProxima = isProxima(player.level());
+        boolean onTrappist = isTrappist(player.level());
         // À bord d'un vaisseau dont l'anneau tourne, l'équipage retrouve la pesanteur.
         updateMicrogravity(player, inOrbit && !com.orbitalis.phase3.interstellar.RingDriveBlockEntity.gravityAt(player));
         updateLowGravity(player, gravityOf(player.level()));
@@ -199,7 +216,7 @@ public final class SpaceRules {
             return;
         }
         ItemStack suit = player.getItemBySlot(EquipmentSlot.CHEST);
-        boolean outdoors = inOrbit || onMoon || onMars || onTitan || onEuropa || onProxima;
+        boolean outdoors = inOrbit || onMoon || onMars || onTitan || onEuropa || onProxima || onTrappist;
         // La capsule est pressurisée, comme les pièces d'une station dont le générateur d'air tourne.
         boolean sheltered = outdoors && (player.getVehicle() instanceof CapsuleEntity
                 || StationAir.isBreathable(player.level(), BlockPos.containing(player.getEyePosition())));
@@ -245,6 +262,8 @@ public final class SpaceRules {
                 rewardEuropawalk(player);
             } else if (onProxima) {
                 rewardProximawalk(player);
+            } else if (onTrappist) {
+                rewardTrappistwalk(player);
             } else {
                 rewardSpacewalk(player);
             }
@@ -328,6 +347,16 @@ public final class SpaceRules {
             research.addPoints(REWARD_PROXIMAWALK);
             ResearchManager.changed(player);
             player.sendSystemMessage(Component.translatable("space.orbitalis.first_proximawalk", REWARD_PROXIMAWALK).withStyle(ChatFormatting.AQUA));
+        }
+    }
+
+    /** Premiers pas sur TRAPPIST-1 e d'une agence : sur une île du monde-océan, hors du vaisseau, en combinaison. */
+    private static void rewardTrappistwalk(ServerPlayer player) {
+        AgencyResearch research = ResearchManager.of(player);
+        if (research.completeMilestone("first_trappistwalk")) {
+            research.addPoints(REWARD_TRAPPISTWALK);
+            ResearchManager.changed(player);
+            player.sendSystemMessage(Component.translatable("space.orbitalis.first_trappistwalk", REWARD_TRAPPISTWALK).withStyle(ChatFormatting.AQUA));
         }
     }
 

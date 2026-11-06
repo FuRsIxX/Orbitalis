@@ -244,6 +244,27 @@ public class OrbitalisModelProvider extends ModelProvider {
         for (Block plant : List.of(ModBlocks.RED_SEDGE.get(), ModBlocks.UMBRA_FERN.get(), ModBlocks.LANTERN_BULB.get())) {
             blockModels.createCrossBlockWithDefaultItem(plant, BlockModelGenerators.PlantType.NOT_TINTED);
         }
+        // TRAPPIST-1 e : sa roche et son sable ; le tapis d'algues a son dessus, ses flancs frangés et, dessous, le sable.
+        // La flore des îles est en croix ; l'herbe des marées reprend la forme de l'herbe marine, et son objet est plat.
+        blockModels.createTrivialCube(ModBlocks.TRAPPIST_ROCK.get());
+        blockModels.createTrivialCube(ModBlocks.TRAPPIST_SAND.get());
+        blockModels.createTrivialBlock(ModBlocks.TRAPPIST_MOSS.get(), net.minecraft.client.data.models.model.TexturedModel.CUBE_TOP_BOTTOM
+                .updateTexture(mapping -> mapping.put(net.minecraft.client.data.models.model.TextureSlot.BOTTOM,
+                        net.minecraft.client.data.models.model.TextureMapping.getBlockTexture(ModBlocks.TRAPPIST_SAND.get()))));
+        for (Block plant : List.of(ModBlocks.SPIRE_REED.get(), ModBlocks.GLEAM_CUP.get())) {
+            blockModels.createCrossBlockWithDefaultItem(plant, BlockModelGenerators.PlantType.NOT_TINTED);
+        }
+        Block tide = ModBlocks.TIDE_GRASS.get();
+        Identifier tideModel = new net.minecraft.client.data.models.model.ModelTemplate(
+                java.util.Optional.of(Identifier.withDefaultNamespace("block/template_seagrass")), java.util.Optional.empty(),
+                net.minecraft.client.data.models.model.TextureSlot.TEXTURE)
+                .create(tide, new net.minecraft.client.data.models.model.TextureMapping().put(
+                        net.minecraft.client.data.models.model.TextureSlot.TEXTURE,
+                        net.minecraft.client.data.models.model.TextureMapping.getBlockTexture(tide)), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(tide, BlockModelGenerators.plainVariant(tideModel)));
+        blockModels.registerSimpleItemModel(tide, net.minecraft.client.data.models.model.ModelTemplates.FLAT_ITEM.create(
+                net.minecraft.client.data.models.model.ModelLocationUtils.getModelLocation(tide.asItem()),
+                net.minecraft.client.data.models.model.TextureMapping.layer0(tide), blockModels.modelOutput));
         blockModels.createTrivialCube(ModBlocks.EUROPA_ICE.get());
         blockModels.createTrivialCube(ModBlocks.EUROPA_LINEA_ICE.get());
         // Le méthane liquide se dessine comme un fluide : son bloc ne sert qu'à ses particules.
