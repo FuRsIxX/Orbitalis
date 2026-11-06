@@ -637,6 +637,38 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('C', ModItems.REACTOR_CORE)
                 .unlockedBy("has_mars_probe", has(ModItems.MARS_PROBE))
                 .save(output, key("europa_orbiter"));
+        // Sondes à distorsion : l'atterrisseur martien, un blindage de titane, de la matière exotique pour le saut, et la
+        // teinte de l'étoile visée (rouge pour Proxima, cyan pour TRAPPIST-1, jaune pour Kepler-452).
+        shaped(RecipeCategory.MISC, ModItems.PROXIMA_WARP_PROBE)
+                .pattern(" E ")
+                .pattern("TLT")
+                .pattern(" D ")
+                .define('E', ModItems.EXOTIC_MATTER)
+                .define('T', ModTags.Items.PLATES_TITANIUM)
+                .define('L', ModItems.MARS_ROBOTIC_LANDER)
+                .define('D', Tags.Items.DYES_RED)
+                .unlockedBy("has_exotic_matter", has(ModItems.EXOTIC_MATTER))
+                .save(output, key("proxima_warp_probe"));
+        shaped(RecipeCategory.MISC, ModItems.TRAPPIST_WARP_PROBE)
+                .pattern(" E ")
+                .pattern("TLT")
+                .pattern(" D ")
+                .define('E', ModItems.EXOTIC_MATTER)
+                .define('T', ModTags.Items.PLATES_TITANIUM)
+                .define('L', ModItems.MARS_ROBOTIC_LANDER)
+                .define('D', Tags.Items.DYES_CYAN)
+                .unlockedBy("has_exotic_matter", has(ModItems.EXOTIC_MATTER))
+                .save(output, key("trappist_warp_probe"));
+        shaped(RecipeCategory.MISC, ModItems.KEPLER_WARP_PROBE)
+                .pattern(" E ")
+                .pattern("TLT")
+                .pattern(" D ")
+                .define('E', ModItems.EXOTIC_MATTER)
+                .define('T', ModTags.Items.PLATES_TITANIUM)
+                .define('L', ModItems.MARS_ROBOTIC_LANDER)
+                .define('D', Tags.Items.DYES_YELLOW)
+                .unlockedBy("has_exotic_matter", has(ModItems.EXOTIC_MATTER))
+                .save(output, key("kepler_warp_probe"));
         shaped(RecipeCategory.MISC, ModItems.LUNAR_ROBOTIC_LANDER)
                 .pattern("CRC")
                 .pattern("AEA")

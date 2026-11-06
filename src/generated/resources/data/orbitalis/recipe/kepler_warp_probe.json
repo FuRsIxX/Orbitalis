@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": "#c:dyes/yellow",
+    "E": "orbitalis:exotic_matter",
+    "L": "orbitalis:mars_robotic_lander",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    " E ",
+    "TLT",
+    " D "
+  ],
+  "result": {
+    "id": "orbitalis:kepler_warp_probe"
+  }
+}

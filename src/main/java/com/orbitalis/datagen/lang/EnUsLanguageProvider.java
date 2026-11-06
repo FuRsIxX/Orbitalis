@@ -1535,6 +1535,10 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "The core is full: %s exotic matter.");
         add("ship.orbitalis.pod.status", "Hibernation pod: ready. The crew will sleep here during the journey.");
         add("ship.orbitalis.helm.not_aboard", "This helm isn't aboard a ship. It goes on the bridge, where the shipyard blueprint shows.");
+        add("item.orbitalis.proxima_warp_probe", "Warp Probe to Proxima b");
+        add("item.orbitalis.trappist_warp_probe", "Warp Probe to TRAPPIST-1 e");
+        add("item.orbitalis.kepler_warp_probe", "Warp Probe to Kepler-452b");
+        add("exploration.orbitalis.warp.undiscovered", "%s has no target: %s hasn't been discovered at the observatory yet. The probe is lost.");
         add("observatory.orbitalis.body.kepler_452b", "Kepler-452b");
         add("observatory.orbitalis.body.kepler_452b.desc", "A super-Earth around a star like the Sun, a little older: it is called Earth's cousin. One and a half times as heavy, it could be covered in seas and plains.");
         add("biome.orbitalis.kepler_plains", "Kepler-452b Plains");

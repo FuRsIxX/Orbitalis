@@ -196,6 +196,9 @@ public final class EngineeringStudies {
             part(list, Category.PAYLOADS, ModItems.SATURN_ORBITER, cost(ModItems.TITANIUM_PLATE, 9), cost(gold, 4));
             part(list, Category.PAYLOADS, ModItems.TITAN_ENTRY_PROBE, cost(ModItems.TITANIUM_PLATE, 10), cost(gold, 5));
             part(list, Category.PAYLOADS, ModItems.EUROPA_ORBITER, cost(ModItems.TITANIUM_PLATE, 11), cost(gold, 5));
+            part(list, Category.PAYLOADS, ModItems.PROXIMA_WARP_PROBE, cost(ModItems.TITANIUM_PLATE, 12), cost(ModItems.EXOTIC_MATTER, 2));
+            part(list, Category.PAYLOADS, ModItems.TRAPPIST_WARP_PROBE, cost(ModItems.TITANIUM_PLATE, 12), cost(ModItems.EXOTIC_MATTER, 2));
+            part(list, Category.PAYLOADS, ModItems.KEPLER_WARP_PROBE, cost(ModItems.TITANIUM_PLATE, 12), cost(ModItems.EXOTIC_MATTER, 2));
             part(list, Category.PAYLOADS, ModItems.LUNAR_ROBOTIC_LANDER, cost(ModItems.TITANIUM_PLATE, 6), cost(ModItems.ALUMINUM_PLATE, 6));
             part(list, Category.PAYLOADS, ModItems.MARS_ROBOTIC_LANDER, cost(ModItems.TITANIUM_PLATE, 10), cost(ModItems.ALUMINUM_LITHIUM_PLATE, 6));
             part(list, Category.PAYLOADS, ModItems.LUNAR_SAMPLE_RETURN, cost(ModItems.TITANIUM_PLATE, 8), cost(gold, 2));

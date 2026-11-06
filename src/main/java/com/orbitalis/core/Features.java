@@ -32,7 +32,8 @@ public final class Features {
             ModBlocks.SHIP_HELM, ModBlocks.PROXIMA_ROCK, ModBlocks.PROXIMA_REGOLITH, ModBlocks.PROXIMA_MOSS, ModBlocks.PROXIMA_ASH,
             ModBlocks.PROXIMA_FROST, ModBlocks.RED_SEDGE, ModBlocks.UMBRA_FERN, ModBlocks.LANTERN_BULB, ModBlocks.TRAPPIST_ROCK,
             ModBlocks.TRAPPIST_SAND, ModBlocks.TRAPPIST_MOSS, ModBlocks.SPIRE_REED, ModBlocks.GLEAM_CUP, ModBlocks.TIDE_GRASS,
-            ModBlocks.KEPLER_ROCK, ModBlocks.KEPLER_SOIL, ModBlocks.KEPLER_TURF, ModBlocks.BRONZE_FERN, ModBlocks.AMBER_TUFT);
+            ModBlocks.KEPLER_ROCK, ModBlocks.KEPLER_SOIL, ModBlocks.KEPLER_TURF, ModBlocks.BRONZE_FERN, ModBlocks.AMBER_TUFT,
+            ModItems.PROXIMA_WARP_PROBE, ModItems.TRAPPIST_WARP_PROBE, ModItems.KEPLER_WARP_PROBE);
 
     /** Vrai si cet objet est en réserve : il fait partie d'un contenu qui n'est pas montré. */
     public static boolean hidden(ItemLike item) {

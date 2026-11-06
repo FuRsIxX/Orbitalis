@@ -134,6 +134,10 @@ public final class RocketParts {
             map.put(ModItems.SATURN_ORBITER.get(), new Part(Kind.PAYLOAD, 5700, "rtg", null, null));
             map.put(ModItems.TITAN_ENTRY_PROBE.get(), new Part(Kind.PAYLOAD, 2400, "heat_shields", null, null));
             map.put(ModItems.EUROPA_ORBITER.get(), new Part(Kind.PAYLOAD, 6000, "rtg", null, null));
+            // Sondes à distorsion : leur moteur et sa matière exotique font l'essentiel de leur masse.
+            map.put(ModItems.PROXIMA_WARP_PROBE.get(), new Part(Kind.PAYLOAD, 2600, "warp_drive", null, null));
+            map.put(ModItems.TRAPPIST_WARP_PROBE.get(), new Part(Kind.PAYLOAD, 2600, "warp_drive", null, null));
+            map.put(ModItems.KEPLER_WARP_PROBE.get(), new Part(Kind.PAYLOAD, 2600, "warp_drive", null, null));
             // Module central de station : une pièce repliée, qui se déploie une fois en orbite.
             map.put(ModItems.STATION_CORE.get(), new Part(Kind.PAYLOAD, 3000, "station_modules", null, null));
             // Kits de modules : livrés en fret à la station de l'agence.

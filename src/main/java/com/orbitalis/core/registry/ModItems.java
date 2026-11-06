@@ -262,6 +262,13 @@ public final class ModItems {
     public static final DeferredItem<Item> SATURN_ORBITER = ITEMS.registerSimpleItem("saturn_orbiter", properties -> properties.stacksTo(1));
     public static final DeferredItem<Item> TITAN_ENTRY_PROBE = ITEMS.registerSimpleItem("titan_entry_probe", properties -> properties.stacksTo(1));
     public static final DeferredItem<Item> EUROPA_ORBITER = ITEMS.registerSimpleItem("europa_orbiter", properties -> properties.stacksTo(1));
+    /**
+     * Sondes à distorsion : un atterrisseur robotique sur un petit moteur à distorsion chargé de matière exotique. Une fusée
+     * les monte en orbite de transfert ; de là, elles sautent seules jusqu'à leur exoplanète et s'y posent.
+     */
+    public static final DeferredItem<Item> PROXIMA_WARP_PROBE = ITEMS.registerSimpleItem("proxima_warp_probe", properties -> properties.stacksTo(1));
+    public static final DeferredItem<Item> TRAPPIST_WARP_PROBE = ITEMS.registerSimpleItem("trappist_warp_probe", properties -> properties.stacksTo(1));
+    public static final DeferredItem<Item> KEPLER_WARP_PROBE = ITEMS.registerSimpleItem("kepler_warp_probe", properties -> properties.stacksTo(1));
     public static final DeferredItem<Item> LUNAR_ROBOTIC_LANDER = ITEMS.registerSimpleItem("lunar_robotic_lander", properties -> properties.stacksTo(1));
     public static final DeferredItem<Item> MARS_ROBOTIC_LANDER = ITEMS.registerSimpleItem("mars_robotic_lander", properties -> properties.stacksTo(1));
     /** Station en orbite lunaire : une charge utile, mise en orbite autour de la Lune comme un satellite. */

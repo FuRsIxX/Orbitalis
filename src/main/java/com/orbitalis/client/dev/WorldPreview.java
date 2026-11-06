@@ -1021,6 +1021,18 @@ public final class WorldPreview {
             ModBlocks.CREATIVE_TANKS.forEach(tank -> stacks.add(new net.minecraft.world.item.ItemStack(tank.get())));
             net.minecraft.client.Minecraft.getInstance().gui.setScreen(new ItemSheetScreen(stacks));
         }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 20));
+        // Les exoplanètes, en case d'inventaire : leurs sols, leur flore, et les sondes à distorsion qui s'y posent.
+        SHOTS.add(new Shot("exoplanet_icons", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();
+            for (net.minecraft.world.level.ItemLike item : java.util.List.<net.minecraft.world.level.ItemLike>of(ModBlocks.TRAPPIST_ROCK.get(),
+                    ModBlocks.TRAPPIST_SAND.get(), ModBlocks.TRAPPIST_MOSS.get(), ModBlocks.SPIRE_REED.get(), ModBlocks.GLEAM_CUP.get(),
+                    ModBlocks.TIDE_GRASS.get(), ModBlocks.KEPLER_ROCK.get(), ModBlocks.KEPLER_SOIL.get(), ModBlocks.KEPLER_TURF.get(),
+                    ModBlocks.BRONZE_FERN.get(), ModBlocks.AMBER_TUFT.get(), com.orbitalis.core.registry.ModItems.PROXIMA_WARP_PROBE.get(),
+                    com.orbitalis.core.registry.ModItems.TRAPPIST_WARP_PROBE.get(), com.orbitalis.core.registry.ModItems.KEPLER_WARP_PROBE.get())) {
+                stacks.add(new net.minecraft.world.item.ItemStack(item));
+            }
+            net.minecraft.client.Minecraft.getInstance().gui.setScreen(new ItemSheetScreen(stacks));
+        }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 20));
         // Les machines, en case d'inventaire : on doit les distinguer d'un coup d'œil.
         SHOTS.add(new Shot("machine_icons", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
             java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();

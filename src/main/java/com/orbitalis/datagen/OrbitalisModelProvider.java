@@ -595,6 +595,9 @@ public class OrbitalisModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.SATURN_ORBITER.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.TITAN_ENTRY_PROBE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.EUROPA_ORBITER.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.PROXIMA_WARP_PROBE.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.TRAPPIST_WARP_PROBE.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.KEPLER_WARP_PROBE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.LUNAR_ROBOTIC_LANDER.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.MARS_ROBOTIC_LANDER.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.STAGED_COMBUSTION_ENGINE.get(), ModelTemplates.FLAT_ITEM);

@@ -1990,6 +1990,16 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         var returnedAgain = com.orbitalis.phase3.exploration.ProbeMissions.onFlight(server, explorer, marsSamples, RocketStats.Reach.MARS, BlockPos.ZERO);
         helper.assertTrue(returned != null && returned.points() == 200 && returned.landedAt() == null && returnedAgain.points() == 40,
                 "primes du retour d'échantillons martiens incorrectes");
+        // La sonde à distorsion : perdue tant que Proxima b n'est pas découverte, ou sous une orbite de transfert ; ensuite,
+        // sa prime la première fois, puis un peu de science.
+        var warp = new ItemStack(ModItems.PROXIMA_WARP_PROBE.get());
+        var warpBlind = com.orbitalis.phase3.exploration.ProbeMissions.onFlight(server, explorer, warp, RocketStats.Reach.GEO_TRANSFER, BlockPos.ZERO);
+        SatelliteManager.of(server, explorer).discover(com.orbitalis.phase1.satellite.CelestialBody.PROXIMA_B);
+        var warpLow = com.orbitalis.phase3.exploration.ProbeMissions.onFlight(server, explorer, warp, RocketStats.Reach.LOW_ORBIT, BlockPos.ZERO);
+        var warpLanded = com.orbitalis.phase3.exploration.ProbeMissions.onFlight(server, explorer, warp, RocketStats.Reach.GEO_TRANSFER, BlockPos.ZERO);
+        var warpAgain = com.orbitalis.phase3.exploration.ProbeMissions.onFlight(server, explorer, warp, RocketStats.Reach.MERCURY, BlockPos.ZERO);
+        helper.assertTrue(warpBlind != null && warpBlind.points() == 0 && warpLow.points() == 0 && warpLanded.points() == 800
+                && warpAgain.points() == 80, "primes de la sonde à distorsion incorrectes");
         // La station lunaire est un satellite en orbite lunaire : un lanceur qui n'atteint pas la Lune la perd.
         helper.assertTrue(SatelliteManager.onFlight(server, explorer, SatelliteType.LUNAR_GATEWAY, RocketStats.Reach.GEO_TRANSFER).satellite() == null,
                 "la station lunaire aurait dû être perdue");

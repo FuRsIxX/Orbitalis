@@ -27,13 +27,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 /**
- * Les missions robotiques vers la Lune et Mars : des charges utiles sans équipage, lancées comme les satellites.
+ * Les missions robotiques vers la Lune, Mars, les planètes et les exoplanètes : des charges utiles sans équipage, lancées
+ * comme les satellites.
  * <ul>
  * <li>Une sonde se met en orbite autour de l'astre et le cartographie.</li>
  * <li>Un atterrisseur robotique se pose à sa surface, dans sa dimension, à quelques dizaines de blocs à l'est de
  * l'aplomb du pas de tir : on peut aller le voir sur place. Ses coordonnées sont annoncées.</li>
  * <li>Une mission de retour d'échantillons se pose, prélève le sol et le rapporte sur Terre, où il est analysé.</li>
  * </ul>
+ * Les sondes à distorsion, elles, n'ont besoin que d'une orbite de transfert : leur propre moteur à distorsion fait le
+ * reste. Encore faut-il que leur exoplanète ait été découverte à l'observatoire, sans quoi elles n'ont pas de cible.
+ * <p>
  * La première mission de chaque sorte vers chaque astre rapporte une grosse prime de recherche ; les suivantes, un
  * peu de science en plus.
  */
@@ -106,7 +110,14 @@ public final class ProbeMissions {
                     new Mission(ModItems.JUPITER_ENTRY_PROBE, CelestialBody.JUPITER, null, RocketStats.Reach.JUPITER, Kind.ENTRY, 280, 40),
                     new Mission(ModItems.SATURN_ORBITER, CelestialBody.SATURN, null, RocketStats.Reach.SATURN, Kind.ORBITER, 320, 45),
                     new Mission(ModItems.TITAN_ENTRY_PROBE, CelestialBody.TITAN, null, RocketStats.Reach.TITAN, Kind.ENTRY, 380, 50),
-                    new Mission(ModItems.EUROPA_ORBITER, CelestialBody.EUROPA, null, RocketStats.Reach.EUROPA, Kind.ORBITER, 350, 45));
+                    new Mission(ModItems.EUROPA_ORBITER, CelestialBody.EUROPA, null, RocketStats.Reach.EUROPA, Kind.ORBITER, 350, 45),
+                    // Les exoplanètes : des sondes à distorsion, qui s'y posent pour de vrai.
+                    new Mission(ModItems.PROXIMA_WARP_PROBE, CelestialBody.PROXIMA_B, SpaceRules.PROXIMA_B, RocketStats.Reach.GEO_TRANSFER,
+                            Kind.LANDER, 800, 80),
+                    new Mission(ModItems.TRAPPIST_WARP_PROBE, CelestialBody.TRAPPIST_1E, SpaceRules.TRAPPIST_1E, RocketStats.Reach.GEO_TRANSFER,
+                            Kind.LANDER, 1000, 100),
+                    new Mission(ModItems.KEPLER_WARP_PROBE, CelestialBody.KEPLER_452B, SpaceRules.KEPLER_452B, RocketStats.Reach.GEO_TRANSFER,
+                            Kind.LANDER, 1200, 120));
         }
         return missions;
     }
@@ -136,6 +147,11 @@ public final class ProbeMissions {
         Component body = Component.translatable(mission.body().nameKey());
         if (reached.ordinal() < mission.reach().ordinal()) {
             messages.add(Component.translatable("exploration.orbitalis.lost", payload.getHoverName(), body).withStyle(ChatFormatting.RED));
+            return new Outcome(0, messages, null);
+        }
+        if (mission.body().kind() == CelestialBody.Kind.EXOPLANET
+                && !com.orbitalis.phase1.satellite.SatelliteManager.of(server, agencyKey).isDiscovered(mission.body())) {
+            messages.add(Component.translatable("exploration.orbitalis.warp.undiscovered", payload.getHoverName(), body).withStyle(ChatFormatting.RED));
             return new Outcome(0, messages, null);
         }
         AgencyResearch research = ResearchManager.forAgency(server, agencyKey);

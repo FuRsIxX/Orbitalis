@@ -503,6 +503,30 @@ PARTS["lunar_probe"] = (PROBE_ROWS, PROBE_PAL)
 PARTS["mars_probe"] = (PROBE_ROWS, {**PROBE_PAL, "h": "#B5442A"})
 PARTS["lunar_robotic_lander"] = (LANDER_ROWS, {**LANDER_PAL, "h": "#6B747F"})
 PARTS["mars_robotic_lander"] = (LANDER_ROWS, {**LANDER_PAL, "h": "#B5442A"})
+# Sondes à distorsion : l'atterrisseur sous l'anneau violet de son moteur à distorsion, où luit la matière exotique ; ses
+# patins prennent la teinte de l'étoile visée.
+WARP_PROBE_ROWS = [
+    "................",
+    "....xxxxxxxx....",
+    "...x..eeee..x...",
+    "...x.eEEEEe.x...",
+    "....xxxxxxxx....",
+    "....oooooooo....",
+    "....ofgGggfo....",
+    "....ofgGggfo....",
+    "....oooooooo....",
+    "...of......fo...",
+    "..of........fo..",
+    ".of..........fo.",
+    "oo............oo",
+    "hhhh........hhhh",
+    "................",
+    "................",
+]
+WARP_PROBE_PAL = {**LANDER_PAL, "x": "#6A4AB8", "e": "#9A7AE8", "E": "#E0D4FF"}
+PARTS["proxima_warp_probe"] = (WARP_PROBE_ROWS, {**WARP_PROBE_PAL, "h": "#C0283A"})
+PARTS["trappist_warp_probe"] = (WARP_PROBE_ROWS, {**WARP_PROBE_PAL, "h": "#2EB8B0"})
+PARTS["kepler_warp_probe"] = (WARP_PROBE_ROWS, {**WARP_PROBE_PAL, "h": "#E0A030"})
 
 # Rover : de profil, l'avant à gauche. Ses roues rondes en treillis doré et leur moyeu, ses garde-boue gris bleuté,
 # son plancher blanc et son caisson avant, la caméra, la parabole sur son mât, le pupitre, le siège, la palette dorée

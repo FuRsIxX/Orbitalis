@@ -1535,6 +1535,10 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "Le cœur est plein : %s matières exotiques.");
         add("ship.orbitalis.pod.status", "Caisson d'hibernation : prêt. L'équipage s'y endormira pendant le voyage.");
         add("ship.orbitalis.helm.not_aboard", "Ce poste n'est pas à bord d'un vaisseau. Il se pose sur la passerelle, à l'endroit prévu par le plan du chantier naval.");
+        add("item.orbitalis.proxima_warp_probe", "Sonde à distorsion vers Proxima b");
+        add("item.orbitalis.trappist_warp_probe", "Sonde à distorsion vers TRAPPIST-1 e");
+        add("item.orbitalis.kepler_warp_probe", "Sonde à distorsion vers Kepler-452b");
+        add("exploration.orbitalis.warp.undiscovered", "%s n'a pas de cible : %s n'a pas encore été découverte à l'observatoire. La sonde s'est perdue.");
         add("observatory.orbitalis.body.kepler_452b", "Kepler-452b");
         add("observatory.orbitalis.body.kepler_452b.desc", "Une super-Terre autour d'une étoile semblable au Soleil, un peu plus vieille : on l'appelle la cousine de la Terre. Une fois et demie plus pesante, elle pourrait être couverte de mers et de plaines.");
         add("biome.orbitalis.kepler_plains", "Plaines de Kepler-452b");
