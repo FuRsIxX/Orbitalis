@@ -1,3 +1,10 @@
+# Orbitalis — prochaine version
+
+## Corrections
+- Kepler-452b : son relief est plus bas, comme le veut sa pesanteur (des collines de 20 à 40 blocs au lieu de montagnes) ; vue d'orbite, ses terres ont leurs nuances (olive, bronze, ambre, reliefs gris) au lieu d'un kaki uniforme. Les régions de Kepler-452b déjà parcourues gardent leur ancien relief.
+- Orbite de Tarentule b : le ciel ne montre plus l'écharpe de la Voie lactée, comme si l'on était dedans, mais notre Galaxie en spirale, sous une jeune étoile bleue.
+- L'anneau du vaisseau garde, en tournant, les motifs de sa coque (panneaux matelassés, mains courantes).
+
 # Orbitalis — 0.11.0 (bêta)
 
 *Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
@@ -163,6 +170,13 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Les réglages de jeu (réalisme, pannes, évaporation des ergols, dégâts des accidents…) sont dans la configuration serveur du monde.
 
 ---
+
+# Orbitalis — next version
+
+## Fixes
+- Kepler-452b: its relief is lower, as its gravity calls for (hills of 20 to 40 blocks instead of mountains); seen from orbit, its lands have their shades (olive, bronze, amber, grey highlands) instead of a flat khaki. Areas of Kepler-452b already explored keep their old relief.
+- Tarantula b orbit: the sky no longer shows the Milky Way band, as if you were inside it, but our Galaxy as a spiral, under a young blue star.
+- The ship's ring keeps its hull patterns (quilted panels, handrails) while it spins.
 
 # Orbitalis — 0.11.0 (beta)
 

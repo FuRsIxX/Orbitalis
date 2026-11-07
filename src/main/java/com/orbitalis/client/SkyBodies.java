@@ -62,6 +62,7 @@ final class SkyBodies {
     private static DynamicTexture trappist;
     private static DynamicTexture kepler;
     private static DynamicTexture tarantula;
+    private static DynamicTexture milkyWay;
     private static DynamicTexture clouds;
     private static DynamicTexture white;
     private static DynamicTexture earthDisc;
@@ -85,6 +86,11 @@ final class SkyBodies {
         } else if (SpaceRules.isKeplerOrbit(level)) {
             planetBelow(minecraft, keplerTexture(), time, sun, 0xD8C890, 0xF0E4B8);
         } else if (SpaceRules.isTarantulaOrbit(level)) {
+            // Notre Galaxie, haute dans le ciel, puis la planète.
+            DynamicTexture galaxy = milkyWayTexture();
+            if (galaxy != null) {
+                disc(minecraft, galaxy, new Vector3f(-0.2F, 0.55F, -0.8F), 34.0F);
+            }
             planetBelow(minecraft, tarantulaTexture(), time, sun, 0xC8A0D8, 0xE8C8F0);
         } else if (SpaceRules.isOrbit(level)) {
             // La Lune, haute dans le ciel, puis la planète.
@@ -264,27 +270,85 @@ final class SkyBodies {
         return proxima;
     }
 
-    /** Kepler-452b vue d'orbite : des mers et des continents, comme la planète, mais aux terres bronze et olive. */
+    /**
+     * Kepler-452b vue d'orbite : des mers et des continents, comme la planète ; ses plaines sont olive, bronze et ambre selon
+     * qu'elles sont humides ou sèches, ses forêts vert sombre, ses reliefs bas, et ses pôles sous la glace.
+     */
     private static DynamicTexture keplerTexture() {
         if (kepler == null) {
             kepler = texture("kepler ground", GROUND, true);
-            NativeImage image = kepler.getPixels();
-            paintGround(image, GROUND, 4521L, false);
-            for (int y = 0; y < GROUND; y++) {
-                for (int x = 0; x < GROUND; x++) {
-                    int argb = image.getPixel(x, y);
-                    int r = argb >> 16 & 0xFF;
-                    int g = argb >> 8 & 0xFF;
-                    int b = argb & 0xFF;
-                    // Les terres vertes virent au bronze ; les mers et les glaces restent ce qu'elles sont.
-                    if (g > r && g > b) {
-                        image.setPixel(x, y, 0xFF000000 | Math.min(255, (int) (g * 0.95F)) << 16 | (int) (g * 0.82F) << 8 | (int) (r * 0.6F));
-                    }
-                }
-            }
+            paintKepler(kepler.getPixels(), GROUND, 4521L);
             kepler.upload();
         }
         return kepler;
+    }
+
+    private static void paintKepler(NativeImage image, int size, long seed) {
+        float[] height = new float[size * size];
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                float u = x / (float) size;
+                float v = y / (float) size;
+                float warp = fbm(u, v, 3, seed + 5, 2) - 0.5F;
+                height[y * size + x] = fbm(u + warp * 0.25F, v - warp * 0.2F, 4, seed, 5);
+            }
+        }
+        float sea = 0.5F;
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                float h = height[y * size + x];
+                float u = x / (float) size;
+                float v = y / (float) size;
+                float wet = fbm(u, v, 5, seed + 11, 3);
+                float cold = fbm(u, v, 2, seed + 23, 3);
+                int color;
+                if (cold > 0.82F) {
+                    color = 0xDCE6EE;
+                } else if (h < sea) {
+                    float depth = (sea - h) / sea;
+                    color = depth < 0.025F ? 0x4A9AA8 : depth < 0.08F ? 0x2E7A9A : depth < 0.2F ? 0x1F5A86 : 0x16406A;
+                } else {
+                    float land = (h - sea) / (1.0F - sea);
+                    if (land < 0.02F) {
+                        color = 0xC8B488;
+                    } else if (land > 0.45F) {
+                        color = 0x6E5E4E;
+                    } else if (wet > 0.6F) {
+                        color = 0x3E4A26;
+                    } else if (wet > 0.5F) {
+                        color = 0x5E6A2E;
+                    } else if (wet > 0.42F) {
+                        color = 0x7E7636;
+                    } else if (wet > 0.35F) {
+                        color = 0x8A6A32;
+                    } else {
+                        color = 0xA8823E;
+                    }
+                    float slope = height[Math.floorMod(y - 1, size) * size + Math.floorMod(x - 1, size)]
+                            - height[Math.floorMod(y + 1, size) * size + Math.floorMod(x + 1, size)];
+                    color = scale(color, Mth.clamp(1.0F + slope * 9.0F, 0.8F, 1.16F));
+                }
+                image.setPixel(x, y, 0xFF000000 | color);
+            }
+        }
+    }
+
+    /** Notre Galaxie vue de l'extérieur : l'image de particule du ciel de Tarentule b, ou rien si elle manque. */
+    private static DynamicTexture milkyWayTexture() {
+        if (milkyWay == null) {
+            try (java.io.InputStream in = Minecraft.getInstance().getResourceManager()
+                    .open(com.orbitalis.Orbitalis.id("textures/particle/milky_way.png"))) {
+                milkyWay = new DynamicTexture(() -> "Orbitalis milky way", NativeImage.read(in)) {
+                    {
+                        sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST);
+                    }
+                };
+                milkyWay.upload();
+            } catch (java.io.IOException missing) {
+                return null;
+            }
+        }
+        return milkyWay;
     }
 
     /** Tarentule b vue d'orbite : le sol d'un monde sec, comme celui de Proxima b, viré au rose et au violet. */

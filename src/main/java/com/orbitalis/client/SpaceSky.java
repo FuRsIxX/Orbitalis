@@ -66,6 +66,8 @@ public final class SpaceSky implements CustomSkyboxRenderer {
     private float builtForSun = Float.NaN;
     /** Vrai si le maillage a été bâti pour l'orbite de Proxima : son soleil est une naine rouge. */
     private boolean builtRed;
+    /** Vrai s'il a été bâti hors de notre Galaxie : pas d'écharpe de la Voie lactée, une jeune étoile bleue. */
+    private boolean builtOutside;
     private DynamicTexture atlas;
 
     // ------------------------------------------------------------------
@@ -140,19 +142,21 @@ public final class SpaceSky implements CustomSkyboxRenderer {
         return galactic(longitude, (float) random.nextGaussian() * spread);
     }
 
-    private void build(float sunAngle, boolean red) {
+    private void build(float sunAngle, boolean red, boolean outside) {
         if (mesh != null) {
             mesh.close();
         }
         builtForSun = sunAngle;
         builtRed = red;
+        builtOutside = outside;
         RandomSource random = RandomSource.createThreadLocalInstance(20_261_013L);
         int quads = 0;
         try (ByteBufferBuilder bytes = new ByteBufferBuilder(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * 4 * 20_000)) {
             BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
-            // 1. La Voie lactée, d'abord : tout le reste se dessine par-dessus. De grandes nuées très légères...
-            for (int i = 0; i < 420; i++) {
+            // 1. La Voie lactée, d'abord : tout le reste se dessine par-dessus. De grandes nuées très légères... Hors de
+            // notre Galaxie, on ne la voit plus en écharpe : elle est une spirale, dessinée avec les astres (SkyBodies).
+            for (int i = 0; i < (outside ? 0 : 420); i++) {
                 float longitude = i / 420.0F * 360.0F + (float) random.nextGaussian() * 4.0F;
                 float towardCore = Mth.cos((longitude > 180.0F ? longitude - 360.0F : longitude) * Mth.DEG_TO_RAD * 0.5F);
                 float bulge = towardCore * towardCore * towardCore * towardCore;
@@ -165,7 +169,7 @@ public final class SpaceSky implements CustomSkyboxRenderer {
                 quads++;
             }
             // ... puis les bandes de poussière, qui les entaillent près du plan.
-            for (int i = 0; i < 150; i++) {
+            for (int i = 0; i < (outside ? 0 : 150); i++) {
                 float longitude = (float) random.nextGaussian() * 70.0F;
                 Vector3f at = galactic(longitude, 1.5F * Mth.sin(longitude * 0.11F) + (float) random.nextGaussian() * 1.6F);
                 quad(builder, at, 3.5F + random.nextFloat() * 5.0F, random.nextFloat() * Mth.TWO_PI, 0, tint(0x05060A, 0.22F + 0.2F * random.nextFloat()));
@@ -183,13 +187,13 @@ public final class SpaceSky implements CustomSkyboxRenderer {
             }
             // 3. La poussière d'étoiles : des milliers de points faibles, plus serrés dans la galaxie.
             for (int i = 0; i < 15_000; i++) {
-                Vector3f at = i % 5 < 2 ? inGalaxy(random, 9.0F) : anywhere(random);
+                Vector3f at = i % 5 < 2 && !outside ? inGalaxy(random, 9.0F) : anywhere(random);
                 quad(builder, at, 0.09F + random.nextFloat() * 0.12F, 0.0F, 0, tint(STAR_TINTS[random.nextInt(STAR_TINTS.length)], 0.6F + 0.4F * random.nextFloat()));
                 quads++;
             }
             // 4. Les étoiles franches, de toutes les couleurs.
             for (int i = 0; i < 1_200; i++) {
-                Vector3f at = i % 3 == 0 ? inGalaxy(random, 14.0F) : anywhere(random);
+                Vector3f at = i % 3 == 0 && !outside ? inGalaxy(random, 14.0F) : anywhere(random);
                 quad(builder, at, 0.26F + random.nextFloat() * 0.3F, 0.0F, 0, tint(STAR_TINTS[random.nextInt(STAR_TINTS.length)], 0.85F + 0.15F * random.nextFloat()));
                 quads++;
             }
@@ -201,7 +205,12 @@ public final class SpaceSky implements CustomSkyboxRenderer {
             }
             // 6. Le Soleil : un grand halo, un halo serré, et son disque. Il est là où le place le monde.
             Vector3f sun = new Vector3f(0.0F, 1.0F, 0.0F).rotateX(sunAngle).rotateY(-Mth.HALF_PI);
-            if (red) {
+            if (outside) {
+                // La jeune étoile de Tarentule b : bleue et blanche.
+                quad(builder, sun, 28.0F, 0.0F, 0, tint(0x8FB4FF, 0.35F));
+                quad(builder, sun, 12.0F, 0.0F, 0, tint(0xC8DAFF, 0.85F));
+                quad(builder, sun, 9.0F, 0.4F, 1, tint(0xEEF4FF, 1.0F));
+            } else if (red) {
                 // La naine rouge : plus grosse vue d'ici que le Soleil de la Terre, et rouge-orangé.
                 quad(builder, sun, 34.0F, 0.0F, 0, tint(0xFF5A32, 0.4F));
                 quad(builder, sun, 15.0F, 0.0F, 0, tint(0xFF8A50, 0.85F));
@@ -266,8 +275,9 @@ public final class SpaceSky implements CustomSkyboxRenderer {
         float sunAngle = (client.level != null && com.orbitalis.phase2.survival.SpaceRules.isMoon(client.level) ? 40.0F : 55.0F) * Mth.DEG_TO_RAD;
         boolean red = client.level != null && (com.orbitalis.phase2.survival.SpaceRules.isProximaOrbit(client.level)
                 || com.orbitalis.phase2.survival.SpaceRules.isTrappistOrbit(client.level));
-        if (mesh == null || Math.abs(sunAngle - builtForSun) > 0.01F || red != builtRed) {
-            build(sunAngle, red);
+        boolean outside = client.level != null && com.orbitalis.phase2.survival.SpaceRules.isTarantulaOrbit(client.level);
+        if (mesh == null || Math.abs(sunAngle - builtForSun) > 0.01F || red != builtRed || outside != builtOutside) {
+            build(sunAngle, red, outside);
         }
         DynamicTexture image = atlas();
         Minecraft minecraft = Minecraft.getInstance();

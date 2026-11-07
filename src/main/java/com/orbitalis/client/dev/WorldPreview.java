@@ -2633,6 +2633,24 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_tarantula_nebula", level -> hover(level), 0.5, 170.0, 0.5, 15.0F, -14.0F, 20));
         SHOTS.add(new Shot("tm_tarantula_plain", level -> tarantulaSpot(level), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         SHOTS.add(new Shot("tm_tarantula_orbit_view", level -> hover(level), 0.5, 100.0, 0.5, -90.0F, 55.0F, 80));
+        // Notre Galaxie, vue de l'orbite de Tarentule b, au-dessus de l'horizon.
+        SHOTS.add(new Shot("tm_tarantula_orbit_galaxy", level -> hover(level), 0.5, 100.0, 0.5, 165.0F, -30.0F, 30));
+        // Une sonde à distorsion vers Proxima b, sortie d'un vol réussi : elle pose son atterrisseur, qu'on va voir.
+        SHOTS.add(new Shot("tm_proxima_warp_probe", level -> {
+            hover(level);
+            net.minecraft.server.level.ServerPlayer player = level.getServer().getPlayerList().getPlayers().get(0);
+            String agency = ResearchManager.agencyKey(player);
+            com.orbitalis.phase1.satellite.SatelliteManager.of(level.getServer(), agency).discover(com.orbitalis.phase1.satellite.CelestialBody.PROXIMA_B);
+            var outcome = com.orbitalis.phase3.exploration.ProbeMissions.onFlight(level.getServer(), agency,
+                    new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.PROXIMA_WARP_PROBE.get()),
+                    com.orbitalis.phase1.rocket.RocketStats.Reach.GEO_TRANSFER, BlockPos.ZERO);
+            outcome.messages().forEach(player::sendSystemMessage);
+            BlockPos at = outcome.landedAt();
+            Orbitalis.LOGGER.info("Sonde à distorsion : {} points, posée en {}", outcome.points(), at);
+            if (at != null) {
+                run(level, ("execute in orbitalis:proxima_b run tp @a %d.5 %d %d.5 -90 30").formatted(at.getX() - 4, at.getY() + 2, at.getZ()));
+            }
+        }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 120));
         SHOTS.add(new Shot("tm_orbit_ship_pods", null, 27.5, 99.0, -3.5, -90.0F, 8.0F, 60));
         SHOTS.add(new Shot("tm_orbit_ship_greenhouse", null, 33.5, 99.0, -3.5, -90.0F, 14.0F, 60));
         SHOTS.add(new Shot("tm_orbit_ship_bridge", null, 39.5, 99.0, -3.5, -90.0F, 6.0F, 60));
@@ -2701,7 +2719,10 @@ public final class WorldPreview {
             closeScreen();
             helm(level, true);
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
-        SHOTS.add(new Shot("tm_orbit_ship_back", level -> closeScreen(), 29.0, 110.0, 14.0, 200.0F, 25.0F, 100));
+        SHOTS.add(new Shot("tm_orbit_ship_back", level -> {
+            closeScreen();
+            hover(level);
+        }, 29.0, 110.0, 14.0, 200.0F, 25.0F, 100));
         // La navette, après tm_proxima_orbit_helm (le joueur sur la passerelle, en orbite de Proxima b) : elle se détache
         // du vaisseau, freine, rentre dans l'air de Proxima b, ouvre ses parachutes, se pose, puis remonte au vaisseau.
         SHOTS.add(new Shot("tm_proxima_orbit_shuttle", level -> {
