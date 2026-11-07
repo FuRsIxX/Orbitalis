@@ -621,6 +621,9 @@ public final class SpacePhotoPainter {
             case "eagle_nebula" -> eagle();
             case "crab_pulsar" -> crab();
             case "andromeda" -> andromeda();
+            case "large_magellanic_cloud" -> magellan();
+            case "triangulum" -> triangulum();
+            case "whirlpool" -> whirlpool();
             case "proxima_b" -> proxima();
             case "trappist_1e" -> trappist();
             case "kepler_452b" -> kepler();
@@ -976,6 +979,112 @@ public final class SpacePhotoPainter {
         render(grid, camera, SUN);
     }
 
+    /**
+     * Une galaxie spirale en blocs qui brillent, vue de la caméra donnée : ses bras (nombre, enroulement), leurs nœuds
+     * roses où naissent les étoiles, ses bandes de poussière, et un bulbe plus ou moins gros au centre.
+     */
+    private Grid spiral(int size, int arms, float wind, float bulgeSize, float clumps, int armColor, int coreColor) {
+        Grid grid = new Grid(size, 7, size);
+        float half = size / 2.0F;
+        for (int z = 0; z < size; z++) {
+            for (int y = 0; y < 7; y++) {
+                for (int x = 0; x < size; x++) {
+                    float u = (x - half) / (half - 4);
+                    float v = (z - half) / (half - 4);
+                    float h = (y - 3) / 3.0F;
+                    float rr = (float) Math.sqrt(u * u + v * v);
+                    if (rr > 1.05F) {
+                        continue;
+                    }
+                    float thickness = 0.2F + 0.8F * (float) Math.exp(-rr * rr / (bulgeSize * 2.0F));
+                    if (Math.abs(h) > thickness) {
+                        continue;
+                    }
+                    float theta = (float) Math.atan2(v, u);
+                    float phase = theta - (float) Math.log(rr + 0.03F) * wind;
+                    float arm = (float) Math.pow(0.5F + 0.5F * Math.cos(arms * phase), 2.0);
+                    // Des bras floconneux : le bruit les morcelle, d'autant plus que la galaxie est désordonnée.
+                    arm *= 1.0F - clumps + clumps * 2.0F * fbm(u * 6, h, v * 6, 3);
+                    float lane = (float) Math.pow(0.5F + 0.5F * Math.cos(arms * phase + 2.2F), 12.0) * smoothstep(0.15F, 0.35F, rr);
+                    float bulge = (float) Math.exp(-rr * rr / bulgeSize);
+                    float disk = (float) Math.exp(-rr / 0.32F) * (0.3F + 1.0F * arm);
+                    if (lane > 0.5F && Math.abs(h) < 0.3F) {
+                        grid.set(x, y, z, DUST, 0, 0.5F);
+                    } else if (disk + bulge > 0.035F) {
+                        int c = mix(armColor, coreColor, Math.min(1.0F, bulge * 1.5F + (1.0F - arm) * 0.25F));
+                        if (arm > 0.7F && rr > 0.18F && hash(x, y, z, seed) > 0.94F) {
+                            c = rgb(1.0F, 0.45F, 0.72F);
+                        }
+                        grid.set(x, y, z, GLOW, c, disk * 0.5F + bulge * 1.2F);
+                    }
+                }
+            }
+        }
+        return grid;
+    }
+
+    /** Le Triangle : une spirale lâche et floconneuse, presque de face, bleutée, semée de nœuds roses. */
+    private void triangulum() {
+        stars(300, 0.75F);
+        Grid grid = spiral(72, 2, 2.2F, 0.004F, 0.55F, rgb(0.62F, 0.76F, 1.0F), rgb(1.0F, 0.9F, 0.7F));
+        render(grid, new Camera(0.4F, 1.15F, 3.4F, WIDTH * 0.5F, HEIGHT * 0.5F), SUN);
+    }
+
+    /** Le Tourbillon : une grande spirale à deux bras bien dessinés, de face, et au bout d'un bras sa petite compagne. */
+    private void whirlpool() {
+        stars(280, 0.7F);
+        Grid grid = spiral(76, 2, 3.4F, 0.01F, 0.2F, rgb(0.66F, 0.78F, 1.0F), rgb(1.0F, 0.84F, 0.56F));
+        // La compagne, une petite galaxie dorée, sans bras, en bout de bras.
+        for (int z = 0; z < 76; z++) {
+            for (int y = 0; y < 7; y++) {
+                for (int x = 0; x < 76; x++) {
+                    float dx = (x - 60) / 6.0F;
+                    float dz = (z - 18) / 6.0F;
+                    float dy = (y - 3) / 3.0F;
+                    float d = dx * dx + dz * dz + dy * dy;
+                    if (d < 1.0F && x < 76 && z >= 0) {
+                        grid.set(x, y, z, GLOW, rgb(1.0F, 0.82F, 0.5F), (float) Math.exp(-d * 3.0F) * 0.9F);
+                    }
+                }
+            }
+        }
+        render(grid, new Camera(0.2F, 1.3F, 3.3F, WIDTH * 0.47F, HEIGHT * 0.52F), SUN);
+    }
+
+    /**
+     * Le Grand Nuage de Magellan : une galaxie naine, sans vrais bras, une barre d'étoiles jaunes, des amas bleus éparpillés
+     * et, sur un bord, le grand nuage rose de la Tarentule, où naissent des étoiles par milliers.
+     */
+    private void magellan() {
+        stars(300, 0.8F);
+        Grid grid = new Grid(70, 9, 70);
+        for (int z = 0; z < 70; z++) {
+            for (int y = 0; y < 9; y++) {
+                for (int x = 0; x < 70; x++) {
+                    float u = (x - 35) / 31.0F;
+                    float v = (z - 35) / 31.0F;
+                    float h = (y - 4) / 4.0F;
+                    float rr = (float) Math.sqrt(u * u + v * v);
+                    if (rr > 1.0F || Math.abs(h) > 0.5F + 0.5F * (1.0F - rr)) {
+                        continue;
+                    }
+                    // La barre, penchée ; tout autour, un disque morcelé par le bruit.
+                    float bu = u * 0.87F + v * 0.5F;
+                    float bv = -u * 0.5F + v * 0.87F;
+                    float bar = (float) Math.exp(-(bu * bu) / 0.18F - (bv * bv) / 0.012F);
+                    float patches = smoothstep(0.48F, 0.62F, fbm(u * 4 + 3, h, v * 4, 4)) * (1.0F - rr);
+                    float tarantula = (float) Math.exp(-((u - 0.45F) * (u - 0.45F) + (v + 0.2F) * (v + 0.2F)) / 0.012F);
+                    if (bar + patches + tarantula < 0.06F) {
+                        continue;
+                    }
+                    int c = tarantula > 0.3F ? rgb(1.0F, 0.42F, 0.68F) : bar > patches ? rgb(1.0F, 0.88F, 0.62F) : rgb(0.6F, 0.74F, 1.0F);
+                    grid.set(x, y, z, GLOW, c, bar * 0.7F + patches * 0.25F + tarantula * 1.2F);
+                }
+            }
+        }
+        render(grid, new Camera(0.7F, 1.05F, 3.6F, WIDTH * 0.5F, HEIGHT * 0.5F), SUN);
+    }
+
     private void proxima() {
         stars(260, 0.75F);
         // L'étoile, une naine rouge, à gauche : un soleil carré, comme celui du jeu, dans un halo pourpre.
@@ -1180,7 +1289,8 @@ public final class SpacePhotoPainter {
         folder.mkdirs();
         String[] bodies = args.length > 1 ? java.util.Arrays.copyOfRange(args, 1, args.length)
                 : new String[] {"moon", "comet", "mars", "venus", "mercury", "jupiter", "europa", "saturn", "titan", "pleiades", "orion_nebula",
-                        "eagle_nebula", "crab_pulsar", "andromeda", "proxima_b", "trappist_1e", "kepler_452b", "sagittarius_a"};
+                        "eagle_nebula", "crab_pulsar", "andromeda", "large_magellanic_cloud", "triangulum", "whirlpool", "proxima_b",
+                        "trappist_1e", "kepler_452b", "sagittarius_a"};
         for (String body : bodies) {
             long start = System.nanoTime();
             int[] pixels = paint(body);

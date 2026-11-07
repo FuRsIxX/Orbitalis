@@ -1535,6 +1535,12 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "Le cœur est plein : %s matières exotiques.");
         add("ship.orbitalis.pod.status", "Caisson d'hibernation : prêt. L'équipage s'y endormira pendant le voyage.");
         add("ship.orbitalis.helm.not_aboard", "Ce poste n'est pas à bord d'un vaisseau. Il se pose sur la passerelle, à l'endroit prévu par le plan du chantier naval.");
+        add("observatory.orbitalis.body.large_magellanic_cloud", "Grand Nuage de Magellan");
+        add("observatory.orbitalis.body.large_magellanic_cloud.desc", "Une petite galaxie qui tourne autour de la nôtre, à 160 000 années-lumière : une barre d'étoiles, des amas épars, et la Tarentule, la plus grande pouponnière d'étoiles connue alentour.");
+        add("observatory.orbitalis.body.triangulum", "Galaxie du Triangle");
+        add("observatory.orbitalis.body.triangulum.desc", "La troisième galaxie de notre groupe, après la nôtre et Andromède : une spirale lâche, aux bras floconneux, semée de nuages roses où naissent des étoiles.");
+        add("observatory.orbitalis.body.whirlpool", "Galaxie du Tourbillon");
+        add("observatory.orbitalis.body.whirlpool.desc", "Une grande spirale vue de face, à 23 millions d'années-lumière, dont un bras touche une petite galaxie compagne : leur rencontre allume des étoiles tout le long des bras.");
         add("item.orbitalis.proxima_warp_probe", "Sonde à distorsion vers Proxima b");
         add("item.orbitalis.trappist_warp_probe", "Sonde à distorsion vers TRAPPIST-1 e");
         add("item.orbitalis.kepler_warp_probe", "Sonde à distorsion vers Kepler-452b");

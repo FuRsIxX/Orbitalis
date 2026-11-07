@@ -1535,6 +1535,12 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.core.full", "The core is full: %s exotic matter.");
         add("ship.orbitalis.pod.status", "Hibernation pod: ready. The crew will sleep here during the journey.");
         add("ship.orbitalis.helm.not_aboard", "This helm isn't aboard a ship. It goes on the bridge, where the shipyard blueprint shows.");
+        add("observatory.orbitalis.body.large_magellanic_cloud", "Large Magellanic Cloud");
+        add("observatory.orbitalis.body.large_magellanic_cloud.desc", "A small galaxy orbiting ours, 160,000 light-years away: a bar of stars, scattered clusters, and the Tarantula, the biggest star nursery known around us.");
+        add("observatory.orbitalis.body.triangulum", "Triangulum Galaxy");
+        add("observatory.orbitalis.body.triangulum.desc", "The third galaxy of our group, after ours and Andromeda: a loose spiral with fluffy arms, dotted with pink clouds where stars are born.");
+        add("observatory.orbitalis.body.whirlpool", "Whirlpool Galaxy");
+        add("observatory.orbitalis.body.whirlpool.desc", "A large spiral seen face-on, 23 million light-years away, with one arm touching a small companion galaxy: their meeting lights up stars all along the arms.");
         add("item.orbitalis.proxima_warp_probe", "Warp Probe to Proxima b");
         add("item.orbitalis.trappist_warp_probe", "Warp Probe to TRAPPIST-1 e");
         add("item.orbitalis.kepler_warp_probe", "Warp Probe to Kepler-452b");

@@ -66,6 +66,9 @@ public final class Observatory {
             case EAGLE_NEBULA -> new Window(16, 7, 4);
             case CRAB_PULSAR -> new Window(16, 7, 9);
             case ANDROMEDA -> new Window(16, 9, 13);
+            case LARGE_MAGELLANIC_CLOUD -> new Window(16, 8, 3);
+            case TRIANGULUM -> new Window(18, 7, 10);
+            case WHIRLPOOL -> new Window(20, 6, 15);
             case PROXIMA_B -> new Window(20, 6, 2);
             case SAGITTARIUS_A -> new Window(16, 6, 5);
             case TRAPPIST_1E -> new Window(18, 5, 7);
