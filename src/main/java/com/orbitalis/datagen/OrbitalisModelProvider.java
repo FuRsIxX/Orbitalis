@@ -212,17 +212,15 @@ public class OrbitalisModelProvider extends ModelProvider {
 
         // Stations : coque, hublot et sas sont des cubes ; le panneau solaire a ses cellules sur le dessus ;
         // le générateur d'air change de face quand la pièce est pressurisée.
-        // La coque : un panneau blanc, et çà et là, côté vide, sa couverture matelassée ou une main courante jaune.
+        // La coque : un panneau blanc, et çà et là, côté vide, sa couverture matelassée. Pas de main courante tirée au
+        // hasard : semées partout, elles chargeaient les murs.
         Block hull = ModBlocks.STATION_HULL.get();
         Identifier hullPlain = ModelTemplates.CUBE_ALL.create(hull, TextureMapping.cube(hull), blockModels.modelOutput);
         Identifier hullQuilted = ModelTemplates.CUBE_ALL.createWithSuffix(hull, "_quilted",
                 TextureMapping.cube(TextureMapping.getBlockTexture(hull, "_quilted")), blockModels.modelOutput);
-        Identifier hullRail = ModelTemplates.CUBE_ALL.createWithSuffix(hull, "_rail",
-                TextureMapping.cube(TextureMapping.getBlockTexture(hull, "_rail")), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(hull, new MultiVariant(WeightedList.of(List.of(
                 new Weighted<>(BlockModelGenerators.plainModel(hullPlain), 6),
-                new Weighted<>(BlockModelGenerators.plainModel(hullQuilted), 3),
-                new Weighted<>(BlockModelGenerators.plainModel(hullRail), 1))))));
+                new Weighted<>(BlockModelGenerators.plainModel(hullQuilted), 3))))));
         blockModels.registerSimpleItemModel(hull, hullPlain);
         blockModels.createTrivialCube(ModBlocks.MOON_REGOLITH.get());
         blockModels.createTrivialCube(ModBlocks.MOON_ROCK.get());
@@ -348,11 +346,11 @@ public class OrbitalisModelProvider extends ModelProvider {
                         BlockModelGenerators.plainVariant(Orbitalis.id("block/station/life_support")))));
         blockModels.registerSimpleItemModel(air, Orbitalis.id("block/station/life_support"));
         // Aménagement des stations : modèles 3D écrits par tools/generate_station.py. Le revêtement et le plafonnier
-        // regardent la pièce ; le revêtement se décline en trois panneaux, tirés au hasard d'un bloc à l'autre.
+        // regardent la pièce ; le revêtement se décline en deux panneaux, tirés au hasard d'un bloc à l'autre : l'uni et,
+        // plus rarement, la grille d'aération (les mains courantes semées partout chargeaient les murs).
         Identifier panelPlain = Orbitalis.id("block/station/station_panel");
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.STATION_PANEL.get(), new MultiVariant(WeightedList.of(List.of(
                         new Weighted<>(BlockModelGenerators.plainModel(panelPlain), 6),
-                        new Weighted<>(BlockModelGenerators.plainModel(Orbitalis.id("block/station/station_panel_rail")), 3),
                         new Weighted<>(BlockModelGenerators.plainModel(Orbitalis.id("block/station/station_panel_vent")), 1)))))
                 .with(BlockModelGenerators.ROTATION_FACING));
         blockModels.registerSimpleItemModel(ModBlocks.STATION_PANEL.get(), panelPlain);

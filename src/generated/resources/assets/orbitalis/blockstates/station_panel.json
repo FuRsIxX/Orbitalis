@@ -7,11 +7,6 @@
         "x": 90
       },
       {
-        "model": "orbitalis:block/station/station_panel_rail",
-        "weight": 3,
-        "x": 90
-      },
-      {
         "model": "orbitalis:block/station/station_panel_vent",
         "x": 90
       }
@@ -20,11 +15,6 @@
       {
         "model": "orbitalis:block/station/station_panel",
         "weight": 6,
-        "y": 90
-      },
-      {
-        "model": "orbitalis:block/station/station_panel_rail",
-        "weight": 3,
         "y": 90
       },
       {
@@ -38,10 +28,6 @@
         "weight": 6
       },
       {
-        "model": "orbitalis:block/station/station_panel_rail",
-        "weight": 3
-      },
-      {
         "model": "orbitalis:block/station/station_panel_vent"
       }
     ],
@@ -49,11 +35,6 @@
       {
         "model": "orbitalis:block/station/station_panel",
         "weight": 6,
-        "y": 180
-      },
-      {
-        "model": "orbitalis:block/station/station_panel_rail",
-        "weight": 3,
         "y": 180
       },
       {
@@ -68,11 +49,6 @@
         "x": 270
       },
       {
-        "model": "orbitalis:block/station/station_panel_rail",
-        "weight": 3,
-        "x": 270
-      },
-      {
         "model": "orbitalis:block/station/station_panel_vent",
         "x": 270
       }
@@ -81,11 +57,6 @@
       {
         "model": "orbitalis:block/station/station_panel",
         "weight": 6,
-        "y": 270
-      },
-      {
-        "model": "orbitalis:block/station/station_panel_rail",
-        "weight": 3,
         "y": 270
       },
       {

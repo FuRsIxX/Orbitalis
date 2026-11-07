@@ -2464,7 +2464,7 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_storage", null, -3.5, -58.5, -10.5, 180.0F, 30.0F, 30));
         SHOTS.add(new Shot("tm_sites_weather", null, 230.0, -30.0, 220.0, 135.0F, 30.0F, 120));
         SHOTS.add(new Shot("tm_sites_control", null, 1010.0, -5.0, 245.0, 135.0F, 30.0F, 160));
-        SHOTS.add(new Shot("tm_station", null, 18.0, 112.0, 10.0, 132.0F, 31.0F, 160));
+        SHOTS.add(new Shot("tm_station", level -> hover(level), 18.0, 112.0, 10.0, 132.0F, 31.0F, 160));
         // L'atelier : les machines en marche, posées en -24 -60 10.
         SHOTS.add(new Shot("tm_machines", null, -22.0, -58.2, 14.8, 180.0F, 24.0F, 80));
         // Les fusées du catalogue : en blocs au premier rang, assemblées au second.

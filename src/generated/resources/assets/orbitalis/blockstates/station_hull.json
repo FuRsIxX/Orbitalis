@@ -8,9 +8,6 @@
       {
         "model": "orbitalis:block/station_hull_quilted",
         "weight": 3
-      },
-      {
-        "model": "orbitalis:block/station_hull_rail"
       }
     ]
   }

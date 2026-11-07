@@ -92,7 +92,7 @@ CREAM = "#E4DFD1"
 def panel_texture(kind):
     """
     Revêtement intérieur : un panneau capitonné crème, en relief dans son joint, tenu par quatre attaches.
-    kind : "plain" (deux carrés d'agrippant, une étiquette bleue), "rail" (pour la main courante) ou "vent"
+    kind : "plain" (deux carrés d'agrippant), "rail" (pour la main courante) ou "vent"
     (une bouche d'aération à lamelles).
     """
     img = grain(81, CREAM, 0.035)
@@ -108,8 +108,6 @@ def panel_texture(kind):
         for x0, y0 in ((4, 7), (9, 11)):
             rect(img, x0, y0, x0 + 2, y0 + 1, "#CFC8B4")
             dot(img, x0, y0, "#D9D3C1")
-        rect(img, 9, 3, 12, 3, "#3F76E4")
-        dot(img, 9, 3, "#6E9BF0")
     elif kind == "rail":
         rect(img, 3, 3, 6, 3, "#E8872A")
         # La barre, fine et satinée, ses embouts sombres, ses deux pattes et son ombre portée sur le capitonnage.
@@ -128,7 +126,6 @@ def panel_texture(kind):
             for x in range(5, 11):
                 dot(img, x, y, "#3A3D42")
         outline(img, 4, 8, 11, 12, "#A9A291")
-        rect(img, 4, 3, 7, 3, "#5BC27A")
     return img
 
 

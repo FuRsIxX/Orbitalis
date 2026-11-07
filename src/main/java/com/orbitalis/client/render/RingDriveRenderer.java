@@ -40,7 +40,7 @@ import net.minecraft.world.phys.Vec3;
  * L'anneau du vaisseau en rotation : chaque bloc de l'anneau et de ses rayons, à la place de son segment invisible,
  * tourné autour de l'axe du vaisseau de l'angle que donne le moteur. Un segment qui manque ne se dessine pas.
  * <p>
- * Chaque bloc garde la variante de modèle qu'il a, posé à cette place (la coque matelassée ou à main courante) : le jeu
+ * Chaque bloc garde la variante de modèle qu'il a, posé à cette place (la coque unie ou matelassée) : le jeu
  * la tire de la position du bloc, et on la tire de même. Rien ne change d'aspect quand l'anneau démarre ou s'arrête.
  */
 public class RingDriveRenderer implements BlockEntityRenderer<RingDriveBlockEntity, RingDriveRenderer.State> {
