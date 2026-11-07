@@ -62,11 +62,20 @@ public final class GuideChapters {
             new GuideChapter("helium3", EXPLORATION, ModBlocks.HELIUM3_EXTRACTOR),
             new GuideChapter("fusion", EXPLORATION, ModItems.FUSION_ENGINE),
             new GuideChapter("fusion_power", EXPLORATION, ModBlocks.FUSION_REACTOR),
-            new GuideChapter("shipyard", EXPLORATION, ModItems.SHIPYARD_MODULE)));
+            new GuideChapter("shipyard", EXPLORATION, ModItems.SHIPYARD_MODULE),
+            new GuideChapter("ship_jump", EXPLORATION, ModBlocks.SHIP_HELM),
+            new GuideChapter("ship_ring", EXPLORATION, ModBlocks.RING_DRIVE),
+            new GuideChapter("shuttle", EXPLORATION, ModItems.CREW_CAPSULE),
+            new GuideChapter("exoplanets", EXPLORATION, ModBlocks.PROXIMA_MOSS),
+            new GuideChapter("warp_probes", EXPLORATION, ModItems.PROXIMA_WARP_PROBE)));
+
+    /** Les chapitres du voyage interstellaire, masqués avec lui. */
+    private static final java.util.Set<String> INTERSTELLAR = java.util.Set.of("shipyard", "ship_jump", "ship_ring", "shuttle",
+            "exoplanets", "warp_probes");
 
     /** Les chapitres du contenu en réserve pour une prochaine version n'apparaissent pas. */
     private static List<GuideChapter> shown(List<GuideChapter> chapters) {
-        return chapters.stream().filter(chapter -> com.orbitalis.core.Features.interstellar() || !chapter.id().equals("shipyard")).toList();
+        return chapters.stream().filter(chapter -> com.orbitalis.core.Features.interstellar() || !INTERSTELLAR.contains(chapter.id())).toList();
     }
 
     private GuideChapters() {

@@ -619,6 +619,34 @@ public final class TestMap {
                 ? StationModules.attach(orbit, c.offset(9, 0, -4), Direction.EAST, ModuleType.SHIPYARD) : null;
         if (problem != null) {
             Orbitalis.LOGGER.warn("Carte de test : chantier naval non posé ({})", problem.getString());
+        } else if (com.orbitalis.core.Features.interstellar()) {
+            ship(orbit, c.offset(12, -1, -4));
         }
+    }
+
+    /**
+     * Le vaisseau interstellaire, achevé et aménagé dans le berceau du chantier dont le pupitre est là, son cœur de
+     * distorsion plein : il n'y a qu'à monter à la passerelle et choisir où sauter.
+     */
+    private static void ship(ServerLevel orbit, BlockPos consolePos) {
+        if (!(orbit.getBlockEntity(consolePos) instanceof com.orbitalis.phase3.interstellar.ShipyardConsoleBlockEntity console)) {
+            Orbitalis.LOGGER.warn("Carte de test : pas de pupitre de chantier en {}", consolePos);
+            return;
+        }
+        BlockPos origin = console.shipOrigin();
+        for (com.orbitalis.phase3.interstellar.ShipPlan.Piece piece : console.pieces()) {
+            BlockPos pos = origin.offset(piece.offset());
+            if (com.orbitalis.phase3.interstellar.ShipPlan.free(piece)) {
+                continue;
+            }
+            if (piece.state().hasProperty(com.orbitalis.phase3.interstellar.TwoHighBlock.HALF)) {
+                com.orbitalis.phase3.interstellar.TwoHighBlock.place(orbit, pos, piece.state());
+            } else {
+                orbit.setBlockAndUpdate(pos, piece.state());
+            }
+        }
+        BlockPos core = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(console.out(), 2, 0, -1));
+        com.orbitalis.phase3.interstellar.WarpCoreBlock.setCharge(orbit, core, orbit.getBlockState(core),
+                com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE);
     }
 }

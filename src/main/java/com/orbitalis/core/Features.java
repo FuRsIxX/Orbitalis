@@ -21,9 +21,9 @@ public final class Features {
     private Features() {
     }
 
-    /** Vrai si le voyage interstellaire est montré : chantier naval, vaisseau, moteur à distorsion, Proxima b. */
+    /** Vrai si le voyage interstellaire est montré (il l'est, sauf si le réglage de démarrage le masque). */
     public static boolean interstellar() {
-        return StartupConfig.INTERSTELLAR.getAsBoolean();
+        return !StartupConfig.HIDE_INTERSTELLAR.getAsBoolean();
     }
 
     /** Les objets du voyage interstellaire. */

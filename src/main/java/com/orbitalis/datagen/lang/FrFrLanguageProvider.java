@@ -1664,6 +1664,18 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.report.not_ready", "Le vaisseau n'est pas encore prêt.");
         add("guide.orbitalis.shipyard.title", "Le chantier naval");
         add("guide.orbitalis.shipyard.text", "Un vaisseau interstellaire se construit en orbite, au chantier naval accroché à la station (technologie « Chantier naval orbital »).\n\nDepuis la station, un clic droit sur une paroi avec le module chantier naval ouvre une salle de contrôle et un berceau de 31 blocs.\n\nLe pupitre contient le plan du vaisseau. Posez ses blocs à la main ou avec « Poser la section ». Équipez chaque section, chargez le cœur avec huit matières exotiques, puis faites le bilan au poste de pilotage.");
+        add("orbitalis.configuration.hide_interstellar", "Masquer le voyage interstellaire");
+        add("orbitalis.configuration.hide_interstellar.tooltip", "Retire le chantier naval, le vaisseau, la distorsion, les exoplanètes et les autres galaxies des recettes, de l'arbre de recherche et du guide. Compte au lancement suivant.");
+        add("guide.orbitalis.ship_jump.title", "La passerelle et le saut");
+        add("guide.orbitalis.ship_jump.text", "Un clic droit sur le poste de pilotage ouvre la passerelle : le voyant de chaque système, la destination, et ce qui empêche de partir.\n\nAu chantier, choisissez la destination avec ‹ › : chaque monde doit avoir été découvert à l'observatoire. Un saut vers une étoile proche coûte 4 matières exotiques ; le saut galactique, 8 : rechargez le cœur sur place pour revenir.\n\n« Sauter » lance un compte à rebours de 5 secondes. Restez à bord : le vaisseau entier part, avec son équipage. En orbite d'un autre monde, le même poste vous ramène au chantier.");
+        add("guide.orbitalis.ship_ring.title", "L'anneau");
+        add("guide.orbitalis.ship_ring.text", "Le moteur de l'anneau est au plafond du couloir, au droit des rayons. Un clic droit le lance, si l'anneau est entier.\n\nL'anneau et ses rayons prennent de la vitesse en quatre secondes, puis font un tour en douze secondes. Tant qu'il tourne, l'équipage retrouve la pesanteur dans tout le vaisseau.\n\nUn second clic droit l'arrête : il ralentit et s'immobilise sur un quart de tour. Un anneau en marche ne se casse pas ; il suit le vaisseau quand il saute.");
+        add("guide.orbitalis.shuttle.title", "La navette");
+        add("guide.orbitalis.shuttle.text", "En orbite d'un autre monde, le bouton « Navette » de la passerelle fait sortir une capsule au flanc du vaisseau, vous aux commandes ; d'autres équipiers peuvent y monter.\n\nLa touche de retour prépare le freinage : rentrée, secousses, parachutes. Sur un monde qui a des mers, la navette peut amerrir et flotter. Au sol, sortez en combinaison ; la navette ne se ramasse pas.\n\nPour repartir, maintenez à bord la touche de lancement 3 secondes : la navette remonte et s'amarre au vaisseau. Laissée vide en orbite, elle rentre en soute.");
+        add("guide.orbitalis.exoplanets.title", "Les autres mondes");
+        add("guide.orbitalis.exoplanets.text", "Proxima b : une face de jour brûlée, une face de nuit gelée et, entre elles, un crépuscule où vit une flore sombre. Pesanteur 1,1.\n\nTRAPPIST-1 e : un monde-océan semé d'îles, sous un ciel où se montrent trois autres planètes. Pesanteur 0,93.\n\nKepler-452b : une super-Terre de mers et de plaines bronze. Pesanteur 1,5 : on y saute moins haut.\n\nTarentule b, dans le Grand Nuage de Magellan : poussière rose, cristaux qui luisent, et notre Galaxie dans le ciel. Pesanteur 0,8.\n\nAucun air ne s'y respire : la combinaison est indispensable. Les premiers pas sur chacun rapportent des points de recherche.");
+        add("guide.orbitalis.warp_probes.title", "Les sondes à distorsion");
+        add("guide.orbitalis.warp_probes.text", "Une sonde à distorsion est un atterrisseur robotique martien sur un petit moteur à distorsion. Fabriquez-la avec de la matière exotique, du titane et une teinture à la couleur de l'étoile visée : rouge pour Proxima b, cyan pour TRAPPIST-1 e, jaune pour Kepler-452b.\n\nEmportez-la comme une charge utile : une fusée qui atteint l'orbite de transfert suffit. La sonde fait le reste seule et se pose sur son exoplanète ; ses coordonnées sont annoncées.\n\nL'exoplanète doit avoir été découverte à l'observatoire, sinon la sonde n'a pas de cible et se perd.");
         add("station.orbitalis.module.use", "Clic droit sur une paroi, depuis l'intérieur : le module se déploie de l'autre côté.");
         add("station.orbitalis.expand.research", "Votre agence doit d'abord maîtriser la technologie « %s ».");
         add("station.orbitalis.no_station", "%s n'a aucune station où être livré au-dessus de ce site : il est perdu.");
@@ -1725,8 +1737,6 @@ public class FrFrLanguageProvider extends LanguageProvider {
         // Ravitaillement
         add("orbitalis.configuration.boilOff", "Évaporation des ergols");
         add("orbitalis.configuration.boilOff.tooltip", "Les ergols cryogéniques chargés dans une fusée s'évaporent lentement tant qu'elle attend sur son pas de tir.");
-        add("orbitalis.configuration.interstellar", "Voyage interstellaire (en préparation)");
-        add("orbitalis.configuration.interstellar.tooltip", "Montre le chantier naval orbital, le vaisseau interstellaire et Proxima b, encore inachevés. Compte au lancement suivant.");
 
         // Cabine : commande de lancement et écran de bord
         add("capsule.orbitalis.phase.pad", "SUR LE PAS DE TIR");

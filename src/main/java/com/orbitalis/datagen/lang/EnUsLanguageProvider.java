@@ -1664,6 +1664,18 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.report.not_ready", "The ship is not ready yet.");
         add("guide.orbitalis.shipyard.title", "The Shipyard");
         add("guide.orbitalis.shipyard.text", "An interstellar ship is built in orbit, at the shipyard attached to the station (\"Orbital Shipyard\" technology).\n\nFrom inside the station, right-click a wall with the shipyard module to open a control room and a 31-block cradle.\n\nThe console holds the ship's plan. Place its blocks by hand or with \"Build section\". Fit out each section, load the core with eight exotic matter, then run the check at the pilot station.");
+        add("orbitalis.configuration.hide_interstellar", "Hide interstellar travel");
+        add("orbitalis.configuration.hide_interstellar.tooltip", "Removes the shipyard, the ship, the warp drive, the exoplanets and other galaxies from recipes, the research tree and the guide. Takes effect on the next launch.");
+        add("guide.orbitalis.ship_jump.title", "The bridge and the jump");
+        add("guide.orbitalis.ship_jump.text", "Right-clicking the helm opens the bridge: a light for each system, the destination, and what stops you from leaving.\n\nAt the shipyard, choose the destination with ‹ ›: each world must have been discovered at the observatory. A jump to a nearby star costs 4 exotic matter; the galactic jump, 8: recharge the core there to come back.\n\n\"Jump\" starts a 5-second countdown. Stay aboard: the whole ship leaves, with its crew. In orbit of another world, the same helm brings you back to the shipyard.");
+        add("guide.orbitalis.ship_ring.title", "The ring");
+        add("guide.orbitalis.ship_ring.text", "The ring drive is on the corridor ceiling, in line with the spokes. Right-clicking it starts the ring, if the ring is whole.\n\nThe ring and its spokes speed up over four seconds, then make one turn every twelve seconds. While it spins, the crew has gravity in the whole ship.\n\nA second right-click stops it: it slows down and comes to rest on a quarter turn. A spinning ring can't be broken; it stays with the ship when it jumps.");
+        add("guide.orbitalis.shuttle.title", "The shuttle");
+        add("guide.orbitalis.shuttle.text", "In orbit of another world, the bridge's \"Shuttle\" button launches a capsule from the side of the ship, with you at the controls; other crew members can climb in.\n\nThe return key plans the deorbit burn: reentry, shaking, parachutes. On a world with seas, the shuttle can splash down and float. On the ground, get out in a suit; the shuttle can't be picked up.\n\nTo leave, hold the launch key on board for 3 seconds: the shuttle climbs back and docks with the ship. Left empty in orbit, it goes back into its bay.");
+        add("guide.orbitalis.exoplanets.title", "Other worlds");
+        add("guide.orbitalis.exoplanets.text", "Proxima b: a scorched day side, a frozen night side and, between them, a twilight where a dark flora lives. Gravity 1.1.\n\nTRAPPIST-1 e: an ocean world dotted with islands, under a sky with three other planets. Gravity 0.93.\n\nKepler-452b: a super-Earth of seas and bronze plains. Gravity 1.5: you jump lower there.\n\nTarantula b, in the Large Magellanic Cloud: pink dust, glowing crystals, and our Galaxy in the sky. Gravity 0.8.\n\nNone of their air can be breathed: a suit is essential. First steps on each one give research points.");
+        add("guide.orbitalis.warp_probes.title", "Warp probes");
+        add("guide.orbitalis.warp_probes.text", "A warp probe is a Mars robotic lander on a small warp drive. Craft it with exotic matter, titanium and a dye in the colour of the target star: red for Proxima b, cyan for TRAPPIST-1 e, yellow for Kepler-452b.\n\nCarry it as a payload: a rocket that reaches transfer orbit is enough. The probe does the rest alone and lands on its exoplanet; its coordinates are announced.\n\nThe exoplanet must have been discovered at the observatory, or the probe has no target and is lost.");
         add("station.orbitalis.module.use", "Right-click a wall from inside: the module unfolds on the other side.");
         add("station.orbitalis.expand.research", "Your agency must first master the \"%s\" technology.");
         add("station.orbitalis.no_station", "%s has no station to be delivered to above this site: it is lost.");
@@ -1725,8 +1737,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         // Ravitaillement
         add("orbitalis.configuration.boilOff", "Propellant boil-off");
         add("orbitalis.configuration.boilOff.tooltip", "Cryogenic propellants loaded in a rocket slowly boil off while it waits on its pad.");
-        add("orbitalis.configuration.interstellar", "Interstellar travel (in development)");
-        add("orbitalis.configuration.interstellar.tooltip", "Shows the orbital shipyard, the interstellar ship and Proxima b, still unfinished. Takes effect on the next launch.");
 
         // Cabine : commande de lancement et écran de bord
         add("capsule.orbitalis.phase.pad", "ON THE PAD");

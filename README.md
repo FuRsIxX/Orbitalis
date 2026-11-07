@@ -1,8 +1,8 @@
 # Orbitalis
 
-**From the first steel ingot to the moons of Jupiter.** Orbitalis is a NeoForge mod for Minecraft: build a space industry, a spaceport and modular rockets, launch satellites and probes, assemble stations in orbit, and land on the Moon, Mars, Titan and Europa.
+**From the first steel ingot to another galaxy.** Orbitalis is a NeoForge mod for Minecraft: build a space industry, a spaceport and modular rockets, launch satellites and probes, assemble stations in orbit, land on the Moon, Mars, Titan and Europa, then build an interstellar ship and jump to other stars.
 
-*Version 0.10.0 (beta)*
+*Version 0.11.0 (beta)*
 
 ## At a glance
 
@@ -30,6 +30,11 @@ It all starts on the ground, with ores and a foundry. Step by step, your industr
 - The Moon, Mars, Titan (methane lakes, rotor drone) and Europa (ice under radiation, cryobot).
 - Rovers, in-situ resource drills, planetary bases.
 
+**Interstellar**
+- An orbital shipyard and an interstellar ship built block by block: warp core, spinning ring for gravity, hibernation pods, greenhouse, bridge.
+- Warp jumps to Proxima b, TRAPPIST-1 e and Kepler-452b, and a galactic jump to Tarantula b in the Large Magellanic Cloud.
+- A shuttle to land on each world, warp probes, and galaxies to discover at the observatory.
+
 **Progression**
 - A research tree across nine fields, goals and milestones.
 - An illustrated in-game manual with animated scenes.
@@ -52,7 +57,7 @@ Tested with Sodium and Iris (shaders).
 ## Installation
 
 1. Install NeoForge 26.2.0.88 or newer for Minecraft 26.2.
-2. Drop `orbitalis-0.10.0.jar` into your `mods` folder.
+2. Drop `orbitalis-0.11.0.jar` into your `mods` folder.
 3. Optional: add JEI to browse recipes.
 
 In game, open the Orbitalis manual: it walks you from the first ore all the way to orbit. The research tree opens with the **K** key.
@@ -61,7 +66,7 @@ In game, open the Orbitalis manual: it walks you from the first ore all the way 
 
 - **Gameplay** (realism, failures, propellant boil-off, accident damage, satellite lifetime…): in the world's server configuration.
 - **Display** (units, particle density): in the client configuration.
-- **Interstellar travel**: still in development and disabled by default. To try it early, set `interstellar = true` in `config/orbitalis-startup.toml`, then restart the game. On a server, use the same setting on the server and on every client.
+- **Interstellar travel**: shown by default. To hide it, set `hide_interstellar = true` in `config/orbitalis-startup.toml`, then restart the game. On a server, use the same setting on the server and on every client.
 
 ## Building from source
 

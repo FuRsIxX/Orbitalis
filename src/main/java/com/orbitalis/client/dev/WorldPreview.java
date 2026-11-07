@@ -1046,6 +1046,17 @@ public final class WorldPreview {
             ModBlocks.CREATIVE_TANKS.forEach(tank -> stacks.add(new net.minecraft.world.item.ItemStack(tank.get())));
             net.minecraft.client.Minecraft.getInstance().gui.setScreen(new ItemSheetScreen(stacks));
         }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 20));
+        // Les chapitres du manuel sur le voyage interstellaire, un par vue.
+        for (String id : java.util.List.of("shipyard", "ship_jump", "ship_ring", "shuttle", "exoplanets", "warp_probes")) {
+            SHOTS.add(new Shot("guide_" + id, level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+                java.util.List<com.orbitalis.core.guide.GuideChapter> all = com.orbitalis.core.guide.GuideChapters.ALL;
+                for (int i = 0; i < all.size(); i++) {
+                    if (all.get(i).id().equals(id)) {
+                        net.minecraft.client.Minecraft.getInstance().gui.setScreen(com.orbitalis.client.screen.GuideScreen.at(i, 0, 0));
+                    }
+                }
+            }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 15));
+        }
         // Les exoplanètes, en case d'inventaire : leurs sols, leur flore, et les sondes à distorsion qui s'y posent.
         SHOTS.add(new Shot("exoplanet_icons", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
             java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();
