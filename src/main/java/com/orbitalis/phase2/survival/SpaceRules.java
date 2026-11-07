@@ -58,6 +58,12 @@ public final class SpaceRules {
     public static final ResourceKey<Level> KEPLER_452B = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("kepler_452b"));
     public static final double KEPLER_GRAVITY = 1.5;
     private static final int REWARD_KEPLERWALK = 3500;
+    /** L'orbite de Tarentule b, dans le Grand Nuage de Magellan, à 160 000 années-lumière : hors de notre Galaxie. */
+    public static final ResourceKey<Level> TARANTULA_ORBIT = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("tarantula_orbit"));
+    /** Tarentule b : une planète de poussière rose et de cristaux, sous un air mince, au bord de la Tarentule. */
+    public static final ResourceKey<Level> TARANTULA_B = ResourceKey.create(Registries.DIMENSION, Orbitalis.id("tarantula_b"));
+    public static final double TARANTULA_GRAVITY = 0.8;
+    private static final int REWARD_TARANTULAWALK = 5000;
     /** Hauteur à laquelle les capsules arrivent dans la dimension d'orbite. */
     public static final double PARKING_HEIGHT = 100.0;
 
@@ -87,7 +93,7 @@ public final class SpaceRules {
 
     public static boolean isOrbit(Level level) {
         return level.dimension() == ORBIT || level.dimension() == PROXIMA_ORBIT || level.dimension() == TRAPPIST_ORBIT
-                || level.dimension() == KEPLER_ORBIT;
+                || level.dimension() == KEPLER_ORBIT || level.dimension() == TARANTULA_ORBIT;
     }
 
     /** Dimension de la Lune : un sol de régolithe, un sixième de la pesanteur, pas d'air. */
@@ -168,16 +174,27 @@ public final class SpaceRules {
         return level.dimension() == KEPLER_452B;
     }
 
+    /** Vrai en orbite de Tarentule b. */
+    public static boolean isTarantulaOrbit(Level level) {
+        return level.dimension() == TARANTULA_ORBIT;
+    }
+
+    /** Vrai sur Tarentule b. */
+    public static boolean isTarantula(Level level) {
+        return level.dimension() == TARANTULA_B;
+    }
+
     /** Vrai si l'on ne peut pas respirer dans ce monde sans combinaison : le vide, l'air de Mars ou celui de Titan. */
     public static boolean isUnbreathable(Level level) {
-        return isVacuum(level) || isMars(level) || isTitan(level) || isProxima(level) || isTrappist(level) || isKepler(level);
+        return isVacuum(level) || isMars(level) || isTitan(level) || isProxima(level) || isTrappist(level) || isKepler(level)
+                || isTarantula(level);
     }
 
     /** Pesanteur de ce monde, en part de celle de la planète. */
     public static double gravityOf(Level level) {
         return isMoon(level) ? MOON_GRAVITY : isMars(level) ? MARS_GRAVITY : isTitan(level) ? TITAN_GRAVITY
                 : isEuropa(level) ? EUROPA_GRAVITY : isProxima(level) ? PROXIMA_GRAVITY : isTrappist(level) ? TRAPPIST_GRAVITY
-                : isKepler(level) ? KEPLER_GRAVITY : 1.0;
+                : isKepler(level) ? KEPLER_GRAVITY : isTarantula(level) ? TARANTULA_GRAVITY : 1.0;
     }
 
     /** Vrai s'il n'y a pas d'air dans ce monde : en orbite, sur la Lune et sur Europe. */
@@ -228,6 +245,7 @@ public final class SpaceRules {
         boolean onProxima = isProxima(player.level());
         boolean onTrappist = isTrappist(player.level());
         boolean onKepler = isKepler(player.level());
+        boolean onTarantula = isTarantula(player.level());
         // À bord d'un vaisseau dont l'anneau tourne, l'équipage retrouve la pesanteur.
         updateMicrogravity(player, inOrbit && !com.orbitalis.phase3.interstellar.RingDriveBlockEntity.gravityAt(player));
         updateLowGravity(player, gravityOf(player.level()));
@@ -235,7 +253,7 @@ public final class SpaceRules {
             return;
         }
         ItemStack suit = player.getItemBySlot(EquipmentSlot.CHEST);
-        boolean outdoors = inOrbit || onMoon || onMars || onTitan || onEuropa || onProxima || onTrappist || onKepler;
+        boolean outdoors = inOrbit || onMoon || onMars || onTitan || onEuropa || onProxima || onTrappist || onKepler || onTarantula;
         // La capsule est pressurisée, comme les pièces d'une station dont le générateur d'air tourne.
         boolean sheltered = outdoors && (player.getVehicle() instanceof CapsuleEntity
                 || StationAir.isBreathable(player.level(), BlockPos.containing(player.getEyePosition())));
@@ -285,6 +303,8 @@ public final class SpaceRules {
                 rewardTrappistwalk(player);
             } else if (onKepler) {
                 rewardKeplerwalk(player);
+            } else if (onTarantula) {
+                rewardTarantulawalk(player);
             } else {
                 rewardSpacewalk(player);
             }
@@ -389,6 +409,16 @@ public final class SpaceRules {
             research.addPoints(REWARD_KEPLERWALK);
             ResearchManager.changed(player);
             player.sendSystemMessage(Component.translatable("space.orbitalis.first_keplerwalk", REWARD_KEPLERWALK).withStyle(ChatFormatting.AQUA));
+        }
+    }
+
+    /** Premiers pas sur Tarentule b d'une agence : le premier monde d'une autre galaxie, en combinaison. */
+    private static void rewardTarantulawalk(ServerPlayer player) {
+        AgencyResearch research = ResearchManager.of(player);
+        if (research.completeMilestone("first_tarantulawalk")) {
+            research.addPoints(REWARD_TARANTULAWALK);
+            ResearchManager.changed(player);
+            player.sendSystemMessage(Component.translatable("space.orbitalis.first_tarantulawalk", REWARD_TARANTULAWALK).withStyle(ChatFormatting.AQUA));
         }
     }
 

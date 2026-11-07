@@ -120,6 +120,8 @@ public final class OrbitalisGameTests {
             FUNCTIONS.register("trappist_world", () -> OrbitalisGameTests::trappistWorld);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> KEPLER_WORLD =
             FUNCTIONS.register("kepler_world", () -> OrbitalisGameTests::keplerWorld);
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> TARANTULA_WORLD =
+            FUNCTIONS.register("tarantula_world", () -> OrbitalisGameTests::tarantulaWorld);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> ORBITAL_SHIPYARD =
             FUNCTIONS.register("orbital_shipyard", () -> OrbitalisGameTests::orbitalShipyard);
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> SHUTTLE_STOWS =
@@ -322,6 +324,9 @@ public final class OrbitalisGameTests {
         // Kepler-452b : sa flore sur le gazon et le sol, sa pesanteur, et le vaisseau qui peut y aller.
         event.registerTest(Orbitalis.id("kepler_world"), new FunctionGameTestInstance(
                 KEPLER_WORLD.getKey(), spaced(environment, emptyStructure, 40)));
+        // Tarentule b, dans le Grand Nuage de Magellan : sa flore, ses cristaux, et le saut galactique qui vide le cœur.
+        event.registerTest(Orbitalis.id("tarantula_world"), new FunctionGameTestInstance(
+                TARANTULA_WORLD.getKey(), spaced(environment, emptyStructure, 40)));
         // Le chantier naval s'accole à une station ; son pupitre pose tout le vaisseau.
         event.registerTest(Orbitalis.id("orbital_shipyard"), new FunctionGameTestInstance(
                 ORBITAL_SHIPYARD.getKey(), spaced(environment, emptyStructure, 100)));
@@ -3809,6 +3814,32 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 == com.orbitalis.phase3.interstellar.ShipDestination.KEPLER, "le vaisseau ne mène pas à Kepler-452b");
         helper.assertTrue(com.orbitalis.phase3.interstellar.ShipDestination.KEPLER.shuttleKey("hud.hint").equals("capsule.orbitalis.hud.kepler_hint"),
                 "consigne de la navette sur Kepler-452b");
+        helper.succeed();
+    }
+
+    /**
+     * Tarentule b : le fil-lueur pousse dans la poussière, pas sur la roche ; le cristal luit. Le vaisseau y va depuis le
+     * Grand Nuage de Magellan découvert à l'observatoire, et ce saut galactique coûte un cœur plein, quand les étoiles
+     * proches n'en coûtent que la moitié.
+     */
+    private static void tarantulaWorld(GameTestHelper helper) {
+        BlockPos dust = new BlockPos(1, 1, 1);
+        helper.setBlock(dust, ModBlocks.TARANTULA_DUST.get());
+        helper.assertTrue(ModBlocks.GLOWTHREAD.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(dust.above())),
+                "le fil-lueur devrait pousser dans la poussière");
+        BlockPos rock = new BlockPos(3, 1, 1);
+        helper.setBlock(rock, ModBlocks.TARANTULA_ROCK.get());
+        helper.assertTrue(!ModBlocks.ROSE_VEIL.get().defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(rock.above())),
+                "le voile rose ne pousse pas sur la roche nue");
+        helper.assertTrue(ModBlocks.TARANTULA_CRYSTAL.get().defaultBlockState().getLightEmission() > 0, "le cristal de la Tarentule devrait luire");
+        helper.assertTrue(Math.abs(com.orbitalis.phase2.survival.SpaceRules.TARANTULA_GRAVITY - 0.8) < 1.0E-9, "pesanteur de Tarentule b");
+        var magellan = com.orbitalis.phase3.interstellar.ShipDestination.MAGELLAN;
+        helper.assertTrue(magellan.body() == com.orbitalis.phase1.satellite.CelestialBody.LARGE_MAGELLANIC_CLOUD
+                && com.orbitalis.phase3.interstellar.ShipDestination.byPlanet(com.orbitalis.phase2.survival.SpaceRules.TARANTULA_B) == magellan
+                && magellan.shuttleKey("liftoff").equals("capsule.orbitalis.magellan_liftoff"), "le vaisseau ne mène pas à Tarentule b");
+        helper.assertTrue(magellan.cost() == com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE
+                && com.orbitalis.phase3.interstellar.ShipDestination.PROXIMA.cost() == com.orbitalis.phase3.interstellar.ShipJump.JUMP_COST,
+                "le saut galactique devrait coûter un cœur plein, le saut vers Proxima la moitié");
         helper.succeed();
     }
 

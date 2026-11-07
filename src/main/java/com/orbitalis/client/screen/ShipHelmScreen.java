@@ -119,7 +119,8 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
         Ui.heading(graphics, font, Component.translatable("ship.orbitalis.helm.systems"), x + PAD, y + 32);
         int rowY = y + 46;
         system(graphics, "hull", ship.hullPlaced() >= ship.hullTotal(), ship.hullPlaced() + " / " + ship.hullTotal(), x, rowY, inner);
-        system(graphics, "core", ship.core() && ship.charge() >= ShipJump.JUMP_COST,
+        ShipDestination wanted = ShipDestination.byIndex(place() == ShipJump.Place.HOME && ship.countdown() < 0 ? selected : ship.destination());
+        system(graphics, "core", ship.core() && ship.charge() >= wanted.cost(),
                 ship.core() ? ship.charge() + " / " + WarpCoreBlock.MAX_CHARGE : missing(), x, rowY + ROW, inner);
         system(graphics, "ring", ship.ringDrive(), !ship.ringDrive() ? missing() : ship.ringSpinning()
                 ? Component.translatable("ship.orbitalis.helm.spinning").getString() : ok(), x, rowY + 2 * ROW, inner);
@@ -131,10 +132,12 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
         // La destination du prochain saut, en grand.
         int destY = rowY + 6 * ROW + 9;
         Ui.heading(graphics, font, Component.translatable("ship.orbitalis.helm.destination"), x + PAD, destY);
-        ShipDestination wanted = ShipDestination.byIndex(place == ShipJump.Place.HOME && ship.countdown() < 0 ? selected : ship.destination());
         String destination = Component.translatable(place == ShipJump.Place.AWAY ? "ship.orbitalis.helm.dest.home" : wanted.nameKey()).getString();
         int nameRoom = choosing() ? inner - 2 * ARROW - 10 : inner;
-        Ui.big(graphics, font, Ui.fit(font, destination, (int) (nameRoom / 1.5F)), x + PAD, destY + 13, 1.5F, Ui.TEXT);
+        // Un nom trop long pour le grand corps (le Grand Nuage de Magellan) s'écrit un peu plus petit, plutôt que coupé.
+        float nameScale = font.width(destination) * 1.5F <= nameRoom ? 1.5F : 1.25F;
+        Ui.big(graphics, font, Ui.fit(font, destination, (int) (nameRoom / nameScale)), x + PAD, destY + 13 + (nameScale < 1.5F ? 1 : 0),
+                nameScale, Ui.TEXT);
         if (choosing()) {
             for (boolean next : new boolean[] {false, true}) {
                 boolean over = Ui.inside(mouseX, mouseY, arrowX(next), arrowY(), ARROW, ARROW);
@@ -150,10 +153,10 @@ public class ShipHelmScreen extends Screen implements BlockScreen {
             say = Component.translatable("ship.orbitalis.helm.counting", (ship.countdown() + 19) / 20);
             color = Ui.ACCENT;
         } else if (canJump()) {
-            say = Component.translatable("ship.orbitalis.helm.ready", ShipJump.JUMP_COST, ship.charge());
+            say = Component.translatable("ship.orbitalis.helm.ready", wanted.cost(), ship.charge());
             color = Ui.OK;
         } else {
-            say = Component.translatable(hold().key(), ship.charge(), ShipJump.JUMP_COST, Component.translatable(wanted.nameKey()));
+            say = Component.translatable(hold().key(), ship.charge(), wanted.cost(), Component.translatable(wanted.nameKey()));
             color = Ui.WARN;
         }
         Ui.dot(graphics, x + PAD, sayY + 1, color);

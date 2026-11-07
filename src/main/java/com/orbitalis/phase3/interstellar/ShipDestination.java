@@ -13,20 +13,29 @@ import net.minecraft.world.level.Level;
  * vaisseau saute de son berceau jusqu'à l'orbite de l'un d'eux, et la navette en descend sur la planète.
  */
 public enum ShipDestination {
-    PROXIMA(CelestialBody.PROXIMA_B, SpaceRules.PROXIMA_ORBIT, SpaceRules.PROXIMA_B, false),
-    TRAPPIST(CelestialBody.TRAPPIST_1E, SpaceRules.TRAPPIST_ORBIT, SpaceRules.TRAPPIST_1E, true),
-    KEPLER(CelestialBody.KEPLER_452B, SpaceRules.KEPLER_ORBIT, SpaceRules.KEPLER_452B, true);
+    PROXIMA(CelestialBody.PROXIMA_B, SpaceRules.PROXIMA_ORBIT, SpaceRules.PROXIMA_B, false, 4),
+    TRAPPIST(CelestialBody.TRAPPIST_1E, SpaceRules.TRAPPIST_ORBIT, SpaceRules.TRAPPIST_1E, true, 4),
+    KEPLER(CelestialBody.KEPLER_452B, SpaceRules.KEPLER_ORBIT, SpaceRules.KEPLER_452B, true, 4),
+    /** Hors de notre Galaxie : un saut galactique, qui vide un cœur plein à l'aller comme au retour. */
+    MAGELLAN(CelestialBody.LARGE_MAGELLANIC_CLOUD, SpaceRules.TARANTULA_ORBIT, SpaceRules.TARANTULA_B, false, 8);
 
     private final CelestialBody body;
     private final ResourceKey<Level> orbit;
     private final ResourceKey<Level> planet;
     private final boolean seas;
+    private final int cost;
 
-    ShipDestination(CelestialBody body, ResourceKey<Level> orbit, ResourceKey<Level> planet, boolean seas) {
+    ShipDestination(CelestialBody body, ResourceKey<Level> orbit, ResourceKey<Level> planet, boolean seas, int cost) {
         this.body = body;
         this.orbit = orbit;
         this.planet = planet;
         this.seas = seas;
+        this.cost = cost;
+    }
+
+    /** Matières exotiques que coûte un saut vers ce monde, ou depuis lui. */
+    public int cost() {
+        return cost;
     }
 
     /** Vrai si la planète a des mers : la navette peut y amerrir. */

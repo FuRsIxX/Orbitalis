@@ -205,6 +205,23 @@ public final class ModBlocks {
     /** La flore des plaines : la fougère bronze et la touffe d'ambre, basses et étalées. */
     public static final DeferredBlock<com.orbitalis.phase3.celestial.KeplerPlantBlock> BRONZE_FERN = keplerPlant("bronze_fern", true);
     public static final DeferredBlock<com.orbitalis.phase3.celestial.KeplerPlantBlock> AMBER_TUFT = keplerPlant("amber_tuft", false);
+    // ------------------------------------------------------------------
+    // Tarentule b, dans le Grand Nuage de Magellan
+    // ------------------------------------------------------------------
+    /** Roche de Tarentule b : un basalte violet sombre. */
+    public static final DeferredBlock<Block> TARANTULA_ROCK = withItem(BLOCKS.registerSimpleBlock("tarantula_rock",
+            properties -> properties.mapColor(MapColor.COLOR_PURPLE).instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops().strength(1.6F, 6.0F).sound(SoundType.BASALT)));
+    /** Poussière de Tarentule b : rose et grise, le sol des plaines. */
+    public static final DeferredBlock<Block> TARANTULA_DUST = withItem(BLOCKS.registerSimpleBlock("tarantula_dust",
+            properties -> properties.mapColor(MapColor.TERRACOTTA_PINK).strength(0.5F).sound(SoundType.SAND)));
+    /** Cristal de la Tarentule : rose, il luit ; il sort de la poussière en petits bouquets. */
+    public static final DeferredBlock<Block> TARANTULA_CRYSTAL = withItem(BLOCKS.registerSimpleBlock("tarantula_crystal",
+            properties -> properties.mapColor(MapColor.COLOR_PINK).instrument(NoteBlockInstrument.CHIME)
+                    .requiresCorrectToolForDrops().strength(1.5F, 6.0F).sound(SoundType.AMETHYST).lightLevel(state -> 11)));
+    /** La flore de Tarentule b : le fil-lueur, qui luit à sa pointe, et le voile rose. */
+    public static final DeferredBlock<com.orbitalis.phase3.celestial.TarantulaPlantBlock> GLOWTHREAD = tarantulaPlant("glowthread", 6, true);
+    public static final DeferredBlock<com.orbitalis.phase3.celestial.TarantulaPlantBlock> ROSE_VEIL = tarantulaPlant("rose_veil", 0, false);
     /** L'herbe des marées : des rubans pourpres au fond des mers. */
     public static final DeferredBlock<com.orbitalis.phase3.celestial.TideGrassBlock> TIDE_GRASS = withItem(BLOCKS.registerBlock("tide_grass",
             com.orbitalis.phase3.celestial.TideGrassBlock::new,
@@ -1500,6 +1517,14 @@ public final class ModBlocks {
     private static DeferredBlock<com.orbitalis.phase3.celestial.ProximaPlantBlock> plant(String name, int light, boolean replaceable) {
         return withItem(BLOCKS.registerBlock(name, com.orbitalis.phase3.celestial.ProximaPlantBlock::new, properties -> {
             properties.mapColor(MapColor.COLOR_PURPLE).noCollision().instabreak().sound(SoundType.GRASS)
+                    .offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY).lightLevel(state -> light);
+            return replaceable ? properties.replaceable() : properties;
+        }));
+    }
+
+    private static DeferredBlock<com.orbitalis.phase3.celestial.TarantulaPlantBlock> tarantulaPlant(String name, int light, boolean replaceable) {
+        return withItem(BLOCKS.registerBlock(name, com.orbitalis.phase3.celestial.TarantulaPlantBlock::new, properties -> {
+            properties.mapColor(MapColor.COLOR_PINK).noCollision().instabreak().sound(SoundType.GRASS)
                     .offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY).lightLevel(state -> light);
             return replaceable ? properties.replaceable() : properties;
         }));

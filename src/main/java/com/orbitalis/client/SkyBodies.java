@@ -61,6 +61,7 @@ final class SkyBodies {
     private static DynamicTexture proxima;
     private static DynamicTexture trappist;
     private static DynamicTexture kepler;
+    private static DynamicTexture tarantula;
     private static DynamicTexture clouds;
     private static DynamicTexture white;
     private static DynamicTexture earthDisc;
@@ -83,6 +84,8 @@ final class SkyBodies {
             planetBelow(minecraft, trappistTexture(), time, sun, 0xC890A8, 0xE8B8C8);
         } else if (SpaceRules.isKeplerOrbit(level)) {
             planetBelow(minecraft, keplerTexture(), time, sun, 0xD8C890, 0xF0E4B8);
+        } else if (SpaceRules.isTarantulaOrbit(level)) {
+            planetBelow(minecraft, tarantulaTexture(), time, sun, 0xC8A0D8, 0xE8C8F0);
         } else if (SpaceRules.isOrbit(level)) {
             // La Lune, haute dans le ciel, puis la planète.
             disc(minecraft, moonTexture(), new Vector3f(-0.45F, 0.62F, -0.64F), 4.5F);
@@ -282,6 +285,27 @@ final class SkyBodies {
             kepler.upload();
         }
         return kepler;
+    }
+
+    /** Tarentule b vue d'orbite : le sol d'un monde sec, comme celui de Proxima b, viré au rose et au violet. */
+    private static DynamicTexture tarantulaTexture() {
+        if (tarantula == null) {
+            tarantula = texture("tarantula ground", GROUND, true);
+            NativeImage image = tarantula.getPixels();
+            paintGround(image, GROUND, 1600L, true);
+            for (int y = 0; y < GROUND; y++) {
+                for (int x = 0; x < GROUND; x++) {
+                    int argb = image.getPixel(x, y);
+                    int r = argb >> 16 & 0xFF;
+                    int g = argb >> 8 & 0xFF;
+                    int b = argb & 0xFF;
+                    int grey = (r + g + b) / 3;
+                    image.setPixel(x, y, 0xFF000000 | Math.min(255, grey + 40) << 16 | Math.max(0, grey - 10) << 8 | Math.min(255, grey + 30));
+                }
+            }
+            tarantula.upload();
+        }
+        return tarantula;
     }
 
     private static DynamicTexture trappistTexture() {

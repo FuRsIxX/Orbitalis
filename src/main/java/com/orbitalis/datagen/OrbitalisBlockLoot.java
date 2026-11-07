@@ -115,7 +115,8 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
                 ModBlocks.UMBRA_FERN.get(), ModBlocks.LANTERN_BULB.get(), ModBlocks.TRAPPIST_ROCK.get(), ModBlocks.TRAPPIST_SAND.get(),
                 ModBlocks.TRAPPIST_MOSS.get(), ModBlocks.SPIRE_REED.get(), ModBlocks.GLEAM_CUP.get(), ModBlocks.TIDE_GRASS.get(),
                 ModBlocks.KEPLER_ROCK.get(), ModBlocks.KEPLER_SOIL.get(), ModBlocks.KEPLER_TURF.get(), ModBlocks.BRONZE_FERN.get(),
-                ModBlocks.AMBER_TUFT.get())) {
+                ModBlocks.AMBER_TUFT.get(), ModBlocks.TARANTULA_ROCK.get(), ModBlocks.TARANTULA_DUST.get(), ModBlocks.TARANTULA_CRYSTAL.get(),
+                ModBlocks.GLOWTHREAD.get(), ModBlocks.ROSE_VEIL.get())) {
             dropSelf(block);
         }
         dropSelf(ModBlocks.EUROPA_ICE.get());

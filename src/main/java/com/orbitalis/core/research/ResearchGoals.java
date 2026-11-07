@@ -145,6 +145,7 @@ public final class ResearchGoals {
                 own(list, "first_proximawalk", Tier.MARS, ModBlocks.PROXIMA_MOSS, 2500);
                 own(list, "first_trappistwalk", Tier.MARS, ModBlocks.TRAPPIST_MOSS, 3000);
                 own(list, "first_keplerwalk", Tier.MARS, ModBlocks.KEPLER_TURF, 3500);
+                own(list, "first_tarantulawalk", Tier.MARS, ModBlocks.TARANTULA_CRYSTAL, 5000);
             }
             own(list, "first_drone_flight", Tier.MARS, ModItems.ROTOR_DRONE, com.orbitalis.phase3.exploration.RotorDroneEntity.FIRST_FLIGHT_POINTS);
             // Rangés par palier, sans changer l'ordre à l'intérieur de chacun.

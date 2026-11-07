@@ -63,7 +63,13 @@ public class PlanetParticle extends SingleQuadParticle {
     private static final int SPRITE_TRAPPIST_F = 7;
     private static final int SPRITE_TRAPPIST_G = 8;
     private static final int SPRITE_KEPLER_452B = 9;
-    private static final int SPRITES = 10;
+    private static final int SPRITE_MILKY_WAY = 10;
+    private static final int SPRITE_TARANTULA_NEBULA = 11;
+    private static final int SPRITE_TARANTULA_B = 12;
+    private static final int SPRITES = 13;
+    /** Notre Galaxie et la Tarentule, vues de Tarentule b : leur demi-largeur, en part de la distance d'affichage. */
+    private static final float MILKY_WAY_SIZE = 0.42F;
+    private static final float NEBULA_SIZE = 0.3F;
     /**
      * Les trois sœurs de TRAPPIST-1 e dans son ciel : leur image, leur direction (x vers l'est, y vers le haut, z vers le
      * sud) et leur demi-largeur. Elles sont si proches qu'elles s'y montrent grandes comme des lunes.
@@ -137,6 +143,19 @@ public class PlanetParticle extends SingleQuadParticle {
             anchor(camera);
             return;
         }
+        if (SpaceRules.isTarantula(level) && images != null) {
+            // Vue de Tarentule b, hors de notre Galaxie : elle remplit le ciel au nord, comme une immense spirale ; au sud, bas
+            // sur l'horizon, le grand nuage rose de la Tarentule. L'étoile, elle, est le soleil du jeu.
+            float distance = 0.6F * view;
+            setSprite(sprite(SPRITE_MILKY_WAY));
+            quadSize = MILKY_WAY_SIZE * view;
+            extractRotatedQuad(state, new Quaternionf(camera.rotation()), -0.18F * distance, 0.62F * distance, -0.76F * distance, partialTick);
+            setSprite(sprite(SPRITE_TARANTULA_NEBULA));
+            quadSize = NEBULA_SIZE * view;
+            extractRotatedQuad(state, new Quaternionf(camera.rotation()), 0.35F * distance, 0.3F * distance, 0.89F * distance, partialTick);
+            anchor(camera);
+            return;
+        }
         if (SpaceRules.isEuropa(level) && images != null) {
             // Vue d'Europe, Jupiter : un disque immense, bas sur l'horizon, toujours au même endroit du ciel.
             setSprite(sprite(SPRITE_JUPITER));
@@ -157,7 +176,8 @@ public class PlanetParticle extends SingleQuadParticle {
         // Sous l'orbite de Proxima, ce n'est pas la planète bleue, mais Proxima b.
         if (images != null) {
             setSprite(sprite(SpaceRules.isProximaOrbit(level) ? SPRITE_PROXIMA_B : SpaceRules.isTrappistOrbit(level) ? SPRITE_TRAPPIST_1E
-                    : SpaceRules.isKeplerOrbit(level) ? SPRITE_KEPLER_452B : SPRITE_PLANET));
+                    : SpaceRules.isKeplerOrbit(level) ? SPRITE_KEPLER_452B : SpaceRules.isTarantulaOrbit(level) ? SPRITE_TARANTULA_B
+                    : SPRITE_PLANET));
         }
         float turn = (level.getGameTime() % (long) TURN_TICKS + partialTick) / TURN_TICKS * (float) (Math.PI * 2);
         // Deux faces dos à dos : le disque se voit quel que soit le sens dans lequel le jeu dessine ses particules.
@@ -187,7 +207,7 @@ public class PlanetParticle extends SingleQuadParticle {
      * pack de shaders a pris la main sur le ciel.
      */
     private static boolean shown(net.minecraft.world.level.Level level) {
-        return SpaceRules.isProxima(level) || SpaceRules.isTrappist(level)
+        return SpaceRules.isProxima(level) || SpaceRules.isTrappist(level) || SpaceRules.isTarantula(level)
                 || SpaceRules.isVacuum(level) && com.orbitalis.client.SpaceSky.shadersActive();
     }
 

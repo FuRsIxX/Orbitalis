@@ -263,6 +263,13 @@ public class OrbitalisModelProvider extends ModelProvider {
         for (Block plant : List.of(ModBlocks.BRONZE_FERN.get(), ModBlocks.AMBER_TUFT.get())) {
             blockModels.createCrossBlockWithDefaultItem(plant, BlockModelGenerators.PlantType.NOT_TINTED);
         }
+        // Tarentule b : sa roche, sa poussière et son cristal sont des cubes ; sa flore est en croix.
+        for (Block block : List.of(ModBlocks.TARANTULA_ROCK.get(), ModBlocks.TARANTULA_DUST.get(), ModBlocks.TARANTULA_CRYSTAL.get())) {
+            blockModels.createTrivialCube(block);
+        }
+        for (Block plant : List.of(ModBlocks.GLOWTHREAD.get(), ModBlocks.ROSE_VEIL.get())) {
+            blockModels.createCrossBlockWithDefaultItem(plant, BlockModelGenerators.PlantType.NOT_TINTED);
+        }
         Block tide = ModBlocks.TIDE_GRASS.get();
         Identifier tideModel = new net.minecraft.client.data.models.model.ModelTemplate(
                 java.util.Optional.of(Identifier.withDefaultNamespace("block/template_seagrass")), java.util.Optional.empty(),

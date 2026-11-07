@@ -42,11 +42,13 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
  * quitte son berceau du chantier naval et réapparaît en orbite du monde choisi (voir {@link ShipDestination}), s'il a
  * été découvert à l'observatoire, avec tout ce qu'il contient et son équipage ; le saut retour le ramène à son berceau.
  * <p>
- * Un saut coûte {@link #JUMP_COST} matières exotiques au cœur de distorsion : un cœur plein fait l'aller et le retour.
+ * Un saut vers une étoile proche coûte {@link #JUMP_COST} matières exotiques au cœur de distorsion : un cœur plein fait
+ * l'aller et le retour. Un saut galactique en coûte davantage (voir {@link ShipDestination#cost()}) : il faut recharger le
+ * cœur sur place, avec la matière exotique emportée, pour revenir.
  * Après l'ordre de saut, un compte à rebours de {@link #COUNTDOWN} ticks laisse à l'équipage le temps d'embarquer.
  */
 public final class ShipJump {
-    /** Matières exotiques consommées par un saut. */
+    /** Matières exotiques consommées par un saut vers une étoile proche, le plus petit des sauts. */
     public static final int JUMP_COST = 4;
     /** Durée du compte à rebours, en ticks. */
     public static final int COUNTDOWN = 100;
@@ -121,7 +123,7 @@ public final class ShipJump {
         if (!systems.complete()) {
             return Hold.SYSTEMS;
         }
-        if (systems.charge() < JUMP_COST) {
+        if (systems.charge() < cost(level.getServer(), place, wanted, agency)) {
             return Hold.CHARGE;
         }
         if (place == Place.HOME && !SatelliteManager.of(level.getServer(), agency).isDiscovered(wanted.body())) {
@@ -133,6 +135,12 @@ public final class ShipJump {
             return Hold.BLOCKED;
         }
         return Hold.NONE;
+    }
+
+    /** Ce que coûte le saut : vers la destination voulue, depuis le berceau ; ou le retour depuis celle du voyage en cours. */
+    public static int cost(MinecraftServer server, Place place, ShipDestination wanted, String agency) {
+        ShipVoyages.Voyage voyage = ShipVoyages.of(server).of(agency);
+        return place == Place.AWAY && voyage != null ? voyage.destination().cost() : wanted.cost();
     }
 
     private static ServerLevel destination(MinecraftServer server, Place place, ShipDestination wanted) {
@@ -227,7 +235,8 @@ public final class ShipJump {
         ShipDestination wanted = ShipDestination.byIndex(destinationIndex);
         Hold blocker = blocker(level, origin, out, agency, systems, wanted);
         if (blocker != Hold.NONE) {
-            player.sendSystemMessage(holdMessage(blocker, systems, wanted).withStyle(ChatFormatting.GOLD), true);
+            player.sendSystemMessage(holdMessage(blocker, systems, wanted, cost(level.getServer(), place(level, origin, out, agency), wanted, agency))
+                    .withStyle(ChatFormatting.GOLD), true);
             return;
         }
         Place place = place(level, origin, out, agency);
@@ -242,8 +251,8 @@ public final class ShipJump {
     }
 
     /** Ce qui empêche le saut, en une phrase : la charge du cœur, ce qu'il faut, et le monde visé. */
-    public static net.minecraft.network.chat.MutableComponent holdMessage(Hold hold, ShipSystems systems, ShipDestination wanted) {
-        return Component.translatable(hold.key(), systems.charge(), JUMP_COST, Component.translatable(wanted.nameKey()));
+    public static net.minecraft.network.chat.MutableComponent holdMessage(Hold hold, ShipSystems systems, ShipDestination wanted, int cost) {
+        return Component.translatable(hold.key(), systems.charge(), cost, Component.translatable(wanted.nameKey()));
     }
 
     // ------------------------------------------------------------------
@@ -340,15 +349,17 @@ public final class ShipJump {
         List<ServerPlayer> crew = crew(level, pending.origin, pending.out);
         if (blocker != Hold.NONE) {
             for (ServerPlayer player : crew) {
-                title(player, Component.translatable("ship.orbitalis.jump.cancelled"), holdMessage(blocker, systems, wanted));
+                title(player, Component.translatable("ship.orbitalis.jump.cancelled"),
+                        holdMessage(blocker, systems, wanted, cost(server, place(level, pending.origin, pending.out, pending.agency), wanted, pending.agency)));
             }
             return;
         }
         Place place = pending.outbound != null ? Place.HOME : Place.AWAY;
+        int cost = cost(server, place, wanted, pending.agency);
         ServerLevel to = destination(server, place, wanted);
         BlockPos target = destinationOrigin(server, place, pending.agency);
         transfer(level, pending.origin, to, target, pending.out);
-        spendCharge(to, target, pending.out);
+        spendCharge(to, target, pending.out, cost);
         ShipVoyages voyages = ShipVoyages.of(server);
         if (pending.outbound != null) {
             voyages.depart(pending.agency, pending.origin, pending.out, pending.outbound);
@@ -404,13 +415,13 @@ public final class ShipJump {
     }
 
     /** Le cœur de distorsion arrivé à destination a dépensé de quoi faire ce saut. */
-    private static void spendCharge(ServerLevel level, BlockPos origin, Direction out) {
+    private static void spendCharge(ServerLevel level, BlockPos origin, Direction out, int cost) {
         for (ShipPlan.Piece piece : ShipPlan.pieces(out)) {
             if (piece.state().is(ModBlocks.WARP_CORE.get())) {
                 BlockPos pos = origin.offset(piece.offset());
                 BlockState state = level.getBlockState(pos);
                 if (state.hasProperty(WarpCoreBlock.CHARGE)) {
-                    int charge = Math.max(0, state.getValue(WarpCoreBlock.CHARGE) - JUMP_COST);
+                    int charge = Math.max(0, state.getValue(WarpCoreBlock.CHARGE) - cost);
                     level.setBlock(pos, state.setValue(WarpCoreBlock.CHARGE, charge), net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
                 }
             }
