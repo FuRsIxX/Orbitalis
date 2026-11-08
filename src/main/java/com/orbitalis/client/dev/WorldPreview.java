@@ -11,6 +11,7 @@ import com.orbitalis.phase1.spaceport.PadPlan;
 import com.orbitalis.Orbitalis;
 import com.orbitalis.core.creative.CreativeRockets;
 import com.orbitalis.core.registry.ModFluids;
+import com.orbitalis.core.registry.ModItems;
 import com.orbitalis.core.registry.ModEntities;
 import com.orbitalis.phase2.flight.CapsuleEntity;
 import com.orbitalis.phase2.station.StationManager;
@@ -1129,7 +1130,18 @@ public final class WorldPreview {
             net.minecraft.client.Minecraft.getInstance().gui.setScreen(new ItemSheetScreen(stacks));
         }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 20));
         // Les chapitres du manuel sur le voyage interstellaire, un par vue.
-        for (String id : java.util.List.of("shipyard", "ship_jump", "ship_ring", "shuttle", "exoplanets", "warp_probes")) {
+        // Les infobulles des pièces de fusée, sans Maj : la technologie, la ligne en clair, l'invite au détail.
+        SHOTS.add(new Shot("part_tooltips", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();
+            for (net.minecraft.world.level.ItemLike item : java.util.List.<net.minecraft.world.level.ItemLike>of(ModItems.KEROLOX_ENGINE.get(),
+                    ModItems.FUSION_ENGINE.get(), ModItems.ALUMINUM_LITHIUM_TANK.get(), ModItems.COMMUNICATION_SATELLITE.get(),
+                    ModItems.VACUUM_ENGINE.get(), ModItems.WEATHER_SATELLITE.get())) {
+                stacks.add(new net.minecraft.world.item.ItemStack(item));
+            }
+            net.minecraft.client.Minecraft.getInstance().gui.setScreen(new TooltipSheetScreen(stacks));
+        }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 20));
+        for (String id : java.util.List.of("shipyard", "ship_jump", "ship_ring", "shuttle", "exoplanets", "warp_probes", "launch", "satellites",
+                "methane")) {
             SHOTS.add(new Shot("guide_" + id, level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
                 java.util.List<com.orbitalis.core.guide.GuideChapter> all = com.orbitalis.core.guide.GuideChapters.ALL;
                 for (int i = 0; i < all.size(); i++) {

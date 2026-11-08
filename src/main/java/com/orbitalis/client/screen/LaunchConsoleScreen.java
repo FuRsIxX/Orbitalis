@@ -64,6 +64,8 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
     private static final int LINE_HEIGHT = 12;
     private static final int BUTTON_HEIGHT = 20;
     private static final int TAB_HEIGHT = 12;
+    /** Hauteur d'une ligne de poste, dans la fenêtre « Go / No-Go ». */
+    private static final int STATION_ROW = 11;
     private static final int LOG_LINES = 3;
     /** Intervalle entre deux demandes d'actualisation, en ticks : assez court pour suivre la montée en poussée. */
     private static final int REFRESH_TICKS = 4;
@@ -91,6 +93,8 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
     private float framePartial;
     private int lastMouseX;
     private int lastMouseY;
+    /** Le détail à montrer au survol, à cette image : le texte entier d'un libellé raccourci, ou la liste des voyants rouges. */
+    private List<Component> hoverDetail;
 
     /** Journal des événements, du plus ancien au plus récent. */
     private final Deque<Component> log = new ArrayDeque<>();
@@ -374,6 +378,7 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         lastMouseX = goWindow ? -1 : mouseX;
         lastMouseY = goWindow ? -1 : mouseY;
         actions.clear();
+        hoverDetail = null;
         // La vue suit la phase, tant que le joueur n'en a pas choisi une : la maquette au sol, la carte en vol.
         if (!viewChosen) {
             view = phase() == LaunchTableBlockEntity.Phase.FLIGHT ? 1 : 0;
@@ -394,6 +399,25 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
             lastMouseX = mouseX;
             lastMouseY = mouseY;
             extractGoWindow(graphics);
+        }
+        // Le troisième temps : le détail de ce qu'on survole, en entier.
+        if (hoverDetail != null && !hoverDetail.isEmpty()) {
+            List<net.minecraft.util.FormattedCharSequence> lines = new ArrayList<>();
+            for (Component line : hoverDetail) {
+                lines.addAll(font.split(line, 240));
+            }
+            graphics.setTooltipForNextFrame(font, lines, mouseX, mouseY);
+        }
+    }
+
+    /**
+     * Écrit un libellé dans sa largeur ; s'il a fallu le raccourcir, son texte entier se lit au survol.
+     */
+    private void fitted(GuiGraphicsExtractor graphics, String text, int x, int y, int w, int color) {
+        String shown = Ui.fit(font, text, w);
+        graphics.text(font, shown, x, y, color, false);
+        if (!shown.equals(text) && Ui.inside(lastMouseX, lastMouseY, x, y - 1, Math.max(1, font.width(shown)), 10)) {
+            hoverDetail = List.of(Component.literal(text));
         }
     }
 
@@ -418,6 +442,14 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         int pillLeft = left + panelWidth - 10 - Ui.pillWidth(font, phaseName);
         int clockWidth = font.width(clock) * 2;
         String name = title.getString();
+        // Quand le titre entier ne tient pas, le titre court passe avant le raccourci.
+        if (left + 10 + font.width(Component.literal(name).withStyle(ChatFormatting.BOLD)) + 10 + clockWidth > pillLeft - 10) {
+            String full = name;
+            name = Component.translatable("launch.orbitalis.console.title_short").getString();
+            if (full.equals(full.toUpperCase(Locale.ROOT))) {
+                name = name.toUpperCase(Locale.ROOT);
+            }
+        }
         while (name.length() > 1 && left + 10 + font.width(Component.literal(name).withStyle(ChatFormatting.BOLD)) + 10 + clockWidth > pillLeft - 10) {
             name = name.substring(0, name.length() - 2).stripTrailing() + "…";
         }
@@ -757,7 +789,11 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
     /** Le chargement des ergols, jauge par jauge, puis les voyants des systèmes du pas de tir. */
     private void extractLoads(GuiGraphicsExtractor graphics, LaunchTableBlockEntity table, int x, int y, int w, int h) {
         int bottom = y + h;
-        Ui.heading(graphics, font, Component.literal(Ui.fit(font, Component.translatable("launch.orbitalis.console.loads").getString().toUpperCase(Locale.ROOT), w)), x, y);
+        String loads = Component.translatable("launch.orbitalis.console.loads").getString().toUpperCase(Locale.ROOT);
+        if (font.width(loads) > w) {
+            loads = Component.translatable("launch.orbitalis.station.propellant").getString().toUpperCase(Locale.ROOT);
+        }
+        Ui.heading(graphics, font, Component.literal(Ui.fit(font, loads, w)), x, y);
         y += 12;
         if (!table.hasRocket()) {
             graphics.text(font, Ui.fit(font, Component.translatable("launch.orbitalis.console.no_rocket_pad").getString(), w), x, y, COLOR_OPTIONAL, false);
@@ -908,7 +944,23 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
                 facts.add(Component.translatable("launch.orbitalis.console.fuel_short").getString() + " " + status.fuelPercent() + " %");
             }
         }
-        graphics.text(font, Ui.fit(font, String.join("  ·  ", facts), lw), lx, y + 4, COLOR_TEXT, false);
+        String factsShown = "";
+        for (String fact : facts) {
+            String next = factsShown.isEmpty() ? fact : factsShown + "  ·  " + fact;
+            if (font.width(next) > lw) {
+                break;
+            }
+            factsShown = next;
+        }
+        String allFacts = String.join("  ·  ", facts);
+        if (factsShown.isEmpty()) {
+            fitted(graphics, allFacts, lx, y + 4, lw, COLOR_TEXT);
+        } else {
+            graphics.text(font, factsShown, lx, y + 4, COLOR_TEXT, false);
+            if (!factsShown.equals(allFacts) && Ui.inside(lastMouseX, lastMouseY, lx, y + 3, lw, 10)) {
+                hoverDetail = List.of(Component.literal(allFacts));
+            }
+        }
 
         // La frise du vol.
         int ty = y + h - 15;
@@ -1018,19 +1070,19 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         int stopWidth = Math.max(90, font.width(stop.getString().toUpperCase(Locale.ROOT)) + 16);
         int stopX = left + panelWidth - 6 - stopWidth;
         Component go = Component.translatable("launch.orbitalis.console.gonogo");
-        int goWidth = Math.max(110, font.width(go.getString().toUpperCase(Locale.ROOT)) + 26);
+        int goWidth = Math.max(96, font.width(go.getString().toUpperCase(Locale.ROOT)) + 26);
         int goX = stopX - 6 - goWidth;
         int logRight = goX - 6;
         Ui.card(graphics, left + 6, barTop, logRight - left - 6, BOTTOM_BAR - 6, false);
         int lineY = barTop + 5;
         if (log.isEmpty()) {
-            graphics.text(font, Ui.fit(font, lastResultText().getString(), logRight - left - 16), left + 11, lineY, COLOR_MUTED, false);
+            extractSummary(graphics, left + 6, barTop, logRight - left - 6, BOTTOM_BAR - 6);
         }
         int index = 0;
         for (Component entry : log) {
             // La ligne la plus récente est mise en valeur.
             boolean latest = ++index == log.size();
-            graphics.text(font, Ui.fit(font, entry.getString(), logRight - left - 16), left + 11, lineY, latest ? COLOR_TEXT : COLOR_MUTED, false);
+            fitted(graphics, entry.getString(), left + 11, lineY, logRight - left - 16, latest ? COLOR_TEXT : COLOR_MUTED);
             lineY += LINE_HEIGHT - 1;
         }
         // Le « Go / No-Go » : un voyant dit d'un coup d'œil si tout est prêt.
@@ -1040,6 +1092,61 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         }
         // L'arrêt : il coupe tout tant que la fusée est retenue.
         button(graphics, stop, stopX, buttonY, stopWidth, BUTTON_HEIGHT, countdown, countdown, COLOR_BAD, () -> send(LaunchCommandPayload.ABORT));
+    }
+
+    /**
+     * Le résumé, quand le journal est vide : une pastille de couleur et une phrase en clair, entière. Rien ne bloque :
+     * « prêt ». Un poste au rouge : ce qu'il lui faut, avec ce qu'il y a à faire ; au survol, tous les postes au rouge.
+     * Après un vol : son issue.
+     */
+    private void extractSummary(GuiGraphicsExtractor graphics, int x, int y, int w, int h) {
+        LaunchTableBlockEntity.Result[] results = LaunchTableBlockEntity.Result.values();
+        boolean afterFlight = results[Math.floorMod(status.result(), results.length)] != LaunchTableBlockEntity.Result.NONE;
+        List<Station> red = new ArrayList<>();
+        if (status.linked() && !afterFlight) {
+            for (Station station : stations()) {
+                if (station.relevant() && !station.go() && !station.key().equals("flight")) {
+                    red.add(station);
+                }
+            }
+        }
+        Component sentence;
+        int color;
+        if (afterFlight || !status.linked()) {
+            sentence = lastResultText();
+            color = COLOR_MUTED;
+        } else if (red.isEmpty()) {
+            sentence = Component.translatable("launch.orbitalis.console.go");
+            color = COLOR_OK;
+        } else {
+            Station first = red.get(0);
+            sentence = Component.translatable("launch.orbitalis.console.summary", Component.translatable("launch.orbitalis.station." + first.key()),
+                    Component.translatable("launch.orbitalis.station." + first.key() + ".desc"));
+            color = COLOR_BAD;
+        }
+        Ui.dot(graphics, x + 6, y + 6, color);
+        int lineY = y + 3;
+        List<String> lines = Ui.lines(font, sentence, w - 20, 4);
+        for (String line : lines) {
+            graphics.text(font, line, x + 13, lineY, color == COLOR_MUTED ? COLOR_MUTED : COLOR_TEXT, false);
+            lineY += 10;
+        }
+        if (red.size() > 1 || (!red.isEmpty() && font.split(sentence, w - 20).size() > lines.size())) {
+            String more = red.size() > 1 ? Component.translatable("launch.orbitalis.console.summary.more", red.size() - 1).getString() : "";
+            if (!more.isEmpty() && lines.size() < 4) {
+                graphics.text(font, more, x + 13, lineY, COLOR_MUTED, false);
+            }
+            if (Ui.inside(lastMouseX, lastMouseY, x, y, w, h)) {
+                List<Component> detail = new ArrayList<>();
+                detail.add(Component.translatable("launch.orbitalis.console.summary.title").withStyle(ChatFormatting.RED));
+                for (Station station : red) {
+                    detail.add(Component.literal("• ").append(Component.translatable("launch.orbitalis.station." + station.key()))
+                            .append(Component.literal(" — ")).append(Component.translatable("launch.orbitalis.station." + station.key() + ".desc")
+                                    .withStyle(ChatFormatting.GRAY)));
+                }
+                hoverDetail = detail;
+            }
+        }
     }
 
     /** Texte affiché quand le journal est vide : l'issue du dernier lancement, ou l'état d'attente. */
@@ -1119,13 +1226,13 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         // À gauche : les postes, un voyant chacun ; on en survole ou on en choisit un pour savoir ce qu'il lui faut.
         int lineY = y + 26;
         Ui.heading(graphics, font, Component.translatable("launch.orbitalis.console.go_window.stations"), x + 8, lineY);
-        lineY += 13;
+        lineY += 12;
         int shown = -1;
         int firstBad = -1;
         for (int i = 0; i < stations.size(); i++) {
             Station station = stations.get(i);
             int light = !station.relevant() ? COLOR_OPTIONAL : station.go() ? COLOR_OK : COLOR_BAD;
-            boolean over = Ui.inside(lastMouseX, lastMouseY, x + 4, lineY - 2, column + 6, LINE_HEIGHT);
+            boolean over = Ui.inside(lastMouseX, lastMouseY, x + 4, lineY - 2, column + 6, STATION_ROW);
             if (over) {
                 shown = i;
             }
@@ -1133,10 +1240,10 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
                 firstBad = i;
             }
             if (i == pickedStation) {
-                Ui.round(graphics, x + 4, lineY - 2, column + 6, LINE_HEIGHT, Ui.alpha(light, 0.16F));
-                Ui.frame(graphics, x + 4, lineY - 2, column + 6, LINE_HEIGHT, Ui.alpha(light, 0.6F));
+                Ui.round(graphics, x + 4, lineY - 2, column + 6, STATION_ROW, Ui.alpha(light, 0.16F));
+                Ui.frame(graphics, x + 4, lineY - 2, column + 6, STATION_ROW, Ui.alpha(light, 0.6F));
             } else if (over) {
-                Ui.round(graphics, x + 4, lineY - 2, column + 6, LINE_HEIGHT, Ui.SURFACE);
+                Ui.round(graphics, x + 4, lineY - 2, column + 6, STATION_ROW, Ui.SURFACE);
             }
             // Un poste au rouge palpite doucement.
             int dot = station.relevant() && !station.go() ? Ui.alpha(light, 0.6F + 0.4F * (float) Math.sin(age * 0.35 + i)) : light;
@@ -1148,11 +1255,11 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
             String name = Ui.fit(font, Component.translatable("launch.orbitalis.station." + station.key()).getString(), verdictX - (x + 18) - 3);
             graphics.text(font, name, x + 18, lineY, station.relevant() ? COLOR_TEXT : COLOR_MUTED, false);
             int index = i;
-            actions.add(new Action(x + 4, lineY - 2, column + 6, LINE_HEIGHT, () -> {
+            actions.add(new Action(x + 4, lineY - 2, column + 6, STATION_ROW, () -> {
                 Ui.click();
                 pickedStation = pickedStation == index ? -1 : index;
             }));
-            lineY += LINE_HEIGHT;
+            lineY += STATION_ROW;
         }
         // L'explication : le poste survolé, sinon celui qu'on a choisi, sinon le premier au rouge, sinon le directeur de vol.
         if (shown < 0) {
@@ -1160,12 +1267,16 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         }
         Station about = stations.get(shown);
         int aboutColor = !about.relevant() ? COLOR_OPTIONAL : about.go() ? COLOR_OK : COLOR_BAD;
-        List<String> lines = Ui.lines(font, Component.translatable(about.relevant() ? "launch.orbitalis.station." + about.key() + ".desc"
-                : "launch.orbitalis.station.na_desc"), column - 10, Math.max(1, Math.min(3, (y + h - 34 - (lineY + 4) - 8) / 10)));
-        lineY += 4;
-        int boxH = 8 + lines.size() * 10;
-        // Dans une petite fenêtre, l'explication passe avant les chiffres du complexe ; si elle ne tient pas, rien.
-        if (lineY + boxH <= y + h - 30) {
+        Component aboutText = Component.translatable(about.relevant() ? "launch.orbitalis.station." + about.key() + ".desc"
+                : "launch.orbitalis.station.na_desc");
+        List<String> lines = Ui.lines(font, aboutText, column - 10, Math.max(1, Math.min(3, (y + h - 28 - (lineY + 3) - 7) / 10)));
+        lineY += 3;
+        int boxH = 7 + lines.size() * 10;
+        // Dans une petite fenêtre, l'explication passe avant les chiffres du complexe ; ce qui n'y tient pas se lit au survol.
+        if (font.split(aboutText, column - 10).size() > lines.size() && Ui.inside(lastMouseX, lastMouseY, x + 6, lineY, column + 2, boxH)) {
+            hoverDetail = List.of(aboutText);
+        }
+        if (lineY + boxH <= y + h - 28) {
             Ui.round(graphics, x + 6, lineY, column + 2, boxH, Ui.alpha(aboutColor, 0.10F));
             graphics.fill(x + 6, lineY + 1, x + 8, lineY + boxH - 1, aboutColor);
             int textY = lineY + 4;
@@ -1189,7 +1300,7 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
             if (lineY + 9 > y + h - 30) {
                 break;
             }
-            graphics.text(font, Ui.fit(font, detail.getString(), column), x + 8, lineY, COLOR_MUTED, false);
+            fitted(graphics, detail.getString(), x + 8, lineY, column, COLOR_MUTED);
             lineY += LINE_HEIGHT - 1;
         }
 
@@ -1208,7 +1319,7 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         Component pollText = canPoll || poll.state() != SequencePanel.State.TODO ? poll.value()
                 : Component.translatable(!idle ? "launch.orbitalis.console.go_window.poll_flying"
                         : !status.hasRocket() ? "launch.orbitalis.console.go_window.poll_no_rocket" : "launch.orbitalis.console.go_window.poll_busy");
-        graphics.text(font, Ui.fit(font, pollText.getString(), column - 90), rx, ry + 3, pollColor, false);
+        fitted(graphics, pollText.getString(), rx, ry + 3, column - 90, pollColor);
         button(graphics, Component.translatable("launch.orbitalis.console.go_window.run_poll"), rx + column - 84, ry, 84, 14, canPoll, true, COLOR_ACCENT,
                 () -> sequence.send(LaunchStep.POLL));
         ry += 18;
@@ -1232,7 +1343,7 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
             int nameWidth = Math.min(font.width(name), room / 2);
             graphics.text(font, Ui.fit(font, name, nameWidth), rx, ry + 3, COLOR_TEXT, false);
             String valueShown = Ui.fit(font, value, room - nameWidth - 6);
-            graphics.text(font, valueShown, rx + room - font.width(valueShown), ry + 3, running ? COLOR_WARNING : COLOR_MUTED, false);
+            fitted(graphics, value, rx + room - font.width(valueShown), ry + 3, room - nameWidth - 6, running ? COLOR_WARNING : COLOR_MUTED);
             if (running) {
                 Ui.bar(graphics, rx, ry + 13, room, 1, status.busyPercent() / 100.0F, COLOR_WARNING);
             }
@@ -1246,8 +1357,8 @@ public class LaunchConsoleScreen extends Screen implements BlockScreen {
         Ui.hline(graphics, x + 1, y + h - 26, w - 2);
         Component close = Component.translatable("sequence.orbitalis.close");
         int closeWidth = Math.max(80, font.width(close.getString().toUpperCase(Locale.ROOT)) + 16);
-        graphics.text(font, Ui.fit(font, Component.translatable("launch.orbitalis.console.go_window.hint").getString(), w - closeWidth - 24), x + 8, y + h - 17,
-                COLOR_OPTIONAL, false);
+        fitted(graphics, Component.translatable("launch.orbitalis.console.go_window.hint").getString(), x + 8, y + h - 17, w - closeWidth - 24,
+                COLOR_OPTIONAL);
         button(graphics, close, x + w - 8 - closeWidth, y + h - 21, closeWidth, 16, true, false, COLOR_MUTED, () -> goWindow = false);
     }
 

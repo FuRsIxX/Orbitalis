@@ -6,6 +6,9 @@
 
 ## Changements
 - Établi de combinaison : les lignes des modules sont un peu plus serrées, pour que le septième tienne à l'écran.
+- **Centre de contrôle plus lisible** : en bas à gauche, une pastille et une phrase entière disent ce qui bloque et quoi faire (« Ergols au rouge. Les réservoirs doivent être pleins : ouvrez les vannes… ») ; au survol, la liste de tous les postes au rouge. Tout libellé raccourci se lit en entier au survol. Dans la fenêtre « Go / No-Go », l'explication du poste tient sur trois lignes au lieu d'une. Le titre passe à « Contrôle de mission » quand la place manque, et le titre du chargement à « Ergols ».
+- **Infobulles des pièces de fusée** : d'abord la technologie (● en vert si l'agence la maîtrise, ○ en rouge sinon), puis une ligne qui dit ce qu'est la pièce (ses ergols, son volume, le rôle du satellite) ; les chiffres (poussée, impulsion, masse, orbite…) s'affichent en tenant Maj.
+- **Manuel** : un premier paragraphe court est mis en avant comme « en bref », les listes ont des puces et les étapes numérotées leur numéro en couleur. Le texte des chapitres ne change pas.
 
 # Orbitalis — 0.11.1 (bêta)
 
@@ -192,6 +195,9 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 ## Changes
 - Suit workbench: module rows are a little tighter, so the seventh one fits on screen.
+- **Clearer mission control**: at the bottom left, a dot and a full sentence say what is blocking and what to do ("Propellant: no go. The tanks must be full: open the fill valves…"); on hover, the list of every station at no go. Any shortened label can be read in full on hover. In the Go / No-Go window, the station's explanation fits on three lines instead of one. The title becomes "Mission Control" when space runs out, and the loading heading "Propellant".
+- **Rocket part tooltips**: first the technology (● in green if the agency has it, ○ in red otherwise), then one line saying what the part is (its propellants, its volume, the satellite's role); the numbers (thrust, impulse, mass, orbit…) show while holding Shift.
+- **Guide**: a short first paragraph stands out as a summary, lists have bullets and numbered steps have their number in colour. Chapter texts are unchanged.
 
 # Orbitalis — 0.11.1 (beta)
 

@@ -415,6 +415,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("rocket.orbitalis.tooltip.volume", "Volume: %s m³");
         add("rocket.orbitalis.tooltip.mass", "Dry mass: %s kg");
         add("rocket.orbitalis.tooltip.research", "Technology: %s");
+        add("tooltip.orbitalis.shift_details", "Shift: specifications");
         add("guide.orbitalis.section.rockets", "ROCKETS");
         add("guide.orbitalis.rocket_stats.title", "Statistics");
         add("guide.orbitalis.rocket_stats.text", "Mass: the full rocket. Thrust: the first stage. TWR (thrust / weight): it must be above 1, or the rocket does not lift off. Delta-v: the speed it can gain; to raise it, use a better engine, lighter tanks or one more stage.\n\nBenchmarks: 1,700 m/s for space, 9,400 m/s for low orbit, 11,850 m/s for geostationary orbit.\n\nHydrogen is more efficient, but takes three times the room of RP-1.\n\nThe ion thruster and the solar sail only work in orbit. The nuclear thermal engine is for upper stages only.");
@@ -471,6 +472,10 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("launch.orbitalis.console.result.scrubbed", "Launch scrubbed");
         add("launch.orbitalis.console.go", "Go for launch");
         add("launch.orbitalis.console.no_go", "No go: fix the red lights");
+        add("launch.orbitalis.console.title_short", "Mission Control");
+        add("launch.orbitalis.console.summary", "%s: no go. %s");
+        add("launch.orbitalis.console.summary.more", "+%s more station(s) at no go");
+        add("launch.orbitalis.console.summary.title", "Stations at no go");
         add("sequence.orbitalis.step.throttle", "Throttle down");
         add("sequence.orbitalis.step.stage", "Separate the stage");
         add("sequence.orbitalis.step.fairing", "Jettison the fairing");
@@ -1151,7 +1156,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("sequence.orbitalis.step.test_arms.desc", "Swings the tower arms to check that they clear the rocket.");
         add("sequence.orbitalis.step.test_alarm.desc", "Sounds the pad alarm: sirens and beacons.");
         add("launch.orbitalis.console.go_window.count", "%s/%s green");
-        add("launch.orbitalis.console.go_window.hint", "Click a station to keep its explanation · Esc to close");
+        add("launch.orbitalis.console.go_window.hint", "Click a station to keep its explanation");
         add("launch.orbitalis.console.go_window.poll_no_rocket", "needs a rocket");
         add("launch.orbitalis.console.go_window.poll_busy", "an operation is running");
         add("launch.orbitalis.console.go_window.poll_flying", "already lit");
@@ -1206,7 +1211,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("display.orbitalis.lost", "LAUNCH PAD NOT FOUND");
         add("display.orbitalis.hint", "This screen only shows what's plugged into it. Place it against a launch console, a tracking station or a tank, connect it with a data cable (to a console or a launch pad's data port), or link it with a wireless module. Sneak and right-click to switch views.");
         add("display.orbitalis.linked", "%s×%s screen linked to the launch pad.");
-        add("launch.orbitalis.console.title_short", "MISSION CONTROL");
 
         // Pas de tir : ce qu'il reste à poser
         add("spaceport.orbitalis.table.rocket_too_tall", "Rocket too tall for this pad's tower: %s blocks, %s at most.");

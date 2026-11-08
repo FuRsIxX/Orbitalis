@@ -95,7 +95,14 @@ public class GuideScreen extends Screen {
     private int indexScroll;
 
     private GuideScene scene;
-    private List<FormattedCharSequence> textLines = List.of();
+    private List<TextLine> textLines = List.of();
+
+    /**
+     * Une ligne du texte d'un chapitre, prête à écrire : son retrait, sa couleur, et ce qui la marque à gauche (une puce
+     * en tête d'un élément de liste, la barre de l'« en bref » pour le premier paragraphe).
+     */
+    private record TextLine(FormattedCharSequence text, int indent, int color, boolean bullet, boolean lead) {
+    }
     private int textScroll;
     /** Vrai si le volet des notes est ouvert à côté de la démonstration. */
     private boolean notes;
@@ -236,8 +243,43 @@ public class GuideScreen extends Screen {
     /** Découpe le texte du chapitre selon la place qu'il a. */
     private void layoutText() {
         GuideChapter chapter = GuideChapters.ALL.get(chapterIndex);
-        textLines = font.split(Component.translatable(chapter.textKey()), textWidth() - 24);
+        textLines = layout(Component.translatable(chapter.textKey()).getString(), textWidth() - 24);
         textScroll = Mth.clamp(textScroll, 0, maxTextScroll());
+    }
+
+    /**
+     * Met en forme le texte d'un chapitre, pour qu'il se lise d'un coup d'œil : un premier paragraphe d'une seule venue
+     * est l'« en bref », plus clair et souligné d'une barre ; les éléments de liste (« - ») ont une puce ; les étapes numérotées (« 1. »)
+     * ont leur numéro en couleur. Le texte lui-même ne change pas.
+     */
+    private List<TextLine> layout(String text, int width) {
+        List<TextLine> lines = new java.util.ArrayList<>();
+        String[] paragraphs = text.split("\n\n");
+        // L'« en bref » : un premier paragraphe d'une seule venue, qui n'est ni une liste ni une étape numérotée.
+        boolean withLead = paragraphs.length > 1 && !paragraphs[0].contains("\n") && !paragraphs[0].matches("^\\d+\\..*");
+        for (int p = 0; p < paragraphs.length; p++) {
+            boolean lead = withLead && p == 0;
+            int color = lead ? 0xFFFFFFFF : 0xFFD5DAE0;
+            for (String row : paragraphs[p].split("\n")) {
+                boolean bullet = row.startsWith("- ");
+                String body = bullet ? row.substring(2) : row;
+                int indent = (lead ? 6 : 0) + (bullet ? 8 : 0);
+                Component shown = Component.literal(body);
+                java.util.regex.Matcher numbered = java.util.regex.Pattern.compile("^(\\d+\\.)( .*)$").matcher(body);
+                if (numbered.matches()) {
+                    shown = Component.empty().append(Component.literal(numbered.group(1)).withStyle(style -> style.withColor(Ui.ACCENT)))
+                            .append(Component.literal(numbered.group(2)));
+                }
+                List<FormattedCharSequence> split = font.split(shown, Math.max(40, width - indent));
+                for (int k = 0; k < split.size(); k++) {
+                    lines.add(new TextLine(split.get(k), indent, color, bullet && k == 0, lead));
+                }
+            }
+            if (p < paragraphs.length - 1) {
+                lines.add(new TextLine(FormattedCharSequence.EMPTY, 0, color, false, false));
+            }
+        }
+        return lines;
     }
 
     private int textTop() {
@@ -665,7 +707,16 @@ public class GuideScreen extends Screen {
         int y = textTop();
         int visible = textVisibleLines();
         for (int i = 0; i < visible && i + textScroll < textLines.size(); i++) {
-            graphics.text(font, textLines.get(i + textScroll), x + 12, y + i * LINE_HEIGHT, 0xFFD5DAE0, false);
+            TextLine line = textLines.get(i + textScroll);
+            int lineY = y + i * LINE_HEIGHT;
+            if (line.lead()) {
+                graphics.fill(x + 12, lineY - 2, x + 14, lineY + LINE_HEIGHT - 2, Ui.ACCENT);
+            }
+            if (line.bullet()) {
+                int bx = x + 12 + line.indent() - 6;
+                graphics.fill(bx, lineY + 3, bx + 3, lineY + 6, Ui.ACCENT);
+            }
+            graphics.text(font, line.text(), x + 12 + line.indent(), lineY, line.color(), false);
         }
         if (maxTextScroll() > 0) {
             int track = visible * LINE_HEIGHT;

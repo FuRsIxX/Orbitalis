@@ -415,6 +415,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("rocket.orbitalis.tooltip.volume", "Volume : %s m³");
         add("rocket.orbitalis.tooltip.mass", "Masse à vide : %s kg");
         add("rocket.orbitalis.tooltip.research", "Technologie : %s");
+        add("tooltip.orbitalis.shift_details", "Maj : caractéristiques");
         add("guide.orbitalis.section.rockets", "FUSÉES");
         add("guide.orbitalis.rocket_stats.title", "Statistiques");
         add("guide.orbitalis.rocket_stats.text", "Masse : la fusée pleine. Poussée : le premier étage. TWR (poussée / poids) : il doit dépasser 1, sinon la fusée ne décolle pas. Delta-v : la vitesse qu'elle peut gagner ; pour l'augmenter, un meilleur moteur, des réservoirs plus légers ou un étage de plus.\n\nRepères : 1 700 m/s pour l'espace, 9 400 m/s pour l'orbite basse, 11 850 m/s pour l'orbite géostationnaire.\n\nL'hydrogène est plus efficace, mais il prend trois fois plus de place que le RP-1.\n\nLe propulseur ionique et la voile solaire n'agissent qu'en orbite. Le moteur nucléaire thermique ne sert qu'aux étages supérieurs.");
@@ -471,6 +472,10 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("launch.orbitalis.console.result.scrubbed", "Lancement reporté");
         add("launch.orbitalis.console.go", "Prêt pour le lancement");
         add("launch.orbitalis.console.no_go", "Lancement impossible : corrigez les voyants rouges");
+        add("launch.orbitalis.console.title_short", "Contrôle de mission");
+        add("launch.orbitalis.console.summary", "%s au rouge. %s");
+        add("launch.orbitalis.console.summary.more", "+%s autre(s) poste(s) au rouge");
+        add("launch.orbitalis.console.summary.title", "Postes au rouge");
         add("sequence.orbitalis.step.throttle", "Réduire les gaz");
         add("sequence.orbitalis.step.stage", "Séparer l'étage");
         add("sequence.orbitalis.step.fairing", "Larguer la coiffe");
@@ -1151,7 +1156,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("sequence.orbitalis.step.test_arms.desc", "Fait pivoter les bras de la tour, pour vérifier qu'ils s'écartent bien.");
         add("sequence.orbitalis.step.test_alarm.desc", "Fait retentir l'alarme du pas de tir : sirènes et gyrophares.");
         add("launch.orbitalis.console.go_window.count", "%s/%s au vert");
-        add("launch.orbitalis.console.go_window.hint", "Cliquez sur un poste pour garder son explication · Échap pour fermer");
+        add("launch.orbitalis.console.go_window.hint", "Cliquez sur un poste pour garder son explication");
         add("launch.orbitalis.console.go_window.poll_no_rocket", "il faut une fusée");
         add("launch.orbitalis.console.go_window.poll_busy", "une opération est en cours");
         add("launch.orbitalis.console.go_window.poll_flying", "déjà allumée");
@@ -1206,7 +1211,6 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("display.orbitalis.lost", "PAS DE TIR INTROUVABLE");
         add("display.orbitalis.hint", "Cet écran n'affiche que ce qu'on lui branche. Posez-le contre un pupitre de lancement, une station de poursuite ou un réservoir, reliez-le avec un câble de données (à un pupitre ou au port de données d'un pas de tir), ou avec un module sans fil. Clic droit accroupi pour changer d'affichage.");
         add("display.orbitalis.linked", "Écran de %s×%s relié au pas de tir.");
-        add("launch.orbitalis.console.title_short", "CONTRÔLE MISSION");
 
         // Pas de tir : ce qu'il reste à poser
         add("spaceport.orbitalis.table.rocket_too_tall", "Fusée trop haute pour la tour de ce pas de tir : %s blocs, pour %s au plus.");
