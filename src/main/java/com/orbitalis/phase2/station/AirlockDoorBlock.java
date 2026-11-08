@@ -45,10 +45,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Porte de sas : deux blocs de haut, un cadre mince au milieu de la paroi, et une écoutille d'un seul tenant, à hublot,
  * qui remonte dans le caisson du linteau.
  * <p>
- * Elle s'ouvre d'elle-même quand on s'avance vers elle en la regardant, ou qu'on se tient dans le passage : le sas se
- * met d'abord à niveau (on entend l'air s'échapper ou revenir, le voyant passe à l'ambre), puis l'écoutille remonte en
- * trois temps et le voyant passe au vert. Une fois le passage libre, elle redescend. Un clic droit la ferme tout de
- * suite (ou l'ouvre, si elle est fermée). Fermée, elle est étanche, voyant rouge. Chaque position de l'écoutille est un
+ * Elle s'ouvre et se ferme d'un clic droit, jamais d'elle-même. À l'ouverture, le sas se met d'abord à niveau (on
+ * entend l'air s'échapper ou revenir, le voyant passe à l'ambre), puis l'écoutille remonte en trois temps et le voyant
+ * passe au vert. Ouverte, un clic droit dans l'ouverture vide suffit à la refermer : on passe au travers, mais on peut
+ * la viser. Fermée, elle est étanche, voyant rouge. Chaque position de l'écoutille est un
  * vrai modèle de bloc : rien n'est dessiné en mouvement.
  * <p>
  * Les portes d'un même sas sont verrouillées entre elles : tant que l'une est ouverte ou en cycle, les autres restent
@@ -118,8 +118,23 @@ public class AirlockDoorBlock extends HorizontalDirectionalBlock implements Enti
     // Formes : le cadre, le seuil ou le caisson, et ce qui reste de l'écoutille dans la case
     // ------------------------------------------------------------------
 
+    /**
+     * Ce qu'on vise : le cadre et l'écoutille, et, porte ouverte, l'ouverture elle-même, pour qu'un clic droit dans le
+     * vide du passage referme la porte.
+     */
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        VoxelShape solid = solidShape(state);
+        if (state.getValue(PHASE) != Phase.OPEN) {
+            return solid;
+        }
+        boolean alongX = state.getValue(FACING).getAxis() == Direction.Axis.Z;
+        return SHAPES.computeIfAbsent("aim/" + alongX + "/" + state.getValue(HALF) + "/" + state.getValue(STEP),
+                key -> Shapes.or(solid, box(alongX, 3, 0, 6.5, 13, 16, 9.5)));
+    }
+
+    /** Le cadre, le seuil ou le caisson, et ce qui reste de l'écoutille dans la case : ce qui arrête. */
+    private static VoxelShape solidShape(BlockState state) {
         boolean alongX = state.getValue(FACING).getAxis() == Direction.Axis.Z;
         boolean lower = state.getValue(HALF) == DoubleBlockHalf.LOWER;
         int step = state.getValue(STEP);
@@ -132,7 +147,7 @@ public class AirlockDoorBlock extends HorizontalDirectionalBlock implements Enti
      */
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(PHASE) == Phase.OPEN && state.getValue(STEP) == MAX_STEP ? Shapes.empty() : getShape(state, level, pos, context);
+        return state.getValue(PHASE) == Phase.OPEN && state.getValue(STEP) == MAX_STEP ? Shapes.empty() : solidShape(state);
     }
 
     private static VoxelShape shape(boolean alongX, boolean lower, int step) {
@@ -209,7 +224,7 @@ public class AirlockDoorBlock extends HorizontalDirectionalBlock implements Enti
         return state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos;
     }
 
-    /** Un clic droit : la porte ouverte se ferme tout de suite, la porte fermée s'ouvre. */
+    /** Un clic droit, sur la porte ou dans son ouverture : la porte ouverte se ferme tout de suite, la porte fermée s'ouvre. */
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level instanceof ServerLevel serverLevel) {
@@ -241,14 +256,14 @@ public class AirlockDoorBlock extends HorizontalDirectionalBlock implements Enti
         return problem;
     }
 
-    /** Tient la porte ouverte (elle ne se refermera pas d'elle-même), ou la rend à son automatisme. */
+    /** Marque la porte comme tenue ouverte par le code (essais, aperçus), ou la rend à la main des joueurs. */
     public static void hold(Level level, BlockPos lower, boolean held) {
         if (level.getBlockEntity(lower) instanceof AirlockDoorBlockEntity door) {
             door.setHeld(held);
         }
     }
 
-    /** Ouvre ou ferme la porte, comme le fait la porte d'elle-même. */
+    /** Ouvre ou ferme la porte. */
     static Component operate(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         if (!(state.getBlock() instanceof AirlockDoorBlock)) {

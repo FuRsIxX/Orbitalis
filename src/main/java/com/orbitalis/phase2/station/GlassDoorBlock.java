@@ -41,7 +41,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Porte vitrée coulissante, comme à l'entrée d'un supermarché : deux blocs de large et deux de haut, un battant de
  * verre par colonne, dans un mince cadre d'aluminium. À l'ouverture, les deux battants s'écartent chacun de son côté
  * et glissent dans les parois voisines. Elle s'ouvre et se ferme comme une porte du jeu : d'un clic droit, ou par un
- * signal de redstone.
+ * signal de redstone. Ouverte, un clic droit dans l'ouverture vide la referme.
  * <p>
  * On la pose depuis la colonne de gauche (vue de face) : la colonne de droite se met à droite du joueur. Le modèle
  * du bloc ne porte que le rail et le linteau ; les battants sont dessinés par le rendu de la porte.
@@ -54,11 +54,9 @@ public class GlassDoorBlock extends HorizontalDirectionalBlock implements Entity
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    // Fermée : le battant, au milieu de l'épaisseur du bloc. Ouverte : le rail du bas, le linteau du haut.
+    // Le plan du battant, au milieu de l'épaisseur du bloc ; ouverte, seul le linteau du haut arrête.
     private static final VoxelShape CLOSED_X = Block.box(0, 0, 6.5, 16, 16, 9.5);
     private static final VoxelShape CLOSED_Z = Block.box(6.5, 0, 0, 9.5, 16, 16);
-    private static final VoxelShape SILL_X = Block.box(0, 0, 6.5, 16, 0.5, 9.5);
-    private static final VoxelShape SILL_Z = Block.box(6.5, 0, 0, 9.5, 0.5, 16);
     private static final VoxelShape HEADER_X = Block.box(0, 14, 5.5, 16, 16, 10.5);
     private static final VoxelShape HEADER_Z = Block.box(5.5, 14, 0, 10.5, 16, 16);
 
@@ -95,26 +93,25 @@ public class GlassDoorBlock extends HorizontalDirectionalBlock implements Entity
         return state.getValue(RIGHT) ? lower.relative(toRight(state.getValue(FACING)).getOpposite()) : lower;
     }
 
+    /**
+     * Ce qu'on vise : le plan des battants, même porte ouverte. Ouverte, on passe au travers, mais un clic droit dans
+     * l'ouverture vide la referme.
+     */
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         // Les battants courent en travers de la direction de la porte.
         boolean alongX = state.getValue(FACING).getAxis() == Direction.Axis.Z;
-        if (!state.getValue(OPEN)) {
-            return alongX ? CLOSED_X : CLOSED_Z;
-        }
-        if (state.getValue(HALF) == DoubleBlockHalf.UPPER) {
-            return alongX ? HEADER_X : HEADER_Z;
-        }
-        return alongX ? SILL_X : SILL_Z;
+        return alongX ? CLOSED_X : CLOSED_Z;
     }
 
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        boolean alongX = state.getValue(FACING).getAxis() == Direction.Axis.Z;
         if (!state.getValue(OPEN)) {
-            return getShape(state, level, pos, context);
+            return alongX ? CLOSED_X : CLOSED_Z;
         }
         // Ouverte, on passe sans buter sur le rail ; le linteau reste au-dessus des têtes.
-        return state.getValue(HALF) == DoubleBlockHalf.UPPER ? getShape(state, level, pos, context) : Shapes.empty();
+        return state.getValue(HALF) == DoubleBlockHalf.UPPER ? (alongX ? HEADER_X : HEADER_Z) : Shapes.empty();
     }
 
     // ------------------------------------------------------------------
