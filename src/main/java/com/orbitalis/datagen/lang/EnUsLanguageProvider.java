@@ -2460,7 +2460,9 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("exploration.orbitalis.isru.lake", "%s lake blocks in reach");
         add("exploration.orbitalis.isru.no_lake", "%s: no methane lake in reach. Place it at the edge of a lake, or at most four blocks above.");
         add("guide.orbitalis.methane.title", "Methane");
-        add("guide.orbitalis.methane.text", "Methalox (liquid methane and oxygen) needs the \"Methalox Engines\" technology.\n\nThe Sabatier reactor makes methane from coal and hydrogen gas, and the liquefier turns it into a liquid. On Titan, the ice drill pumps the methane lakes directly.\n\nAt the launch pad, you need a port set to methane, as well as oxygen.");
+        add("guide.orbitalis.methane.text", "Methalox (liquid methane and oxygen) needs the \"Methalox Engines\" technology.\n\nThe Sabatier reactor makes methane from coal and hydrogen gas, and the liquefier turns it into a liquid. On Titan, the ice drill pumps the methane lakes directly.\n\nAt the launch pad, you need a port set to methane, as well as oxygen.\n\nOn Mars, the Sabatier reactor takes its carbon from the carbon dioxide in the air: it only needs hydrogen.");
+        add("gui.orbitalis.sabatier.mars", "Carbon drawn from the Martian air");
+        add("gui.orbitalis.sabatier.mars.desc", "On Mars, the reactor takes carbon dioxide from the air: no coal needed.");
         add("item.orbitalis.rotor_drone", "Rotor Drone");
         add("entity.orbitalis.rotor_drone", "Rotor Drone");
         add("block.orbitalis.rotor_drone_model", "Rotor Drone (model)");

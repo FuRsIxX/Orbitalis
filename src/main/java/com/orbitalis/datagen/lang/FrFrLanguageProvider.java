@@ -2460,7 +2460,9 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("exploration.orbitalis.isru.lake", "%s blocs de lac à portée");
         add("exploration.orbitalis.isru.no_lake", "%s : pas de lac de méthane à portée. Posez-la au bord d'un lac, ou au plus quatre blocs au-dessus.");
         add("guide.orbitalis.methane.title", "Le méthane");
-        add("guide.orbitalis.methane.text", "Le méthalox (méthane et oxygène liquides) demande la technologie « Moteurs méthane / oxygène ».\n\nLe réacteur de Sabatier fait du méthane avec du charbon et de l'hydrogène gazeux, et le liquéfacteur le rend liquide. Sur Titan, la foreuse à glace pompe directement les lacs de méthane.\n\nAu pas de tir, il faut un port réglé sur le méthane, en plus de l'oxygène.");
+        add("guide.orbitalis.methane.text", "Le méthalox (méthane et oxygène liquides) demande la technologie « Moteurs méthane / oxygène ».\n\nLe réacteur de Sabatier fait du méthane avec du charbon et de l'hydrogène gazeux, et le liquéfacteur le rend liquide. Sur Titan, la foreuse à glace pompe directement les lacs de méthane.\n\nAu pas de tir, il faut un port réglé sur le méthane, en plus de l'oxygène.\n\nSur Mars, le réacteur de Sabatier prend son carbone dans le gaz carbonique de l'air : il ne lui faut que de l'hydrogène.");
+        add("gui.orbitalis.sabatier.mars", "Carbone tiré de l'air martien");
+        add("gui.orbitalis.sabatier.mars.desc", "Sur Mars, le réacteur prend le gaz carbonique de l'air : pas besoin de charbon.");
         add("item.orbitalis.rotor_drone", "Drone volant");
         add("entity.orbitalis.rotor_drone", "Drone volant");
         add("block.orbitalis.rotor_drone_model", "Drone volant (modèle)");

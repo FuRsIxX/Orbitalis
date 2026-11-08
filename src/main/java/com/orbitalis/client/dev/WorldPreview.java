@@ -2097,6 +2097,36 @@ public final class WorldPreview {
         SHOTS.add(new Shot("mars_landed", null, 6.5, 2.2, 6.5, 135.0F, 8.0F, 260));
         SHOTS.add(new Shot("mars_landscape", null, 0.5, 14.0, 0.5, 40.0F, 12.0F, 20));
         SHOTS.add(new Shot("mars_craters", null, 0.5, 50.0, 0.5, 220.0F, 45.0F, 60));
+        // Le méthane martien : un réacteur de Sabatier posé sur Mars, sans charbon, de l'hydrogène au-dessus et du courant
+        // à côté ; il prend son carbone dans l'air. Puis son écran, la case du charbon marquée « CO₂ ».
+        SHOTS.add(new Shot("mars_sabatier", level -> {
+            ServerLevel mars = level.getServer().getLevel(SpaceRules.MARS);
+            if (mars != null) {
+                BlockPos reactor = new BlockPos(origin.getX() + 3, (int) marsGround(level), origin.getZ());
+                mars.setBlockAndUpdate(reactor.below(), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+                mars.setBlockAndUpdate(reactor, ModBlocks.SABATIER_REACTOR.get().defaultBlockState());
+                mars.setBlockAndUpdate(reactor.above(), ModBlocks.CREATIVE_TANKS.stream()
+                        .filter(tank -> tank.getId().getPath().equals("creative_tank_hydrogen")).findFirst().orElseThrow().get().defaultBlockState());
+                mars.setBlockAndUpdate(reactor.north(), ModBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState());
+            }
+        }, 0.5, 1.0, 0.5, -90.0F, 20.0F, 200));
+        SHOTS.add(new Shot("mars_sabatier_screen", level -> {
+            ServerLevel mars = level.getServer().getLevel(SpaceRules.MARS);
+            BlockPos reactor = new BlockPos(origin.getX() + 3, (int) marsGround(level), origin.getZ());
+            if (mars != null && mars.getBlockEntity(reactor) instanceof com.orbitalis.phase1.fuel.FluidMachineBlockEntity machine) {
+                com.orbitalis.Orbitalis.LOGGER.info("APERCU Sabatier martien : carbone de l'air {}, charbon {}, entrée {}, méthane {}, eau {}",
+                        machine.carbonFromAir(), machine.getInventory().getStack(0), machine.getTanks().getFluid(0).getAmount(),
+                        machine.getTanks().getFluid(1).getAmount(), machine.getTanks().getFluid(2).getAmount());
+            }
+            Minecraft minecraft = Minecraft.getInstance();
+            minecraft.execute(() -> {
+                if (minecraft.player != null && minecraft.gameMode != null) {
+                    minecraft.gameMode.useItemOn(minecraft.player, net.minecraft.world.InteractionHand.MAIN_HAND,
+                            new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(reactor), Direction.WEST, reactor, false));
+                }
+            });
+        }, 0.5, 1.0, 0.5, -90.0F, 20.0F, 40));
+        SHOTS.add(new Shot("mars_sabatier_closed", level -> closeScreen(), 0.5, 1.0, 0.5, -90.0F, 20.0F, 6));
         // Titan : le vaisseau titanien sous ses parachutes, puis posé ; les dunes de tholines et les lacs de méthane.
         SHOTS.add(new Shot("titan_chutes", level -> {
             ServerLevel titan = level.getServer().getLevel(SpaceRules.TITAN);

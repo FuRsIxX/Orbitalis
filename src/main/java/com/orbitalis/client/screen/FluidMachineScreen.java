@@ -46,6 +46,18 @@ public class FluidMachineScreen extends MachineScreen<FluidMachineMenu> {
         for (int tank = 1; tank <= menu.getLayout().outputCount(); tank++) {
             extractPurgeButton(graphics, tank, overPurge(tank, mouseX, mouseY));
         }
+        // Sur Mars, la case du charbon reste vide : « CO₂ » y dit d'où vient le carbone.
+        if (carbonFromAir() && menu.slots.get(0).getItem().isEmpty()) {
+            var slot = menu.slots.get(0);
+            String label = "CO₂";
+            graphics.text(font, label, leftPos + slot.x + 8 - font.width(label) / 2, topPos + slot.y + 4, Ui.ACCENT, false);
+        }
+    }
+
+    /** Vrai pour un réacteur de Sabatier ouvert sur Mars : il prend son carbone dans l'air (voir la machine). */
+    private boolean carbonFromAir() {
+        return menu.getLayout() == FluidMachineLayout.SABATIER_REACTOR && minecraft != null && minecraft.level != null
+                && com.orbitalis.phase2.survival.SpaceRules.isMars(minecraft.level);
     }
 
     /**
@@ -100,6 +112,11 @@ public class FluidMachineScreen extends MachineScreen<FluidMachineMenu> {
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
         FluidMachineLayout layout = menu.getLayout();
+        var slot = menu.slots.get(0);
+        if (carbonFromAir() && !slot.hasItem() && menu.getCarried().isEmpty() && isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
+            graphics.setComponentTooltipForNextFrame(font, java.util.List.of(Component.translatable("gui.orbitalis.sabatier.mars"),
+                    Component.translatable("gui.orbitalis.sabatier.mars.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+        }
         if (layout.hasFluidInput()) {
             extractGaugeTooltip(graphics, INPUT_GAUGE, 0, mouseX, mouseY);
         }

@@ -287,7 +287,18 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
     }
 
     private FluidRecipeInput createInput() {
-        return new FluidRecipeInput(inventory.getStack(0), tanks.getFluid(INPUT_TANK));
+        // Sur Mars, le carbone vient de l'air : ce que présente la machine à ses recettes tient lieu du charbon.
+        ItemStack item = carbonFromAir() ? new ItemStack(net.minecraft.world.item.Items.CHARCOAL) : inventory.getStack(0);
+        return new FluidRecipeInput(item, tanks.getFluid(INPUT_TANK));
+    }
+
+    /**
+     * Vrai pour un réacteur de Sabatier posé sur Mars : il prend son carbone dans le gaz carbonique de l'air martien,
+     * comme le feraient les usines de méthane d'une base martienne, au lieu de brûler du charbon. Le charbon qu'on y met
+     * n'est pas consommé.
+     */
+    public boolean carbonFromAir() {
+        return layout == FluidMachineLayout.SABATIER_REACTOR && level != null && com.orbitalis.phase2.survival.SpaceRules.isMars(level);
     }
 
     /** Vrai si chaque réservoir de sortie peut recevoir le fluide que la recette lui destine. */
@@ -306,7 +317,7 @@ public class FluidMachineBlockEntity extends MachineBlockEntity {
 
     /** Consomme les entrées et ajoute les fluides produits dans les réservoirs de sortie. */
     private void craft(FluidRecipe recipe) {
-        recipe.itemInput().ifPresent(ingredient -> {
+        recipe.itemInput().filter(ingredient -> !carbonFromAir()).ifPresent(ingredient -> {
             ItemStack stack = inventory.getStack(0);
             stack.shrink(ingredient.count());
             inventory.setStack(0, stack);
