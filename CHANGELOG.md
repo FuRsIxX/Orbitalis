@@ -1,4 +1,6 @@
-# Orbitalis — prochaine version
+# Orbitalis — 0.11.1 (bêta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
 
 ## Corrections
 - Kepler-452b : son relief est plus bas, comme le veut sa pesanteur (des collines de 20 à 40 blocs au lieu de montagnes) ; vue d'orbite, ses terres ont leurs nuances (olive, bronze, ambre, reliefs gris) au lieu d'un kaki uniforme. Les régions de Kepler-452b déjà parcourues gardent leur ancien relief.
@@ -173,7 +175,9 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 
 ---
 
-# Orbitalis — next version
+# Orbitalis — 0.11.1 (beta)
+
+*Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommended*
 
 ## Fixes
 - Kepler-452b: its relief is lower, as its gravity calls for (hills of 20 to 40 blocks instead of mountains); seen from orbit, its lands have their shades (olive, bronze, amber, grey highlands) instead of a flat khaki. Areas of Kepler-452b already explored keep their old relief.
