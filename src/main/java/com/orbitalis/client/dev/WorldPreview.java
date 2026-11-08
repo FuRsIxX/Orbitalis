@@ -1175,6 +1175,7 @@ public final class WorldPreview {
             menu.getSlot(2).set(new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.ADVANCED_SPACE_LEGGINGS.get()));
             inventory.setItem(9, new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.SUIT_MODULE_SENSOR.get()));
             inventory.setItem(10, new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.SUIT_MODULE_THRUSTERS.get()));
+            inventory.setItem(11, new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.SUIT_MODULE_UPLINK.get()));
             minecraft.gui.setScreen(new com.orbitalis.client.screen.SuitWorkbenchScreen(menu, inventory,
                     net.minecraft.network.chat.Component.translatable("container.orbitalis.suit_workbench")));
         }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 20));
@@ -1559,6 +1560,33 @@ public final class WorldPreview {
             }
         }, 24.0, 2.0, 8.0, 0.0F, 0.0F, 140));
         SHOTS.add(new Shot("atlas_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            atlasPreview = null;
+            net.minecraft.client.Minecraft.getInstance().gui.setScreen(null);
+        }), 24.0, 2.0, 8.0, 0.0F, 0.0F, 10));
+        // La liaison satellite du casque : d'abord sans le module (refus au-dessus de la barre), puis casque équipé,
+        // mains vides, la touche de l'atlas ouvre la carte relayée par satellite.
+        SHOTS.add(new Shot("uplink_refused", level -> {
+            for (ServerPlayer player : level.players()) {
+                player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.ItemStack.EMPTY);
+                player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, net.minecraft.world.item.ItemStack.EMPTY);
+                com.orbitalis.core.atlas.AtlasAccess.openByUplink(player);
+            }
+        }, 24.0, 2.0, 8.0, 0.0F, 0.0F, 20));
+        SHOTS.add(new Shot("uplink_atlas", level -> {
+            for (ServerPlayer player : level.players()) {
+                ResearchManager.of(player).forceUnlock(com.orbitalis.phase1.satellite.MissionTabletItem.RESEARCH);
+                com.orbitalis.phase1.satellite.SatelliteManager.onFlight(level.getServer(), ResearchManager.agencyKey(player),
+                        SatelliteType.COMMUNICATION, RocketStats.Reach.GEOSTATIONARY);
+                var helmet = new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.ADVANCED_SPACE_HELMET.get());
+                com.orbitalis.phase2.survival.SpaceSuits.install(helmet, com.orbitalis.phase2.survival.SuitModule.UPLINK);
+                player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, helmet);
+                var refusal = com.orbitalis.core.atlas.AtlasAccess.uplinkRefusal(player);
+                com.orbitalis.Orbitalis.LOGGER.info("APERCU liaison du casque : {}", refusal == null ? "ouverte" : refusal.getString());
+            }
+            // La touche elle-même, comme si le joueur appuyait dessus.
+            net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.KeyMapping.click(com.orbitalis.client.UplinkKey.OPEN.getDefaultKey()));
+        }, 24.0, 2.0, 8.0, 0.0F, 0.0F, 140));
+        SHOTS.add(new Shot("uplink_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
             atlasPreview = null;
             net.minecraft.client.Minecraft.getInstance().gui.setScreen(null);
         }), 24.0, 2.0, 8.0, 0.0F, 0.0F, 10));

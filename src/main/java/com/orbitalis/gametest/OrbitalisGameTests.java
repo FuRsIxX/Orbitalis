@@ -2675,9 +2675,20 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 && !com.orbitalis.core.atlas.AtlasAccess.allowed(reader, openedAt.offset(2000, 0, 0));
         reader.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.ItemStack.EMPTY);
         boolean needsTablet = !com.orbitalis.core.atlas.AtlasAccess.allowed(reader, openedAt);
+        // La liaison satellite du casque : sans le module, refusée ; casque muni du module, l'atlas s'ouvre mains libres.
+        boolean uplinkNeedsModule = com.orbitalis.core.atlas.AtlasAccess.uplinkRefusal(reader) != null;
+        net.minecraft.world.item.ItemStack uplinkHelmet = new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.ADVANCED_SPACE_HELMET.get());
+        com.orbitalis.phase2.survival.SpaceSuits.install(uplinkHelmet, com.orbitalis.phase2.survival.SuitModule.UPLINK);
+        reader.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, uplinkHelmet);
+        boolean uplinkAllowed = com.orbitalis.core.atlas.AtlasAccess.uplinkRefusal(reader) == null
+                && com.orbitalis.core.atlas.AtlasAccess.allowed(reader, openedAt)
+                && !com.orbitalis.core.atlas.AtlasAccess.allowed(reader, openedAt.offset(2000, 0, 0));
+        reader.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, net.minecraft.world.item.ItemStack.EMPTY);
         com.orbitalis.phase1.satellite.SatelliteManager.of(server, readerAgency).clear();
         helper.assertTrue(refusedWithoutRelay && tabletAllowed && needsTablet,
                 "la tablette ne devrait ouvrir l'atlas qu'avec un satellite relais, en main, et à sa portée");
+        helper.assertTrue(uplinkNeedsModule && uplinkAllowed,
+                "la liaison satellite du casque devrait ouvrir l'atlas avec son module et un relais, à sa portée seulement");
         // L'observatoire : un satellite d'observation découvre la Lune, ce qui révèle Mars ; le ciel profond demande un
         // télescope ; et la sauvegarde garde tout.
         {

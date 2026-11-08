@@ -1336,6 +1336,14 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("suit.orbitalis.module.map.desc", "Une carte de proximité, à droite de la visière : les murs et les sols à 12 m alentour.");
         add("suit.orbitalis.module.sensor", "Capteur d'environnement");
         add("suit.orbitalis.module.sensor.desc", "Mesure la pression, l'air, la pesanteur et la température autour de vous.");
+        add("item.orbitalis.suit_module_uplink", "Module de liaison satellite");
+        add("suit.orbitalis.module.uplink", "Liaison satellite");
+        add("suit.orbitalis.module.uplink.desc", "L'atlas de la tablette, les mains libres : la touche N l'ouvre partout sur la planète, si un satellite relaie.");
+        add("key.orbitalis.atlas", "Atlas (liaison du casque)");
+        add("uplink.orbitalis.no_module", "Votre casque n'a pas de liaison satellite : posez le module à l'établi de combinaison.");
+        add("uplink.orbitalis.research", "La liaison satellite demande la technologie « Tablette de mission ».");
+        add("uplink.orbitalis.no_planet", "Hors de portée des satellites de l'agence.");
+        add("uplink.orbitalis.no_relay", "Aucun satellite de télécommunications ne relaie votre casque.");
         add("suit.orbitalis.module.oxygen_tank", "Réservoir d'oxygène");
         add("suit.orbitalis.module.oxygen_tank.desc", "Dix minutes d'oxygène de plus.");
         add("suit.orbitalis.module.thrusters", "Propulseurs");

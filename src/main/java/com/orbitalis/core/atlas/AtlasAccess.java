@@ -20,6 +20,8 @@ import net.minecraft.world.level.Level;
  * <li>Depuis le pupitre d'un centre de contrôle, à quelques pas de lui.</li>
  * <li>Partout à la surface, avec la tablette de mission en main, pour peu qu'un satellite de télécommunications de
  * l'agence relaie les données : l'atlas est alors centré sur l'endroit où l'on a ouvert la tablette.</li>
+ * <li>De même, les mains libres, avec la liaison satellite dans le casque de la combinaison avancée : une touche
+ * ouvre l'atlas, aux mêmes conditions que la tablette.</li>
  * </ul>
  */
 public final class AtlasAccess {
@@ -49,16 +51,49 @@ public final class AtlasAccess {
      * technologie, être à la surface de la planète, et qu'un satellite de télécommunications de l'agence relaie.
      */
     public static Component tabletRefusal(ServerPlayer player) {
+        return refusal(player, "tablet");
+    }
+
+    /** Pourquoi la liaison satellite du casque de ce joueur ne peut pas ouvrir l'atlas, ou {@code null} si elle le peut. */
+    public static Component uplinkRefusal(ServerPlayer player) {
+        if (!wearsUplink(player)) {
+            return Component.translatable("uplink.orbitalis.no_module").withStyle(ChatFormatting.GOLD);
+        }
+        return refusal(player, "uplink");
+    }
+
+    /** Les conditions communes à la tablette et à la liaison du casque ; les messages viennent de « prefix ». */
+    private static Component refusal(ServerPlayer player, String prefix) {
         if (!player.getAbilities().instabuild && !ResearchManager.isUnlocked(player, MissionTabletItem.RESEARCH)) {
-            return Component.translatable("tablet.orbitalis.research").withStyle(ChatFormatting.GOLD);
+            return Component.translatable(prefix + ".orbitalis.research").withStyle(ChatFormatting.GOLD);
         }
         if (player.level().dimension() != Level.OVERWORLD) {
-            return Component.translatable("tablet.orbitalis.no_planet").withStyle(ChatFormatting.GOLD);
+            return Component.translatable(prefix + ".orbitalis.no_planet").withStyle(ChatFormatting.GOLD);
         }
         if (!SatelliteManager.hasRelay(player.level().getServer(), ResearchManager.agencyKey(player))) {
-            return Component.translatable("tablet.orbitalis.no_relay").withStyle(ChatFormatting.GOLD);
+            return Component.translatable(prefix + ".orbitalis.no_relay").withStyle(ChatFormatting.GOLD);
         }
         return null;
+    }
+
+    /** Vrai si ce joueur porte, sur la tête, un casque muni de la liaison satellite. */
+    public static boolean wearsUplink(ServerPlayer player) {
+        return com.orbitalis.phase2.survival.SpaceSuits.has(player, com.orbitalis.phase2.survival.SuitModule.UPLINK);
+    }
+
+    /** La touche de l'atlas : l'ouvre là où se trouve le joueur, ou lui dit, au-dessus de la barre, ce qui l'en empêche. */
+    public static void openByUplink(ServerPlayer player) {
+        Component refusal = uplinkRefusal(player);
+        if (refusal != null) {
+            player.sendOverlayMessage(refusal);
+        } else {
+            com.orbitalis.core.network.ModNetwork.send(player, new com.orbitalis.core.network.AtlasOpenPayload(player.blockPosition()));
+        }
+    }
+
+    /** Vrai si ce joueur consulte l'atlas par la liaison de son casque, ouverte à cet endroit, pas trop loin de lui. */
+    public static boolean byUplink(ServerPlayer player, BlockPos source) {
+        return uplinkRefusal(player) == null && player.blockPosition().closerThan(source, TABLET_DRIFT);
     }
 
     /** Vrai si ce joueur consulte l'atlas avec sa tablette, ouverte à cet endroit, pas trop loin de lui. */
@@ -66,8 +101,8 @@ public final class AtlasAccess {
         return holdsTablet(player) && tabletRefusal(player) == null && player.blockPosition().closerThan(source, TABLET_DRIFT);
     }
 
-    /** Vrai si ce joueur peut consulter l'atlas de ce point : un pupitre à sa portée, ou sa tablette. */
+    /** Vrai si ce joueur peut consulter l'atlas de ce point : un pupitre à sa portée, sa tablette ou son casque. */
     public static boolean allowed(ServerPlayer player, BlockPos source) {
-        return player.level() instanceof ServerLevel && (atConsole(player, source) || byTablet(player, source));
+        return player.level() instanceof ServerLevel && (atConsole(player, source) || byTablet(player, source) || byUplink(player, source));
     }
 }

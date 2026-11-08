@@ -221,6 +221,7 @@ public final class ModItems {
     /** Modules de la combinaison avancée. */
     public static final DeferredItem<SuitModuleItem> SUIT_MODULE_MAP = suitModule("suit_module_map", SuitModule.MAP);
     public static final DeferredItem<SuitModuleItem> SUIT_MODULE_SENSOR = suitModule("suit_module_sensor", SuitModule.SENSOR);
+    public static final DeferredItem<SuitModuleItem> SUIT_MODULE_UPLINK = suitModule("suit_module_uplink", SuitModule.UPLINK);
     public static final DeferredItem<SuitModuleItem> SUIT_MODULE_OXYGEN_TANK = suitModule("suit_module_oxygen_tank", SuitModule.OXYGEN_TANK);
     public static final DeferredItem<SuitModuleItem> SUIT_MODULE_THRUSTERS = suitModule("suit_module_thrusters", SuitModule.THRUSTERS);
     public static final DeferredItem<SuitModuleItem> SUIT_MODULE_SHOCK_ABSORBERS = suitModule("suit_module_shock_absorbers", SuitModule.SHOCK_ABSORBERS);

@@ -197,7 +197,7 @@ public class OrbitalisClient {
         // Tuile de terrain de l'atlas : elle va se faire peindre.
         event.register(com.orbitalis.core.network.AtlasTilePayload.TYPE,
                 (payload, context) -> com.orbitalis.client.render.AtlasMap.accept(payload));
-        // La tablette de mission ouvre l'atlas, centré sur l'endroit où l'on est.
+        // La tablette de mission, ou la liaison satellite du casque, ouvre l'atlas, centré sur l'endroit où l'on est.
         event.register(com.orbitalis.core.network.AtlasOpenPayload.TYPE, (payload, context) -> Minecraft.getInstance().gui.setScreen(
                 new com.orbitalis.client.screen.AtlasScreen(null, payload.source(), payload.source(), true)));
         event.register(com.orbitalis.core.network.AtlasSitesPayload.TYPE,

@@ -1336,6 +1336,14 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("suit.orbitalis.module.map.desc", "A proximity map on the right of the visor: walls and floors within 12 m.");
         add("suit.orbitalis.module.sensor", "Environment sensor");
         add("suit.orbitalis.module.sensor.desc", "Measures the pressure, air, gravity and temperature around you.");
+        add("item.orbitalis.suit_module_uplink", "Satellite Uplink Module");
+        add("suit.orbitalis.module.uplink", "Satellite uplink");
+        add("suit.orbitalis.module.uplink.desc", "The tablet's atlas, hands free: the N key opens it anywhere on the planet, while a satellite relays.");
+        add("key.orbitalis.atlas", "Atlas (helmet uplink)");
+        add("uplink.orbitalis.no_module", "Your helmet has no satellite uplink: fit the module at the suit workbench.");
+        add("uplink.orbitalis.research", "The satellite uplink needs the \"Mission Tablet\" technology.");
+        add("uplink.orbitalis.no_planet", "Out of range of the agency's satellites.");
+        add("uplink.orbitalis.no_relay", "No communications satellite relays your helmet.");
         add("suit.orbitalis.module.oxygen_tank", "Oxygen tank");
         add("suit.orbitalis.module.oxygen_tank.desc", "Ten more minutes of oxygen.");
         add("suit.orbitalis.module.thrusters", "Thrusters");

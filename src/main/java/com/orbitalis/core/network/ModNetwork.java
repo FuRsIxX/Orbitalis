@@ -73,6 +73,12 @@ public final class ModNetwork {
             }
         });
         // L'écran d'un terminal de station s'actualise.
+        // La touche de l'atlas, pour un casque muni de la liaison satellite.
+        registrar.playToServer(UplinkOpenPayload.TYPE, UplinkOpenPayload.STREAM_CODEC, (payload, context) -> {
+            if (context.player() instanceof ServerPlayer player) {
+                com.orbitalis.core.atlas.AtlasAccess.openByUplink(player);
+            }
+        });
         registrar.playToServer(StationRequestPayload.TYPE, StationRequestPayload.STREAM_CODEC, (payload, context) -> {
             if (context.player() instanceof ServerPlayer player) {
                 com.orbitalis.phase2.station.StationStatus.request(player, payload.terminal());

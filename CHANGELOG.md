@@ -1,3 +1,11 @@
+# Orbitalis — prochaine version
+
+## Nouveautés
+- **Liaison satellite** : un nouveau module pour le casque de la combinaison avancée. Il met l'atlas de la tablette de mission dans le casque : la touche N (réglable) l'ouvre partout à la surface, les mains libres, aux mêmes conditions que la tablette (technologie « Tablette de mission », satellite de télécommunications en service). Sans le module, la touche dit ce qui manque. Recette : la tablette de mission, du titane, du cuivre et de la redstone.
+
+## Changements
+- Établi de combinaison : les lignes des modules sont un peu plus serrées, pour que le septième tienne à l'écran.
+
 # Orbitalis — 0.11.1 (bêta)
 
 *Minecraft 26.2 · NeoForge 26.2.0.88 · JEI recommandé*
@@ -174,6 +182,14 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Les réglages de jeu (réalisme, pannes, évaporation des ergols, dégâts des accidents…) sont dans la configuration serveur du monde.
 
 ---
+
+# Orbitalis — next version
+
+## New
+- **Satellite uplink**: a new module for the advanced suit's helmet. It puts the mission tablet's atlas in the helmet: the N key (rebindable) opens it anywhere on the surface, hands free, under the same conditions as the tablet ("Mission Tablet" technology, a communications satellite in service). Without the module, the key says what is missing. Recipe: the mission tablet, titanium, copper and redstone.
+
+## Changes
+- Suit workbench: module rows are a little tighter, so the seventh one fits on screen.
 
 # Orbitalis — 0.11.1 (beta)
 

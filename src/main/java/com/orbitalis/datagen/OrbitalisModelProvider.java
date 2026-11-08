@@ -567,6 +567,7 @@ public class OrbitalisModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.ADVANCED_SPACE_LEGGINGS.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SUIT_MODULE_MAP.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SUIT_MODULE_SENSOR.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.SUIT_MODULE_UPLINK.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SUIT_MODULE_OXYGEN_TANK.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SUIT_MODULE_THRUSTERS.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SUIT_MODULE_SHOCK_ABSORBERS.get(), ModelTemplates.FLAT_ITEM);

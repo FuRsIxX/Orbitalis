@@ -22,6 +22,8 @@ public enum SuitModule implements StringRepresentable {
     MAP("map", EquipmentSlot.HEAD, () -> ModItems.SUIT_MODULE_MAP.get()),
     /** Capteur d'environnement : pression et nature de l'air, pesanteur, température. */
     SENSOR("sensor", EquipmentSlot.HEAD, () -> ModItems.SUIT_MODULE_SENSOR.get()),
+    /** Liaison satellite, dans le casque : l'atlas de la tablette de mission, à une touche, les mains libres. */
+    UPLINK("uplink", EquipmentSlot.HEAD, () -> ModItems.SUIT_MODULE_UPLINK.get()),
     /** Réservoir d'oxygène supplémentaire, sur le sac dorsal. */
     OXYGEN_TANK("oxygen_tank", EquipmentSlot.CHEST, () -> ModItems.SUIT_MODULE_OXYGEN_TANK.get()),
     /** Petits propulseurs à azote, sur le sac dorsal : on se déplace bien plus vite en apesanteur. */

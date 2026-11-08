@@ -750,6 +750,17 @@ GLYPHS = {
         "..w..w..",
         "........",
     ],
+    # Liaison satellite : une antenne, et les ondes qu'elle échange avec le satellite relais.
+    "uplink": [
+        "........",
+        ".a....a.",
+        "a..ww..a",
+        "a.awwa.a",
+        ".a.cc.a.",
+        "...cc...",
+        "..c..c..",
+        ".c....c.",
+    ],
     "shock_absorbers": [
         "cccccccc",
         "..a..a..",
@@ -763,7 +774,7 @@ GLYPHS = {
 }
 
 ACCENTS = {
-    "map": "#35C3F0", "sensor": "#FFB23E", "oxygen_tank": "#4FD67A", "thrusters": "#5FB0F5", "shock_absorbers": "#E8C547",
+    "map": "#35C3F0", "sensor": "#FFB23E", "oxygen_tank": "#4FD67A", "thrusters": "#5FB0F5", "shock_absorbers": "#E8C547", "uplink": "#B58CFF",
 }
 
 

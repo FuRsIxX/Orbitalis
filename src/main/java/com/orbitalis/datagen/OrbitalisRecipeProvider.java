@@ -1502,6 +1502,17 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('D', ModItems.OPTICAL_SENSOR)
                 .unlockedBy("has_advanced_space_helmet", has(ModItems.ADVANCED_SPACE_HELMET))
                 .save(output, key("suit_module_sensor"));
+        // Liaison satellite : la tablette de mission, montée dans un boîtier de casque, et son antenne de cuivre.
+        shaped(RecipeCategory.MISC, ModItems.SUIT_MODULE_UPLINK)
+                .pattern("TCT")
+                .pattern("RBR")
+                .pattern("TTT")
+                .define('T', ModTags.Items.PLATES_TITANIUM)
+                .define('C', Tags.Items.INGOTS_COPPER)
+                .define('R', Items.REDSTONE)
+                .define('B', ModItems.MISSION_TABLET)
+                .unlockedBy("has_mission_tablet", has(ModItems.MISSION_TABLET))
+                .save(output, key("suit_module_uplink"));
         shaped(RecipeCategory.MISC, ModItems.SUIT_MODULE_OXYGEN_TANK)
                 .pattern("TRT")
                 .pattern("TBT")

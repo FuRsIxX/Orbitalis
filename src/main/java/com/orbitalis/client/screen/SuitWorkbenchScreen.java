@@ -39,12 +39,12 @@ public class SuitWorkbenchScreen extends AbstractContainerScreen<SuitWorkbenchMe
     private static final int MODULES_W = 226;
     private static final int MODULES_H = 210;
     /** Hauteur d'une ligne de module, d'un titre de pièce, et taille du bouton. */
-    private static final int ROW = 19;
-    private static final int GROUP = 11;
+    private static final int ROW = 17;
+    private static final int GROUP = 10;
     private static final int BUTTON_W = 50;
     private static final int BUTTON_H = 13;
     /** Le pied de la liste des modules : sa place dans la carte. */
-    private static final int FOOTER = 169;
+    private static final int FOOTER = 173;
     /** Les pièces qui reçoivent des modules, dans l'ordre de la liste. */
     private static final EquipmentSlot[] FITTED = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS};
 

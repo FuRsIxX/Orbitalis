@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": "orbitalis:mission_tablet",
+    "C": "#c:ingots/copper",
+    "R": "minecraft:redstone",
+    "T": "#c:plates/titanium"
+  },
+  "pattern": [
+    "TCT",
+    "RBR",
+    "TTT"
+  ],
+  "result": {
+    "id": "orbitalis:suit_module_uplink"
+  }
+}
