@@ -115,6 +115,36 @@ public final class ModFluids {
                     net.neoforged.neoforge.fluids.FluidStack stack) {
                 return !com.orbitalis.phase2.survival.SpaceRules.isTitan(level);
             }
+
+            /**
+             * La nage dans le méthane. Le jeu ne fait bouger, dans un fluide ajouté, que ce que ce fluide déplace
+             * lui-même : sans ceci, on y restait figé, sans couler ni nager, même en vol créatif. C'est la nage de l'eau,
+             * un peu plus lente, et l'on y coule un peu plus vite : le méthane liquide est deux fois moins dense.
+             */
+            @Override
+            public boolean move(net.minecraft.world.entity.LivingEntity entity, net.minecraft.world.phys.Vec3 input, double gravity) {
+                boolean falling = entity.getDeltaMovement().y <= 0.0;
+                double oldY = entity.getY();
+                float slowDown = entity.isSprinting() ? 0.88F : 0.76F;
+                float speed = 0.018F * (float) entity.getAttributeValue(net.neoforged.neoforge.common.NeoForgeMod.SWIM_SPEED);
+                entity.moveRelative(speed, input);
+                entity.move(net.minecraft.world.entity.MoverType.SELF, entity.getDeltaMovement());
+                net.minecraft.world.phys.Vec3 motion = entity.getDeltaMovement();
+                if (entity.horizontalCollision && entity.onClimbable()) {
+                    motion = new net.minecraft.world.phys.Vec3(motion.x, 0.2, motion.z);
+                }
+                motion = motion.multiply(slowDown, 0.8, slowDown);
+                motion = entity.getFluidFallingAdjustedMovement(gravity, falling, motion);
+                if (!entity.isSprinting() && gravity != 0.0) {
+                    motion = motion.add(0.0, -gravity / 32.0, 0.0);
+                }
+                // Contre une rive, on se hisse hors du lac, comme hors de l'eau.
+                if (entity.horizontalCollision && entity.isFree(motion.x, motion.y + 0.6 - entity.getY() + oldY, motion.z)) {
+                    motion = new net.minecraft.world.phys.Vec3(motion.x, 0.3, motion.z);
+                }
+                entity.setDeltaMovement(motion);
+                return true;
+            }
         });
         Entry[] self = new Entry[1];
         Supplier<BaseFlowingFluid.Properties> properties = () -> new BaseFlowingFluid.Properties(type, self[0].source(), self[0].flowing())

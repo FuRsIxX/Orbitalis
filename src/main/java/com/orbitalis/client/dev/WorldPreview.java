@@ -478,6 +478,88 @@ public final class WorldPreview {
         Orbitalis.LOGGER.info("Kepler-452b : pas de gazon trouvé pour la vue");
     }
 
+    /** Le bloc visé par l'essai sous l'eau : le fond, sous les pieds du joueur. */
+    private static BlockPos wetFloor;
+    private static double wetY;
+    private static net.minecraft.world.phys.Vec3 wetStart;
+
+    /**
+     * Essai sous l'eau : le joueur, en créatif, est plongé au fond d'une étendue d'au moins quatre blocs de liquide,
+     * trouvée en cercles autour de l'origine, le regard vers le fond.
+     */
+    private static void wetSpot(ServerLevel level, net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> key) {
+        ServerLevel world = level.getServer().getLevel(key);
+        if (world == null) {
+            return;
+        }
+        for (int ring = 0; ring <= 96; ring++) {
+            for (int step = 0; step < Math.max(1, ring * 8); step++) {
+                double angle = Math.PI * 2.0 * step / Math.max(1, ring * 8);
+                int x = (int) Math.round(Math.cos(angle) * ring * 16);
+                int z = (int) Math.round(Math.sin(angle) * ring * 16);
+                world.getChunkAt(new BlockPos(x, 0, z));
+                int top = world.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, x, z);
+                int floor = world.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.OCEAN_FLOOR, x, z);
+                if (top - floor >= 4 && !world.getFluidState(new BlockPos(x, top - 1, z)).isEmpty()) {
+                    wetFloor = new BlockPos(x, floor - 1, z);
+                    for (net.minecraft.server.level.ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+                        player.getAbilities().flying = false;
+                        player.onUpdateAbilities();
+                        player.getInventory().setItem(player.getInventory().getSelectedSlot(), new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STONE));
+                    }
+                    run(level, ("execute in %s run tp @a %d.5 %d %d.5 0 75").formatted(key.identifier(), x, floor, z));
+                    Orbitalis.LOGGER.info("Essai sous l'eau ({}) : fond en {}, surface en {}, liquide {}", key.identifier(), wetFloor, top,
+                            world.getFluidState(new BlockPos(x, top - 1, z)).getType());
+                    return;
+                }
+            }
+        }
+        wetFloor = null;
+        Orbitalis.LOGGER.info("Essai sous l'eau ({}) : aucune étendue trouvée", key.identifier());
+    }
+
+    /** L'essai sous l'eau, côté client : ce que voit le joueur, puis un clic gauche et un clic droit sur le fond. */
+    private static void wetProbe(ServerLevel level) {
+        Minecraft minecraft = Minecraft.getInstance();
+        minecraft.execute(() -> {
+            var player = minecraft.player;
+            if (player == null || minecraft.gameMode == null || wetFloor == null) {
+                return;
+            }
+            Orbitalis.LOGGER.info("Essai sous l'eau : mode {}, vol {} (permis {}), dans l'eau {}, sous l'eau {}, posture {}, pos {}, visée {} {}",
+                    minecraft.gameMode.getPlayerMode(), player.getAbilities().flying, player.getAbilities().mayfly, player.isInWater(),
+                    player.isUnderWater(), player.getPose(), player.position(), minecraft.hitResult == null ? "rien" : minecraft.hitResult.getType(),
+                    minecraft.hitResult instanceof net.minecraft.world.phys.BlockHitResult hit ? hit.getBlockPos() + " " + player.level().getBlockState(hit.getBlockPos()) : "");
+            boolean broke = minecraft.gameMode.startDestroyBlock(wetFloor, Direction.UP);
+            Orbitalis.LOGGER.info("Essai sous l'eau : casser {} -> {}", wetFloor, broke);
+            BlockPos beside = wetFloor.east();
+            var used = minecraft.gameMode.useItemOn(player, net.minecraft.world.InteractionHand.MAIN_HAND,
+                    new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(beside).add(0, 0.5, 0), Direction.UP, beside, false));
+            Orbitalis.LOGGER.info("Essai sous l'eau : poser sur {} -> {}", beside, used);
+            wetY = player.getY();
+            wetStart = player.position();
+            minecraft.options.keyJump.setDown(true);
+            minecraft.options.keyUp.setDown(true);
+        });
+    }
+
+    /** La suite de l'essai : ce qu'il reste du fond, ce qui a été posé, et la hauteur gagnée en tenant le saut. */
+    private static void wetReport(ServerLevel level) {
+        Minecraft minecraft = Minecraft.getInstance();
+        minecraft.execute(() -> {
+            minecraft.options.keyJump.setDown(false);
+            minecraft.options.keyUp.setDown(false);
+            var player = minecraft.player;
+            if (player == null || wetFloor == null) {
+                return;
+            }
+            Orbitalis.LOGGER.info("Essai sous l'eau : avancée tenue {} blocs à l'horizontale", Math.hypot(player.getX() - wetStart.x, player.getZ() - wetStart.z));
+            Orbitalis.LOGGER.info("Essai sous l'eau : fond maintenant {}, posé {}, saut tenu : {} -> {} (vol {})",
+                    player.level().getBlockState(wetFloor), player.level().getBlockState(wetFloor.east().above()), wetY, player.getY(),
+                    player.getAbilities().flying);
+        });
+    }
+
     private static void closeScreen() {
         net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null));
     }
@@ -2628,6 +2710,13 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_kepler_sky", level -> hover(level), 0.5, 150.0, 0.5, 225.0F, 12.0F, 200));
         SHOTS.add(new Shot("tm_kepler_plain", level -> keplerSpot(level), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         SHOTS.add(new Shot("tm_kepler_orbit_view", level -> hover(level), 0.5, 100.0, 0.5, -90.0F, 55.0F, 80));
+        // Essais sous l'eau, en créatif : plongé au fond, on casse le fond, on pose de la pierre, on tient le saut.
+        for (var wet : List.of(SpaceRules.TRAPPIST_1E, SpaceRules.KEPLER_452B, SpaceRules.TITAN)) {
+            String tag = "wet_" + wet.identifier().getPath();
+            SHOTS.add(new Shot(tag, level -> wetSpot(level, wet), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 100));
+            SHOTS.add(new Shot(tag + "_probe", level -> wetProbe(level), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 30));
+            SHOTS.add(new Shot(tag + "_after", level -> wetReport(level), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 10));
+        }
         // Tarentule b : notre Galaxie au nord, la Tarentule au sud ; ses plaines et leurs cristaux ; puis d'orbite.
         SHOTS.add(new Shot("tm_tarantula_galaxy", level -> hover(level), 0.5, 170.0, 0.5, 165.0F, -32.0F, 200));
         SHOTS.add(new Shot("tm_tarantula_nebula", level -> hover(level), 0.5, 170.0, 0.5, 15.0F, -14.0F, 20));

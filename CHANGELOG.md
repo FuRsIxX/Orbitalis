@@ -5,6 +5,7 @@
 - Orbite de Tarentule b : le ciel ne montre plus l'écharpe de la Voie lactée, comme si l'on était dedans, mais notre Galaxie en spirale, sous une jeune étoile bleue.
 - L'anneau du vaisseau garde, en tournant, les motifs de sa coque (panneaux matelassés).
 - Station et vaisseau : la coque et les panneaux intérieurs ne sèment plus au hasard des mains courantes et des étiquettes de couleur sur chaque bloc. Les murs sont unis, avec de temps en temps une bouche d'aération.
+- Titan : dans un lac de méthane liquide, on restait figé, sans nager ni couler, même en vol créatif. On y nage maintenant comme dans l'eau, un peu plus lentement, et l'on y coule un peu plus vite.
 
 # Orbitalis — 0.11.0 (bêta)
 
@@ -179,6 +180,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - Tarantula b orbit: the sky no longer shows the Milky Way band, as if you were inside it, but our Galaxy as a spiral, under a young blue star.
 - The ship's ring keeps its hull patterns (quilted panels) while it spins.
 - Station and ship: the hull and the inner wall panels no longer scatter random handrails and colored tags over every block. Walls are plain, with the odd air vent.
+- Titan: in a liquid methane lake you were stuck in place, unable to swim or sink, even when flying in creative. You now swim in it like in water, a little slower, and sink a little faster.
 
 # Orbitalis — 0.11.0 (beta)
 
