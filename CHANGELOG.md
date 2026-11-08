@@ -11,6 +11,7 @@
 - **Modèles refaits** : le cristal de la Tarentule est un bouquet de prismes roses à pointe, tourné au hasard, au lieu d'un cube rayé ; l'extracteur d'oxygène a un socle, une prise d'air en creux sous son voyant, des ailettes de radiateur, un compresseur sur le dessus et ses deux bouteilles debout au dos ; le poste de pilotage du vaisseau a un plan de travail incliné (clavier, manette des gaz, voyants), un grand écran de navigation et deux écrans latéraux tournés vers le pilote ; le pupitre du chantier naval devient une table de plans, le vaisseau affiché à plat sur le dessus, ses commandes en façade.
 - **Porte de sas** : elle ne s'ouvre ni ne se ferme plus d'elle-même quand on s'en approche ; un clic droit l'ouvre ou la ferme. Elle ne se referme toujours jamais sur quelqu'un qui se tient dans le passage.
 - **Porte de sas et porte vitrée coulissante** : ouvertes, un clic droit dans l'ouverture vide les referme ; on passe toujours au travers.
+- **Bedrock au fond des planètes** : la Lune, Mars et Titan ont, comme l'Overworld, une bedrock pleine à la couche du fond qui se mêle à la roche sur les cinq couches au-dessus ; Europe, monde plat, a sa couche de bedrock tout au fond. On ne tombe plus dans le vide en creusant. Seules les régions encore jamais parcourues en profitent.
 - **Manuel** : un premier paragraphe court est mis en avant comme « en bref », les listes ont des puces et les étapes numérotées leur numéro en couleur. Le texte des chapitres ne change pas.
 
 # Orbitalis — 0.11.1 (bêta)
@@ -203,6 +204,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - **Remade models**: the Tarantula crystal is a cluster of pointed pink prisms, randomly turned, instead of a striped cube; the oxygen extractor has a base, a recessed air intake under its light, radiator fins, a compressor on top and its two bottles standing at the back; the ship helm has a sloped desk (keypad, throttle, lights), a large navigation screen and two side screens turned toward the pilot; the shipyard console becomes a plan table, the ship shown flat on top, its controls at the front.
 - **Airlock door**: it no longer opens or closes by itself when you come near; a right-click opens or closes it. It still never closes on someone standing in the doorway.
 - **Airlock door and sliding glass door**: when open, a right-click in the empty doorway closes them; you still walk through.
+- **Bedrock at the bottom of planets**: the Moon, Mars and Titan have, like the Overworld, solid bedrock on the bottom layer blending into the rock over the five layers above; Europa, a flat world, has its bedrock layer at the very bottom. Digging no longer drops you into the void. Only areas never visited before get it.
 - **Guide**: a short first paragraph stands out as a summary, lists have bullets and numbered steps have their number in colour. Chapter texts are unchanged.
 
 # Orbitalis — 0.11.1 (beta)

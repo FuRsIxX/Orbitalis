@@ -8,8 +8,12 @@
       "lakes": false,
       "layers": [
         {
+          "block": "minecraft:bedrock",
+          "height": 1
+        },
+        {
           "block": "orbitalis:europa_ice",
-          "height": 128
+          "height": 127
         }
       ],
       "structure_overrides": []
