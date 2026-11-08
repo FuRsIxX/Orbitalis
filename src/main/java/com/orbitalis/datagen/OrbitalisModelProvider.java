@@ -261,10 +261,18 @@ public class OrbitalisModelProvider extends ModelProvider {
         for (Block plant : List.of(ModBlocks.BRONZE_FERN.get(), ModBlocks.AMBER_TUFT.get())) {
             blockModels.createCrossBlockWithDefaultItem(plant, BlockModelGenerators.PlantType.NOT_TINTED);
         }
-        // Tarentule b : sa roche, sa poussière et son cristal sont des cubes ; sa flore est en croix.
-        for (Block block : List.of(ModBlocks.TARANTULA_ROCK.get(), ModBlocks.TARANTULA_DUST.get(), ModBlocks.TARANTULA_CRYSTAL.get())) {
+        // Tarentule b : sa roche et sa poussière sont des cubes ; son cristal, un bouquet de prismes (tools/generate_tarantula.py),
+        // tourné au hasard d'un quart de tour ; sa flore est en croix.
+        for (Block block : List.of(ModBlocks.TARANTULA_ROCK.get(), ModBlocks.TARANTULA_DUST.get())) {
             blockModels.createTrivialCube(block);
         }
+        Identifier crystalModel = Orbitalis.id("block/exploration/tarantula_crystal");
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.TARANTULA_CRYSTAL.get(), new MultiVariant(WeightedList.of(List.of(
+                new Weighted<>(BlockModelGenerators.plainModel(crystalModel), 1),
+                new Weighted<>(BlockModelGenerators.plainModel(crystalModel).with(BlockModelGenerators.Y_ROT_90), 1),
+                new Weighted<>(BlockModelGenerators.plainModel(crystalModel).with(BlockModelGenerators.Y_ROT_180), 1),
+                new Weighted<>(BlockModelGenerators.plainModel(crystalModel).with(BlockModelGenerators.Y_ROT_270), 1))))));
+        blockModels.registerSimpleItemModel(ModBlocks.TARANTULA_CRYSTAL.get(), crystalModel);
         for (Block plant : List.of(ModBlocks.GLOWTHREAD.get(), ModBlocks.ROSE_VEIL.get())) {
             blockModels.createCrossBlockWithDefaultItem(plant, BlockModelGenerators.PlantType.NOT_TINTED);
         }

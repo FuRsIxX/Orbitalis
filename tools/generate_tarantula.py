@@ -14,6 +14,7 @@ luisent ; sa flore est faite de fils et de voiles lumineux.
 
 Usage : python tools/generate_tarantula.py
 """
+import json
 import math
 import os
 import random
@@ -42,25 +43,89 @@ def dust_texture():
     return img
 
 
+def mix(a, b, t):
+    return tuple(int(round(a[i] + (b[i] - a[i]) * t)) for i in range(3)) + (255,)
+
+
 def crystal_texture():
-    """Cristal de la Tarentule : des facettes roses, plus claires au cœur, des arêtes presque blanches."""
-    img = [[rgb("#C0487E") for _ in range(16)] for _ in range(16)]
+    """
+    Cristal de la Tarentule : une facette tous les quatre pixels (son arête claire, sa face, son flanc dans l'ombre),
+    d'un magenta profond au pied à un rose pâle vers la pointe, avec quelques reflets et un voile laiteux au cœur. Chaque
+    face d'un prisme du modèle prend une tranche de quatre pixels (ou trois) : elle tombe toujours sur une facette entière.
+    """
+    columns = [rgb("#FFC2E2"), rgb("#F27CBA"), rgb("#D9559C"), rgb("#A8347A")]
+    foot, tip = rgb("#5E1846"), rgb("#FFE6F3")
     rnd = random.Random(603)
+    img = []
     for y in range(16):
+        row = []
+        # Plus clair vers le haut de la texture (la pointe), plus sombre au pied.
+        t = y / 15.0
         for x in range(16):
-            band = (x + y) % 6
-            img[y][x] = rgb("#E070A8") if band < 2 else rgb("#C0487E") if band < 4 else rgb("#9A3466")
-            if rnd.random() < 0.05:
-                img[y][x] = rgb("#FFD8EC")
-    for i in range(16):
-        img[i][i] = rgb("#FFE8F4")
-    for x in range(16):
-        img[0][x] = rgb("#7A2A52")
-        img[15][x] = rgb("#7A2A52")
-    for y in range(16):
-        img[y][0] = rgb("#7A2A52")
-        img[y][15] = rgb("#7A2A52")
+            c = columns[x % 4]
+            c = mix(c, tip, max(0.0, 0.45 - t * 0.6)) if t < 0.75 else mix(c, foot, (t - 0.75) * 1.6)
+            row.append(c)
+        img.append(row)
+    # Le voile laiteux, au cœur des facettes : des taches un peu plus pâles, sans toucher les arêtes.
+    for _ in range(14):
+        x = rnd.randrange(16)
+        y = rnd.randrange(2, 13)
+        if x % 4 in (1, 2):
+            img[y][x] = mix(img[y][x], rgb("#FFE0F0"), 0.35)
+    # Des reflets, rares : un pixel presque blanc sur une arête claire.
+    for x, y in ((0, 3), (4, 7), (8, 2), (12, 9), (4, 12), (0, 10)):
+        img[y][x] = rgb("#FFF4FA")
     return img
+
+
+def crystal_model():
+    """
+    Le cristal de la Tarentule en bouquet : un grand prisme droit au milieu, trois plus petits qui penchent autour,
+    chacun terminé par une pointe en deux étages. Chaque face prend une tranche entière de la texture : les flancs, la
+    partie basse (de plus en plus sombre vers le pied), les pointes, la partie haute (plus pâle). Les pièces luisent
+    un peu d'elles-mêmes, comme le bloc.
+    """
+    # (x, z, largeur, hauteur du fût, rotation : axe, angle, origine)
+    prisms = [
+        (6, 6, 4, 9, None),
+        (2, 7, 3, 6, ("z", 22.5, (5, 0, 8.5))),
+        (9, 11, 3, 5, ("x", 22.5, (10.5, 0, 11))),
+        (10, 2, 3, 4, ("x", -22.5, (11.5, 0, 5))),
+    ]
+    elements = []
+
+    def box(lo, hi, rotation, uv_rows, top_face):
+        w = hi[0] - lo[0]
+        h = hi[1] - lo[1]
+        v0, v1 = uv_rows
+        side = {"uv": [0, v0, w, v1], "texture": "#crystal"}
+        faces = {name: dict(side) for name in ("north", "south", "west", "east")}
+        if top_face:
+            faces["up"] = {"uv": [4, 0, 4 + w, w], "texture": "#crystal"}
+        element = {"from": list(lo), "to": list(hi), "faces": faces, "light_emission": 9}
+        if rotation is not None:
+            axis, angle, origin = rotation
+            element["rotation"] = {"angle": angle, "axis": axis, "origin": list(origin)}
+        return element
+
+    for x, z, w, h, rotation in prisms:
+        # Le fût : la texture du pied jusqu'à mi-hauteur, selon sa taille ; dessous, rien (il sort de la poussière).
+        shaft = box((x, 0, z), (x + w, h, z + w), rotation, (16 - min(h, 12), 16), True)
+        shaft["faces"]["down"] = {"uv": [0, 12, w, 12 + w], "texture": "#crystal", "cullface": "down"}
+        elements.append(shaft)
+        # La pointe : un étage plus étroit, puis l'aiguille, dans la partie claire de la texture.
+        inner = w - 2
+        elements.append(box((x + 1, h, z + 1), (x + 1 + inner, h + inner + 1, z + 1 + inner), rotation, (1, 2 + inner), True))
+        if inner >= 2:
+            c = x + w / 2.0
+            elements.append(box((c - 0.5, h + inner + 1, z + w / 2.0 - 0.5), (c + 0.5, h + inner + 3, z + w / 2.0 + 0.5),
+                                rotation, (0, 2), True))
+    return {
+        "parent": "minecraft:block/block",
+        "ambientocclusion": False,
+        "textures": {"crystal": "orbitalis:block/tarantula_crystal", "particle": "orbitalis:block/tarantula_crystal"},
+        "elements": elements,
+    }
 
 
 def plant(draw):
@@ -185,6 +250,10 @@ def main():
     }
     for name, img in blocks.items():
         write_png(os.path.join(BLOCK_DIR, name + ".png"), img)
+    model_dir = os.path.join(ROOT, "src", "main", "resources", "assets", "orbitalis", "models", "block", "exploration")
+    with open(os.path.join(model_dir, "tarantula_crystal.json"), "w", newline="\n") as f:
+        json.dump(crystal_model(), f, indent=1)
+        f.write("\n")
     particles = {"milky_way": milky_way_texture(), "tarantula_nebula": nebula_texture(), "tarantula_b": planet_texture()}
     for name, img in particles.items():
         write_png(os.path.join(PARTICLE_DIR, name + ".png"), img)

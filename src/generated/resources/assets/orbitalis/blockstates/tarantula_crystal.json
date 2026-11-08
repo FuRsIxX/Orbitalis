@@ -1,7 +1,21 @@
 {
   "variants": {
-    "": {
-      "model": "orbitalis:block/tarantula_crystal"
-    }
+    "": [
+      {
+        "model": "orbitalis:block/exploration/tarantula_crystal"
+      },
+      {
+        "model": "orbitalis:block/exploration/tarantula_crystal",
+        "y": 90
+      },
+      {
+        "model": "orbitalis:block/exploration/tarantula_crystal",
+        "y": 180
+      },
+      {
+        "model": "orbitalis:block/exploration/tarantula_crystal",
+        "y": 270
+      }
+    ]
   }
 }

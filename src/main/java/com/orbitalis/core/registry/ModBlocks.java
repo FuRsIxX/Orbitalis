@@ -216,9 +216,10 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> TARANTULA_DUST = withItem(BLOCKS.registerSimpleBlock("tarantula_dust",
             properties -> properties.mapColor(MapColor.TERRACOTTA_PINK).strength(0.5F).sound(SoundType.SAND)));
     /** Cristal de la Tarentule : rose, il luit ; il sort de la poussière en petits bouquets. */
-    public static final DeferredBlock<Block> TARANTULA_CRYSTAL = withItem(BLOCKS.registerSimpleBlock("tarantula_crystal",
-            properties -> properties.mapColor(MapColor.COLOR_PINK).instrument(NoteBlockInstrument.CHIME)
-                    .requiresCorrectToolForDrops().strength(1.5F, 6.0F).sound(SoundType.AMETHYST).lightLevel(state -> 11)));
+    public static final DeferredBlock<com.orbitalis.phase3.celestial.TarantulaCrystalBlock> TARANTULA_CRYSTAL = withItem(BLOCKS.registerBlock(
+            "tarantula_crystal", com.orbitalis.phase3.celestial.TarantulaCrystalBlock::new,
+            properties -> properties.mapColor(MapColor.COLOR_PINK).instrument(NoteBlockInstrument.CHIME).noOcclusion()
+                    .requiresCorrectToolForDrops().strength(1.5F, 6.0F).sound(SoundType.AMETHYST_CLUSTER).lightLevel(state -> 11)));
     /** La flore de Tarentule b : le fil-lueur, qui luit à sa pointe, et le voile rose. */
     public static final DeferredBlock<com.orbitalis.phase3.celestial.TarantulaPlantBlock> GLOWTHREAD = tarantulaPlant("glowthread", 6, true);
     public static final DeferredBlock<com.orbitalis.phase3.celestial.TarantulaPlantBlock> ROSE_VEIL = tarantulaPlant("rose_veil", 0, false);

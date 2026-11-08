@@ -362,15 +362,37 @@ def ice_drill():
 
 
 def oxygen_extractor():
-    """L'extracteur, face avant au nord : son socle, son caisson, sa prise d'air, sa sortie, ses deux bouteilles."""
-    return [
-        box(1, 0, 1, 15, 1, 15, "frame"),
-        box(2, 1, 3, 14, 10, 13, "body_oxygen"),
-        {**box(4, 10, 5, 12, 11, 11, "frame"), "faces": {"up": "intake"}},
-        box(6, 4, 2, 10, 8, 3, "frame"),
-        box(3, 1, 13, 6, 9, 15, "bottle"),
-        box(10, 1, 13, 13, 9, 15, "bottle"),
+    """
+    L'extracteur, face avant au nord, à la façon de MOXIE sur Mars : un socle plein, un caisson blanc presque plein (le
+    dessous et le dos restent pleins pour les tuyaux), en façade une prise d'air en creux sous son voyant, sur le flanc
+    ouest des ailettes de radiateur, sur le dessus le compresseur et son ventilateur ; au dos, deux bouteilles bleues
+    debout, leurs bagues et leurs robinets, reliées au caisson par un collecteur.
+    """
+    parts = [
+        # Socle et caisson.
+        box(0, 0, 0, 16, 2, 16, "frame"),
+        box(1, 2, 1, 15, 11, 12, "body_oxygen"),
+        # Façade : le cadre de la prise d'air, la grille en retrait, le voyant au-dessus.
+        box(3, 3, 0.5, 13, 4, 1, "frame"),
+        box(3, 9, 0.5, 13, 10, 1, "frame"),
+        box(3, 4, 0.5, 4, 9, 1, "frame"),
+        box(12, 4, 0.5, 13, 9, 1, "frame"),
+        {**box(4, 4, 0.75, 12, 9, 1, "frame"), "faces": {"north": "intake"}},
+        box(7, 10, 0.5, 9, 10.75, 1, "light"),
+        # Le dessus : le compresseur, son ventilateur en creux dans son cadre.
+        box(3, 11, 3, 13, 12, 10, "frame"),
+        {**box(5, 12, 4.5, 11, 13, 8.5, "frame"), "faces": {"up": "intake"}},
+        # Au dos : le collecteur, les deux bouteilles, leurs bagues et leurs robinets.
+        box(6.5, 6, 12, 9.5, 7, 13, "frame"),
+        box(2.5, 2, 12, 6.5, 12, 15.5, "bottle"),
+        box(9.5, 2, 12, 13.5, 12, 15.5, "bottle"),
+        box(3.5, 12, 13, 5.5, 13, 14.5, "frame"),
+        box(10.5, 12, 13, 12.5, 13, 14.5, "frame"),
     ]
+    # Les ailettes du radiateur, sur le flanc ouest.
+    for y in (3.5, 5.5, 7.5, 9.5):
+        parts.append(box(0.5, y, 3, 1, y + 1, 10, "frame"))
+    return parts
 
 
 def main():

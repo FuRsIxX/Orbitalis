@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "orbitalis:block/tarantula_crystal"
+    "model": "orbitalis:block/exploration/tarantula_crystal"
   }
 }

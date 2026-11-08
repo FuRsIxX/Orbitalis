@@ -1131,6 +1131,67 @@ public final class WorldPreview {
         }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 20));
         // Les chapitres du manuel sur le voyage interstellaire, un par vue.
         // Les infobulles des pièces de fusée, sans Maj : la technologie, la ligne en clair, l'invite au détail.
+        // Les modèles refaits, en case d'inventaire : le cristal de la Tarentule, l'extracteur d'oxygène, le poste de
+        // pilotage et le pupitre du chantier naval.
+        SHOTS.add(new Shot("remade_icons", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();
+            for (net.minecraft.world.level.ItemLike item : java.util.List.<net.minecraft.world.level.ItemLike>of(ModBlocks.TARANTULA_CRYSTAL.get(),
+                    ModBlocks.OXYGEN_EXTRACTOR.get(), ModBlocks.SHIP_HELM.get(), ModBlocks.SHIPYARD_CONSOLE.get())) {
+                stacks.add(new net.minecraft.world.item.ItemStack(item));
+            }
+            net.minecraft.client.Minecraft.getInstance().gui.setScreen(new ItemSheetScreen(stacks));
+        }), -8.5, 2.6, -25.5, 180.0F, 14.0F, 20));
+        SHOTS.add(new Shot("remade_icons_closed", level -> closeScreen(), -8.5, 2.6, -25.5, 180.0F, 14.0F, 4));
+        // Les mêmes, posés au sol, face à la caméra : trois cristaux, l'extracteur, le poste et le pupitre.
+        SHOTS.add(new Shot("remade_placed", level -> {
+            fill(level, -6, -1, 30, 6, -1, 36, "minecraft:smooth_stone");
+            fill(level, -6, 0, 30, 6, 4, 36, "minecraft:air");
+            set(level, -5, 0, 32, "orbitalis:tarantula_crystal");
+            set(level, -4, 0, 33, "orbitalis:tarantula_crystal");
+            set(level, -5, 0, 34, "orbitalis:tarantula_crystal");
+            set(level, -2, 0, 32, "orbitalis:oxygen_extractor[facing=north]");
+            set(level, 1, 0, 32, "orbitalis:ship_helm[facing=north]");
+            set(level, 4, 0, 32, "orbitalis:shipyard_console[facing=north]");
+            hover(level);
+        }, -0.5, 0.6, 29.6, 0.0F, 18.0F, 40));
+        SHOTS.add(look("remade_placed_side", level -> hover(level), 6.5, 0.8, 29.5, 1.0, 0.4, 32.5, 10));
+        SHOTS.add(look("remade_crystals", level -> hover(level), -2.6, -0.2, 31.0, -4.5, 0.4, 33.0, 10));
+        SHOTS.add(look("remade_helm", level -> hover(level), 1.5, -0.1, 30.2, 1.5, 0.6, 32.5, 10));
+        SHOTS.add(look("remade_console", level -> hover(level), 4.5, 0.0, 30.2, 4.5, 0.5, 32.5, 10));
+        SHOTS.add(look("remade_extractor", level -> hover(level), -1.0, -0.1, 30.3, -1.6, 0.5, 32.5, 10));
+        // Les portes ouvertes : un rayon visé au milieu de l'ouverture doit toucher la porte, mais on doit passer.
+        SHOTS.add(new Shot("door_aim", level -> {
+            fill(level, -6, 0, 40, 6, 3, 44, "minecraft:air");
+            BlockPos airlock = at(-3, 0, 42);
+            net.minecraft.world.level.block.state.BlockState lower = ModBlocks.AIRLOCK_DOOR.get().defaultBlockState().setValue(com.orbitalis.phase2.station.AirlockDoorBlock.FACING, Direction.NORTH)
+                    .setValue(com.orbitalis.phase2.station.AirlockDoorBlock.PHASE, com.orbitalis.phase2.station.AirlockDoorBlock.Phase.OPEN)
+                    .setValue(com.orbitalis.phase2.station.AirlockDoorBlock.STEP, com.orbitalis.phase2.station.AirlockDoorBlock.MAX_STEP);
+            level.setBlock(airlock, lower, net.minecraft.world.level.block.Block.UPDATE_ALL);
+            level.setBlock(airlock.above(), lower.setValue(com.orbitalis.phase2.station.AirlockDoorBlock.HALF,
+                    net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), net.minecraft.world.level.block.Block.UPDATE_ALL);
+            BlockPos glass = at(2, 0, 42);
+            net.minecraft.world.level.block.state.BlockState glassState = ModBlocks.GLASS_DOOR.get().defaultBlockState().setValue(com.orbitalis.phase2.station.GlassDoorBlock.FACING, Direction.NORTH)
+                    .setValue(com.orbitalis.phase2.station.GlassDoorBlock.OPEN, true);
+            level.setBlock(glass, glassState, net.minecraft.world.level.block.Block.UPDATE_ALL);
+            com.orbitalis.phase2.station.GlassDoorBlock.place(level, glass, glassState);
+            for (BlockPos door : java.util.List.of(airlock, glass)) {
+                net.minecraft.world.phys.Vec3 from = net.minecraft.world.phys.Vec3.atCenterOf(door).add(0.0, 0.3, -2.5);
+                net.minecraft.world.phys.Vec3 to = from.add(0.0, 0.0, 5.0);
+                var hit = level.clip(new net.minecraft.world.level.ClipContext(from, to, net.minecraft.world.level.ClipContext.Block.OUTLINE,
+                        net.minecraft.world.level.ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
+                net.minecraft.world.level.block.state.BlockState there = level.getBlockState(door);
+                Orbitalis.LOGGER.info("APERCU porte ouverte {} : visée {} {}, collision vide {}", there.getBlock(), hit.getType(), hit.getBlockPos(),
+                        there.getCollisionShape(level, door).isEmpty());
+            }
+        }, 0.0, 0.0, 37.0, 0.0F, 8.0F, 30));
+        // Le fond de Mars, loin de la carte de test (des régions neuves) : on y creuse une salle, et le sol montre la bedrock.
+        SHOTS.add(new Shot("mars_bedrock_go", level -> {
+            hover(level);
+            run(level, "effect give @a minecraft:night_vision 600 0 true");
+            run(level, "execute in orbitalis:mars run tp @a 5000.5 -56 4996.5 0 55");
+        }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 80));
+        SHOTS.add(new Shot("mars_bedrock", level -> run(level, "execute in orbitalis:mars run fill 4994 -62 4994 5006 -54 5006 minecraft:air"),
+                Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 30));
         SHOTS.add(new Shot("part_tooltips", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
             java.util.List<net.minecraft.world.item.ItemStack> stacks = new java.util.ArrayList<>();
             for (net.minecraft.world.level.ItemLike item : java.util.List.<net.minecraft.world.level.ItemLike>of(ModItems.KEROLOX_ENGINE.get(),

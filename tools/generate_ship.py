@@ -197,14 +197,25 @@ RING_DRIVE_ITEM = [
     box(1.5, 12, 1.5, 14.5, 13, 14.5, "copper"),
 ]
 
+# Le poste de pilotage, face avant au nord, comme un cockpit : un socle et son pied, le plan de travail incliné vers le
+# pilote (son clavier, sa manette des gaz, ses voyants), et derrière, le grand écran de navigation entre deux écrans
+# latéraux tournés vers le pilote.
+DESK = {"angle": -22.5, "axis": "x", "origin": [8, 8.5, 10]}
 HELM = [
     box(1, 0, 3, 15, 1, 15, "dark"),
-    box(3, 1, 6, 13, 7, 13, "console"),
-    {**box(0, 7, 1, 16, 9, 10, "console"), "faces": {"up": "keys"}},
-    box(0, 7, 10, 16, 16, 12, "dark"),
-    gs.front_only(gs.whole(box(1, 9.5, 9.7, 15, 15.5, 10, "helm_screen"))),
-    box(12, 9, 4, 13, 11.5, 5, "copper"), box(10.5, 9, 4, 11.5, 10.5, 5, "copper"),
-    box(1.5, 7.6, 0.6, 3, 8.4, 1, "led"),
+    box(3, 1, 7, 13, 7.5, 14, "console"),
+    {**box(0.5, 7, 1, 15.5, 8.5, 10, "console"), "rotation": DESK},
+    {**box(4, 8.5, 3, 12, 9, 7, "keys"), "rotation": DESK},
+    {**box(12.5, 8.5, 5, 13.5, 11, 6, "copper"), "rotation": DESK},
+    {**box(1.5, 8.5, 2, 3, 8.9, 3, "led"), "rotation": DESK},
+    {**box(1.5, 8.5, 4, 3, 8.9, 5, "led"), "rotation": DESK},
+    box(3, 8, 10, 13, 16, 12, "dark"),
+    gs.front_only(gs.whole(box(3.75, 9.25, 9.7, 12.25, 15.25, 10, "helm_screen"))),
+    {**box(0, 9, 9.5, 3.5, 15, 11.5, "dark"), "rotation": {"angle": -22.5, "axis": "y", "origin": [3.5, 9, 11.5]}},
+    {**gs.front_only(gs.whole(box(0.5, 10, 9.2, 3, 14, 9.5, "screen"))), "rotation": {"angle": -22.5, "axis": "y", "origin": [3.5, 9, 11.5]}},
+    {**box(12.5, 9, 9.5, 16, 15, 11.5, "dark"), "rotation": {"angle": 22.5, "axis": "y", "origin": [12.5, 9, 11.5]}},
+    {**gs.front_only(gs.whole(box(13, 10, 9.2, 15.5, 14, 9.5, "screen"))), "rotation": {"angle": 22.5, "axis": "y", "origin": [12.5, 9, 11.5]}},
+    box(7, 15.5, 9.7, 9, 15.75, 10, "led"),
 ]
 
 

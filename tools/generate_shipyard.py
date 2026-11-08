@@ -54,14 +54,21 @@ def yard_screen(step, frames=8):
     return img
 
 
-# Le pupitre, face avant au nord : un socle, un pied, la tablette du clavier en saillie, et l'écran dressé derrière.
+# Le pupitre, face avant au nord, en table de plans : un socle, un caisson, le plan du vaisseau affiché à plat sur le
+# dessus dans son cadre, et en façade un bandeau de commandes incliné vers celui qui se tient devant, ses voyants.
+STRIP = {"angle": -22.5, "axis": "x", "origin": [8, 9, 3]}
 CONSOLE = [
-    box(1, 0, 2, 15, 1, 15, "dark"),
-    box(3, 1, 5, 13, 8, 13, "console"),
-    {**box(1, 8, 1, 15, 10, 12, "console"), "faces": {"up": "keys"}},
-    box(1, 8, 12, 15, 16, 14, "dark"),
-    gs.front_only(gs.whole(box(2, 10.5, 11.7, 14, 15.5, 12, "yard_screen"))),
-    box(12.5, 15.6, 11.8, 13.5, 15.9, 12, "led"),
+    box(1, 0, 1, 15, 1, 15, "dark"),
+    box(2, 1, 3, 14, 10, 14, "console"),
+    box(1, 10, 2, 15, 11.5, 3.5, "dark"),
+    box(1, 10, 13.5, 15, 11.5, 15, "dark"),
+    box(1, 10, 3.5, 2.5, 11.5, 13.5, "dark"),
+    box(13.5, 10, 3.5, 15, 11.5, 13.5, "dark"),
+    {**gs.whole(box(2.5, 10, 3.5, 13.5, 10.75, 13.5, "yard_screen")), "only": ("up",)},
+    {**box(2, 8, 0.5, 14, 9, 3, "console"), "rotation": STRIP},
+    {**box(3, 9, 1, 10, 9.4, 2.5, "keys"), "rotation": STRIP},
+    {**box(11, 9, 1.25, 12, 9.4, 2.25, "led"), "rotation": STRIP},
+    box(4, 3, 2.5, 12, 4, 3, "dark"),
 ]
 
 
