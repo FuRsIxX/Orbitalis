@@ -402,14 +402,25 @@ public final class WarpFx {
             }
             return grey(0, 255);
         }
-        // Le bord des ondes de choc : de plus en plus vif vers l'extérieur, et des étincelles ici et là.
-        float rise = v / 15.0F;
-        int alpha = Math.round(rise * rise * 7.0F) * 32;
-        int hash = (u * 73 + v * 151 + u * v * 17) % 11;
-        if (hash == 0 && v > 3) {
-            alpha = Math.min(255, alpha + 110);
+        // L'onde de choc, de l'intérieur (en haut) vers son front (en bas) : un voile qui s'efface vers l'intérieur, des
+        // filaments d'énergie de longueurs inégales qui partent du front, quelques étincelles, une crête vive, et le front
+        // lui-même, blanc et cranté.
+        int column = (u * 7 + 3) % 16;
+        if (v >= 14) {
+            return (u % 5 == 0 && v == 15) ? grey(0, 255) : grey(255, 255);
         }
-        return grey(alpha, v >= 13 ? 255 : 215);
+        if (v >= 12) {
+            return grey(230, 240);
+        }
+        int filament = 3 + (column * 5 + 1) % 8;
+        if (v >= 12 - filament && u % 2 == column % 2) {
+            float strength = 1.0F - (12 - v) / (float) (filament + 1);
+            return grey(90 + Math.round(strength * 4.0F) * 40, 225);
+        }
+        if ((u * 31 + v * 17) % 23 == 0 && v > 3) {
+            return grey(255, 255);
+        }
+        return grey(20 + v * 9, 200);
     }
 
     /**
@@ -509,33 +520,57 @@ public final class WarpFx {
      * bords, en s'effaçant ; son bord extérieur est vif, il s'estompe vers l'intérieur. Par la verrière, on le voit
      * passer sur le vaisseau.
      */
+    /** La durée d'une onde de choc, en ticks. */
+    private static final float SHOCK_LIFE = 30.0F;
+
     private static void shocks(BufferBuilder builder, float t, Vector3f forward, Vector3f right) {
         for (int k = 0; k < SHOCKS.length; k++) {
             float dt = t - SHOCKS[k];
-            if (dt < 0.0F || dt > 45.0F) {
+            if (dt < 0.0F || dt > SHOCK_LIFE) {
                 continue;
             }
-            // Lente au début, pour qu'on la voie s'ouvrir dans la verrière, puis de plus en plus large.
-            float radius = 1.0F + 160.0F * (float) Math.pow(dt / 45.0F, 1.6F);
-            float thickness = 1.2F + radius * 0.18F;
-            float alpha = (float) Math.pow(1.0F - dt / 45.0F, 1.2F);
-            float along = 40.0F - dt * 0.3F;
+            // Rapide : elle traverse la verrière en quelques ticks, puis s'élargit encore en ralentissant.
+            float life = dt / SHOCK_LIFE;
+            float radius = 1.0F + 175.0F * (float) Math.pow(life, 1.15F);
+            float thickness = 2.0F + radius * 0.22F;
+            float alpha = (float) Math.pow(1.0F - life, 1.1F);
+            float along = 40.0F - dt * 0.6F;
             int edge = k == 1 ? band2() : 0xFFFFFF;
             int body = band();
-            int segments = 72;
-            for (int s = 0; s < segments; s++) {
-                float a0 = s * Mth.TWO_PI / segments;
-                float a1 = (s + 1) * Mth.TWO_PI / segments;
-                float inner = radius - thickness;
-                float middle = radius - thickness * 0.3F;
-                quad(builder, at(forward, right, along, inner, a0), at(forward, right, along, inner, a1),
-                        at(forward, right, along, middle, a1), at(forward, right, along, middle, a0), 0.5F, 0.5F, 1.0F, 0.75F,
-                        argb(0.0F, body), argb(0.0F, body), argb(alpha * 0.7F, body), argb(alpha * 0.7F, body));
-                quad(builder, at(forward, right, along, middle, a0), at(forward, right, along, middle, a1),
-                        at(forward, right, along, radius, a1), at(forward, right, along, radius, a0), 0.5F, 0.75F, 1.0F, 1.0F,
-                        argb(alpha * 0.7F, body), argb(alpha * 0.7F, body), argb(alpha, edge), argb(alpha, edge));
+            ring(builder, forward, right, along, radius, thickness, alpha, body, edge, dt);
+            // L'écho : une onde plus faible, un peu en retrait.
+            ring(builder, forward, right, along + 3.0F, radius * 0.8F, thickness * 0.5F, alpha * 0.4F, body, body, dt + 7.0F);
+            // Des éclats projetés vers l'extérieur, au passage du front.
+            RandomSource random = RandomSource.createThreadLocalInstance(700L + k);
+            for (int i = 0; i < 40; i++) {
+                float angle = random.nextFloat() * Mth.TWO_PI;
+                float reach = 1.05F + 0.1F * random.nextFloat();
+                streak(builder, at(forward, right, along, radius * 0.97F, angle), at(forward, right, along, radius * reach, angle),
+                        0.35F + radius * 0.004F, argb(alpha * 0.8F, edge));
             }
         }
+    }
+
+    /**
+     * Un anneau d'onde de choc : une bande, de l'intérieur effacé à son front blanc ; son bord ondule un peu, comme un
+     * souffle, au lieu d'être un cercle parfait.
+     */
+    private static void ring(BufferBuilder builder, Vector3f forward, Vector3f right, float along, float radius, float thickness,
+            float alpha, int body, int edge, float phase) {
+        int segments = 48;
+        for (int s = 0; s < segments; s++) {
+            float a0 = s * Mth.TWO_PI / segments;
+            float a1 = (s + 1) * Mth.TWO_PI / segments;
+            float r0 = radius * wobble(a0, phase);
+            float r1 = radius * wobble(a1, phase);
+            quad(builder, at(forward, right, along, r0 - thickness, a0), at(forward, right, along, r1 - thickness, a1),
+                    at(forward, right, along, r1, a1), at(forward, right, along, r0, a0), 0.5F, 0.5F, 1.0F, 1.0F,
+                    argb(alpha * 0.35F, body), argb(alpha * 0.35F, body), argb(alpha, edge), argb(alpha, edge));
+        }
+    }
+
+    private static float wobble(float angle, float phase) {
+        return 1.0F + 0.035F * Mth.sin(angle * 9.0F + phase * 0.8F) + 0.02F * Mth.sin(angle * 23.0F - phase * 1.3F);
     }
 
     /**
@@ -547,7 +582,7 @@ public final class WarpFx {
         float v = speed(t);
         boolean shock = false;
         for (float at : SHOCKS) {
-            shock |= t >= at && t <= at + 45.0F;
+            shock |= t >= at && t <= at + SHOCK_LIFE;
         }
         if (v <= 0.01F && !shock) {
             return;
