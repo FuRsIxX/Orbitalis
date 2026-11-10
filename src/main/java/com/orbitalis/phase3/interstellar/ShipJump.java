@@ -54,8 +54,8 @@ public final class ShipJump {
     public static final int JUMP_COST = 4;
     /** Durée du compte à rebours, en ticks. */
     public static final int COUNTDOWN = 100;
-    /** Le temps que les étoiles s'étirent, entre la fin du compte à rebours et le déplacement du vaisseau, en ticks. */
-    public static final int WARP_LEAD = 40;
+    /** Le temps de l'accélération, entre la fin du compte à rebours et le déplacement du vaisseau, en ticks (WarpFx.STRETCH). */
+    public static final int WARP_LEAD = 60;
 
     /** Ce qui empêche de sauter, dans l'ordre où on le vérifie. */
     public enum Hold {
