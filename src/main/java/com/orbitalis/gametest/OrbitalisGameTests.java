@@ -2259,7 +2259,9 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         BlockPos absolute = helper.absolutePos(center);
         StationManager.build(helper.getLevel(), absolute);
         helper.assertTrue(helper.getBlockState(center.offset(0, 0, 2)).is(ModBlocks.DOCKING_PORT.get())
-                && helper.getBlockState(center.offset(2, 0, 0)).is(ModBlocks.STATION_WINDOW.get())
+                && helper.getBlockState(center.offset(2, 0, 0)).is(ModBlocks.STATION_PORT.get())
+                && helper.getBlockState(center.offset(2, -1, 0)).is(ModBlocks.STATION_PORT.get())
+                && helper.getBlockState(center.offset(2, 0, 1)).is(ModBlocks.STATION_WINDOW.get())
                 && helper.getBlockState(center.above(2)).is(ModBlocks.LIFE_SUPPORT.get()) && helper.getBlockState(center).isAir(),
                 "le module central n'est pas bâti comme prévu");
         helper.assertTrue(!StationAir.isBreathable(helper.getLevel(), absolute), "sans électricité, pas d'air");
@@ -2285,12 +2287,15 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             }
             helper.assertTrue(stage[0] >= 2 && air, "la paroi réparée, l'air devrait revenir");
             if (stage[0] == 2) {
-                // Un module d'extension contre le mur ouest : refusé au plafond, accepté sur le mur, passage ouvert.
-                helper.assertTrue(StationManager.expand(helper.getLevel(), absolute.above(2).west(), Direction.UP) != null,
-                        "un module ne s'accole pas au plafond");
-                helper.assertTrue(StationManager.expand(helper.getLevel(), absolute.offset(-2, 0, 1), Direction.WEST) == null,
-                        "le module d'extension aurait dû s'accoler");
-                helper.assertTrue(helper.getBlockState(center.offset(-2, 0, 1)).isAir() && helper.getBlockState(center.offset(-2, -1, 1)).isAir()
+                // Un module d'extension sur le port ouest : refusé ailleurs que sur un port, accepté sur le port, passage
+                // ouvert, et un nouveau port au fond.
+                helper.assertTrue(StationManager.expand(helper.getLevel(), absolute.above(2).west()) != null,
+                        "un module ne s'accroche que sur un port");
+                helper.assertTrue(StationManager.expand(helper.getLevel(), absolute.offset(-2, -1, 0)) == null,
+                        "le module d'extension aurait dû s'accrocher");
+                helper.assertTrue(helper.getBlockState(center.offset(-2, 0, 0)).isAir() && helper.getBlockState(center.offset(-2, -1, 0)).isAir()
+                        && helper.getBlockState(center.offset(-6, 0, 0)).is(ModBlocks.STATION_PORT.get())
+                        && helper.getBlockState(center.offset(-6, -1, 0)).is(ModBlocks.STATION_PORT.get())
                         && helper.getBlockState(center.offset(-6, 0, 1)).is(ModBlocks.STATION_WINDOW.get()), "module d'extension mal bâti");
                 stage[0] = 3;
             }
@@ -2312,27 +2317,29 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         BlockPos center = new BlockPos(8, 4, 8);
         BlockPos absolute = helper.absolutePos(center);
         StationManager.build(level, absolute);
-        helper.assertTrue(helper.getBlockState(center.offset(0, -1, -2)).is(ModBlocks.STATION_TERMINAL.get())
-                && helper.getBlockState(center.offset(-2, -1, 0)).is(ModBlocks.STATION_BATTERY.get())
+        helper.assertTrue(helper.getBlockState(center.offset(-1, -1, -2)).is(ModBlocks.STATION_TERMINAL.get())
+                && helper.getBlockState(center.offset(1, -1, -2)).is(ModBlocks.STATION_BATTERY.get())
                 && helper.getBlockState(center.offset(0, -2, 0)).is(ModBlocks.STATION_FLOOR.get())
                 && helper.getBlockState(center.offset(1, 0, 2)).is(ModBlocks.STATION_PANEL.get()), "le module central n'est pas aménagé");
 
-        // Laboratoire contre le mur ouest, sas de sortie contre le mur est.
-        helper.assertTrue(com.orbitalis.phase2.station.StationModules.attach(level, absolute.offset(-2, 0, 1), Direction.WEST,
-                com.orbitalis.phase2.station.ModuleType.LABORATORY) == null, "le laboratoire aurait dû s'accoler");
+        // Laboratoire sur le port ouest, sas de sortie sur le port est. Pas de module hors d'un port.
+        helper.assertTrue(com.orbitalis.phase2.station.StationModules.attach(level, absolute.offset(-2, 0, 1),
+                com.orbitalis.phase2.station.ModuleType.LABORATORY) != null, "un module ne s'accroche que sur un port");
+        helper.assertTrue(com.orbitalis.phase2.station.StationModules.attach(level, absolute.offset(-2, 0, 0),
+                com.orbitalis.phase2.station.ModuleType.LABORATORY) == null, "le laboratoire aurait dû s'accrocher");
         int racks = 0;
-        for (BlockPos pos : BlockPos.betweenClosed(absolute.offset(-8, -2, -1), absolute.offset(-3, 2, 3))) {
+        for (BlockPos pos : BlockPos.betweenClosed(absolute.offset(-8, -2, -2), absolute.offset(-3, 2, 2))) {
             racks += level.getBlockState(pos).is(ModBlocks.LAB_RACK.get()) ? 1 : 0;
         }
         helper.assertTrue(racks == 8, "le laboratoire devrait avoir huit baies : " + racks);
-        helper.assertTrue(helper.getBlockState(center.offset(-8, -1, 1)).is(ModBlocks.STATION_TERMINAL.get())
-                && helper.getBlockState(center.offset(-8, 0, 1)).is(ModBlocks.STATION_WINDOW.get())
-                && helper.getBlockState(center.offset(-2, -1, 1)).isAir(), "laboratoire mal bâti");
-        helper.assertTrue(com.orbitalis.phase2.station.StationModules.attach(level, absolute.offset(2, 0, 0), Direction.EAST,
-                com.orbitalis.phase2.station.ModuleType.AIRLOCK) == null, "le sas aurait dû s'accoler");
+        helper.assertTrue(helper.getBlockState(center.offset(-8, -1, 0)).is(ModBlocks.STATION_TERMINAL.get())
+                && helper.getBlockState(center.offset(-8, 0, 0)).is(ModBlocks.STATION_WINDOW.get())
+                && helper.getBlockState(center.offset(-2, -1, 0)).isAir(), "laboratoire mal bâti");
+        helper.assertTrue(com.orbitalis.phase2.station.StationModules.attach(level, absolute.offset(2, 0, 0),
+                com.orbitalis.phase2.station.ModuleType.AIRLOCK) == null, "le sas aurait dû s'accrocher");
         helper.assertTrue(helper.getBlockState(center.offset(2, -1, 0)).is(ModBlocks.AIRLOCK_DOOR.get())
                 && helper.getBlockState(center.offset(5, 0, 0)).is(ModBlocks.AIRLOCK_DOOR.get()), "le sas n'a pas ses deux portes");
-        helper.assertTrue(StationModules.attach(level, absolute.offset(2, 0, 0), Direction.EAST, com.orbitalis.phase2.station.ModuleType.CARGO) != null,
+        helper.assertTrue(StationModules.attach(level, absolute.offset(2, 0, 0), com.orbitalis.phase2.station.ModuleType.CARGO) != null,
                 "un module ne se bâtit pas sur un autre");
 
         // Un bac de culture planté, sous tension : la culture gagne un stade en STAGE_TICKS ticks.
@@ -2349,7 +2356,7 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
 
         // Le réseau électrique : il charge la batterie, puis y puise ; il refuse ce qu'il n'a pas.
         // (La batterie du module central part chargée à moitié ; on en pose une neuve, à l'écart.)
-        helper.assertTrue(helper.getBlockEntity(center.offset(-2, -1, 0), com.orbitalis.phase2.station.StationBatteryBlockEntity.class)
+        helper.assertTrue(helper.getBlockEntity(center.offset(1, -1, -2), com.orbitalis.phase2.station.StationBatteryBlockEntity.class)
                 .getEnergy().getEnergy() == com.orbitalis.phase2.station.StationBatteryBlockEntity.CAPACITY / 2, "la batterie du module central part chargée à moitié");
         helper.setBlock(center.offset(0, 7, 0), ModBlocks.STATION_BATTERY.get());
         com.orbitalis.phase2.station.StationBatteryBlockEntity battery = helper.getBlockEntity(center.offset(0, 7, 0),
@@ -2392,7 +2399,7 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
                 helper.assertTrue(air && unit.getVolume() == 66, "volume avec le laboratoire incorrect : " + unit.getVolume());
                 helper.assertTrue(unit.getPlants() == 1 && unit.consumption() == LifeSupportBlockEntity.ENERGY_PER_TICK - LifeSupportBlockEntity.PLANT_SAVING,
                         "le bac planté aurait dû alléger le générateur : " + unit.getPlants());
-                com.orbitalis.phase2.station.LabRackBlockEntity rack = helper.getBlockEntity(center.offset(-4, -1, 2), com.orbitalis.phase2.station.LabRackBlockEntity.class);
+                com.orbitalis.phase2.station.LabRackBlockEntity rack = helper.getBlockEntity(center.offset(-4, -1, 1), com.orbitalis.phase2.station.LabRackBlockEntity.class);
                 helper.assertTrue(rack.getStatus() == com.orbitalis.phase2.station.LabRackBlockEntity.Status.NOT_IN_ORBIT, "pas d'expérience sans apesanteur");
                 com.orbitalis.phase2.station.AirlockDoorBlock.setPhase(level, inner, com.orbitalis.phase2.station.AirlockDoorBlock.Phase.OPEN);
                 com.orbitalis.phase2.station.AirlockDoorBlock.hold(level, inner, true);
@@ -3864,8 +3871,24 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         BlockPos center = helper.absolutePos(new BlockPos(3, 90, 3));
         keepChunksLoaded(helper, center.east(20), 3);
         StationManager.build(level, center);
-        Component problem = StationModules.attach(level, center.east(2), Direction.EAST, com.orbitalis.phase2.station.ModuleType.SHIPYARD);
+        Component problem = StationModules.attach(level, center.east(2), com.orbitalis.phase2.station.ModuleType.SHIPYARD);
         helper.assertTrue(problem == null, "le chantier aurait dû s'accoler : " + (problem == null ? "" : problem.getString()));
+        // Un nœud sur le port nord : trois ports neufs (au fond et sur ses flancs) ; une coupole sur son flanc ouest ; le
+        // port pris, plus rien ne s'y accroche.
+        helper.assertTrue(StationModules.attach(level, center.north(2), com.orbitalis.phase2.station.ModuleType.NODE) == null,
+                "le nœud aurait dû s'accrocher");
+        helper.assertTrue(level.getBlockState(center.north(8)).is(ModBlocks.STATION_PORT.get())
+                && level.getBlockState(center.north(5).east(2)).is(ModBlocks.STATION_PORT.get())
+                && level.getBlockState(center.north(5).west(2).below()).is(ModBlocks.STATION_PORT.get())
+                && level.getBlockState(center.north(2)).isAir(), "le nœud n'a pas ses trois ports : " + level.getBlockState(center.north(8))
+                + " / " + level.getBlockState(center.north(5).east(2)) + " / " + level.getBlockState(center.north(5).west(2).below())
+                + " / " + level.getBlockState(center.north(2)));
+        helper.assertTrue(level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(center).inflate(12)).isEmpty(),
+                "un port ouvert ne doit rien laisser tomber");
+        helper.assertTrue(StationModules.attach(level, center.north(5).west(2), com.orbitalis.phase2.station.ModuleType.CUPOLA) == null
+                && level.getBlockState(center.north(5).west(5)).is(ModBlocks.CUPOLA_WINDOW.get()), "la coupole aurait dû s'accrocher au nœud");
+        helper.assertTrue(StationModules.attach(level, center.north(5).west(2), com.orbitalis.phase2.station.ModuleType.CARGO) != null,
+                "un port pris ne reçoit plus de module");
         BlockPos consolePos = center.east(5).below();
         helper.assertTrue(level.getBlockEntity(consolePos) instanceof com.orbitalis.phase3.interstellar.ShipyardConsoleBlockEntity,
                 "pas de pupitre face à la verrière");

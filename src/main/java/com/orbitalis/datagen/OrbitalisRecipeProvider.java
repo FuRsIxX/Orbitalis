@@ -935,6 +935,15 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('A', ModTags.Items.PLATES_ALUMINUM)
                 .unlockedBy("has_aluminum_plate", has(ModTags.Items.PLATES_ALUMINUM))
                 .save(output, key("station_truss"));
+        // Port de jonction : une bague de titane dans la coque, où s'accroche un module.
+        shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.STATION_PORT)
+                .pattern("HTH")
+                .pattern("T T")
+                .pattern("HTH")
+                .define('H', ModBlocks.STATION_HULL)
+                .define('T', ModItems.TITANIUM_PLATE)
+                .unlockedBy("has_station_hull", has(ModBlocks.STATION_HULL))
+                .save(output, key("station_port"));
         shaped(RecipeCategory.REDSTONE, ModItems.STATION_HATCH)
                 .pattern("HH")
                 .pattern("WH")
@@ -1065,6 +1074,16 @@ public class OrbitalisRecipeProvider extends RecipeProvider {
                 .define('H', ModBlocks.STATION_HULL)
                 .unlockedBy("has_cargo_rack", has(ModBlocks.CARGO_RACK))
                 .save(output, key("cargo_module"));
+        // Nœud : un carrefour à trois ports de jonction, éclairé.
+        shaped(RecipeCategory.MISC, ModItems.NODE_MODULE)
+                .pattern("HPH")
+                .pattern("PLP")
+                .pattern("HHH")
+                .define('H', ModBlocks.STATION_HULL)
+                .define('P', ModBlocks.STATION_PORT)
+                .define('L', ModBlocks.STATION_LIGHT)
+                .unlockedBy("has_station_port", has(ModBlocks.STATION_PORT))
+                .save(output, key("node_module"));
         shaped(RecipeCategory.MISC, ModItems.CUPOLA_MODULE)
                 .pattern("WWW")
                 .pattern("WHW")

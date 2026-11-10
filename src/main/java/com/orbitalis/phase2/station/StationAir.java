@@ -20,8 +20,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class StationAir {
     /** Volume maximal qu'un générateur peut pressuriser, en cases. Au-delà, on considère que la pièce fuit. */
     public static final int MAX_VOLUME = 4000;
-    /** Distance maximale entre le générateur et une case de son volume, en blocs : une station de plusieurs modules. */
-    private static final int MAX_REACH = 64;
+    /**
+     * Distance maximale entre le générateur et une case de son volume, en blocs : une station de plusieurs nœuds, d'un
+     * bout à l'autre de sa portée (voir {@link StationManager#STATION_REACH}).
+     */
+    private static final int MAX_REACH = 128;
 
     /** Volume pressurisé par chaque générateur en service, repéré par sa position. */
     private static final Map<GlobalPos, Set<Long>> ROOMS = new ConcurrentHashMap<>();

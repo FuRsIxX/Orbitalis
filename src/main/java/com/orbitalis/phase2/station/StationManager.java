@@ -260,11 +260,11 @@ public final class StationManager {
     }
 
     /**
-     * Construit le module central : une coque de cinq blocs de côté autour d'une pièce de trois, avec un hublot
-     * au milieu des faces nord, est et ouest, le sas au milieu de la face sud, le générateur d'air au milieu
-     * du plafond, une aile de cinq panneaux solaires en travers du toit et une antenne. Dedans, la pièce est
-     * tapissée de panneaux capitonnés sur un plancher antidérapant ; le terminal de la station est sous le hublot
-     * nord, une batterie sous le hublot ouest.
+     * Construit le module central : une coque de cinq blocs de côté autour d'une pièce de trois, avec un port de
+     * jonction au milieu des faces nord, est et ouest, flanqué de deux hublots, le sas d'amarrage au milieu de la face
+     * sud, le générateur d'air au milieu du plafond, une aile de cinq panneaux solaires en travers du toit et une
+     * antenne. Dedans, la pièce est tapissée de panneaux capitonnés sur un plancher antidérapant ; le terminal de la
+     * station et une batterie encadrent le port nord.
      */
     public static void build(ServerLevel level, BlockPos center) {
         BlockState hull = ModBlocks.STATION_HULL.get().defaultBlockState();
@@ -279,12 +279,8 @@ public final class StationManager {
                         level.removeBlock(pos, false);
                         continue;
                     }
-                    boolean faceCenter = Math.abs(dx) + Math.abs(dy) + Math.abs(dz) == r;
-                    boolean windowSide = faceCenter && dy == 0 && dz != r;
                     BlockState state;
-                    if (windowSide) {
-                        state = window;
-                    } else if (edges > 1) {
+                    if (edges > 1) {
                         state = hull;
                     } else if (dy == -r) {
                         state = ModBlocks.STATION_FLOOR.get().defaultBlockState();
@@ -298,12 +294,23 @@ public final class StationManager {
                 }
             }
         }
-        level.setBlockAndUpdate(center.offset(0, -1, -r), ModBlocks.STATION_TERMINAL.get().defaultBlockState()
+        // Les ports de jonction, où s'accrocheront les modules, chacun entre deux hublots.
+        for (Direction out : new Direction[] {Direction.NORTH, Direction.EAST, Direction.WEST}) {
+            BlockPos middle = center.relative(out, r);
+            level.setBlock(middle.below(), StationPortBlock.state(out, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER),
+                    net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
+            level.setBlock(middle, StationPortBlock.state(out, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER),
+                    net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
+            level.setBlockAndUpdate(middle.relative(out.getClockWise()), window);
+            level.setBlockAndUpdate(middle.relative(out.getCounterClockWise()), window);
+        }
+        level.setBlockAndUpdate(terminalOf(center), ModBlocks.STATION_TERMINAL.get().defaultBlockState()
                 .setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH));
-        level.setBlockAndUpdate(center.offset(-r, -1, 0), ModBlocks.STATION_BATTERY.get().defaultBlockState()
-                .setValue(HorizontalDirectionalBlock.FACING, Direction.EAST));
+        BlockPos batteryPos = center.offset(1, -1, -r);
+        level.setBlockAndUpdate(batteryPos, ModBlocks.STATION_BATTERY.get().defaultBlockState()
+                .setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH));
         // La batterie part chargée à moitié, au sol, avant le lancement : de quoi tenir une première éclipse.
-        if (level.getBlockEntity(center.offset(-r, -1, 0)) instanceof StationBatteryBlockEntity battery) {
+        if (level.getBlockEntity(batteryPos) instanceof StationBatteryBlockEntity battery) {
             battery.getEnergy().generate(StationBatteryBlockEntity.CAPACITY / 2);
         }
         // Le collier du sas est tourné vers le sud, vers l'extérieur.
@@ -318,16 +325,24 @@ public final class StationManager {
         level.setBlockAndUpdate(center.offset(r, r + 1, -r), ModBlocks.LIGHTNING_MAST.get().defaultBlockState());
     }
 
+    /** Le terminal du module central : sur le mur nord, à gauche du port. */
+    public static BlockPos terminalOf(BlockPos station) {
+        return station.offset(-1, -1, -CORE_RADIUS);
+    }
+
+    /** Un port de jonction du module central, sa moitié haute : {@code out} vaut nord, est ou ouest. */
+    public static BlockPos portOf(BlockPos station, Direction out) {
+        return station.relative(out, CORE_RADIUS);
+    }
+
     /**
-     * Accole un module d'extension nu à une station : une nouvelle pièce de trois blocs de côté, bâtie contre le mur
-     * visé, avec un hublot sur chacune de ses trois autres faces, et un passage ouvert dans le mur commun.
-     * Tant que l'ensemble reste clos, le générateur d'air de la station pressurise aussi la nouvelle pièce.
+     * Accroche une pièce nue sur un port de jonction : une pièce de trois blocs de côté, avec un port au fond pour
+     * continuer en ligne droite. Tant que l'ensemble reste clos, le générateur d'air de la station la pressurise aussi.
      *
-     * @param wall bloc de paroi visé (coque ou hublot)
-     * @param face face visée de ce bloc : la pièce est bâtie de ce côté
+     * @param port l'une des moitiés du port visé
      * @return ce qui empêche la construction, ou {@code null} si le module est en place
      */
-    public static Component expand(ServerLevel level, BlockPos wall, Direction face) {
-        return StationModules.attach(level, wall, face, ModuleType.ROOM);
+    public static Component expand(ServerLevel level, BlockPos port) {
+        return StationModules.attach(level, port, ModuleType.ROOM);
     }
 }

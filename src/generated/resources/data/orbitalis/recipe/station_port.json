@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "H": "orbitalis:station_hull",
+    "T": "orbitalis:titanium_plate"
+  },
+  "pattern": [
+    "HTH",
+    "T T",
+    "HTH"
+  ],
+  "result": {
+    "id": "orbitalis:station_port"
+  }
+}

@@ -1,0 +1,12 @@
+{
+ "parent": "minecraft:block/cube",
+ "textures": {
+  "particle": "orbitalis:block/station_hull",
+  "north": "orbitalis:block/station_port_outer_upper",
+  "south": "orbitalis:block/station_port_inner_upper",
+  "east": "orbitalis:block/station_hull",
+  "west": "orbitalis:block/station_hull",
+  "up": "orbitalis:block/station_hull",
+  "down": "orbitalis:block/station_hull"
+ }
+}

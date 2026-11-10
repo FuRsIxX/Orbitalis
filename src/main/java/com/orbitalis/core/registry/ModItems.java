@@ -300,6 +300,7 @@ public final class ModItems {
             properties -> new StationModuleItem(properties, com.orbitalis.phase2.station.ModuleType.ROOM),
             properties -> properties.stacksTo(1));
     /** Kits de modules de station : chacun se déploie contre une paroi en un module aménagé, prêt à servir. */
+    public static final DeferredItem<StationModuleItem> NODE_MODULE = module("node_module", com.orbitalis.phase2.station.ModuleType.NODE);
     public static final DeferredItem<StationModuleItem> HABITATION_MODULE = module("habitation_module", com.orbitalis.phase2.station.ModuleType.HABITATION);
     public static final DeferredItem<StationModuleItem> LABORATORY_MODULE = module("laboratory_module", com.orbitalis.phase2.station.ModuleType.LABORATORY);
     public static final DeferredItem<StationModuleItem> GREENHOUSE_MODULE = module("greenhouse_module", com.orbitalis.phase2.station.ModuleType.GREENHOUSE);

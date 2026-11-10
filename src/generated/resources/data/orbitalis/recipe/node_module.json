@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": "orbitalis:station_hull",
+    "L": "orbitalis:station_light",
+    "P": "orbitalis:station_port"
+  },
+  "pattern": [
+    "HPH",
+    "PLP",
+    "HHH"
+  ],
+  "result": {
+    "id": "orbitalis:node_module"
+  }
+}

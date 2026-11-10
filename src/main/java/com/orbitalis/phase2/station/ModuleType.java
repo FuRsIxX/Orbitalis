@@ -7,8 +7,10 @@ package com.orbitalis.phase2.station;
 public enum ModuleType {
     /** Le module central : la première pièce, avec le sas d'amarrage et le générateur d'air. */
     CORE("core", 5, "station_modules", 0x7FD0FF, true),
-    /** Une pièce nue, à aménager soi-même. */
+    /** Une pièce nue, à aménager soi-même, avec un port de jonction au fond : elle prolonge la station en ligne droite. */
     ROOM("room", 5, "station_modules", 0xAEB6BF, true),
+    /** Nœud : un carrefour, un port de jonction au fond et un sur chaque flanc ; assez long pour que deux modules accrochés côte à côte, sur deux nœuds de suite, ne se touchent pas. */
+    NODE("node", 7, "station_modules", 0xD9DEE4, true),
     /** Quartiers d'équipage : quatre couchettes, des casiers personnels et le terminal. */
     HABITATION("habitation", 7, "station_modules", 0x3F76E4, true),
     /** Laboratoire : huit baies d'expériences, qui font avancer la recherche en apesanteur. */

@@ -1494,7 +1494,6 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("station.orbitalis.module.cupola.short", "COUPOLE");
         add("station.orbitalis.module.airlock.short", "SAS");
         add("station.orbitalis.module.power.short", "ÉNERGIE");
-        add("station.orbitalis.module.room.desc", "Lancé seul, il devient le cœur d'une station ; à bord, une pièce nue de plus.");
         add("station.orbitalis.module.habitation.desc", "Quatre couchettes, quatre casiers et un terminal.");
         add("station.orbitalis.module.laboratory.desc", "Huit baies d'expériences et un terminal : de la recherche en apesanteur.");
         add("station.orbitalis.module.greenhouse.desc", "Huit bacs de culture sous leurs rampes de diodes, et un casier.");
@@ -1675,7 +1674,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.report.ready", "Tous les systèmes sont prêts.");
         add("ship.orbitalis.report.not_ready", "Le vaisseau n'est pas encore prêt.");
         add("guide.orbitalis.shipyard.title", "Le chantier naval");
-        add("guide.orbitalis.shipyard.text", "Un vaisseau interstellaire se construit en orbite, au chantier naval accroché à la station (technologie « Chantier naval orbital »).\n\nDepuis la station, un clic droit sur une paroi avec le module chantier naval ouvre une salle de contrôle et un berceau de 31 blocs.\n\nLe pupitre contient le plan du vaisseau. Posez ses blocs à la main ou avec « Poser la section ». Équipez chaque section, chargez le cœur avec huit matières exotiques, puis faites le bilan au poste de pilotage.");
+        add("guide.orbitalis.shipyard.text", "Un vaisseau interstellaire se construit en orbite, au chantier naval accroché à la station (technologie « Chantier naval orbital »).\n\nDepuis la station, visez un port de jonction avec le module chantier naval : il ouvre une salle de contrôle et un berceau de 31 blocs.\n\nLe pupitre contient le plan du vaisseau. Posez ses blocs à la main ou avec « Poser la section ». Équipez chaque section, chargez le cœur avec huit matières exotiques, puis faites le bilan au poste de pilotage.");
         add("orbitalis.configuration.hide_interstellar", "Masquer le voyage interstellaire");
         add("orbitalis.configuration.hide_interstellar.tooltip", "Retire le chantier naval, le vaisseau, la distorsion, les exoplanètes et les autres galaxies des recettes, de l'arbre de recherche et du guide. Compte au lancement suivant.");
         add("guide.orbitalis.ship_jump.title", "La passerelle et le saut");
@@ -1688,7 +1687,6 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("guide.orbitalis.exoplanets.text", "Proxima b : une face de jour brûlée, une face de nuit gelée et, entre elles, un crépuscule où vit une flore sombre. Pesanteur 1,1.\n\nTRAPPIST-1 e : un monde-océan semé d'îles, sous un ciel où se montrent trois autres planètes. Pesanteur 0,93.\n\nKepler-452b : une super-Terre de mers et de plaines bronze. Pesanteur 1,5 : on y saute moins haut.\n\nTarentule b, dans le Grand Nuage de Magellan : poussière rose, cristaux qui luisent, et notre Galaxie dans le ciel. Pesanteur 0,8.\n\nAucun air ne s'y respire : la combinaison est indispensable. Les premiers pas sur chacun rapportent des points de recherche.");
         add("guide.orbitalis.warp_probes.title", "Les sondes à distorsion");
         add("guide.orbitalis.warp_probes.text", "Une sonde à distorsion est un atterrisseur robotique martien sur un petit moteur à distorsion. Fabriquez-la avec de la matière exotique, du titane et une teinture à la couleur de l'étoile visée : rouge pour Proxima b, cyan pour TRAPPIST-1 e, jaune pour Kepler-452b.\n\nEmportez-la comme une charge utile : une fusée qui atteint l'orbite de transfert suffit. La sonde fait le reste seule et se pose sur son exoplanète ; ses coordonnées sont annoncées.\n\nL'exoplanète doit avoir été découverte à l'observatoire, sinon la sonde n'a pas de cible et se perd.");
-        add("station.orbitalis.module.use", "Clic droit sur une paroi, depuis l'intérieur : le module se déploie de l'autre côté.");
         add("station.orbitalis.expand.research", "Votre agence doit d'abord maîtriser la technologie « %s ».");
         add("station.orbitalis.no_station", "%s n'a aucune station où être livré au-dessus de ce site : il est perdu.");
         add("station.orbitalis.terminal.none", "Ce terminal n'est relié à aucune station. Il doit être à bord, à moins de 48 blocs du module central.");
@@ -1744,7 +1742,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("station.orbitalis.airlock.interlock", "Verrouillage du sas : fermez d'abord l'autre porte.");
         add("station.orbitalis.airlock.cycling", "Mise à niveau du sas en cours…");
         add("guide.orbitalis.stations.title", "Les stations spatiales");
-        add("guide.orbitalis.stations.text", "Une station commence par son module central, lancé sans équipage. Il se déploie en orbite, à la verticale du pas de tir.\n\nUn vol habité orbital parti du même site s'y amarre tout seul. Accroupissez-vous pour passer le sas. Le terminal affiche énergie, air, orbite, équipage et fret.\n\nLe générateur d'air pressurise la station tant qu'il est alimenté. Les panneaux solaires produisent en orbite, mais rien pendant l'éclipse : prévoyez des batteries.\n\nChaque module (habitation, laboratoire, serre, logistique, coupole, sas, poutre d'énergie) s'emporte à bord et se déploie d'un clic droit sur une paroi.");
+        add("guide.orbitalis.stations.text", "Une station commence par son module central, lancé sans équipage. Il se déploie en orbite, à la verticale du pas de tir.\n\nUn vol habité orbital parti du même site s'y amarre tout seul. Accroupissez-vous pour passer le sas. Le terminal affiche énergie, air, orbite, équipage et fret.\n\nLe générateur d'air pressurise la station tant qu'il est alimenté. Les panneaux solaires produisent en orbite, mais rien pendant l'éclipse : prévoyez des batteries.\n\nChaque module (nœud, habitation, laboratoire, serre, logistique, coupole, sas) s'emporte à bord et s'accroche sur un port de jonction, l'écoutille ronde. Visé avec le kit, il s'y dessine en fantôme ; un clic droit le déploie. Le module central a trois ports, chaque nœud en ajoute trois, la pièce nue un au fond. La poutre d'énergie, elle, se plante sur un mur.");
 
         // Ravitaillement
         add("orbitalis.configuration.boilOff", "Évaporation des ergols");
@@ -1810,9 +1808,21 @@ public class FrFrLanguageProvider extends LanguageProvider {
 
         // Modules d'extension
         add("station.orbitalis.expand.done", "Module « %s » en place : le passage est ouvert.");
+        add("block.orbitalis.station_port", "Port de jonction");
+        add("item.orbitalis.node_module", "Module nœud");
+        add("station.orbitalis.module.node", "Nœud");
+        add("station.orbitalis.module.node.short", "NŒUD");
+        add("station.orbitalis.module.node.desc", "Un carrefour : un port de jonction au fond et un sur chaque flanc, pour faire bifurquer la station.");
+        add("station.orbitalis.module.room.desc", "Lancé seul, il devient le cœur d'une station ; à bord, une pièce nue de plus, avec un port au fond pour continuer tout droit.");
+        add("station.orbitalis.module.use", "Visez un port de jonction depuis l'intérieur : le module s'y dessine en fantôme. Clic droit pour le déployer.");
+        add("station.orbitalis.module.use_truss", "Clic droit sur un mur, depuis l'intérieur : la poutre se plante dehors.");
+        add("station.orbitalis.expand.need_port", "Un module s'accroche sur un port de jonction : visez une écoutille ronde.");
+        add("station.orbitalis.expand.truss_wall", "La poutre d'énergie se plante sur un mur, pas sur un port.");
+        add("station.orbitalis.expand.no_room", "Pas assez de place derrière ce port pour ce module.");
+        add("station.orbitalis.port.hint", "Port de jonction libre : visez-le avec un kit de module en main pour voir où le module ira.");
+        add("station.orbitalis.port.deploy", "Clic droit : déployer « %s » ici");
         add("station.orbitalis.expand.not_hull", "Visez une paroi de station (coque ou hublot), à hauteur de tête.");
         add("station.orbitalis.expand.vertical", "Un module s'accole sur un mur, pas au plafond ni au plancher.");
-        add("station.orbitalis.expand.no_room", "Pas assez de place de l'autre côté de ce mur pour ce module.");
 
         // Désamarrage
         add("capsule.orbitalis.undocking", "Verrous ouverts : désamarrage. Restez à bord.");

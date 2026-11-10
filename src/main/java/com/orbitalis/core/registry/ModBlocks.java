@@ -721,6 +721,16 @@ public final class ModBlocks {
                     .sound(SoundType.METAL)
                     .noOcclusion()
                     .pushReaction(PushReaction.DESTROY));
+    /** Port de jonction : une écoutille ronde fermée de deux blocs, où s'accroche le module suivant. */
+    public static final DeferredBlock<com.orbitalis.phase2.station.StationPortBlock> STATION_PORT = withItem(BLOCKS.registerBlock("station_port",
+            com.orbitalis.phase2.station.StationPortBlock::new,
+            properties -> properties
+                    .mapColor(MapColor.METAL)
+                    .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.0F, 14.0F)
+                    .sound(SoundType.METAL)
+                    .pushReaction(PushReaction.BLOCK)));
     /** Porte de sas : deux battants qui s'écartent après un cycle de mise à niveau ; les portes d'un sas se verrouillent entre elles. */
     public static final DeferredBlock<com.orbitalis.phase2.station.AirlockDoorBlock> AIRLOCK_DOOR = BLOCKS.registerBlock("airlock_door",
             com.orbitalis.phase2.station.AirlockDoorBlock::new,

@@ -432,6 +432,12 @@ public class OrbitalisModelProvider extends ModelProvider {
                 .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
         blockModels.registerSimpleItemModel(ModBlocks.STATION_BATTERY.get(), Orbitalis.id("block/station/station_battery_3"));
         blockModels.createDoor(ModBlocks.STATION_HATCH.get());
+        // Le port de jonction : deux moitiés, tournées vers le dehors ; modèles écrits par tools/generate_station_port.py.
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.STATION_PORT.get())
+                .with(PropertyDispatch.initial(com.orbitalis.phase3.interstellar.TwoHighBlock.HALF).generate(half -> BlockModelGenerators.plainVariant(
+                        Orbitalis.id("block/station/station_port_" + (half == DoubleBlockHalf.LOWER ? "lower" : "upper")))))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+        blockModels.registerSimpleItemModel(ModBlocks.STATION_PORT.get(), Orbitalis.id("block/station/station_port_item"));
         // Porte de sas : un modèle par moitié, par position de l'écoutille et par couleur du voyant (rouge fermée, ambre en
         // cycle ou en fermeture, vert ouverte). Rien n'est dessiné en mouvement : chaque position est un modèle de bloc.
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.AIRLOCK_DOOR.get())
@@ -588,6 +594,7 @@ public class OrbitalisModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.GREENHOUSE_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.CARGO_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.CUPOLA_MODULE.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.NODE_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.AIRLOCK_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.POWER_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SHIPYARD_MODULE.get(), ModelTemplates.FLAT_ITEM);

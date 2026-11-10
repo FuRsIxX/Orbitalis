@@ -179,6 +179,7 @@ public class OrbitalisBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.CARGO_RACK.get());
         add(ModBlocks.STATION_BATTERY.get(), this::keepingEnergy);
         add(ModBlocks.STATION_HATCH.get(), this::createDoorTable);
+        add(ModBlocks.STATION_PORT.get(), this::createDoorTable);
         add(ModBlocks.AIRLOCK_DOOR.get(), this::createDoorTable);
         // La porte vitrée tient sur quatre cases : seule celle du bas, à gauche, rend la porte.
         add(ModBlocks.GLASS_DOOR.get(), block -> net.minecraft.world.level.storage.loot.LootTable.lootTable().withPool(applyExplosionCondition(block, net.minecraft.world.level.storage.loot.LootPool.lootPool()

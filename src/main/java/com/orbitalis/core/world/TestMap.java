@@ -8,10 +8,8 @@ import java.util.Set;
 import com.orbitalis.Orbitalis;
 import com.orbitalis.core.registry.ModBlocks;
 import com.orbitalis.core.registry.ModItems;
-import com.orbitalis.phase2.station.ModuleType;
 import com.orbitalis.phase2.station.StationLayout;
 import com.orbitalis.phase2.station.StationManager;
-import com.orbitalis.phase2.station.StationModules;
 import com.orbitalis.phase2.survival.SpaceRules;
 import com.orbitalis.phase2.survival.SpaceSuits;
 import com.orbitalis.phase2.survival.SuitModule;
@@ -126,7 +124,7 @@ public final class TestMap {
         int[] sites = facilities(server, level, destinations);
         station(server);
         destinations.add(new String[] {"testmap.orbitalis.zone.station", "execute in orbitalis:orbit run tp @s " + STATION.getX() + " "
-                + (STATION.getY() + 1) + " " + (STATION.getZ() - 4)});
+                + (STATION.getY() - 1) + " " + STATION.getZ()});
         destinations.add(new String[] {"testmap.orbitalis.zone.moon", "execute in orbitalis:moon run tp @s 0 140 0"});
         destinations.add(new String[] {"testmap.orbitalis.zone.mars", "execute in orbitalis:mars run tp @s 0 160 0"});
         destinations.add(new String[] {"testmap.orbitalis.zone.titan", "execute in orbitalis:titan run tp @s 0 150 0"});
@@ -595,32 +593,25 @@ public final class TestMap {
         return placed.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    /** La station complète, en orbite : le module central et un module de chaque sorte. */
+    /** La station complète, en orbite : le module central, deux nœuds et un module de chaque sorte (voir StationShowcase). */
     private static void station(MinecraftServer server) {
         ServerLevel orbit = server.getLevel(SpaceRules.ORBIT);
         if (orbit == null) {
             return;
         }
-        loadAround(orbit, STATION.getX(), STATION.getZ() - 6, 3);
+        loadAround(orbit, STATION.getX() + 16, STATION.getZ(), 3);
         BlockPos c = STATION;
         StationManager.build(orbit, c);
         StationLayout.clear(server, c);
         StationLayout.modules(server, c);
-        StationModules.attach(orbit, c.offset(-2, 0, 1), Direction.WEST, ModuleType.LABORATORY);
-        StationModules.attach(orbit, c.offset(1, 0, -2), Direction.NORTH, ModuleType.HABITATION);
-        StationModules.attach(orbit, c.offset(2, 0, 1), Direction.EAST, ModuleType.GREENHOUSE);
-        StationModules.attach(orbit, c.offset(-5, 0, -1), Direction.NORTH, ModuleType.CUPOLA);
-        StationModules.attach(orbit, c.offset(2, 0, -8), Direction.NORTH, ModuleType.POWER);
-        StationModules.attach(orbit, c.offset(8, 0, 1), Direction.EAST, ModuleType.AIRLOCK);
-        StationModules.attach(orbit, c.offset(3, 0, -4), Direction.EAST, ModuleType.CARGO);
-        // Le chantier naval, au bout du module logistique (son fond n'a pas de terminal, le passage tombe au ras du sol) :
-        // son berceau s'ouvre vers l'est, loin des autres modules.
-        Component problem = com.orbitalis.core.Features.interstellar()
-                ? StationModules.attach(orbit, c.offset(9, 0, -4), Direction.EAST, ModuleType.SHIPYARD) : null;
-        if (problem != null) {
-            Orbitalis.LOGGER.warn("Carte de test : chantier naval non posé ({})", problem.getString());
-        } else if (com.orbitalis.core.Features.interstellar()) {
-            ship(orbit, c.offset(12, -1, -4));
+        // Le chantier naval, au bout du second nœud : son berceau s'ouvre vers l'est, loin des autres modules.
+        boolean shipyard = com.orbitalis.core.Features.interstellar();
+        java.util.List<Component> problems = com.orbitalis.phase2.station.StationShowcase.build(orbit, c, shipyard);
+        for (Component problem : problems) {
+            Orbitalis.LOGGER.warn("Carte de test : module non posé ({})", problem.getString());
+        }
+        if (shipyard) {
+            ship(orbit, com.orbitalis.phase2.station.StationShowcase.console(c));
         }
     }
 

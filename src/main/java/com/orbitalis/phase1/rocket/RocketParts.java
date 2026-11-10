@@ -146,6 +146,7 @@ public final class RocketParts {
             map.put(ModItems.GREENHOUSE_MODULE.get(), new Part(Kind.PAYLOAD, 4000, "closed_loop_life_support", null, null));
             map.put(ModItems.CARGO_MODULE.get(), new Part(Kind.PAYLOAD, 3500, "station_modules", null, null));
             map.put(ModItems.CUPOLA_MODULE.get(), new Part(Kind.PAYLOAD, 2000, "station_modules", null, null));
+            map.put(ModItems.NODE_MODULE.get(), new Part(Kind.PAYLOAD, 1800, "station_modules", null, null));
             map.put(ModItems.AIRLOCK_MODULE.get(), new Part(Kind.PAYLOAD, 2500, "station_modules", null, null));
             map.put(ModItems.POWER_MODULE.get(), new Part(Kind.PAYLOAD, 3000, "solar_arrays", null, null));
             // Satellites : des charges utiles, chacune avec sa masse et sa technologie.

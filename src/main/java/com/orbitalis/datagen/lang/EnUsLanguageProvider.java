@@ -1494,7 +1494,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("station.orbitalis.module.cupola.short", "CUPOLA");
         add("station.orbitalis.module.airlock.short", "LOCK");
         add("station.orbitalis.module.power.short", "POWER");
-        add("station.orbitalis.module.room.desc", "Launched alone, it becomes a station's core; aboard, one more bare room.");
         add("station.orbitalis.module.habitation.desc", "Four bunks, four lockers and a terminal.");
         add("station.orbitalis.module.laboratory.desc", "Eight experiment racks and a terminal: research in microgravity.");
         add("station.orbitalis.module.greenhouse.desc", "Eight grow trays under their LED bars, and a locker.");
@@ -1675,7 +1674,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.report.ready", "All systems are ready.");
         add("ship.orbitalis.report.not_ready", "The ship is not ready yet.");
         add("guide.orbitalis.shipyard.title", "The Shipyard");
-        add("guide.orbitalis.shipyard.text", "An interstellar ship is built in orbit, at the shipyard attached to the station (\"Orbital Shipyard\" technology).\n\nFrom inside the station, right-click a wall with the shipyard module to open a control room and a 31-block cradle.\n\nThe console holds the ship's plan. Place its blocks by hand or with \"Build section\". Fit out each section, load the core with eight exotic matter, then run the check at the pilot station.");
+        add("guide.orbitalis.shipyard.text", "An interstellar ship is built in orbit, at the shipyard attached to the station (\"Orbital Shipyard\" technology).\n\nFrom inside the station, aim at a berthing port with the shipyard module: it opens a control room and a 31-block cradle.\n\nThe console holds the ship's plan. Place its blocks by hand or with \"Build section\". Fit out each section, load the core with eight exotic matter, then run the check at the pilot station.");
         add("orbitalis.configuration.hide_interstellar", "Hide interstellar travel");
         add("orbitalis.configuration.hide_interstellar.tooltip", "Removes the shipyard, the ship, the warp drive, the exoplanets and other galaxies from recipes, the research tree and the guide. Takes effect on the next launch.");
         add("guide.orbitalis.ship_jump.title", "The bridge and the jump");
@@ -1688,7 +1687,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("guide.orbitalis.exoplanets.text", "Proxima b: a scorched day side, a frozen night side and, between them, a twilight where a dark flora lives. Gravity 1.1.\n\nTRAPPIST-1 e: an ocean world dotted with islands, under a sky with three other planets. Gravity 0.93.\n\nKepler-452b: a super-Earth of seas and bronze plains. Gravity 1.5: you jump lower there.\n\nTarantula b, in the Large Magellanic Cloud: pink dust, glowing crystals, and our Galaxy in the sky. Gravity 0.8.\n\nNone of their air can be breathed: a suit is essential. First steps on each one give research points.");
         add("guide.orbitalis.warp_probes.title", "Warp probes");
         add("guide.orbitalis.warp_probes.text", "A warp probe is a Mars robotic lander on a small warp drive. Craft it with exotic matter, titanium and a dye in the colour of the target star: red for Proxima b, cyan for TRAPPIST-1 e, yellow for Kepler-452b.\n\nCarry it as a payload: a rocket that reaches transfer orbit is enough. The probe does the rest alone and lands on its exoplanet; its coordinates are announced.\n\nThe exoplanet must have been discovered at the observatory, or the probe has no target and is lost.");
-        add("station.orbitalis.module.use", "Right-click a wall from inside: the module unfolds on the other side.");
         add("station.orbitalis.expand.research", "Your agency must first master the \"%s\" technology.");
         add("station.orbitalis.no_station", "%s has no station to be delivered to above this site: it is lost.");
         add("station.orbitalis.terminal.none", "This terminal isn't linked to a station. It has to be on board, within 48 blocks of the core module.");
@@ -1744,7 +1742,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("station.orbitalis.airlock.interlock", "Airlock interlock: close the other door first.");
         add("station.orbitalis.airlock.cycling", "Airlock cycling…");
         add("guide.orbitalis.stations.title", "Space Stations");
-        add("guide.orbitalis.stations.text", "A station starts with its core module, launched uncrewed. It deploys in orbit, straight above the launch pad.\n\nA crewed orbital flight from the same site docks with it on its own. Sneak to go through the airlock. The terminal shows power, air, orbit, crew and cargo.\n\nThe air generator pressurizes the station while it is powered. Solar panels produce in orbit but nothing during eclipse: plan for batteries.\n\nEach module (habitat, laboratory, greenhouse, logistics, cupola, airlock, power truss) is brought aboard and deployed by right-clicking a wall.");
+        add("guide.orbitalis.stations.text", "A station starts with its core module, launched uncrewed. It deploys in orbit, straight above the launch pad.\n\nA crewed orbital flight from the same site docks with it on its own. Sneak to go through the airlock. The terminal shows power, air, orbit, crew and cargo.\n\nThe air generator pressurizes the station while it is powered. Solar panels produce in orbit but nothing during eclipse: plan for batteries.\n\nEach module (node, habitat, laboratory, greenhouse, logistics, cupola, airlock) is brought aboard and attaches to a berthing port, the round hatch. Aimed at with the kit, it appears there as a ghost; a right-click deploys it. The core has three ports, each node adds three, the bare room one at the far end. The power truss is planted on a wall.");
 
         // Ravitaillement
         add("orbitalis.configuration.boilOff", "Propellant boil-off");
@@ -1810,9 +1808,21 @@ public class EnUsLanguageProvider extends LanguageProvider {
 
         // Modules d'extension
         add("station.orbitalis.expand.done", "%s module in place: the passage is open.");
+        add("block.orbitalis.station_port", "Berthing Port");
+        add("item.orbitalis.node_module", "Node Module");
+        add("station.orbitalis.module.node", "Node");
+        add("station.orbitalis.module.node.short", "NODE");
+        add("station.orbitalis.module.node.desc", "A junction: one berthing port at the far end and one on each side, to branch the station.");
+        add("station.orbitalis.module.room.desc", "Launched alone, it becomes a station's core; aboard, one more bare room, with a port at the far end to keep going straight.");
+        add("station.orbitalis.module.use", "Aim at a berthing port from inside: the module appears there as a ghost. Right-click to deploy it.");
+        add("station.orbitalis.module.use_truss", "Right-click a wall from inside: the truss is planted outside.");
+        add("station.orbitalis.expand.need_port", "A module attaches to a berthing port: aim at a round hatch.");
+        add("station.orbitalis.expand.truss_wall", "The power truss goes on a wall, not on a port.");
+        add("station.orbitalis.expand.no_room", "Not enough room behind this port for this module.");
+        add("station.orbitalis.port.hint", "Free berthing port: aim at it with a module kit in hand to see where the module will go.");
+        add("station.orbitalis.port.deploy", "Right-click: deploy \"%s\" here");
         add("station.orbitalis.expand.not_hull", "Aim at a station wall (hull or window), at head height.");
         add("station.orbitalis.expand.vertical", "A module attaches to a wall, not to the ceiling or the floor.");
-        add("station.orbitalis.expand.no_room", "Not enough room on the other side of this wall for this module.");
 
         // Désamarrage
         add("capsule.orbitalis.undocking", "Latches open: undocking. Stay on board.");

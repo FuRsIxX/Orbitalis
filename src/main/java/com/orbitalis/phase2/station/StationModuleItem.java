@@ -19,9 +19,10 @@ import net.minecraft.world.item.context.UseOnContext;
  * Module de station, replié dans sa coiffe. Le module central, lancé seul par une fusée, se déploie en orbite et
  * devient le cœur d'une station ; une fois la station en place, il sert aussi de pièce d'extension nue.
  * <p>
- * Les kits de modules (habitation, laboratoire, serre, fret, coupole, sas, poutre d'énergie) s'apportent à bord, dans
- * l'inventaire de l'équipage ou comme fret d'un lanceur. Un clic droit sur une paroi, depuis l'intérieur, déploie le
- * module de l'autre côté, tout aménagé, et ouvre le passage.
+ * Les kits de modules (nœud, habitation, laboratoire, serre, fret, coupole, sas, chantier) s'apportent à bord, dans
+ * l'inventaire de l'équipage ou comme fret d'un lanceur. Visé, un port de jonction montre le module en fantôme de
+ * l'autre côté ; un clic droit l'y déploie, tout aménagé, et ouvre le passage. La poutre d'énergie, elle, se plante
+ * d'un clic droit sur un mur, depuis l'intérieur.
  */
 public class StationModuleItem extends Item {
     private final ModuleType type;
@@ -45,8 +46,9 @@ public class StationModuleItem extends Item {
                     Component.translatable("research.orbitalis.node." + type.research())).withStyle(ChatFormatting.GOLD));
             return InteractionResult.SUCCESS;
         }
-        // Vu de l'intérieur, on vise la face intérieure du mur : le module se bâtit de l'autre côté.
-        Component problem = StationModules.attach(level, context.getClickedPos(), context.getClickedFace().getOpposite(), type);
+        // Un module s'accroche sur un port de jonction ; la poutre d'énergie, qui reste dehors, sur un mur, vu de l'intérieur.
+        Component problem = type.pressurized() ? StationModules.attach(level, context.getClickedPos(), type)
+                : StationModules.attachTruss(level, context.getClickedPos(), context.getClickedFace().getOpposite());
         if (problem != null) {
             player.sendSystemMessage(problem.copy().withStyle(ChatFormatting.GOLD));
             return InteractionResult.SUCCESS;
@@ -65,6 +67,7 @@ public class StationModuleItem extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> builder,
             TooltipFlag flag) {
         builder.accept(Component.translatable("station.orbitalis.module." + type.id() + ".desc").withStyle(ChatFormatting.GRAY));
-        builder.accept(Component.translatable("station.orbitalis.module.use").withStyle(ChatFormatting.DARK_GRAY));
+        builder.accept(Component.translatable(type.pressurized() ? "station.orbitalis.module.use" : "station.orbitalis.module.use_truss")
+                .withStyle(ChatFormatting.DARK_GRAY));
     }
 }
