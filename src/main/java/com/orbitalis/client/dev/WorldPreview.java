@@ -2946,12 +2946,10 @@ public final class WorldPreview {
         // Le saut mis en scène, image par image, après tm_orbit_ship_bridge puis tm_orbit_jump_order (l'ordre est donné au
         // début de cette vue, la distorsion commence 100 ticks plus tard) : les étoiles s'étirent, l'éclair, le tunnel à deux
         // moments, la sortie, les traits qui se rétractent, le bandeau d'arrivée.
-        SHOTS.add(new Shot("tm_warp_charge", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 106));
-        SHOTS.add(new Shot("tm_warp_shock_a", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 2));
+        SHOTS.add(new Shot("tm_warp_charge", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 116));
+        SHOTS.add(new Shot("tm_warp_shock_a", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 7));
         SHOTS.add(new Shot("tm_warp_shock_b", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 1));
-        SHOTS.add(new Shot("tm_warp_flash", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 5));
-        SHOTS.add(new Shot("tm_warp_tunnel_a", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 4));
-        SHOTS.add(new Shot("tm_warp_tunnel_b", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 58));
+        SHOTS.add(new Shot("tm_warp_tunnel_b", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 60));
         SHOTS.add(new Shot("tm_warp_tunnel_c", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 66));
         SHOTS.add(new Shot("tm_warp_exit", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 42));
         SHOTS.add(new Shot("tm_warp_after", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 12));

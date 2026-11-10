@@ -45,10 +45,10 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
  * (des traits, des anneaux en pointillés de gros pixels, des couleurs franches).
  * <ol>
  * <li><b>L'accélération</b> ({@link #STRETCH} ticks) : par les hublots, les étoiles se mettent à filer vers la poupe, de
- * plus en plus vite ; elles bleuissent devant, rougissent derrière. Le champ de vision s'ouvre, la caméra vibre. Juste
- * avant le départ, une onde de choc part de la proue et balaie l'espace autour du vaisseau.</li>
- * <li><b>L'éclair</b> : l'écran s'embrase puis s'éteint en douceur ; le serveur déplace le vaisseau pendant ce temps.</li>
- * <li><b>Le tunnel</b> ({@link #TUNNEL} ticks) : une seconde onde de choc, puis un tunnel qui tourne sur lui-même, ses
+ * plus en plus vite ; elles bleuissent devant, rougissent derrière. Le champ de vision s'ouvre, la caméra vibre.</li>
+ * <li><b>Le départ</b> : une onde de choc part de la proue, et au même instant le tunnel s'ouvre, dans un bref éclair qui
+ * laisse voir l'onde ; le serveur déplace le vaisseau à ce moment-là.</li>
+ * <li><b>Le tunnel</b> ({@link #TUNNEL} ticks) : un tunnel qui tourne sur lui-même, ses
  * anneaux qui respirent, trois filaments en spirale le long des parois, des traînées d'étoiles et des étincelles qui
  * frôlent le vaisseau, un éclat au bout. Bleuté vers une étoile proche, violet et rose pour un saut galactique. On marche
  * librement à bord.</li>
@@ -66,8 +66,8 @@ public final class WarpFx {
     public static final int TUNNEL = 180;
     private static final int EXIT = STRETCH + TUNNEL;
     private static final int END = EXIT + 110;
-    /** Les ondes de choc : au départ (juste avant l'éclair), à l'entrée du tunnel, à l'arrivée. */
-    private static final float[] SHOCKS = {STRETCH - 16, STRETCH + 2, EXIT + 3};
+    /** Les ondes de choc : la première lance la distorsion (le tunnel s'ouvre au même instant), la seconde marque l'arrivée. */
+    private static final float[] SHOCKS = {STRETCH, EXIT + 3};
     private static final float SKY = 90.0F;
 
     private static boolean active;
@@ -105,6 +105,12 @@ public final class WarpFx {
     /** Vrai pendant toute la mise en scène. */
     public static boolean active() {
         return active;
+    }
+
+    /** L'éclair de cet instant, de 0 à 1 : l'écran de transition le dessine aussi, l'interface du jeu étant alors cachée. */
+    public static float flashNow() {
+        float t = time(partial());
+        return t < 0.0F ? 0.0F : Math.min(1.0F, flash(t));
     }
 
     /** La couleur de l'éclair : bleu-blanc, ou mauve pour un saut galactique. */
@@ -180,7 +186,8 @@ public final class WarpFx {
     }
 
     private static float flash(float t) {
-        return Math.max(bloom(t, STRETCH), bloom(t, EXIT));
+        float launch = t < STRETCH - 2.0F ? 0.0F : t < STRETCH ? smooth((t - (STRETCH - 2.0F)) / 2.0F) : (float) Math.exp(-(t - STRETCH) / 3.0);
+        return Math.max(0.55F * launch, bloom(t, EXIT));
     }
 
     /** L'à-coup d'une onde de choc sur la caméra : brutal, puis il s'amortit. */
@@ -214,11 +221,9 @@ public final class WarpFx {
             sound(minecraft, SoundEvents.PORTAL_TRIGGER, 1.2F, 0.5F);
             sound(minecraft, SoundEvents.BEACON_POWER_SELECT, 0.5F, 0.9F);
             lastSound = 0;
-        } else if (t >= (int) SHOCKS[0] && lastSound < 1) {
-            sound(minecraft, SoundEvents.WARDEN_SONIC_BOOM, 0.7F, 0.45F);
-            lastSound = 1;
-        } else if (t >= STRETCH - 2 && lastSound < 2) {
-            sound(minecraft, SoundEvents.WARDEN_SONIC_BOOM, 1.4F, 0.6F);
+        } else if (t >= STRETCH - 1 && lastSound < 2) {
+            // La première onde, et le tunnel qui s'ouvre avec elle.
+            sound(minecraft, SoundEvents.WARDEN_SONIC_BOOM, 1.2F, 0.7F);
             sound(minecraft, SoundEvents.TRIDENT_THUNDER.value(), 1.6F, 0.5F);
             lastSound = 2;
         } else if (t >= STRETCH && t < EXIT - 10 && (t - STRETCH) % 40 == 20) {

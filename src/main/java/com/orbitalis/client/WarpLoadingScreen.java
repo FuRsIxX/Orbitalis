@@ -13,8 +13,8 @@ import net.neoforged.neoforge.client.event.RegisterDimensionTransitionScreenEven
 
 /**
  * L'écran du changement de monde, à l'arrivée dans une orbite. Pendant un saut en distorsion, le joueur ne doit pas voir
- * « Chargement du terrain » : l'écran reste blanc de l'éclair (voir {@link WarpFx}) le temps que le monde d'arrivée se
- * charge, puis s'efface sur le tunnel. Hors d'un saut, c'est l'écran ordinaire du jeu.
+ * « Chargement du terrain » : l'écran ne dessine rien, et l'on voit à travers le tunnel et l'onde de choc (voir
+ * {@link WarpFx}) le temps que le monde d'arrivée se charge. Hors d'un saut, c'est l'écran ordinaire du jeu.
  */
 @EventBusSubscriber(modid = Orbitalis.MODID, value = Dist.CLIENT)
 public class WarpLoadingScreen extends LevelLoadingScreen {
@@ -34,9 +34,7 @@ public class WarpLoadingScreen extends LevelLoadingScreen {
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (!WarpFx.active()) {
             super.extractBackground(graphics, mouseX, mouseY, partialTick);
-            return;
         }
-        graphics.fill(0, 0, width, height, 0xFF000000 | WarpFx.glow());
     }
 
     @Override
@@ -45,6 +43,10 @@ public class WarpLoadingScreen extends LevelLoadingScreen {
             super.extractRenderState(graphics, mouseX, mouseY, partialTick);
             return;
         }
-        extractBackground(graphics, mouseX, mouseY, partialTick);
+        // L'interface du jeu est cachée tant que cet écran est ouvert : l'éclair du départ se dessine ici.
+        float flash = WarpFx.flashNow();
+        if (flash > 0.004F) {
+            graphics.fill(0, 0, width, height, (int) (flash * 240) << 24 | WarpFx.glow());
+        }
     }
 }
