@@ -69,6 +69,35 @@ public final class ShipVoyages extends SavedData {
         return server.overworld().getDataStorage().computeIfAbsent(TYPE);
     }
 
+    /** Un vaisseau parti : son agence, le centre de sa poupe et le sens de sa proue. */
+    public record Located(String agency, BlockPos origin, Direction out) {
+    }
+
+    /**
+     * Le vaisseau en orbite d'une destination, dans ce monde, dont la boîte contient ce point ; ou {@code null}. Sert au
+     * réseau électrique et au laboratoire de bord, quand le vaisseau est loin de sa station.
+     */
+    public Located awayAt(net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> dimension, BlockPos pos) {
+        for (Map.Entry<String, Voyage> entry : voyages.entrySet()) {
+            Voyage voyage = entry.getValue();
+            if (voyage.away() && voyage.destination().orbit() == dimension
+                    && ShipJump.box(voyage.awayOrigin(), voyage.out()).contains(net.minecraft.world.phys.Vec3.atCenterOf(pos))) {
+                return new Located(entry.getKey(), voyage.awayOrigin(), voyage.out());
+            }
+        }
+        return null;
+    }
+
+    /** L'agence du vaisseau parti dont la poupe est là, ou {@code null}. */
+    public String agencyAway(BlockPos origin) {
+        for (Map.Entry<String, Voyage> entry : voyages.entrySet()) {
+            if (entry.getValue().away() && entry.getValue().awayOrigin().equals(origin)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     /** Le voyage de cette agence, ou {@code null} si son vaisseau n'est jamais parti. */
     public Voyage of(String agency) {
         return voyages.get(agency);

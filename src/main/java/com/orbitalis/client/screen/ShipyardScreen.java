@@ -37,10 +37,10 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  */
 public class ShipyardScreen extends Screen implements BlockScreen {
     private static final int WIDTH = 420;
-    private static final int HEIGHT = 236;
+    private static final int HEIGHT = 250;
     private static final int LINE = 11;
     private static final int ROW = 13;
-    private static final int SECTION_ROW = 17;
+    private static final int SECTION_ROW = 15;
     private static final float PITCH = 24.0F;
     private static final long TURN_MILLIS = 30_000L;
     private static final int COLOR_GRID = 0xFF131A22;

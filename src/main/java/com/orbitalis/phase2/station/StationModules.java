@@ -291,7 +291,12 @@ public final class StationModules {
                 }
             }
             case SHIPYARD -> {
-                // La verrière, au fond, donne sur le berceau ; le pupitre lui fait face, le dos à la vitre.
+                // La verrière, au fond, donne sur le berceau ; le pupitre lui fait face, le dos à la vitre. À sa droite, une
+                // écoutille ouvre sur le collier d'amarrage du vaisseau.
+                if (far && s == com.orbitalis.phase3.interstellar.ShipPlan.DOOR_S && (y == -1 || y == 0)) {
+                    return ModBlocks.STATION_HATCH.get().defaultBlockState().setValue(net.minecraft.world.level.block.DoorBlock.FACING, frame.out())
+                            .setValue(net.minecraft.world.level.block.DoorBlock.HALF, y == -1 ? DoubleBlockHalf.LOWER : DoubleBlockHalf.UPPER);
+                }
                 if (far && as <= 1 && ay <= 1) {
                     return cupola;
                 }

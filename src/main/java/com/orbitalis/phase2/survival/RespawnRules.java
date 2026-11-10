@@ -96,6 +96,23 @@ public final class RespawnRules {
         player.getPersistentData().put(BERTH, berth);
     }
 
+    /**
+     * Le joueur s'est allongé dans ce caisson d'hibernation (sa moitié basse) : il s'y réveillera, où que soit le vaisseau.
+     * On retient, en plus de sa place, l'agence du vaisseau et la place du caisson par rapport à sa poupe : quand le
+     * vaisseau a sauté, on le retrouve par son voyage.
+     *
+     * @param origin centre de la poupe du vaisseau
+     * @param out    sens de sa proue
+     */
+    public static void setPodBerth(ServerPlayer player, BlockPos pod, String agency, BlockPos origin, net.minecraft.core.Direction out) {
+        setBerth(player, pod);
+        CompoundTag berth = player.getPersistentData().getCompoundOrEmpty(BERTH);
+        berth.putString("agency", agency);
+        berth.putLong("offset", pod.subtract(origin).asLong());
+        berth.putInt("out", out.get3DDataValue());
+        player.getPersistentData().put(BERTH, berth);
+    }
+
     /** Vrai si le joueur se réveillera dans cette couchette. */
     public static boolean hasBerth(ServerPlayer player, BlockPos bunk) {
         CompoundTag berth = player.getPersistentData().getCompoundOrEmpty(BERTH);
@@ -104,8 +121,8 @@ public final class RespawnRules {
     }
 
     /**
-     * Le réveil dans la couchette de la station, ou {@code null} : pas de couchette retenue, ou elle n'est plus là, ou sa
-     * pièce n'est plus close et pourvue d'un générateur d'air. Alors la couchette est oubliée, et le joueur le sait.
+     * Le réveil dans la couchette de la station ou le caisson du vaisseau, ou {@code null} : rien de retenu, ou ce n'est
+     * plus là, ou sa pièce n'est plus close et pourvue d'un générateur d'air. Alors la place est oubliée, et le joueur le sait.
      */
     public static TeleportTransition wakeUp(ServerPlayer player) {
         CompoundTag berth = player.getPersistentData().getCompoundOrEmpty(BERTH);
@@ -116,21 +133,42 @@ public final class RespawnRules {
         ServerLevel level = id == null ? null
                 : player.level().getServer().getLevel(ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, id));
         BlockPos bunk = BlockPos.of(berth.getLongOr("pos", 0L));
+        boolean pod = berth.contains("agency");
         net.minecraft.world.level.block.state.BlockState state = level == null ? null : level.getBlockState(bunk);
-        if (state == null || !state.is(com.orbitalis.core.registry.ModBlocks.CREW_BUNK.get())
-                || state.getValue(com.orbitalis.phase2.station.CrewBunkBlock.HALF) != net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
-            return lostBerth(player, "station.orbitalis.bunk.gone");
+        if (pod && !isBerth(state)) {
+            // Le vaisseau a sauté depuis : on le cherche là où son voyage l'a mené, à son berceau ou en orbite d'un autre monde.
+            var voyage = com.orbitalis.phase3.interstellar.ShipVoyages.of(player.level().getServer()).of(berth.getStringOr("agency", ""));
+            if (voyage != null) {
+                net.minecraft.core.Direction out = net.minecraft.core.Direction.from3DDataValue(berth.getIntOr("out", 2));
+                BlockPos origin = voyage.away() ? voyage.awayOrigin() : voyage.home();
+                if (out == voyage.out()) {
+                    level = player.level().getServer().getLevel(voyage.away() ? voyage.destination().orbit() : SpaceRules.ORBIT);
+                    bunk = origin.offset(BlockPos.of(berth.getLongOr("offset", 0L)));
+                    state = level == null ? null : level.getBlockState(bunk);
+                }
+            }
         }
-        net.minecraft.core.Direction facing = state.getValue(com.orbitalis.phase2.station.CrewBunkBlock.FACING);
+        if (!isBerth(state)) {
+            return lostBerth(player, pod ? "ship.orbitalis.pod.gone" : "station.orbitalis.bunk.gone");
+        }
+        net.minecraft.core.Direction facing = state.getValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING);
         BlockPos front = bunk.relative(facing);
         // La pièce de la couchette doit être close, et un générateur d'air doit la border : on s'y réveille alors à l'air.
         java.util.Set<Long> cells = com.orbitalis.phase2.station.StationAir.scan(level, bunk);
         BlockPos generator = cells.contains(front.asLong()) ? generatorOf(level, cells) : null;
         if (generator == null) {
-            return lostBerth(player, "station.orbitalis.bunk.lost");
+            return lostBerth(player, pod ? "ship.orbitalis.pod.lost" : "station.orbitalis.bunk.lost");
         }
         com.orbitalis.phase2.station.StationAir.setRoom(level, generator, cells);
         return new TeleportTransition(level, Vec3.atBottomCenterOf(front), Vec3.ZERO, facing.toYRot(), 0.0F, TeleportTransition.DO_NOTHING);
+    }
+
+    /** Vrai pour la moitié basse d'une couchette de station ou d'un caisson d'hibernation. */
+    private static boolean isBerth(net.minecraft.world.level.block.state.BlockState state) {
+        return state != null && (state.is(com.orbitalis.core.registry.ModBlocks.CREW_BUNK.get())
+                || state.is(com.orbitalis.core.registry.ModBlocks.HIBERNATION_POD.get()))
+                && state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.DOUBLE_BLOCK_HALF)
+                == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER;
     }
 
     /** Un générateur d'air qui borde ce volume, ou {@code null}. */

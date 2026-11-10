@@ -223,6 +223,11 @@ public final class StationPower {
             if (checkedAt < 0 || now - checkedAt >= RECHECK || now < checkedAt) {
                 checkedAt = now;
                 station = StationManager.stationAt(level, pos);
+                if (station == null) {
+                    // Loin de sa station, un vaisseau a son propre réseau : ses panneaux, ses batteries, son générateur d'air.
+                    var ship = com.orbitalis.phase3.interstellar.ShipVoyages.of(level.getServer()).awayAt(level.dimension(), pos);
+                    station = ship == null ? null : ship.origin();
+                }
             }
             return station == null ? null : StationPower.bus(station);
         }

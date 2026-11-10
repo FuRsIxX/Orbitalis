@@ -1525,15 +1525,10 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("shipyard.orbitalis.built", "%s blocks placed.");
         add("shipyard.orbitalis.nothing", "Nothing to place: you lack the blocks, or their spot is taken.");
         add("shipyard.orbitalis.section.engineering", "Engineering");
-        add("shipyard.orbitalis.section.engineering.desc", "The stern, on the station side: it will hold the warp core and the engines.");
         add("shipyard.orbitalis.section.ring", "Ring");
-        add("shipyard.orbitalis.section.ring.desc", "The ring and its four spokes: spinning, it will give the crew gravity.");
         add("shipyard.orbitalis.section.hibernation", "Hibernation");
-        add("shipyard.orbitalis.section.hibernation.desc", "The section where the crew will sleep through the journey.");
         add("shipyard.orbitalis.section.greenhouse", "Greenhouse");
-        add("shipyard.orbitalis.section.greenhouse.desc", "The greenhouse, which will feed the crew and recycle its air.");
         add("shipyard.orbitalis.section.bridge", "Bridge");
-        add("shipyard.orbitalis.section.bridge.desc", "The glazed bow: the ship will be flown from here.");
         add("block.orbitalis.warp_core", "Warp Core");
         add("block.orbitalis.ring_drive", "Ring Drive");
         add("block.orbitalis.hibernation_pod", "Hibernation Pod");
@@ -1672,7 +1667,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.report.ready", "All systems are ready.");
         add("ship.orbitalis.report.not_ready", "The ship is not ready yet.");
         add("guide.orbitalis.shipyard.title", "The Shipyard");
-        add("guide.orbitalis.shipyard.text", "An interstellar ship is built in orbit, at the shipyard attached to the station (\"Orbital Shipyard\" technology).\n\nFrom inside the station, aim at a berthing port with the shipyard module: it opens a control room and a 31-block cradle.\n\nThe console holds the ship's plan. Place its blocks by hand or with \"Build section\". Fit out each section, load the core with eight exotic matter, then run the check at the pilot station.");
+        add("guide.orbitalis.shipyard.text", "An interstellar ship is built in orbit, at the shipyard attached to the station (\"Orbital Shipyard\" technology).\n\nFrom inside the station, aim at a berthing port with the shipyard module: it opens a control room and a 44-block cradle.\n\nThe console holds the ship's plan. Place its blocks by hand or with \"Build section\". Fit out each section, load the core with eight exotic matter, then run the check at the pilot station.\n\nYou walk aboard: the shipyard hatch opens onto the collar, then the ship's airlock. Aboard, the air generator and the solar panels in engineering keep the ship alive far from the station. Lie down in a hibernation pod to wake up there, wherever the ship is; the shuttle leaves from the hangar, on the left side.");
         add("orbitalis.configuration.hide_interstellar", "Hide interstellar travel");
         add("orbitalis.configuration.hide_interstellar.tooltip", "Removes the shipyard, the ship, the warp drive, the exoplanets and other galaxies from recipes, the research tree and the guide. Takes effect on the next launch.");
         add("guide.orbitalis.ship_jump.title", "The bridge and the jump");
@@ -1806,6 +1801,20 @@ public class EnUsLanguageProvider extends LanguageProvider {
 
         // Modules d'extension
         add("station.orbitalis.expand.done", "%s module in place: the passage is open.");
+        add("shipyard.orbitalis.section.airlock", "Airlock");
+        add("shipyard.orbitalis.section.laboratory", "Lab and hold");
+        add("shipyard.orbitalis.section.hangar", "Hangar");
+        add("shipyard.orbitalis.section.airlock.desc", "The stern: a collar that fits the shipyard hatch, two airlock doors and the suit lockers.");
+        add("shipyard.orbitalis.section.engineering.desc", "The warp core, the air generator, two batteries, and on the back, twelve solar panels.");
+        add("shipyard.orbitalis.section.ring.desc", "The ring and its four spokes: as it spins, it gives the crew gravity.");
+        add("shipyard.orbitalis.section.hibernation.desc", "Four hibernation pods: lie down in one to wake up there, wherever the ship is.");
+        add("shipyard.orbitalis.section.laboratory.desc", "Four experiment racks, which also analyse samples, and four cargo lockers.");
+        add("shipyard.orbitalis.section.hangar.desc", "The shuttle docking port, on the left side: that is where it leaves for the ground.");
+        add("shipyard.orbitalis.section.greenhouse.desc", "The greenhouse, which feeds the crew and lightens the air generator's load.");
+        add("shipyard.orbitalis.section.bridge.desc", "The glazed bow: the ship is flown from here.");
+        add("ship.orbitalis.pod.berth", "This pod is yours now: if you die, you will wake up here, wherever the ship is, as long as it has air.");
+        add("ship.orbitalis.pod.lost", "Your pod was no longer in a sealed section with an air generator: you wake up on Earth.");
+        add("ship.orbitalis.pod.gone", "Your pod is gone: you wake up on Earth.");
         add("item.orbitalis.proxima_samples", "Proxima b Samples");
         add("item.orbitalis.trappist_samples", "TRAPPIST-1 e Samples");
         add("item.orbitalis.kepler_samples", "Kepler-452b Samples");

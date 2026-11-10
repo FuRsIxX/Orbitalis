@@ -174,11 +174,14 @@ public final class ShipJump {
         return true;
     }
 
-    /** Toutes les cases de la boîte du vaisseau : sa longueur, et en travers comme en hauteur le rayon de l'anneau. */
+    /**
+     * Toutes les cases de la boîte du vaisseau : sa longueur, collier d'amarrage compris, et en travers comme en hauteur le
+     * rayon de l'anneau.
+     */
     static List<BlockPos> cells(BlockPos origin, Direction out) {
         List<BlockPos> cells = new ArrayList<>();
         int r = ShipPlan.RING_RADIUS;
-        for (int a = 0; a < ShipPlan.LENGTH; a++) {
+        for (int a = ShipPlan.COLLAR_A; a < ShipPlan.LENGTH; a++) {
             for (int s = -r; s <= r; s++) {
                 for (int y = -r; y <= r; y++) {
                     cells.add(origin.offset(ShipPlan.local(out, a, s, y)));
@@ -189,9 +192,9 @@ public final class ShipJump {
     }
 
     /** La boîte du vaisseau, bord extérieur des cases compris. */
-    static AABB box(BlockPos origin, Direction out) {
+    public static AABB box(BlockPos origin, Direction out) {
         int r = ShipPlan.RING_RADIUS;
-        BlockPos a = origin.offset(ShipPlan.local(out, 0, -r, -r));
+        BlockPos a = origin.offset(ShipPlan.local(out, ShipPlan.COLLAR_A, -r, -r));
         BlockPos b = origin.offset(ShipPlan.local(out, ShipPlan.LENGTH - 1, r, r));
         return new AABB(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()),
                 Math.max(a.getX(), b.getX()) + 1, Math.max(a.getY(), b.getY()) + 1, Math.max(a.getZ(), b.getZ()) + 1);
@@ -281,8 +284,8 @@ public final class ShipJump {
         if (place(level, origin, out, ResearchManager.agencyKey(player)) != Place.AWAY || pending(level.dimension(), origin) != null) {
             return;
         }
-        // Au flanc gauche du vaisseau, à hauteur de la serre, à l'écart de la coque.
-        BlockPos dock = origin.offset(ShipPlan.local(out, ShipPlan.HELM_A - 3, -7, 0));
+        // Devant le sas d'amarrage du hangar, sur le flanc gauche du vaisseau, à l'écart de la coque.
+        BlockPos dock = origin.offset(ShipPlan.local(out, ShipPlan.HANGAR_A, -7, 0));
         com.orbitalis.phase2.flight.CapsuleEntity shuttle = new com.orbitalis.phase2.flight.CapsuleEntity(
                 com.orbitalis.core.registry.ModEntities.CAPSULE.get(), level);
         shuttle.setPos(dock.getX() + 0.5, dock.getY(), dock.getZ() + 0.5);

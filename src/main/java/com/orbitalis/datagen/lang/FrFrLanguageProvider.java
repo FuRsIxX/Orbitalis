@@ -1525,15 +1525,10 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("shipyard.orbitalis.built", "%s blocs posés.");
         add("shipyard.orbitalis.nothing", "Rien à poser : il vous manque les blocs, ou leur place est prise.");
         add("shipyard.orbitalis.section.engineering", "Salle des machines");
-        add("shipyard.orbitalis.section.engineering.desc", "La poupe, côté station : elle accueillera le cœur de distorsion et les moteurs.");
         add("shipyard.orbitalis.section.ring", "Anneau");
-        add("shipyard.orbitalis.section.ring.desc", "L'anneau et ses quatre rayons : en tournant, il donnera une pesanteur à l'équipage.");
         add("shipyard.orbitalis.section.hibernation", "Hibernation");
-        add("shipyard.orbitalis.section.hibernation.desc", "La section où l'équipage dormira pendant le voyage.");
         add("shipyard.orbitalis.section.greenhouse", "Serre");
-        add("shipyard.orbitalis.section.greenhouse.desc", "La serre, qui nourrira l'équipage et recyclera son air.");
         add("shipyard.orbitalis.section.bridge", "Passerelle");
-        add("shipyard.orbitalis.section.bridge.desc", "La proue, vitrée : c'est d'ici qu'on pilotera le vaisseau.");
         add("block.orbitalis.warp_core", "Cœur de distorsion");
         add("block.orbitalis.ring_drive", "Moteur de l'anneau");
         add("block.orbitalis.hibernation_pod", "Caisson d'hibernation");
@@ -1672,7 +1667,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("ship.orbitalis.report.ready", "Tous les systèmes sont prêts.");
         add("ship.orbitalis.report.not_ready", "Le vaisseau n'est pas encore prêt.");
         add("guide.orbitalis.shipyard.title", "Le chantier naval");
-        add("guide.orbitalis.shipyard.text", "Un vaisseau interstellaire se construit en orbite, au chantier naval accroché à la station (technologie « Chantier naval orbital »).\n\nDepuis la station, visez un port de jonction avec le module chantier naval : il ouvre une salle de contrôle et un berceau de 31 blocs.\n\nLe pupitre contient le plan du vaisseau. Posez ses blocs à la main ou avec « Poser la section ». Équipez chaque section, chargez le cœur avec huit matières exotiques, puis faites le bilan au poste de pilotage.");
+        add("guide.orbitalis.shipyard.text", "Un vaisseau interstellaire se construit en orbite, au chantier naval accroché à la station (technologie « Chantier naval orbital »).\n\nDepuis la station, visez un port de jonction avec le module chantier naval : il ouvre une salle de contrôle et un berceau de 44 blocs.\n\nLe pupitre contient le plan du vaisseau. Posez ses blocs à la main ou avec « Poser la section ». Équipez chaque section, chargez le cœur avec huit matières exotiques, puis faites le bilan au poste de pilotage.\n\nOn monte à bord à pied : l'écoutille du chantier ouvre sur le collier, puis sur le sas du vaisseau. À bord, le générateur d'air et les panneaux solaires de la salle des machines font vivre le vaisseau loin de la station. Allongez-vous dans un caisson d'hibernation pour vous y réveiller, où que soit le vaisseau ; la navette part du hangar, sur le flanc gauche.");
         add("orbitalis.configuration.hide_interstellar", "Masquer le voyage interstellaire");
         add("orbitalis.configuration.hide_interstellar.tooltip", "Retire le chantier naval, le vaisseau, la distorsion, les exoplanètes et les autres galaxies des recettes, de l'arbre de recherche et du guide. Compte au lancement suivant.");
         add("guide.orbitalis.ship_jump.title", "La passerelle et le saut");
@@ -1806,6 +1801,20 @@ public class FrFrLanguageProvider extends LanguageProvider {
 
         // Modules d'extension
         add("station.orbitalis.expand.done", "Module « %s » en place : le passage est ouvert.");
+        add("shipyard.orbitalis.section.airlock", "Sas");
+        add("shipyard.orbitalis.section.laboratory", "Laboratoire et soute");
+        add("shipyard.orbitalis.section.hangar", "Hangar");
+        add("shipyard.orbitalis.section.airlock.desc", "La poupe : un collier qui s'ajuste à l'écoutille du chantier, deux portes de sas et les casiers des combinaisons.");
+        add("shipyard.orbitalis.section.engineering.desc", "Le cœur de distorsion, le générateur d'air, deux batteries, et sur le dos, douze panneaux solaires.");
+        add("shipyard.orbitalis.section.ring.desc", "L'anneau et ses quatre rayons : en tournant, il donne une pesanteur à l'équipage.");
+        add("shipyard.orbitalis.section.hibernation.desc", "Quatre caissons d'hibernation : allongez-vous dans l'un d'eux pour vous y réveiller, où que soit le vaisseau.");
+        add("shipyard.orbitalis.section.laboratory.desc", "Quatre baies d'expériences, qui analysent aussi les échantillons, et quatre casiers de fret.");
+        add("shipyard.orbitalis.section.hangar.desc", "Le sas d'amarrage de la navette, sur le flanc gauche : c'est de là qu'elle part vers le sol.");
+        add("shipyard.orbitalis.section.greenhouse.desc", "La serre, qui nourrit l'équipage et allège le générateur d'air.");
+        add("shipyard.orbitalis.section.bridge.desc", "La proue, vitrée : c'est d'ici qu'on pilote le vaisseau.");
+        add("ship.orbitalis.pod.berth", "Ce caisson est désormais le vôtre : si vous mourez, vous vous y réveillerez, où que soit le vaisseau, tant qu'il a de l'air.");
+        add("ship.orbitalis.pod.lost", "Votre caisson n'était plus dans une section close, pourvue d'un générateur d'air : vous vous réveillez sur Terre.");
+        add("ship.orbitalis.pod.gone", "Votre caisson n'est plus là : vous vous réveillez sur Terre.");
         add("item.orbitalis.proxima_samples", "Échantillons de Proxima b");
         add("item.orbitalis.trappist_samples", "Échantillons de TRAPPIST-1 e");
         add("item.orbitalis.kepler_samples", "Échantillons de Kepler-452b");

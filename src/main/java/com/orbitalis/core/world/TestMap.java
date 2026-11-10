@@ -636,7 +636,7 @@ public final class TestMap {
                 orbit.setBlockAndUpdate(pos, piece.state());
             }
         }
-        BlockPos core = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(console.out(), 2, 0, -1));
+        BlockPos core = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(console.out(), com.orbitalis.phase3.interstellar.ShipPlan.WARP_CORE_A, 0, -1));
         com.orbitalis.phase3.interstellar.WarpCoreBlock.setCharge(orbit, core, orbit.getBlockState(core),
                 com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE);
     }

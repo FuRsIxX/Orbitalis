@@ -42,7 +42,7 @@ public final class StationManager {
     /** Demi-côté extérieur du module central, en blocs. */
     public static final int CORE_RADIUS = 2;
     /** Distance maximale entre un bloc et le centre du module central de sa station, sur chaque axe, en blocs. */
-    public static final int STATION_REACH = 48;
+    public static final int STATION_REACH = 64;
     /** Distance horizontale maximale entre un pas de tir et la station que ses capsules rejoignent, en blocs. */
     private static final int DOCKING_RANGE = 96;
     /** Prime de recherche de la première station d'une agence. */
@@ -99,14 +99,17 @@ public final class StationManager {
         return nearest;
     }
 
-    /** Agence qui possède cette station, ou {@code null} si ce n'est pas une station connue. */
+    /**
+     * Agence qui possède cette station, ou {@code null} si ce n'est pas une station connue. Un vaisseau loin de sa station
+     * (voir {@code StationPower.Link}) compte pour celle de son agence.
+     */
     public static String agencyOf(MinecraftServer server, BlockPos station) {
         for (Map.Entry<String, List<BlockPos>> entry : data(server).stations.entrySet()) {
             if (entry.getValue().contains(station)) {
                 return entry.getKey();
             }
         }
-        return null;
+        return com.orbitalis.phase3.interstellar.ShipVoyages.of(server).agencyAway(station);
     }
 
     /** Stations d'une agence, par le centre de leur module central. */

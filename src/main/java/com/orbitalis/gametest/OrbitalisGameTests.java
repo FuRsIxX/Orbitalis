@@ -3950,8 +3950,8 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         for (com.orbitalis.phase3.interstellar.ShipPlan.Piece piece : console.pieces()) {
             helper.assertTrue(cells.add(piece.offset()), "deux pièces du plan au même endroit : " + piece.offset());
         }
-        helper.assertTrue(console.currentSection() == com.orbitalis.phase3.interstellar.ShipPlan.Section.ENGINEERING,
-                "on commence par la salle des machines");
+        helper.assertTrue(console.currentSection() == com.orbitalis.phase3.interstellar.ShipPlan.Section.AIRLOCK,
+                "on commence par le sas de la poupe");
         int placed = console.build(helper.makeMockPlayer(net.minecraft.world.level.GameType.CREATIVE), true);
         helper.assertTrue(placed == cells.size(), "tout le vaisseau aurait dû être posé : " + placed + " / " + cells.size());
         helper.assertTrue(console.currentSection() == null, "le vaisseau devrait être achevé");
@@ -3966,7 +3966,22 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         com.orbitalis.phase3.interstellar.ShipSystems systems = com.orbitalis.phase3.interstellar.ShipSystems.check(level, origin, Direction.EAST);
         helper.assertTrue(systems.aboard() && systems.core() && systems.ringDrive() && systems.helm() && systems.pods()[0] == 4
                 && systems.trays()[0] == 8 && !systems.ready(), "bilan faux avant la charge du cœur");
-        BlockPos corePos = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST, 2, 0, -1));
+        // L'entrée à pied : l'écoutille du chantier, à droite du pupitre, puis le collier et les deux portes du sas ; à bord,
+        // le générateur d'air de la salle des machines, et la navette part du hangar.
+        helper.assertTrue(level.getBlockState(consolePos.east().south()).is(ModBlocks.STATION_HATCH.get())
+                && level.getBlockState(origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                        com.orbitalis.phase3.interstellar.ShipPlan.COLLAR_A, 0, 0))).is(ModBlocks.STATION_HULL.get())
+                && level.getBlockState(origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                        com.orbitalis.phase3.interstellar.ShipPlan.COLLAR_A, 1, 0))).isAir()
+                && level.getBlockState(origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST, 0, 1, -1))).is(ModBlocks.AIRLOCK_DOOR.get())
+                && level.getBlockState(origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                        com.orbitalis.phase3.interstellar.ShipPlan.INNER_DOOR_A, 1, -1))).is(ModBlocks.AIRLOCK_DOOR.get())
+                && level.getBlockState(origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST, 5, 0, 2))).is(ModBlocks.LIFE_SUPPORT.get())
+                && level.getBlockState(origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                        com.orbitalis.phase3.interstellar.ShipPlan.HANGAR_A, -2, 0))).is(ModBlocks.DOCKING_PORT.get()),
+                "le vaisseau n'a pas son entrée, son air ou son hangar");
+        BlockPos corePos = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
+                com.orbitalis.phase3.interstellar.ShipPlan.WARP_CORE_A, 0, -1));
         com.orbitalis.phase3.interstellar.WarpCoreBlock.setCharge(level, corePos.above(), level.getBlockState(corePos.above()),
                 com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE);
         helper.assertTrue(level.getBlockState(corePos).getValue(com.orbitalis.phase3.interstellar.WarpCoreBlock.CHARGE)

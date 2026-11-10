@@ -312,7 +312,7 @@ public final class WorldPreview {
     /** Ouvre l'écran du poste de pilotage avec un bilan donné (voir ShipHelmPayload pour l'ordre des valeurs). */
     private static void openHelm(java.util.List<Integer> values) {
         net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(
-                new com.orbitalis.client.screen.ShipHelmScreen(new com.orbitalis.core.network.ShipHelmPayload(new BlockPos(39, 99, -4), values))));
+                new com.orbitalis.client.screen.ShipHelmScreen(new com.orbitalis.core.network.ShipHelmPayload(new BlockPos(59, 99, 0), values))));
     }
 
     /**
@@ -332,7 +332,7 @@ public final class WorldPreview {
             com.orbitalis.phase1.satellite.SatelliteManager.of(server, agency).discover(world.body());
         }
         com.orbitalis.phase3.interstellar.ShipVoyages.Voyage voyage = com.orbitalis.phase3.interstellar.ShipVoyages.of(server).of(agency);
-        BlockPos origin = player.level().dimension() != SpaceRules.ORBIT && voyage != null ? voyage.awayOrigin() : new BlockPos(15, 100, -4);
+        BlockPos origin = player.level().dimension() != SpaceRules.ORBIT && voyage != null ? voyage.awayOrigin() : new BlockPos(20, 100, 0);
         BlockPos helm = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(Direction.EAST,
                 com.orbitalis.phase3.interstellar.ShipPlan.HELM_A, 0, com.orbitalis.phase3.interstellar.ShipPlan.HELM_Y));
         if (jump) {
@@ -345,7 +345,7 @@ public final class WorldPreview {
     /** Un clic droit sur le moteur de l'anneau du vaisseau de la carte de test : il démarre, ou il ralentit. */
     private static void ringDrive(ServerLevel level) {
         ServerLevel orbit = level.getServer().getLevel(SpaceRules.ORBIT);
-        if (orbit != null && orbit.getBlockEntity(new BlockPos(24, 102, -4)) instanceof com.orbitalis.phase3.interstellar.RingDriveBlockEntity drive) {
+        if (orbit != null && orbit.getBlockEntity(new BlockPos(32, 102, 0)) instanceof com.orbitalis.phase3.interstellar.RingDriveBlockEntity drive) {
             net.minecraft.network.chat.Component answer = drive.toggle();
             if (answer != null) {
                 Orbitalis.LOGGER.info("Moteur de l'anneau : {}", answer.getString());
@@ -368,11 +368,11 @@ public final class WorldPreview {
         net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
         minecraft.execute(() -> {
             var level = minecraft.level;
-            if (level != null && level.getBlockEntity(new BlockPos(24, 102, -4)) instanceof com.orbitalis.phase3.interstellar.RingDriveBlockEntity drive) {
+            if (level != null && level.getBlockEntity(new BlockPos(32, 102, 0)) instanceof com.orbitalis.phase3.interstellar.RingDriveBlockEntity drive) {
                 Orbitalis.LOGGER.info("Anneau côté client : en marche {}, angle {}, segment en haut {}", drive.spinning(),
-                        drive.angle(level.getGameTime()), level.getBlockState(new BlockPos(24, 105, -4)));
+                        drive.angle(level.getGameTime()), level.getBlockState(new BlockPos(32, 105, 0)));
             } else {
-                Orbitalis.LOGGER.info("Anneau côté client : pas de moteur en 24 102 -4");
+                Orbitalis.LOGGER.info("Anneau côté client : pas de moteur en 32 102 0");
             }
         });
     }
@@ -2866,12 +2866,19 @@ public final class WorldPreview {
                         orbit.setBlockAndUpdate(pos, piece.state());
                     }
                 }
-                BlockPos core = console.shipOrigin().offset(com.orbitalis.phase3.interstellar.ShipPlan.local(net.minecraft.core.Direction.EAST, 2, 0, -1));
+                BlockPos core = console.shipOrigin().offset(com.orbitalis.phase3.interstellar.ShipPlan.local(net.minecraft.core.Direction.EAST,
+                        com.orbitalis.phase3.interstellar.ShipPlan.WARP_CORE_A, 0, -1));
                 com.orbitalis.phase3.interstellar.WarpCoreBlock.setCharge(orbit, core, orbit.getBlockState(core),
                         com.orbitalis.phase3.interstellar.WarpCoreBlock.MAX_CHARGE);
             }
-        }, 34.0, 110.0, 18.0, 200.0F, 25.0F, 120));
-        SHOTS.add(new Shot("tm_orbit_ship_core", null, 26.5, 99.0, 0.5, 90.0F, 12.0F, 60));
+        }, 46.0, 114.0, 26.0, 200.0F, 25.0F, 120));
+        SHOTS.add(new Shot("tm_orbit_ship_core", null, 29.5, 99.0, 0.5, 90.0F, 12.0F, 60));
+        // Le vaisseau réorganisé : le sas de la poupe, la salle des machines, le laboratoire et la soute, le hangar, le dos.
+        SHOTS.add(look("tm_orbit_ship_airlock", null, 22.8, 99.7, -0.2, 20.0, 99.3, 1.5, 30));
+        SHOTS.add(new Shot("tm_orbit_ship_engineering", null, 24.6, 99.0, 0.5, -90.0F, 14.0F, 30));
+        SHOTS.add(new Shot("tm_orbit_ship_lab", null, 41.6, 99.0, 0.5, -90.0F, 8.0F, 30));
+        SHOTS.add(new Shot("tm_orbit_ship_hangar", null, 50.5, 99.0, 0.7, 150.0F, 8.0F, 30));
+        SHOTS.add(look("tm_orbit_ship_top", level -> hover(level), 33.0, 108.0, 7.0, 25.0, 102.0, 0.5, 40));
         // Proxima b : vers l'est, la naine rouge basse sur l'horizon et la bande du crépuscule ; puis de près, la flore ;
         // enfin l'orbite de Proxima, la planète sous le joueur.
         SHOTS.add(new Shot("tm_proxima_east", null, 0.5, 140.0, 0.5, -90.0F, 8.0F, 200));
@@ -2935,9 +2942,9 @@ public final class WorldPreview {
                 run(level, ("execute in orbitalis:proxima_b run tp @a %d.5 %d %d.5 -90 30").formatted(at.getX() - 4, at.getY() + 2, at.getZ()));
             }
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 120));
-        SHOTS.add(new Shot("tm_orbit_ship_pods", null, 32.5, 99.0, 0.5, -90.0F, 8.0F, 60));
-        SHOTS.add(new Shot("tm_orbit_ship_greenhouse", null, 38.5, 99.0, 0.5, -90.0F, 14.0F, 60));
-        SHOTS.add(new Shot("tm_orbit_ship_bridge", null, 44.5, 99.0, 0.5, -90.0F, 6.0F, 60));
+        SHOTS.add(new Shot("tm_orbit_ship_pods", null, 35.5, 99.0, 0.5, -90.0F, 8.0F, 60));
+        SHOTS.add(new Shot("tm_orbit_ship_greenhouse", null, 51.5, 99.0, 0.5, -90.0F, 14.0F, 60));
+        SHOTS.add(new Shot("tm_orbit_ship_bridge", null, 57.5, 99.0, 0.5, -90.0F, 6.0F, 60));
         SHOTS.add(new Shot("tm_orbit_yard_screen", level -> net.minecraft.client.Minecraft.getInstance().execute(() ->
                 net.minecraft.client.Minecraft.getInstance().gui.setScreen(new com.orbitalis.client.screen.ShipyardScreen(new BlockPos(17, 99, 0)))),
                 15.6, 99.0, 0.5, -90.0F, 8.0F, 40));
@@ -2954,8 +2961,8 @@ public final class WorldPreview {
         SHOTS.add(look("tm_orbit_ring_on", level -> {
             hover(level);
             ringDrive(level);
-        }, 38.5, 105.0, 8.5, 29.5, 100.5, 0.5, 20));
-        SHOTS.add(new Shot("tm_orbit_jump_helm", level -> helm(level, false), 44.5, 99.0, 0.5, -90.0F, 6.0F, 40));
+        }, 41.5, 105.0, 8.5, 32.5, 100.5, 0.5, 20));
+        SHOTS.add(new Shot("tm_orbit_jump_helm", level -> helm(level, false), 57.5, 99.0, 0.5, -90.0F, 6.0F, 40));
         // Vers TRAPPIST-1 e : la destination choisie à l'écran, puis le saut (à la place de tm_orbit_jump_order).
         SHOTS.add(new Shot("tm_orbit_jump_choose", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
             if (net.minecraft.client.Minecraft.getInstance().gui.screen() instanceof com.orbitalis.client.screen.ShipHelmScreen screen) {
@@ -2986,7 +2993,7 @@ public final class WorldPreview {
             closeScreen();
             helm(level, true, 2);
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 30));
-        SHOTS.add(new Shot("tm_orbit_jump_order", level -> helm(level, true), 44.5, 99.0, 0.5, -90.0F, 6.0F, 30));
+        SHOTS.add(new Shot("tm_orbit_jump_order", level -> helm(level, true), 57.5, 99.0, 0.5, -90.0F, 6.0F, 30));
         SHOTS.add(new Shot("tm_orbit_jump_countdown", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 15));
         // Le saut mis en scène, image par image, après tm_orbit_ship_bridge puis tm_orbit_jump_order (l'ordre est donné au
         // début de cette vue, la distorsion commence 100 ticks plus tard) : les étoiles s'étirent, l'éclair, le tunnel à deux
@@ -3001,15 +3008,37 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_warp_banner", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 24));
         SHOTS.add(new Shot("tm_orbit_jump_arrived", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         // Arrivé en orbite de TRAPPIST-1 e (poupe en 0 120 0) : le vaisseau vu du dehors, puis la passerelle.
-        SHOTS.add(new Shot("tm_trappist_orbit_ship", level -> hover(level), 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
-        SHOTS.add(new Shot("tm_trappist_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));
-        SHOTS.add(new Shot("tm_kepler_orbit_ship", level -> hover(level), 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
-        SHOTS.add(new Shot("tm_tarantula_orbit_ship", level -> hover(level), 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
-        SHOTS.add(new Shot("tm_tarantula_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));
-        SHOTS.add(new Shot("tm_kepler_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));
-        SHOTS.add(new Shot("tm_orbit_cradle_empty", null, 34.0, 110.0, 18.0, 200.0F, 25.0F, 100));
-        SHOTS.add(new Shot("tm_proxima_orbit_ship", null, 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));
-        SHOTS.add(new Shot("tm_proxima_orbit_helm", level -> helm(level, false), 24.5, 119.0, 0.5, -90.0F, 6.0F, 60));
+        SHOTS.add(new Shot("tm_trappist_orbit_ship", level -> hover(level), 26.0, 134.0, 26.0, 200.0F, 25.0F, 120));
+        SHOTS.add(new Shot("tm_trappist_orbit_helm", level -> helm(level, false), 37.5, 119.0, 0.5, -90.0F, 6.0F, 60));
+        SHOTS.add(new Shot("tm_kepler_orbit_ship", level -> hover(level), 26.0, 134.0, 26.0, 200.0F, 25.0F, 120));
+        SHOTS.add(new Shot("tm_tarantula_orbit_ship", level -> hover(level), 26.0, 134.0, 26.0, 200.0F, 25.0F, 120));
+        SHOTS.add(new Shot("tm_tarantula_orbit_helm", level -> helm(level, false), 37.5, 119.0, 0.5, -90.0F, 6.0F, 60));
+        SHOTS.add(new Shot("tm_kepler_orbit_helm", level -> helm(level, false), 37.5, 119.0, 0.5, -90.0F, 6.0F, 60));
+        SHOTS.add(new Shot("tm_orbit_cradle_empty", null, 46.0, 114.0, 26.0, 200.0F, 25.0F, 100));
+        SHOTS.add(new Shot("tm_proxima_orbit_ship", null, 26.0, 134.0, 26.0, 200.0F, 25.0F, 120));
+        SHOTS.add(new Shot("tm_proxima_orbit_helm", level -> helm(level, false), 37.5, 119.0, 0.5, -90.0F, 6.0F, 60));
+        // À bord, en orbite de Proxima b (poupe en 0 120 0) : les caissons, l'air du vaisseau et le réveil au caisson, relevés
+        // dans le journal.
+        SHOTS.add(new Shot("tm_proxima_orbit_pods", level -> {
+            closeScreen();
+            hover(level);
+            ServerLevel orbit = level.getServer().getLevel(SpaceRules.PROXIMA_ORBIT);
+            if (orbit == null) {
+                return;
+            }
+            BlockPos origin = new BlockPos(0, 120, 0);
+            BlockPos pod = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(net.minecraft.core.Direction.EAST, 17, -1, -1));
+            BlockPos air = origin.offset(com.orbitalis.phase3.interstellar.ShipPlan.local(net.minecraft.core.Direction.EAST, 5, 0, 2));
+            String status = orbit.getBlockEntity(air) instanceof com.orbitalis.phase2.station.LifeSupportBlockEntity unit
+                    ? unit.getStatus() + " " + unit.getVolume() : "absent";
+            for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+                com.orbitalis.phase2.survival.RespawnRules.setPodBerth(player, pod, ResearchManager.agencyKey(player), origin,
+                        net.minecraft.core.Direction.EAST);
+                var wake = com.orbitalis.phase2.survival.RespawnRules.wakeUp(player);
+                com.orbitalis.Orbitalis.LOGGER.info("APERCU vaisseau à Proxima : air {} ; réveil au caisson {}", status,
+                        wake == null ? "refusé" : wake.newLevel().dimension() + " " + wake.position());
+            }
+        }, 15.5, 119.0, 0.5, -90.0F, 6.0F, 60));
         SHOTS.add(new Shot("tm_proxima_orbit_return", level -> {
             closeScreen();
             helm(level, true);
@@ -3017,7 +3046,7 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_orbit_ship_back", level -> {
             closeScreen();
             hover(level);
-        }, 34.0, 110.0, 18.0, 200.0F, 25.0F, 100));
+        }, 46.0, 114.0, 26.0, 200.0F, 25.0F, 100));
         // La navette, après tm_proxima_orbit_helm (le joueur sur la passerelle, en orbite de Proxima b) : elle se détache
         // du vaisseau, freine, rentre dans l'air de Proxima b, ouvre ses parachutes, se pose, puis remonte au vaisseau.
         SHOTS.add(new Shot("tm_proxima_orbit_shuttle", level -> {
@@ -3042,18 +3071,18 @@ public final class WorldPreview {
         SHOTS.add(look("tm_orbit_ring_start", level -> {
             hover(level);
             ringDrive(level);
-        }, 38.5, 105.0, 8.5, 29.5, 100.5, 0.5, 110));
-        SHOTS.add(look("tm_orbit_ring_turning", level -> hover(level), 38.5, 105.0, 8.5, 29.5, 100.5, 0.5, 15));
+        }, 41.5, 105.0, 8.5, 32.5, 100.5, 0.5, 110));
+        SHOTS.add(look("tm_orbit_ring_turning", level -> hover(level), 41.5, 105.0, 8.5, 32.5, 100.5, 0.5, 15));
         SHOTS.add(look("tm_orbit_ring_below", level -> {
             hover(level);
             ringReport();
-        }, 36.5, 93.0, 7.5, 29.5, 100.5, 0.5, 12));
-        SHOTS.add(new Shot("tm_orbit_ring_helm", level -> helm(level, false), 44.5, 99.0, 0.5, -90.0F, 6.0F, 30));
+        }, 39.5, 93.0, 7.5, 32.5, 100.5, 0.5, 12));
+        SHOTS.add(new Shot("tm_orbit_ring_helm", level -> helm(level, false), 57.5, 99.0, 0.5, -90.0F, 6.0F, 30));
         SHOTS.add(look("tm_orbit_ring_stop", level -> {
             closeScreen();
             hover(level);
             ringDrive(level);
-        }, 38.5, 105.0, 8.5, 29.5, 100.5, 0.5, 220));
+        }, 41.5, 105.0, 8.5, 32.5, 100.5, 0.5, 220));
         // L'anneau en marche, en orbite de Proxima b, sans berceau autour (après un saut : poupe en 0 120 0, axe en 9 120 0).
         SHOTS.add(look("tm_proxima_orbit_ring", level -> hover(level), 21.5, 127.0, 12.5, 9.5, 120.5, 0.5, 100));
         SHOTS.add(look("tm_proxima_orbit_ring_turning", level -> hover(level), 21.5, 127.0, 12.5, 9.5, 120.5, 0.5, 12));

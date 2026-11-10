@@ -35,8 +35,36 @@ public class HibernationPodBlock extends TwoHighBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendSystemMessage(Component.translatable("ship.orbitalis.pod.status").withStyle(ChatFormatting.AQUA));
+            // Le caisson devient celui du joueur : il s'y réveillera s'il meurt, tant que le vaisseau a de l'air.
+            BlockPos lower = TwoHighBlock.lower(state, pos);
+            Located ship = locate(serverPlayer.level(), lower);
+            if (ship == null) {
+                serverPlayer.sendSystemMessage(Component.translatable("ship.orbitalis.pod.status").withStyle(ChatFormatting.AQUA));
+            } else {
+                com.orbitalis.phase2.survival.RespawnRules.setPodBerth(serverPlayer, lower,
+                        com.orbitalis.core.research.ResearchManager.agencyKey(serverPlayer), ship.origin(), ship.out());
+                serverPlayer.sendSystemMessage(Component.translatable("ship.orbitalis.pod.berth").withStyle(ChatFormatting.AQUA));
+            }
         }
         return InteractionResult.SUCCESS;
+    }
+
+    /** Le vaisseau dont ce caisson fait partie : sa poupe et sa proue, retrouvées d'après le plan ; ou {@code null}. */
+    private record Located(BlockPos origin, Direction out) {
+    }
+
+    private static Located locate(Level level, BlockPos lower) {
+        for (Direction out : Direction.Plane.HORIZONTAL) {
+            for (ShipPlan.Piece piece : ShipPlan.pieces(out)) {
+                if (!piece.state().is(com.orbitalis.core.registry.ModBlocks.HIBERNATION_POD.get()) || ShipPlan.free(piece)) {
+                    continue;
+                }
+                BlockPos origin = lower.subtract(piece.offset());
+                if (ShipSystems.check(level, origin, out).aboard()) {
+                    return new Located(origin, out);
+                }
+            }
+        }
+        return null;
     }
 }
