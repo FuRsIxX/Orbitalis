@@ -12,6 +12,7 @@
 - **Porte de sas** : elle ne s'ouvre ni ne se ferme plus d'elle-même quand on s'en approche ; un clic droit l'ouvre ou la ferme. Elle ne se referme toujours jamais sur quelqu'un qui se tient dans le passage.
 - **Porte de sas et porte vitrée coulissante** : ouvertes, un clic droit dans l'ouverture vide les referme ; on passe toujours au travers.
 - **Bedrock au fond des planètes** : la Lune, Mars et Titan ont, comme l'Overworld, une bedrock pleine à la couche du fond qui se mêle à la roche sur les cinq couches au-dessus ; Europe, monde plat, a sa couche de bedrock tout au fond. On ne tombe plus dans le vide en creusant. Seules les régions encore jamais parcourues en profitent.
+- **Accumulateurs : charge ou décharge** : leur écran a un réglage. En « Charge », l'accumulateur prend l'énergie par toutes ses faces ; en « Décharge », il la donne par toutes ses faces, chacune son tour servie la première. Les prises bleue (entrée) et orange (sortie) disparaissent des textures : les flancs ont une grille d'aération, le dos une trappe de service. Un accumulateur déjà posé passe en charge ; réglez en décharge ceux qui alimentaient un réseau par le dos.
 - **Manuel** : un premier paragraphe court est mis en avant comme « en bref », les listes ont des puces et les étapes numérotées leur numéro en couleur. Le texte des chapitres ne change pas.
 
 # Orbitalis — 0.11.1 (bêta)
@@ -205,6 +206,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 - **Airlock door**: it no longer opens or closes by itself when you come near; a right-click opens or closes it. It still never closes on someone standing in the doorway.
 - **Airlock door and sliding glass door**: when open, a right-click in the empty doorway closes them; you still walk through.
 - **Bedrock at the bottom of planets**: the Moon, Mars and Titan have, like the Overworld, solid bedrock on the bottom layer blending into the rock over the five layers above; Europa, a flat world, has its bedrock layer at the very bottom. Digging no longer drops you into the void. Only areas never visited before get it.
+- **Accumulators: charge or discharge**: their screen has a setting. On "Charge", the accumulator takes energy in through every face; on "Discharge", it gives it out through every face, each served first in turn. The blue (input) and orange (output) sockets are gone from the textures: the sides have a vent grille, the back a service hatch. An accumulator already placed starts on charge; set those that fed a network from their back to discharge.
 - **Guide**: a short first paragraph stands out as a summary, lists have bullets and numbered steps have their number in colour. Chapter texts are unchanged.
 
 # Orbitalis — 0.11.1 (beta)

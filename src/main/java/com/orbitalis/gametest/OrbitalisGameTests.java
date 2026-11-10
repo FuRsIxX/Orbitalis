@@ -4234,14 +4234,21 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
         var front = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK, helper.absolutePos(first), Direction.SOUTH);
         helper.assertTrue(side != null && front != null, "l'accumulateur devrait offrir de l'énergie sur toutes ses faces");
         int tier = com.orbitalis.phase1.power.AccumulatorBlock.Tier.BASIC.transfer;
+        // En charge (le réglage de départ) : toutes les faces reçoivent, aucune ne donne.
         try (Transaction transaction = Transaction.openRoot()) {
             helper.assertTrue(side.insert(500_000, transaction) == tier, "un flanc aurait dû recevoir au plus le débit de la génération");
-            helper.assertTrue(front.insert(500, transaction) == 0, "le dos, la sortie, ne devrait rien recevoir");
             transaction.commit();
         }
         helper.assertTrue(source.getEnergy().getEnergy() == tier, "l'énergie reçue aurait dû se ranger : " + source.getEnergy().getEnergy());
         try (Transaction transaction = Transaction.openRoot()) {
-            helper.assertTrue(side.extract(100, transaction) == 0, "on ne devrait rien prendre par un flanc");
+            helper.assertTrue(side.extract(100, transaction) == 0 && front.extract(100, transaction) == 0, "en charge, on ne devrait rien prendre");
+            helper.assertTrue(front.insert(100, transaction) == 100, "en charge, la face avant aussi devrait recevoir");
+        }
+        // En décharge : aucune face ne reçoit, toutes donnent ; le premier remplit alors le second, posé contre lui.
+        source.setMode(com.orbitalis.phase1.power.AccumulatorBlockEntity.Mode.DISCHARGE);
+        try (Transaction transaction = Transaction.openRoot()) {
+            helper.assertTrue(side.insert(100, transaction) == 0 && front.insert(100, transaction) == 0, "en décharge, rien ne devrait entrer");
+            helper.assertTrue(side.extract(100, transaction) == 100, "en décharge, un flanc aurait dû donner");
         }
         source.getEnergy().generate(300_000);
         // L'amélioration garde l'énergie : un accumulateur chargé, au milieu de la recette de l'avancé, la transmet.

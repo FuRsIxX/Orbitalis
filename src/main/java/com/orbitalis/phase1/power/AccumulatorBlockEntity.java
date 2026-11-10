@@ -31,17 +31,24 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * revient sur une de ses entrées.
  */
 public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider {
-    /** Données de l'écran : celles des machines, puis l'entrée et la sortie moyennes, en FE par tick. */
-    public static final int DATA_COUNT = MachineMenu.BASE_DATA_COUNT + 2;
+    /** Données de l'écran : celles des machines, puis l'entrée et la sortie moyennes, en FE par tick, et le réglage. */
+    public static final int DATA_COUNT = MachineMenu.BASE_DATA_COUNT + 3;
+
+    /** Le réglage : en charge, il prend l'énergie par toutes ses faces ; en décharge, il la donne par toutes ses faces. */
+    public enum Mode {
+        CHARGE, DISCHARGE
+    }
     /** Durée sur laquelle on fait la moyenne des échanges affichés, en ticks. */
     private static final int AVERAGE = 20;
 
     private final AccumulatorBlock.Tier tier;
     private final MachineEnergyStorage energy;
-    private final EnergyHandler input;
-    private final EnergyHandler output;
-    /** Vrai pendant que l'accumulateur pousse son énergie : ses entrées refusent alors ce qui leur revient. */
+    private final EnergyHandler faces;
+    private Mode mode = Mode.CHARGE;
+    /** Vrai pendant que l'accumulateur pousse son énergie : il refuse alors ce qui lui revient. */
     private boolean pushing;
+    /** La face par laquelle commencer à donner, au prochain tick : chacune son tour d'être servie la première. */
+    private int nextFace;
     private int lastEnergy;
     private int ticks;
     private long inSum;
@@ -53,8 +60,7 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
         super(ModBlockEntities.ACCUMULATOR.get(), pos, state);
         this.tier = state.getBlock() instanceof AccumulatorBlock block ? block.tier() : AccumulatorBlock.Tier.BASIC;
         this.energy = new MachineEnergyStorage(tier.capacity, tier.transfer, tier.transfer, this::setChanged);
-        this.input = new View(true);
-        this.output = new View(false);
+        this.faces = new View();
     }
 
     public AccumulatorBlock.Tier tier() {
@@ -65,17 +71,24 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
         return energy;
     }
 
-    /** L'énergie vue d'une face : le dos ne fait que donner, les autres faces ne font que recevoir. */
+    /** L'énergie vue d'une face : toutes les faces font de même, recevoir en charge, donner en décharge. */
     public EnergyHandler handler(Direction side) {
-        if (side == null) {
-            return energy;
-        }
-        return side == outlet() ? output : input;
+        return side == null ? energy : faces;
     }
 
-    /** La sortie : le dos, à l'opposé de la jauge. */
-    public Direction outlet() {
-        return front().getOpposite();
+    public Mode mode() {
+        return mode;
+    }
+
+    /** Change le réglage ; les câbles voisins revoient alors ce que chaque face accepte. */
+    public void setMode(Mode mode) {
+        if (this.mode != mode) {
+            this.mode = mode;
+            setChanged();
+            if (level != null) {
+                level.invalidateCapabilities(worldPosition);
+            }
+        }
     }
 
     public Direction front() {
@@ -95,17 +108,22 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
         // Ce qui est entré depuis le tick d'avant (ou, si l'on a puisé chez lui par l'avant, ce qui est sorti).
         int delta = energy.getEnergy() - lastEnergy;
         int moved = 0;
-        if (energy.getEnergy() > 0) {
-            Direction outlet = outlet();
-            EnergyHandler target = level.getCapability(Capabilities.Energy.BLOCK, pos.relative(outlet), outlet.getOpposite());
-            if (target != null) {
-                pushing = true;
-                try {
-                    moved = EnergyHandlerUtil.move(energy, target, tier.transfer, null);
-                } finally {
-                    pushing = false;
+        if (mode == Mode.DISCHARGE && energy.getEnergy() > 0) {
+            // En décharge : il donne par toutes ses faces, dans la limite de son débit, chacune son tour la première.
+            Direction[] sides = Direction.values();
+            pushing = true;
+            try {
+                for (int k = 0; k < sides.length && moved < tier.transfer; k++) {
+                    Direction side = sides[(nextFace + k) % sides.length];
+                    EnergyHandler target = level.getCapability(Capabilities.Energy.BLOCK, pos.relative(side), side.getOpposite());
+                    if (target != null) {
+                        moved += EnergyHandlerUtil.move(energy, target, tier.transfer - moved, null);
+                    }
                 }
+            } finally {
+                pushing = false;
             }
+            nextFace = (nextFace + 1) % sides.length;
         }
         lastEnergy = energy.getEnergy();
         inSum += Math.max(0, delta);
@@ -130,14 +148,8 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
         return Math.clamp((int) Math.ceil(energy.getEnergy() * (double) AccumulatorBlock.MAX_CHARGE / tier.capacity), 1, AccumulatorBlock.MAX_CHARGE);
     }
 
-    /** Une face de l'accumulateur : une entrée, qui ne fait que recevoir, ou la sortie, qui ne fait que donner. */
+    /** Une face de l'accumulateur : en charge, elle ne fait que recevoir ; en décharge, elle ne fait que donner. */
     private final class View implements EnergyHandler {
-        private final boolean receives;
-
-        View(boolean receives) {
-            this.receives = receives;
-        }
-
         @Override
         public long getAmountAsLong() {
             return energy.getEnergy();
@@ -150,12 +162,12 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
 
         @Override
         public int insert(int amount, TransactionContext transaction) {
-            return receives && !pushing ? energy.insert(amount, transaction) : 0;
+            return mode == Mode.CHARGE && !pushing ? energy.insert(amount, transaction) : 0;
         }
 
         @Override
         public int extract(int amount, TransactionContext transaction) {
-            return receives ? 0 : energy.extract(amount, transaction);
+            return mode == Mode.DISCHARGE ? energy.extract(amount, transaction) : 0;
         }
     }
 
@@ -174,6 +186,7 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
                 case 4 -> tier.ordinal();
                 case 5 -> averageIn & 0xFFFF;
                 case 6 -> averageOut & 0xFFFF;
+                case 7 -> mode.ordinal();
                 default -> 0;
             };
         }
@@ -219,6 +232,7 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
     protected void saveAdditional(ValueOutput out) {
         super.saveAdditional(out);
         energy.serialize(out.child("energy"));
+        out.putString("mode", mode.name());
     }
 
     @Override
@@ -226,5 +240,6 @@ public class AccumulatorBlockEntity extends BlockEntity implements MenuProvider 
         super.loadAdditional(in);
         energy.deserialize(in.childOrEmpty("energy"));
         lastEnergy = energy.getEnergy();
+        mode = "DISCHARGE".equals(in.getStringOr("mode", "CHARGE")) ? Mode.DISCHARGE : Mode.CHARGE;
     }
 }

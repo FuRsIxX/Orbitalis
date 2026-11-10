@@ -25,9 +25,10 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * Accumulateur : un bloc qui stocke l'électricité, sans réglage. On le pose, on branche : sa jauge, cinq crans de
- * charge, regarde le joueur qui le pose ; l'électricité entre par cette face et les quatre autres, et ressort par le dos
- * (voir {@link AccumulatorBlockEntity}). Il en existe quatre générations, chacune fabriquée avec la précédente.
+ * Accumulateur : un bloc qui stocke l'électricité. On le pose, on branche : sa jauge, cinq crans de charge, regarde le
+ * joueur qui le pose. Un seul réglage, dans son écran : en charge, il prend l'électricité par toutes ses faces ; en
+ * décharge, il la donne par toutes ses faces (voir {@link AccumulatorBlockEntity}). Il en existe quatre générations,
+ * chacune fabriquée avec la précédente.
  */
 public class AccumulatorBlock extends HorizontalDirectionalBlock implements EntityBlock {
     /** Les générations : capacité en FE, débit d'entrée comme de sortie en FE par tick, couleur de la jauge. */
@@ -74,7 +75,7 @@ public class AccumulatorBlock extends HorizontalDirectionalBlock implements Enti
         builder.add(FACING, CHARGE);
     }
 
-    /** La face avant, celle de la jauge, regarde le joueur qui le pose ; la sortie est au dos. */
+    /** La face avant, celle de la jauge, regarde le joueur qui le pose. */
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());

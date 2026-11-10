@@ -11,24 +11,21 @@ amélioration :
 - le quantique : châssis nacré, cadre de chrome, coiffes, filet lumineux, et une fenêtre de jauge cerclée de lumière,
   jauge violette.
 
-La face avant, celle qui regarde le joueur à la pose, porte la jauge : cinq crans qui s'allument de bas en haut. Le dos
-porte la sortie, un connecteur rond orange ; les flancs, des entrées, un connecteur bleu entre deux grilles. Le dessus
+La face avant, celle qui regarde le joueur à la pose, porte la jauge : cinq crans qui s'allument de bas en haut. Toutes
+les faces prennent ou donnent l'énergie selon le réglage (charge ou décharge) : aucune n'a de prise de couleur. Le dos
+porte une trappe de service ; les flancs, une grille d'aération et deux voyants. Le dessus
 porte quatre crans qui disent la génération ; le dessous, quatre patins et une grille. Chaque face est un panneau en
 creux dans son cadre. Un modèle par cran de charge (de 0 à 5) ; le jeu le tourne vers l'avant.
 
 Usage : python tools/write_accumulators.py
 """
 import json
-import math
 import os
 
 import generate_machine_models as gm
 from generate_textures import SIZE, rgb
 
 MAX_CHARGE = 5
-OUTPUT = "#E8872A"
-INPUT = "#3F76E4"
-HOLE = "#12151A"
 SEAM = "#14181D"
 GLASS = "#0F151A"
 
@@ -131,52 +128,43 @@ def front(t, charge):
     return img
 
 
-def connector(img, color, radius, t):
-    """Un connecteur rond : la bague de couleur, le trou au milieu, et un liseré du cadre autour."""
-    for y in range(SIZE):
-        for x in range(SIZE):
-            r = math.hypot(x - 7.5, y - 7.5)
-            if r <= radius - 1.5:
-                dot(img, x, y, HOLE)
-            elif r <= radius:
-                dot(img, x, y, mix(color, "#FFFFFF", 0.3) if y < 7 else color)
-            elif r <= radius + 0.9:
-                dot(img, x, y, mix(t["trim"], "#000000", 0.25))
-
-
 def back(t):
-    """Le dos, la sortie : un grand connecteur orange."""
+    """Le dos : une trappe de service vissée, sa plaque d'avertissement. Aucune prise : toutes les faces font de même."""
     img = chassis(t)
-    connector(img, OUTPUT, 3.8, t)
-    # Les repères de polarité, et une bande de danger au pied : c'est par là que sort le courant.
-    for x, y in ((3, 4), (2, 4), (4, 4), (3, 3), (3, 5)):
-        dot(img, x, y, OUTPUT)
-    for x in (11, 12, 13):
-        dot(img, x, 4, mix(t["trim"], "#FFFFFF", 0.3))
-    for x in range(4, 12):
-        dot(img, x, 13, "#F2C14E" if x % 2 == 0 else SEAM)
-    # Deux boulons de fixation, sous le connecteur.
-    for x in (4, 11):
-        dot(img, x, 11, mix(t["trim"], "#FFFFFF", 0.45))
-        dot(img, x + 1, 11, mix(t["trim"], "#000000", 0.2))
-        dot(img, x, 12, mix(t["trim"], "#000000", 0.35))
+    # La trappe, en relief : un rectangle bordé d'ombre en bas à droite, de lumière en haut à gauche.
+    for y in range(4, 12):
+        for x in range(4, 12):
+            edge_light = x == 4 or y == 4
+            edge_dark = x == 11 or y == 11
+            if edge_light:
+                dot(img, x, y, mix(t["body"], "#FFFFFF", 0.18))
+            elif edge_dark:
+                dot(img, x, y, mix(t["body"], "#000000", 0.35))
+            else:
+                dot(img, x, y, mix(t["body"], "#FFFFFF", 0.06))
+    # Ses quatre vis, et sa poignée encastrée.
+    for x, y in ((5, 5), (10, 5), (5, 10), (10, 10)):
+        dot(img, x, y, mix(t["trim"], "#FFFFFF", 0.45))
+    for x in range(6, 10):
+        dot(img, x, 8, SEAM)
+        dot(img, x, 9, mix(t["body"], "#FFFFFF", 0.2))
+    # La plaque d'avertissement, au-dessus de la trappe : la couleur de la génération.
+    for x in range(6, 10):
+        dot(img, x, 3, mix(t["accent"], t["body"], 0.35))
     return img
 
 
 def side(t):
-    """Un flanc, une entrée : un connecteur bleu entre deux grilles d'aération."""
+    """Un flanc : une grille d'aération sur toute la largeur du panneau, un liseré et deux voyants de la génération."""
     img = chassis(t)
-    for y in (3, 4, 11, 12):
-        for x in range(5, 11):
-            dot(img, x, y, SEAM if y % 2 == 1 else mix(t["body"], "#FFFFFF", 0.15))
-    connector(img, INPUT, 2.6, t)
-    # Une flèche vers l'intérieur, au-dessus de la prise : c'est par là qu'entre le courant.
-    for x, y in ((7, 5), (8, 5), (6, 4), (9, 4)):
-        dot(img, x, y, INPUT)
+    for y in range(4, 12, 2):
+        for x in range(4, 12):
+            dot(img, x, y, SEAM)
+            dot(img, x, y + 1, mix(t["body"], "#FFFFFF", 0.15))
     for x in (2, 13):
         for y in (5, 6, 9, 10):
             dot(img, x, y, mix(t["body"], "#000000", 0.25))
-    # Un liseré de la couleur de la génération sous la grille du bas, et deux voyants de part et d'autre de la prise.
+    # Un liseré de la couleur de la génération sous la grille, et deux voyants de part et d'autre.
     for x in range(5, 11):
         dot(img, x, 13, mix(t["accent"], t["body"], 0.45))
     for x in (3, 12):

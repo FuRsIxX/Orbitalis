@@ -15,24 +15,35 @@ import net.minecraft.world.entity.player.Inventory;
 /**
  * Écran d'un accumulateur, épuré, dans le style salle de contrôle des écrans d'Orbitalis ({@link Ui}) : le nom et les
  * crans de la génération ; la charge en grand et ce qu'elle représente ; une barre de charge sur toute la largeur ; une
- * ligne d'état (pastille, mot, phrase en clair) ; l'entrée et la sortie côte à côte. Rien à régler, et le détail (les
- * faces, le débit) vient au survol.
+ * ligne d'état (pastille, mot, phrase en clair) ; l'entrée et la sortie côte à côte. Un seul réglage, en haut à
+ * droite : charge ou décharge. Le détail (ce que font les faces, le débit) vient au survol.
  */
 public class AccumulatorScreen extends AbstractContainerScreen<AccumulatorMenu> {
     private static final int INPUT = 0xFF5B8CFF;
     private static final int OUTPUT = 0xFFFF9A3D;
 
     private static final int WIDTH = 200;
-    private static final int HEIGHT = 100;
+    private static final int HEIGHT = 116;
     private static final int PAD = 10;
     private static final int INNER = WIDTH - 2 * PAD;
-    private static final int BIG_Y = 30;
-    private static final int BAR_Y = 52;
+    /** La ligne du réglage, sous l'en-tête. */
+    private static final int MODE_Y = 26;
+    private static final int BIG_Y = 46;
+    private static final int BAR_Y = 68;
     private static final int BAR_H = 8;
-    private static final int STATE_Y = 66;
-    private static final int FLOW_Y = 84;
+    private static final int STATE_Y = 82;
+    private static final int FLOW_Y = 100;
 
     private List<FormattedCharSequence> hover;
+    /** Hauteur et largeur d'un bouton du réglage. */
+    private static final int MODE_H = 12;
+
+    /** La place des deux boutons du réglage, à gauche de sa ligne, charge puis décharge : x, largeur (y est fixe). */
+    private int[] modeButtons() {
+        int charge = font.width(Component.translatable("accumulator.orbitalis.mode.charge").getString().toUpperCase(Locale.ROOT)) + 12;
+        int discharge = font.width(Component.translatable("accumulator.orbitalis.mode.discharge").getString().toUpperCase(Locale.ROOT)) + 12;
+        return new int[] {PAD, charge, PAD + charge + 2, discharge};
+    }
 
     public AccumulatorScreen(AccumulatorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, WIDTH, HEIGHT);
@@ -120,7 +131,17 @@ public class AccumulatorScreen extends AbstractContainerScreen<AccumulatorMenu> 
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         AccumulatorBlock.Tier tier = menu.tier();
-        graphics.text(font, Ui.fit(font, title.getString(), INNER - 40), PAD, 8, Ui.TEXT, false);
+        graphics.text(font, Ui.fit(font, title.getString(), INNER), PAD, 8, Ui.TEXT, false);
+        // Le réglage : deux boutons accolés, celui qui est choisi allumé ; à leur droite, ce qu'il fait, en clair.
+        int[] buttons = modeButtons();
+        boolean discharging = menu.mode() == com.orbitalis.phase1.power.AccumulatorBlockEntity.Mode.DISCHARGE;
+        Ui.button(graphics, font, Component.translatable("accumulator.orbitalis.mode.charge"), buttons[0], MODE_Y, buttons[1], MODE_H,
+                Ui.inside(mouseX - leftPos, mouseY - topPos, buttons[0], MODE_Y, buttons[1], MODE_H), true, !discharging, INPUT);
+        Ui.button(graphics, font, Component.translatable("accumulator.orbitalis.mode.discharge"), buttons[2], MODE_Y, buttons[3], MODE_H,
+                Ui.inside(mouseX - leftPos, mouseY - topPos, buttons[2], MODE_Y, buttons[3], MODE_H), true, discharging, OUTPUT);
+        int hintX = buttons[2] + buttons[3] + 6;
+        graphics.text(font, Ui.fit(font, Component.translatable(discharging ? "accumulator.orbitalis.mode.discharge.short"
+                : "accumulator.orbitalis.mode.charge.short").getString(), PAD + INNER - hintX), hintX, MODE_Y + 2, Ui.MUTED, false);
         // La charge, en grand, et ce qu'elle représente, à droite.
         String percent = Math.round(ratio() * 100) + " %";
         Ui.big(graphics, font, percent, PAD, BIG_Y, 2.0F, tier.color);
@@ -141,6 +162,20 @@ public class AccumulatorScreen extends AbstractContainerScreen<AccumulatorMenu> 
                 PAD + INNER / 2 + 13, FLOW_Y, Ui.TEXT, false);
     }
 
+    /** Un clic sur un bouton du réglage : charge (0) ou décharge (1). */
+    @Override
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+        int[] buttons = modeButtons();
+        for (int k = 0; k < 2; k++) {
+            if (Ui.inside(event.x() - leftPos, event.y() - topPos, buttons[2 * k], MODE_Y, buttons[2 * k + 1], MODE_H)) {
+                Ui.click();
+                minecraft.gameMode.handleInventoryButtonClick(menu.containerId, k);
+                return true;
+            }
+        }
+        return super.mouseClicked(event, doubleClick);
+    }
+
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         hover = null;
@@ -149,8 +184,10 @@ public class AccumulatorScreen extends AbstractContainerScreen<AccumulatorMenu> 
         if (Ui.inside(mouseX, mouseY, leftPos + PAD, topPos + BIG_Y, INNER, BAR_Y + BAR_H - BIG_Y)) {
             hover = font.split(Component.translatable("accumulator.orbitalis.gauge.detail", menu.getEnergy(), menu.getEnergyCapacity(),
                     Math.round(ratio() * 100)), 200);
-        } else if (Ui.inside(mouseX, mouseY, leftPos + PAD, topPos + FLOW_Y - 4, INNER, 14)) {
-            hover = font.split(Component.translatable("accumulator.orbitalis.faces").copy().append(". ")
+        } else if (Ui.inside(mouseX, mouseY, leftPos + PAD, topPos + FLOW_Y - 4, INNER, 14)
+                || Ui.inside(mouseX - leftPos, mouseY - topPos, PAD, MODE_Y, INNER, MODE_H)) {
+            String mode = menu.mode() == com.orbitalis.phase1.power.AccumulatorBlockEntity.Mode.DISCHARGE ? "discharge" : "charge";
+            hover = font.split(Component.translatable("accumulator.orbitalis.mode." + mode + ".desc").copy().append(" ")
                     .append(Component.translatable("accumulator.orbitalis.flow.detail", tier.transfer)), 200);
         }
         if (hover != null) {

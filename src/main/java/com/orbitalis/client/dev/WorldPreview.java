@@ -2710,6 +2710,25 @@ public final class WorldPreview {
                 players.get(0).openMenu(accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
             }
         }, -1.0, -59.4, 11.0, 180.0F, 22.0F, 30));
+        // Le réglage de l'accumulateur : un accumulateur quantique posé devant le joueur, à demi chargé, réglé en décharge,
+        // puis son écran ; et ses faces, sans prise de couleur.
+        SHOTS.add(new Shot("tm_accumulator_mode_place", level -> {
+            hover(level);
+            BlockPos at = new BlockPos(30, -60, 30);
+            level.setBlockAndUpdate(at, ModBlocks.ACCUMULATOR_QUANTUM.get().defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.NORTH));
+            level.setBlockAndUpdate(at.east(2), ModBlocks.ACCUMULATOR.get().defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.WEST));
+        }, 31.5, -59.4, 27.0, 20.0F, 25.0F, 40));
+        SHOTS.add(new Shot("tm_accumulator_mode", level -> {
+            BlockPos at = new BlockPos(30, -60, 30);
+            var players = level.getServer().getPlayerList().getPlayers();
+            if (!players.isEmpty() && level.getBlockEntity(at) instanceof com.orbitalis.phase1.power.AccumulatorBlockEntity accumulator) {
+                accumulator.getEnergy().generate(accumulator.tier().capacity / 2);
+                accumulator.setMode(com.orbitalis.phase1.power.AccumulatorBlockEntity.Mode.DISCHARGE);
+                players.get(0).openMenu(accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
+            }
+        }, 31.5, -59.4, 27.0, 20.0F, 25.0F, 40));
         SHOTS.add(new Shot("tm_accumulator_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
                 () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(null)), -1.0, -59.4, 11.0, 180.0F, 22.0F, 4));
         // Des tuyaux sans couleur, à liquides puis à gaz : ils doivent garder leur aspect d'origine (nœuds bleus ou de
