@@ -2943,6 +2943,17 @@ public final class WorldPreview {
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 30));
         SHOTS.add(new Shot("tm_orbit_jump_order", level -> helm(level, true), 39.5, 99.0, -3.5, -90.0F, 6.0F, 30));
         SHOTS.add(new Shot("tm_orbit_jump_countdown", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 15));
+        // Le saut mis en scène, image par image, après tm_orbit_ship_bridge puis tm_orbit_jump_order (l'ordre est donné au
+        // début de cette vue, la distorsion commence 100 ticks plus tard) : les étoiles s'étirent, l'éclair, le tunnel à deux
+        // moments, la sortie, les traits qui se rétractent, le bandeau d'arrivée.
+        SHOTS.add(new Shot("tm_warp_charge", level -> closeScreen(), Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 86));
+        SHOTS.add(new Shot("tm_warp_stretch", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 8));
+        SHOTS.add(new Shot("tm_warp_flash", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 4));
+        SHOTS.add(new Shot("tm_warp_tunnel_a", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 40));
+        SHOTS.add(new Shot("tm_warp_tunnel_b", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 60));
+        SHOTS.add(new Shot("tm_warp_exit", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 48));
+        SHOTS.add(new Shot("tm_warp_after", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 16));
+        SHOTS.add(new Shot("tm_warp_banner", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 26));
         SHOTS.add(new Shot("tm_orbit_jump_arrived", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
         // Arrivé en orbite de TRAPPIST-1 e (poupe en 0 120 0) : le vaisseau vu du dehors, puis la passerelle.
         SHOTS.add(new Shot("tm_trappist_orbit_ship", level -> hover(level), 14.0, 130.0, 18.0, 200.0F, 25.0F, 120));

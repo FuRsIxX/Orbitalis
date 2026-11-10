@@ -45,13 +45,17 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
  * Un saut vers une étoile proche coûte {@link #JUMP_COST} matières exotiques au cœur de distorsion : un cœur plein fait
  * l'aller et le retour. Un saut galactique en coûte davantage (voir {@link ShipDestination#cost()}) : il faut recharger le
  * cœur sur place, avec la matière exotique emportée, pour revenir.
- * Après l'ordre de saut, un compte à rebours de {@link #COUNTDOWN} ticks laisse à l'équipage le temps d'embarquer.
+ * Après l'ordre de saut, un compte à rebours de {@link #COUNTDOWN} ticks laisse à l'équipage le temps d'embarquer. Au bout,
+ * le vaisseau passe en distorsion : l'équipage voit les étoiles s'étirer pendant {@link #WARP_LEAD} ticks, puis, dans
+ * l'éclair, le vaisseau est déplacé ; le tunnel et la sortie se jouent chez lui (voir {@code WarpFx}).
  */
 public final class ShipJump {
     /** Matières exotiques consommées par un saut vers une étoile proche, le plus petit des sauts. */
     public static final int JUMP_COST = 4;
     /** Durée du compte à rebours, en ticks. */
     public static final int COUNTDOWN = 100;
+    /** Le temps que les étoiles s'étirent, entre la fin du compte à rebours et le déplacement du vaisseau, en ticks. */
+    public static final int WARP_LEAD = 40;
 
     /** Ce qui empêche de sauter, dans l'ordre où on le vérifie. */
     public enum Hold {
@@ -76,6 +80,8 @@ public final class ShipJump {
         /** Le monde où va le vaisseau, ou rien s'il rentre à son berceau. */
         final ShipDestination outbound;
         int ticks = COUNTDOWN;
+        /** Après le compte à rebours : les ticks qui restent avant le déplacement, ou -1 tant que la distorsion n'a pas commencé. */
+        int lead = -1;
 
         Pending(ResourceKey<Level> dimension, BlockPos origin, Direction out, String agency, ShipDestination outbound) {
             this.dimension = dimension;
@@ -299,9 +305,12 @@ public final class ShipJump {
         return Vec3.atBottomCenterOf(origin.offset(ShipPlan.local(out, ShipPlan.HELM_A - 2, 0, ShipPlan.HELM_Y)));
     }
 
+    /** Le saut qui se vérifie lui-même, au bout de son compte à rebours : il ne compte pas comme un autre saut en cours. */
+    private static Pending checking;
+
     private static Pending pending(ResourceKey<Level> dimension, BlockPos origin) {
         for (Pending pending : PENDING) {
-            if (pending.dimension == dimension && pending.origin.equals(origin)) {
+            if (pending != checking && pending.dimension == dimension && pending.origin.equals(origin)) {
                 return pending;
             }
         }
@@ -324,6 +333,14 @@ public final class ShipJump {
                 it.remove();
                 continue;
             }
+            if (pending.lead > 0) {
+                // La distorsion a commencé : les étoiles s'étirent chez l'équipage ; puis le vaisseau part.
+                if (--pending.lead == 0) {
+                    it.remove();
+                    jump(level, pending);
+                }
+                continue;
+            }
             pending.ticks--;
             if (pending.ticks > 0) {
                 if (pending.ticks % 20 == 0) {
@@ -335,9 +352,45 @@ public final class ShipJump {
                 }
                 continue;
             }
-            it.remove();
-            jump(level, pending);
+            if (!startWarp(level, pending)) {
+                it.remove();
+            }
         }
+    }
+
+    /**
+     * La fin du compte à rebours : si rien n'empêche plus le saut, l'équipage voit la distorsion commencer, et le vaisseau
+     * partira dans {@link #WARP_LEAD} ticks. Sinon, le saut est annulé, et on dit pourquoi.
+     */
+    private static boolean startWarp(ServerLevel level, Pending pending) {
+        MinecraftServer server = level.getServer();
+        ShipSystems systems = ShipSystems.check(level, pending.origin, pending.out);
+        ShipDestination wanted = pending.outbound != null ? pending.outbound : ShipDestination.PROXIMA;
+        Hold blocker;
+        checking = pending;
+        try {
+            blocker = blocker(level, pending.origin, pending.out, pending.agency, systems, wanted);
+        } finally {
+            checking = null;
+        }
+        if (blocker != Hold.NONE) {
+            for (ServerPlayer player : crew(level, pending.origin, pending.out)) {
+                title(player, Component.translatable("ship.orbitalis.jump.cancelled"),
+                        holdMessage(blocker, systems, wanted, cost(server, place(level, pending.origin, pending.out, pending.agency), wanted, pending.agency)));
+            }
+            return false;
+        }
+        // Vers où : la destination à l'aller ; au retour, le monde d'où l'on revient dit si le saut était galactique.
+        ShipVoyages.Voyage voyage = ShipVoyages.of(server).of(pending.agency);
+        ShipDestination far = pending.outbound != null ? pending.outbound : voyage != null ? voyage.destination() : ShipDestination.PROXIMA;
+        boolean galactic = far.cost() > JUMP_COST;
+        String titleKey = pending.outbound != null ? pending.outbound.arrivedKey() : "ship.orbitalis.jump.arrived_home";
+        for (ServerPlayer player : crew(level, pending.origin, pending.out)) {
+            com.orbitalis.core.network.ModNetwork.send(player, new com.orbitalis.core.network.WarpPayload(true,
+                    pending.out.get3DDataValue(), galactic, titleKey, "ship.orbitalis.jump.arrived_sub"));
+        }
+        pending.lead = WARP_LEAD;
+        return true;
     }
 
     /** Le saut lui-même, au bout du compte à rebours : tout est vérifié une dernière fois. */
@@ -349,6 +402,7 @@ public final class ShipJump {
         List<ServerPlayer> crew = crew(level, pending.origin, pending.out);
         if (blocker != Hold.NONE) {
             for (ServerPlayer player : crew) {
+                com.orbitalis.core.network.ModNetwork.send(player, new com.orbitalis.core.network.WarpPayload(false, 0, false, "", ""));
                 title(player, Component.translatable("ship.orbitalis.jump.cancelled"),
                         holdMessage(blocker, systems, wanted, cost(server, place(level, pending.origin, pending.out, pending.agency), wanted, pending.agency)));
             }
@@ -367,10 +421,7 @@ public final class ShipJump {
             voyages.back(pending.agency);
         }
         to.playSound(null, target, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 1.0F, 1.2F);
-        for (ServerPlayer player : crew) {
-            title(player, Component.translatable(pending.outbound != null ? pending.outbound.arrivedKey() : "ship.orbitalis.jump.arrived_home"),
-                    Component.translatable("ship.orbitalis.jump.arrived_sub"));
-        }
+        // Le nom du monde d'arrivée, l'équipage le lit dans le bandeau, à la sortie du tunnel (voir WarpFx).
     }
 
     /**

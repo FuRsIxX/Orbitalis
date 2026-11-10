@@ -269,6 +269,11 @@ public final class SpaceSky implements CustomSkyboxRenderer {
         if (shadersActive()) {
             return false;
         }
+        // En distorsion, le ciel n'est plus qu'un tunnel.
+        if (WarpFx.inTunnel()) {
+            WarpFx.renderTunnel(Minecraft.getInstance());
+            return true;
+        }
         // Le Soleil du ciel spatial a sa place à lui, dans chaque monde : l'angle solaire de la dimension, lui, est réglé
         // sous l'horizon, pour que les packs de shaders y dessinent la nuit de l'espace.
         Minecraft client = Minecraft.getInstance();
@@ -303,6 +308,8 @@ public final class SpaceSky implements CustomSkyboxRenderer {
         stack.popMatrix();
         // Les astres : la planète sous l'orbite, la Lune, la planète bleue vue de la Lune, Jupiter vue d'Europe.
         SkyBodies.render(minecraft, new Vector3f(0.0F, 1.0F, 0.0F).rotateX(sunAngle).rotateY(-Mth.HALF_PI));
+        // Avant un saut et à la sortie, les étoiles s'étirent en traits.
+        WarpFx.renderStreaks(minecraft);
         // Le ciel du jeu n'est pas dessiné par-dessus.
         return true;
     }

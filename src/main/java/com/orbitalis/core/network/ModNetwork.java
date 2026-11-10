@@ -45,6 +45,8 @@ public final class ModNetwork {
         registrar.playToClient(StationStatusPayload.TYPE, StationStatusPayload.STREAM_CODEC);
         // Poste de pilotage du vaisseau interstellaire : l'écran, puis l'ordre de saut.
         registrar.playToClient(ShipHelmPayload.TYPE, ShipHelmPayload.STREAM_CODEC);
+        // Le saut en distorsion, mis en scène chez l'équipage.
+        registrar.playToClient(WarpPayload.TYPE, WarpPayload.STREAM_CODEC);
         registrar.playToServer(ShipJumpPayload.TYPE, ShipJumpPayload.STREAM_CODEC, (payload, context) -> {
             if (context.player() instanceof ServerPlayer player) {
                 com.orbitalis.phase3.interstellar.ShipJump.request(player, payload.helm(), payload.destination());

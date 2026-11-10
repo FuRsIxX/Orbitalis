@@ -1,6 +1,7 @@
 # Orbitalis — prochaine version
 
 ## Nouveautés
+- **Le saut en distorsion mis en scène** : au bout du compte à rebours, l'équipage voit les étoiles s'étirer en traits par les hublots, le champ de vision s'élargit et la caméra tremble ; un éclair saccadé, un anneau de lumière en gros pixels, et le vaisseau passe dans un tunnel : des anneaux bleus en pointillés et des traînées d'étoiles défilent, un éclat palpite au bout (violet et rose pour un saut galactique). On marche librement à bord pendant le voyage. À la sortie, un second éclair, les traits se rétractent en étoiles, et un bandeau annonce le monde d'arrivée. L'écran « Chargement du terrain » ne s'affiche plus pendant le saut. Les sons sont pour l'instant ceux du jeu.
 - **Liaison satellite** : un nouveau module pour le casque de la combinaison avancée. Il met l'atlas de la tablette de mission dans le casque : la touche N (réglable) l'ouvre partout à la surface, les mains libres, aux mêmes conditions que la tablette (technologie « Tablette de mission », satellite de télécommunications en service). Sans le module, la touche dit ce qui manque. Recette : la tablette de mission, du titane, du cuivre et de la redstone.
 - **Méthane sur Mars** : posé sur Mars, le réacteur de Sabatier prend son carbone dans le gaz carbonique de l'air, au lieu du charbon. Il ne lui faut que de l'hydrogène et du courant pour faire le méthane du retour. À l'écran, la case du charbon affiche « CO₂ » et explique pourquoi au survol ; le guide le dit aussi.
 
@@ -195,6 +196,7 @@ Première version publique d'Orbitalis : du premier lingot d'acier aux lunes de 
 # Orbitalis — next version
 
 ## New
+- **The warp jump, staged**: at the end of the countdown, the crew sees the stars stretch into lines through the windows, the field of view widens and the camera shakes; a stepped flash, a ring of light in big pixels, and the ship enters a tunnel: dotted blue rings and star trails stream past, a glint pulses at its end (violet and pink for a galactic jump). You can walk around aboard during the trip. On exit, a second flash, the lines shrink back into stars, and a banner names the world you arrive at. The "Loading terrain" screen no longer shows during the jump. Sounds are the game's own for now.
 - **Satellite uplink**: a new module for the advanced suit's helmet. It puts the mission tablet's atlas in the helmet: the N key (rebindable) opens it anywhere on the surface, hands free, under the same conditions as the tablet ("Mission Tablet" technology, a communications satellite in service). Without the module, the key says what is missing. Recipe: the mission tablet, titanium, copper and redstone.
 - **Methane on Mars**: placed on Mars, the Sabatier reactor takes its carbon from the carbon dioxide in the air instead of coal. It only needs hydrogen and power to make methane for the way home. On screen, the coal slot shows "CO₂" and explains why on hover; the guide says so too.
 

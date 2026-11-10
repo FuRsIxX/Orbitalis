@@ -219,6 +219,8 @@ public class OrbitalisClient {
         // Tableau de bord d'une station : clic droit sur un terminal, puis actualisations de l'écran ouvert.
         event.register(com.orbitalis.core.network.StationStatusPayload.TYPE,
                 (payload, context) -> com.orbitalis.client.screen.StationScreen.accept(payload));
+        // Le saut en distorsion : les étoiles qui s'étirent, l'éclair, le tunnel, la sortie.
+        event.register(com.orbitalis.core.network.WarpPayload.TYPE, (payload, context) -> com.orbitalis.client.WarpFx.receive(payload));
         // Poste de pilotage du vaisseau interstellaire.
         event.register(com.orbitalis.core.network.ShipHelmPayload.TYPE,
                 (payload, context) -> Minecraft.getInstance().gui.setScreen(new com.orbitalis.client.screen.ShipHelmScreen(payload)));
