@@ -270,6 +270,9 @@ public final class OrbitalisGameTests {
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> STATION_MODULES =
             FUNCTIONS.register("station_modules", () -> OrbitalisGameTests::stationModules);
 
+    private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> STATION_ROLES =
+            FUNCTIONS.register("station_roles", () -> OrbitalisGameTests::stationRoles);
+
     private static final DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> FUELLING =
             FUNCTIONS.register("fuelling", () -> OrbitalisGameTests::fuelling);
 
@@ -440,6 +443,8 @@ public final class OrbitalisGameTests {
                 STATION_AIR.getKey(), spaced(environment, emptyStructure, 300)));
         event.registerTest(Orbitalis.id("station_modules"), new FunctionGameTestInstance(
                 STATION_MODULES.getKey(), spaced(environment, emptyStructure, 500)));
+        event.registerTest(Orbitalis.id("station_roles"), new FunctionGameTestInstance(
+                STATION_ROLES.getKey(), spaced(environment, emptyStructure, 20)));
         event.registerTest(Orbitalis.id("fuelling"), new FunctionGameTestInstance(
                 FUELLING.getKey(), spaced(environment, emptyStructure, 400)));
         event.registerTest(Orbitalis.id("solar_array"), new FunctionGameTestInstance(
@@ -2434,6 +2439,52 @@ helper.assertTrue(table.command(LaunchStep.VALVES, agency) == null && table.areV
             helper.assertTrue(stage[0] == 3 && air && unit.getVolume() == 66, "la porte intérieure fermée, la station devrait garder son air : "
                     + unit.getVolume());
         });
+    }
+
+    /**
+     * Les rôles des modules. La couchette où l'on s'est reposé est celle du réveil, tant que sa pièce est close et bordée
+     * d'un générateur d'air ; une paroi percée, elle est oubliée. La baie du laboratoire prend une boîte d'échantillons, une
+     * seule, l'analyse en apesanteur vaut la moitié de plus, et la baie cassée rend sa boîte.
+     */
+    private static void stationRoles(GameTestHelper helper) {
+        net.minecraft.server.level.ServerLevel level = helper.getLevel();
+        BlockPos absolute = helper.absolutePos(new BlockPos(4, 4, 4));
+        StationManager.build(level, absolute);
+        // Une couchette contre le mur ouest du module central, tournée vers la pièce.
+        BlockPos bunk = absolute.offset(-1, -1, 1);
+        net.minecraft.world.level.block.state.BlockState bunkState = ModBlocks.CREW_BUNK.get().defaultBlockState()
+                .setValue(com.orbitalis.phase2.station.CrewBunkBlock.FACING, Direction.EAST);
+        level.setBlock(bunk, bunkState.setValue(com.orbitalis.phase2.station.CrewBunkBlock.HALF,
+                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER), 3);
+        level.setBlock(bunk.above(), bunkState.setValue(com.orbitalis.phase2.station.CrewBunkBlock.HALF,
+                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), 3);
+        net.minecraft.server.level.ServerPlayer crew = helper.makeMockServerPlayerInLevel();
+        com.orbitalis.phase2.survival.RespawnRules.setBerth(crew, bunk);
+        net.minecraft.world.level.portal.TeleportTransition wake = com.orbitalis.phase2.survival.RespawnRules.wakeUp(crew);
+        helper.assertTrue(wake != null && BlockPos.containing(wake.position()).equals(bunk.east()) && wake.newLevel() == level,
+                "on aurait dû se réveiller devant la couchette");
+        helper.assertTrue(com.orbitalis.phase2.station.StationAir.isBreathable(level, bunk.east()), "la pièce du réveil devrait avoir de l'air");
+        level.setBlock(absolute.offset(1, 1, -2), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+        helper.assertTrue(com.orbitalis.phase2.survival.RespawnRules.wakeUp(crew) == null
+                && !com.orbitalis.phase2.survival.RespawnRules.hasBerth(crew, bunk), "une pièce percée ne doit plus servir de réveil");
+
+        BlockPos rackPos = helper.absolutePos(new BlockPos(12, 2, 4));
+        level.setBlock(rackPos, ModBlocks.LAB_RACK.get().defaultBlockState(), 3);
+        com.orbitalis.phase2.station.LabRackBlockEntity rack = (com.orbitalis.phase2.station.LabRackBlockEntity) level.getBlockEntity(rackPos);
+        helper.assertTrue(rack.insertSample(new net.minecraft.world.item.ItemStack(ModItems.PROXIMA_SAMPLES.get(), 3))
+                && rack.getSample().getCount() == 1
+                && !rack.insertSample(new net.minecraft.world.item.ItemStack(ModItems.MARS_SAMPLES.get())), "la baie prend une boîte, une seule");
+        helper.assertTrue(com.orbitalis.phase2.station.LabRackBlockEntity.orbitalPoints(com.orbitalis.phase3.exploration.SampleItem.Body.PROXIMA, true) == 600
+                && com.orbitalis.phase2.station.LabRackBlockEntity.orbitalPoints(com.orbitalis.phase3.exploration.SampleItem.Body.MOON, false) == 45,
+                "l'analyse en apesanteur vaut la moitié de plus");
+        level.destroyBlock(rackPos, false);
+        boolean returned = false;
+        for (net.minecraft.world.entity.item.ItemEntity item : level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(rackPos).inflate(2.0))) {
+            returned |= item.getItem().is(ModItems.PROXIMA_SAMPLES.get());
+        }
+        helper.assertTrue(returned, "la baie cassée aurait dû rendre sa boîte d'échantillons");
+        helper.succeed();
     }
 
     /**

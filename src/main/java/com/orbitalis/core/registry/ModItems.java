@@ -280,11 +280,19 @@ public final class ModItems {
     /** Conteneur à échantillons : un équipage le remplit sur la Lune ou sur Mars (voir SampleContainerItem). */
     public static final DeferredItem<com.orbitalis.phase3.exploration.SampleContainerItem> SAMPLE_CONTAINER = ITEMS.registerItem("sample_container",
             com.orbitalis.phase3.exploration.SampleContainerItem::new, () -> new Item.Properties().stacksTo(16));
-    /** Échantillons rapportés de la Lune et de Mars : on les analyse sur Terre (voir SampleItem). */
-    public static final DeferredItem<com.orbitalis.phase3.exploration.SampleItem> LUNAR_SAMPLES = ITEMS.registerItem("lunar_samples",
-            properties -> new com.orbitalis.phase3.exploration.SampleItem(properties, true), () -> new Item.Properties().stacksTo(16));
-    public static final DeferredItem<com.orbitalis.phase3.exploration.SampleItem> MARS_SAMPLES = ITEMS.registerItem("mars_samples",
-            properties -> new com.orbitalis.phase3.exploration.SampleItem(properties, false), () -> new Item.Properties().stacksTo(16));
+    /** Échantillons rapportés de la Lune, de Mars et des exoplanètes : on les analyse sur Terre ou au laboratoire d'une station (voir SampleItem). */
+    public static final DeferredItem<com.orbitalis.phase3.exploration.SampleItem> LUNAR_SAMPLES = samples("lunar_samples",
+            com.orbitalis.phase3.exploration.SampleItem.Body.MOON);
+    public static final DeferredItem<com.orbitalis.phase3.exploration.SampleItem> MARS_SAMPLES = samples("mars_samples",
+            com.orbitalis.phase3.exploration.SampleItem.Body.MARS);
+    public static final DeferredItem<com.orbitalis.phase3.exploration.SampleItem> PROXIMA_SAMPLES = samples("proxima_samples",
+            com.orbitalis.phase3.exploration.SampleItem.Body.PROXIMA);
+    public static final DeferredItem<com.orbitalis.phase3.exploration.SampleItem> TRAPPIST_SAMPLES = samples("trappist_samples",
+            com.orbitalis.phase3.exploration.SampleItem.Body.TRAPPIST);
+    public static final DeferredItem<com.orbitalis.phase3.exploration.SampleItem> KEPLER_SAMPLES = samples("kepler_samples",
+            com.orbitalis.phase3.exploration.SampleItem.Body.KEPLER);
+    public static final DeferredItem<com.orbitalis.phase3.exploration.SampleItem> TARANTULA_SAMPLES = samples("tarantula_samples",
+            com.orbitalis.phase3.exploration.SampleItem.Body.TARANTULA);
     /** Kit de base planétaire : sur la Lune ou sur Mars, un clic droit sur le sol y bâtit un module pressurisé. */
     public static final DeferredItem<com.orbitalis.phase3.exploration.BaseKitItem> BASE_KIT = ITEMS.registerItem("base_kit",
             com.orbitalis.phase3.exploration.BaseKitItem::new, () -> new Item.Properties().stacksTo(1));
@@ -383,6 +391,11 @@ public final class ModItems {
 
     private static DeferredItem<SuitModuleItem> suitModule(String name, SuitModule module) {
         return ITEMS.registerItem(name, properties -> new SuitModuleItem(properties, module), properties -> properties.stacksTo(16));
+    }
+
+    private static DeferredItem<com.orbitalis.phase3.exploration.SampleItem> samples(String name, com.orbitalis.phase3.exploration.SampleItem.Body body) {
+        return ITEMS.registerItem(name, properties -> new com.orbitalis.phase3.exploration.SampleItem(properties, body),
+                () -> new Item.Properties().stacksTo(16));
     }
 
     private static DeferredItem<StationModuleItem> module(String name, com.orbitalis.phase2.station.ModuleType type) {

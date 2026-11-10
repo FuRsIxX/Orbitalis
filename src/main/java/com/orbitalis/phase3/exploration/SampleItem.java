@@ -20,20 +20,59 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 /**
- * Des échantillons de la Lune ou de Mars, dans leur boîte scellée. Rapportés sur Terre, un clic droit les confie au
- * laboratoire de l'agence : leur analyse rapporte des points de recherche, beaucoup pour les premiers de chaque astre.
+ * Des échantillons d'un astre (la Lune, Mars, ou une exoplanète), dans leur boîte scellée. Rapportés sur Terre, un clic
+ * droit les confie au laboratoire de l'agence : leur analyse rapporte des points de recherche, beaucoup pour les premiers
+ * de chaque astre. Confiés à une baie du laboratoire d'une station, en apesanteur, ils en rapportent la moitié de plus
+ * (voir {@code LabRackBlockEntity}).
  */
 public class SampleItem extends Item {
-    private final boolean lunar;
+    /** L'astre d'où viennent les échantillons, et ce que vaut leur analyse : les premiers, puis les suivants. */
+    public enum Body {
+        MOON("moon", 150, 30),
+        MARS("mars", 250, 50),
+        PROXIMA("proxima", 400, 80),
+        TRAPPIST("trappist", 450, 90),
+        KEPLER("kepler", 450, 90),
+        TARANTULA("tarantula", 800, 160);
 
-    public SampleItem(Properties properties, boolean lunar) {
-        super(properties);
-        this.lunar = lunar;
+        private final String id;
+        private final int first;
+        private final int next;
+
+        Body(String id, int first, int next) {
+            this.id = id;
+            this.first = first;
+            this.next = next;
+        }
+
+        public String id() {
+            return id;
+        }
+
+        /** Le jalon de la première analyse : les premiers échantillons de l'astre ne valent cher qu'une fois. */
+        public String milestone() {
+            return "analysed_" + id;
+        }
+
+        public int points(boolean first) {
+            return first ? this.first : next;
+        }
     }
 
-    /** Points de l'analyse : les premiers échantillons de chaque astre, puis les suivants. */
+    private final Body body;
+
+    public SampleItem(Properties properties, Body body) {
+        super(properties);
+        this.body = body;
+    }
+
+    public Body body() {
+        return body;
+    }
+
+    /** Points de l'analyse sur Terre : les premiers échantillons de chaque astre, puis les suivants. */
     public int points(boolean first) {
-        return lunar ? (first ? 150 : 30) : (first ? 250 : 50);
+        return body.points(first);
     }
 
     @Override
@@ -41,13 +80,13 @@ public class SampleItem extends Item {
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return InteractionResult.SUCCESS;
         }
-        // On les analyse sur Terre, dans le monde principal : pas sur place.
+        // On les analyse sur Terre, dans le monde principal, ou dans une baie du laboratoire d'une station : pas sur place.
         if (level.dimension() != Level.OVERWORLD) {
             serverPlayer.sendOverlayMessage(Component.translatable("exploration.orbitalis.samples.bring_home").withStyle(ChatFormatting.GOLD));
             return InteractionResult.FAIL;
         }
         AgencyResearch research = ResearchManager.of(serverPlayer);
-        boolean first = research.completeMilestone("analysed_" + (lunar ? "moon" : "mars"));
+        boolean first = research.completeMilestone(body.milestone());
         int points = points(first);
         research.addPoints(points);
         ResearchManager.changed(serverPlayer);

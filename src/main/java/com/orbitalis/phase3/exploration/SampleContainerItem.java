@@ -21,9 +21,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Le conteneur à échantillons, vide : sur la Lune ou sur Mars, un clic droit sur le sol y prélève un peu de roche, et
- * le conteneur devient une boîte d'échantillons lunaires ou martiens, à rapporter sur Terre. Il faut maîtriser la
- * technologie du retour d'échantillons.
+ * Le conteneur à échantillons, vide : sur la Lune, sur Mars ou sur une exoplanète, un clic droit sur le sol y prélève un
+ * peu de roche, et le conteneur devient une boîte d'échantillons de cet astre, à rapporter sur Terre ou au laboratoire
+ * d'une station. Il faut maîtriser la technologie du retour d'échantillons.
  */
 public class SampleContainerItem extends Item {
     public static final String RESEARCH = "sample_return";
@@ -42,8 +42,8 @@ public class SampleContainerItem extends Item {
                     Component.translatable("research.orbitalis.node." + RESEARCH)).withStyle(ChatFormatting.RED));
             return InteractionResult.FAIL;
         }
-        boolean moon = SpaceRules.isMoon(level);
-        if (!moon && !SpaceRules.isMars(level)) {
+        ItemStack samples = samplesOf(level);
+        if (samples.isEmpty()) {
             player.sendOverlayMessage(Component.translatable("exploration.orbitalis.samples.wrong_world").withStyle(ChatFormatting.GOLD));
             return InteractionResult.FAIL;
         }
@@ -53,7 +53,6 @@ public class SampleContainerItem extends Item {
             player.sendOverlayMessage(Component.translatable("exploration.orbitalis.samples.not_ground").withStyle(ChatFormatting.GOLD));
             return InteractionResult.FAIL;
         }
-        ItemStack samples = new ItemStack(moon ? ModItems.LUNAR_SAMPLES.get() : ModItems.MARS_SAMPLES.get());
         context.getItemInHand().consume(1, player);
         if (!player.getInventory().add(samples)) {
             player.drop(samples, false);
@@ -61,6 +60,24 @@ public class SampleContainerItem extends Item {
         level.playSound(null, context.getClickedPos(), SoundEvents.BRUSH_GENERIC, SoundSource.PLAYERS, 1.0F, 0.9F);
         player.sendOverlayMessage(Component.translatable("exploration.orbitalis.samples.collected", samples.getHoverName()).withStyle(ChatFormatting.AQUA));
         return InteractionResult.SUCCESS;
+    }
+
+    /** La boîte d'échantillons de ce monde, ou rien si l'on n'y prélève pas : la Lune, Mars et les exoplanètes. */
+    private static ItemStack samplesOf(ServerLevel level) {
+        if (SpaceRules.isMoon(level)) {
+            return new ItemStack(ModItems.LUNAR_SAMPLES.get());
+        } else if (SpaceRules.isMars(level)) {
+            return new ItemStack(ModItems.MARS_SAMPLES.get());
+        } else if (SpaceRules.isProxima(level)) {
+            return new ItemStack(ModItems.PROXIMA_SAMPLES.get());
+        } else if (SpaceRules.isTrappist(level)) {
+            return new ItemStack(ModItems.TRAPPIST_SAMPLES.get());
+        } else if (SpaceRules.isKepler(level)) {
+            return new ItemStack(ModItems.KEPLER_SAMPLES.get());
+        } else if (SpaceRules.isTarantula(level)) {
+            return new ItemStack(ModItems.TARANTULA_SAMPLES.get());
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override

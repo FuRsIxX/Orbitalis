@@ -1494,8 +1494,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("station.orbitalis.module.cupola.short", "CUPOLA");
         add("station.orbitalis.module.airlock.short", "LOCK");
         add("station.orbitalis.module.power.short", "POWER");
-        add("station.orbitalis.module.habitation.desc", "Four bunks, four lockers and a terminal.");
-        add("station.orbitalis.module.laboratory.desc", "Eight experiment racks and a terminal: research in microgravity.");
         add("station.orbitalis.module.greenhouse.desc", "Eight grow trays under their LED bars, and a locker.");
         add("station.orbitalis.module.cargo.desc", "Eight cargo racks: 216 slots.");
         add("station.orbitalis.module.cupola.desc", "A glass dome to watch the planet; the crew also observes planets and moons from it.");
@@ -1742,7 +1740,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("station.orbitalis.airlock.interlock", "Airlock interlock: close the other door first.");
         add("station.orbitalis.airlock.cycling", "Airlock cycling…");
         add("guide.orbitalis.stations.title", "Space Stations");
-        add("guide.orbitalis.stations.text", "A station starts with its core module, launched uncrewed. It deploys in orbit, straight above the launch pad.\n\nA crewed orbital flight from the same site docks with it on its own. Sneak to go through the airlock. The terminal shows power, air, orbit, crew and cargo.\n\nThe air generator pressurizes the station while it is powered. Solar panels produce in orbit but nothing during eclipse: plan for batteries.\n\nEach module (node, habitat, laboratory, greenhouse, logistics, cupola, airlock) is brought aboard and attaches to a berthing port, the round hatch. Aimed at with the kit, it appears there as a ghost; a right-click deploys it. The core has three ports, each node adds three, the bare room one at the far end. The power truss is planted on a wall.");
+        add("guide.orbitalis.stations.text", "A station starts with its core module, launched uncrewed. It deploys in orbit, straight above the launch pad.\n\nA crewed orbital flight from the same site docks with it on its own. Sneak to go through the airlock. The terminal shows power, air, orbit, crew and cargo.\n\nThe air generator pressurizes the station while it is powered. Solar panels produce in orbit but nothing during eclipse: plan for batteries.\n\nEach module (node, habitat, laboratory, greenhouse, logistics, cupola, airlock) is brought aboard and attaches to a berthing port, the round hatch. Aimed at with the kit, it appears there as a ghost; a right-click deploys it. The core has three ports, each node adds three, the bare room one at the far end. The power truss is planted on a wall.\n\nRest in a habitat bunk: if you die, you will wake up there, as long as the station is pressurized. A laboratory rack runs its experiments on its own; hand it a box of samples (Moon, Mars, exoplanets) and it analyses them in a minute, for half as many points again as on Earth.");
 
         // Ravitaillement
         add("orbitalis.configuration.boilOff", "Propellant boil-off");
@@ -1808,6 +1806,25 @@ public class EnUsLanguageProvider extends LanguageProvider {
 
         // Modules d'extension
         add("station.orbitalis.expand.done", "%s module in place: the passage is open.");
+        add("item.orbitalis.proxima_samples", "Proxima b Samples");
+        add("item.orbitalis.trappist_samples", "TRAPPIST-1 e Samples");
+        add("item.orbitalis.kepler_samples", "Kepler-452b Samples");
+        add("item.orbitalis.tarantula_samples", "Tarantula b Samples");
+        add("station.orbitalis.bunk.berth", "This bunk is yours now: if you die, you will wake up here, as long as the station is pressurized.");
+        add("station.orbitalis.bunk.lost", "Your bunk was no longer in a sealed room with an air generator: you wake up on Earth.");
+        add("station.orbitalis.bunk.gone", "Your bunk is gone: you wake up on Earth.");
+        add("station.orbitalis.lab.sample_in", "%s under analysis: allow %s seconds, as long as the rack has power and air.");
+        add("station.orbitalis.lab.busy", "This rack is already analysing %s.");
+        add("station.orbitalis.lab.analysing", "Analysing %s: %s%%.");
+        add("station.orbitalis.lab.analysed", "Microgravity analysis of %s: +%s research points.");
+        add("station.orbitalis.lab.analysed_first", "First analysis of %s, in microgravity: +%s research points.");
+        add("exploration.orbitalis.samples.wrong_world", "There is nothing to sample here: samples are taken on the Moon, on Mars or on an exoplanet.");
+        add("exploration.orbitalis.samples.collected", "Sample taken: %s, to analyse on Earth or in a station laboratory.");
+        add("exploration.orbitalis.samples.bring_home", "Samples are analysed on Earth, or in a station laboratory rack.");
+        add("exploration.orbitalis.samples.container_tooltip", "On the Moon, on Mars or on an exoplanet, right-click the ground to take a sample.");
+        add("exploration.orbitalis.samples.tooltip", "On Earth, right-click to hand them to your agency's laboratory. In an orbital laboratory rack, their analysis is worth half as much again.");
+        add("station.orbitalis.module.habitation.desc", "Four bunks, four lockers and a terminal. Rest in a bunk to wake up there.");
+        add("station.orbitalis.module.laboratory.desc", "Eight experiment racks and a terminal: research in microgravity, and sample analysis.");
         add("block.orbitalis.station_port", "Berthing Port");
         add("item.orbitalis.node_module", "Node Module");
         add("station.orbitalis.module.node", "Node");
@@ -1931,14 +1948,9 @@ public class EnUsLanguageProvider extends LanguageProvider {
         add("satellite.orbitalis.orbit.lunar", "Lunar orbit");
         add("exploration.orbitalis.samples.returned", "The return capsule came back from %s with its samples: +%s research points.");
         add("exploration.orbitalis.samples.first", "First samples from %s: their analysis changes what we know of its history.");
-        add("exploration.orbitalis.samples.wrong_world", "There is nothing to sample here: samples are taken on the Moon or Mars.");
         add("exploration.orbitalis.samples.not_ground", "Sample the ground itself: rock, regolith or ice.");
-        add("exploration.orbitalis.samples.collected", "Sample taken: %s, to bring back to Earth.");
-        add("exploration.orbitalis.samples.bring_home", "Samples are analysed on Earth: bring them home.");
         add("exploration.orbitalis.samples.analysed", "Analysis of %s: +%s research points.");
         add("exploration.orbitalis.samples.analysed_first", "First analysis of %s: +%s research points.");
-        add("exploration.orbitalis.samples.container_tooltip", "On the Moon or Mars, right-click the ground to take a sample.");
-        add("exploration.orbitalis.samples.tooltip", "On Earth, right-click to hand them to your agency's laboratory for analysis.");
         add("item.orbitalis.mars_lander", "Mars Lander");
         add("creative.orbitalis.rocket.mars", "Mars Launcher (test)");
         add("rocket.orbitalis.reach.mars", "Mars transfer");

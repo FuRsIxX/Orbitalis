@@ -33,7 +33,8 @@ import net.minecraft.world.phys.BlockHitResult;
 /**
  * Quartiers d'équipage : une cabine d'un bloc de large et deux de haut, comme celles de l'ISS, où pend un sac de
  * couchage. Un équipier s'y repose d'un clic droit : blessé, il récupère quelques points de vie. Elle ne change pas
- * le point de réapparition : qui meurt dans l'espace se réveille sur la planète (voir {@code RespawnRules}).
+ * le point de réapparition du jeu, mais l'équipier qui s'y est reposé s'y réveille s'il meurt, tant que la station est
+ * pressurisée (voir {@code RespawnRules}).
  */
 public class CrewBunkBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<CrewBunkBlock> CODEC = simpleCodec(CrewBunkBlock::new);
@@ -100,6 +101,12 @@ public class CrewBunkBlock extends HorizontalDirectionalBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return InteractionResult.SUCCESS;
+        }
+        // La couchette devient celle du joueur : il s'y réveillera s'il meurt, tant que la station est pressurisée.
+        BlockPos lower = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
+        if (!com.orbitalis.phase2.survival.RespawnRules.hasBerth(serverPlayer, lower)) {
+            com.orbitalis.phase2.survival.RespawnRules.setBerth(serverPlayer, lower);
+            serverPlayer.sendSystemMessage(Component.translatable("station.orbitalis.bunk.berth").withStyle(ChatFormatting.AQUA));
         }
         if (serverPlayer.getHealth() < serverPlayer.getMaxHealth() && !serverPlayer.hasEffect(MobEffects.REGENERATION)) {
             serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, REST_TICKS, 0));

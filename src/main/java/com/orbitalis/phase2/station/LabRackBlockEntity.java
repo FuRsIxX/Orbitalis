@@ -6,6 +6,8 @@ import com.orbitalis.core.research.AgencyResearch;
 import com.orbitalis.core.research.ResearchManager;
 import com.orbitalis.phase2.survival.SpaceRules;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,6 +20,10 @@ import net.minecraft.world.level.storage.ValueOutput;
  * devant elle et qu'elle a de quoi s'alimenter (sa propre réserve, remplie par câble, ou le réseau de la station) ;
  * alors son expérience avance. Une expérience menée à bien rapporte {@link #POINTS_PER_EXPERIMENT} point de
  * recherche à l'agence qui possède la station.
+ * <p>
+ * On peut aussi lui confier une boîte d'échantillons (de la Lune, de Mars ou d'une exoplanète) : elle l'analyse en
+ * {@link #ANALYSIS_TICKS} ticks, en même temps que son expérience, et l'analyse en apesanteur vaut la moitié de plus
+ * qu'au laboratoire de la Terre.
  */
 public class LabRackBlockEntity extends BlockEntity {
     /** Ce que fait la baie. */
@@ -40,6 +46,10 @@ public class LabRackBlockEntity extends BlockEntity {
     /** Prime de la première expérience menée à bien par une agence. */
     private static final int REWARD_FIRST_EXPERIMENT = 50;
     private static final int STEP = 20;
+    /** Durée de l'analyse d'une boîte d'échantillons, en ticks : une minute. */
+    public static final int ANALYSIS_TICKS = 1200;
+    /** L'analyse en apesanteur vaut la moitié de plus que sur Terre : ses points, en pour cent de ceux de la Terre. */
+    public static final int ANALYSIS_BONUS = 150;
 
     private final MachineEnergyStorage energy = new MachineEnergyStorage(20_000, 400, 0, this::setChanged);
     private final StationPower.Link link = new StationPower.Link();
@@ -47,6 +57,9 @@ public class LabRackBlockEntity extends BlockEntity {
     private int progress;
     private int experiments;
     private int ticks;
+    /** La boîte d'échantillons en analyse, ou rien. */
+    private ItemStack sample = ItemStack.EMPTY;
+    private int analysis;
 
     public LabRackBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.LAB_RACK.get(), pos, state);
@@ -67,6 +80,31 @@ public class LabRackBlockEntity extends BlockEntity {
 
     public int progressPercent() {
         return progress * 100 / EXPERIMENT_TICKS;
+    }
+
+    /** La boîte d'échantillons en analyse, ou une pile vide. */
+    public ItemStack getSample() {
+        return sample;
+    }
+
+    public int analysisPercent() {
+        return Math.min(100, analysis * 100 / ANALYSIS_TICKS);
+    }
+
+    /** Confie une boîte d'échantillons à la baie : faux si elle en analyse déjà une. */
+    public boolean insertSample(ItemStack stack) {
+        if (!sample.isEmpty() || !(stack.getItem() instanceof com.orbitalis.phase3.exploration.SampleItem)) {
+            return false;
+        }
+        sample = stack.copyWithCount(1);
+        analysis = 0;
+        setChanged();
+        return true;
+    }
+
+    /** Points de l'analyse en apesanteur : ceux de la Terre, et la moitié de plus. */
+    public static int orbitalPoints(com.orbitalis.phase3.exploration.SampleItem.Body body, boolean first) {
+        return body.points(first) * ANALYSIS_BONUS / 100;
     }
 
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
@@ -90,11 +128,41 @@ public class LabRackBlockEntity extends BlockEntity {
                 experiments++;
                 credit(level, link.station(level, pos));
             }
+            if (!sample.isEmpty()) {
+                analysis += STEP;
+                if (analysis >= ANALYSIS_TICKS) {
+                    analyse(level, pos, link.station(level, pos));
+                }
+            }
             setChanged();
         }
         boolean lit = status == Status.RUNNING;
         if (state.getValue(LabRackBlock.LIT) != lit) {
             level.setBlock(pos, state.setValue(LabRackBlock.LIT, lit), Block.UPDATE_ALL);
+        }
+    }
+
+    /** L'analyse est finie : ses points vont à l'agence de la station, et l'équipage à bord l'apprend. */
+    private void analyse(ServerLevel level, BlockPos pos, BlockPos station) {
+        String agency = station == null ? null : StationManager.agencyOf(level.getServer(), station);
+        if (agency == null || !(sample.getItem() instanceof com.orbitalis.phase3.exploration.SampleItem item)) {
+            // Une station sans agence : l'analyse attend, finie, qu'une agence la reçoive.
+            analysis = ANALYSIS_TICKS;
+            return;
+        }
+        AgencyResearch research = ResearchManager.forAgency(level.getServer(), agency);
+        boolean first = research.completeMilestone(item.body().milestone());
+        int points = orbitalPoints(item.body(), first);
+        research.addPoints(points);
+        ResearchManager.changed(level.getServer(), agency);
+        Component name = sample.getHoverName();
+        sample = ItemStack.EMPTY;
+        analysis = 0;
+        level.playSound(null, pos, net.minecraft.sounds.SoundEvents.BREWING_STAND_BREW, net.minecraft.sounds.SoundSource.BLOCKS, 0.8F, 1.3F);
+        for (net.minecraft.server.level.ServerPlayer player : level.getEntitiesOfClass(net.minecraft.server.level.ServerPlayer.class,
+                new net.minecraft.world.phys.AABB(pos).inflate(24.0))) {
+            player.sendSystemMessage(Component.translatable(first ? "station.orbitalis.lab.analysed_first" : "station.orbitalis.lab.analysed",
+                    name, points).withStyle(net.minecraft.ChatFormatting.GREEN));
         }
     }
 
@@ -110,6 +178,16 @@ public class LabRackBlockEntity extends BlockEntity {
             research.addPoints(REWARD_FIRST_EXPERIMENT);
         }
         ResearchManager.changed(level.getServer(), agency);
+    }
+
+    /** Cassée, la baie rend la boîte qu'elle analysait. */
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (level != null && !sample.isEmpty()) {
+            net.minecraft.world.Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, sample);
+            sample = ItemStack.EMPTY;
+        }
     }
 
     /** Cassée, la machine garde son énergie sur son objet ; reposée, elle la retrouve. */
@@ -131,6 +209,8 @@ public class LabRackBlockEntity extends BlockEntity {
         energy.serialize(output.child("energy"));
         output.putInt("progress", progress);
         output.putInt("experiments", experiments);
+        output.store("sample", ItemStack.OPTIONAL_CODEC, sample);
+        output.putInt("analysis", analysis);
     }
 
     @Override
@@ -139,5 +219,7 @@ public class LabRackBlockEntity extends BlockEntity {
         energy.deserialize(input.childOrEmpty("energy"));
         progress = input.getIntOr("progress", 0);
         experiments = input.getIntOr("experiments", 0);
+        sample = input.read("sample", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        analysis = input.getIntOr("analysis", 0);
     }
 }

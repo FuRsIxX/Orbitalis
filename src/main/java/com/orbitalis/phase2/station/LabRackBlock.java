@@ -71,6 +71,28 @@ public class LabRackBlock extends HorizontalDirectionalBlock implements EntityBl
         };
     }
 
+    /** Une boîte d'échantillons en main : la baie la prend, si elle n'en analyse pas déjà une. */
+    @Override
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+            net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
+        if (!(stack.getItem() instanceof com.orbitalis.phase3.exploration.SampleItem)) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        }
+        if (player instanceof ServerPlayer serverPlayer && level.getBlockEntity(pos) instanceof LabRackBlockEntity rack) {
+            if (rack.insertSample(stack)) {
+                Component name = stack.getHoverName();
+                stack.consume(1, player);
+                level.playSound(null, pos, net.minecraft.sounds.SoundEvents.ITEM_FRAME_ADD_ITEM, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
+                serverPlayer.sendSystemMessage(Component.translatable("station.orbitalis.lab.sample_in", name, LabRackBlockEntity.ANALYSIS_TICKS / 20)
+                        .withStyle(ChatFormatting.AQUA));
+            } else {
+                serverPlayer.sendOverlayMessage(Component.translatable("station.orbitalis.lab.busy", rack.getSample().getHoverName())
+                        .withStyle(ChatFormatting.GOLD));
+            }
+        }
+        return InteractionResult.SUCCESS;
+    }
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (player instanceof ServerPlayer serverPlayer && level.getBlockEntity(pos) instanceof LabRackBlockEntity rack) {
@@ -83,6 +105,10 @@ public class LabRackBlock extends HorizontalDirectionalBlock implements EntityBl
                         .withStyle(ChatFormatting.GREEN);
             };
             serverPlayer.sendSystemMessage(message);
+            if (!rack.getSample().isEmpty()) {
+                serverPlayer.sendSystemMessage(Component.translatable("station.orbitalis.lab.analysing", rack.getSample().getHoverName(),
+                        rack.analysisPercent()).withStyle(ChatFormatting.AQUA));
+            }
         }
         return InteractionResult.SUCCESS;
     }

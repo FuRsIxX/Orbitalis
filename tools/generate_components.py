@@ -617,6 +617,12 @@ CONTAINER_PAL = {"o": "#1E2226", "m": "#D9DEE3", "s": "#A8B0B9", "l": "#7F8790",
 PARTS["sample_container"] = (CONTAINER_ROWS, {**CONTAINER_PAL, "r": "#9FC4FF", "R": "#E9F2FF"})
 PARTS["lunar_samples"] = (CONTAINER_ROWS, {**CONTAINER_PAL, "r": "#8E8E8A", "R": "#C9C9C2"})
 PARTS["mars_samples"] = (CONTAINER_ROWS, {**CONTAINER_PAL, "r": "#A2462B", "R": "#D9774E"})
+# Les exoplanètes : le violet du crépuscule de Proxima b, le sable vert des îles de TRAPPIST-1 e, le bronze
+# de Kepler-452b, la poussière rose de Tarentule b.
+PARTS["proxima_samples"] = (CONTAINER_ROWS, {**CONTAINER_PAL, "r": "#463A5A", "R": "#9A86C0"})
+PARTS["trappist_samples"] = (CONTAINER_ROWS, {**CONTAINER_PAL, "r": "#3F6E6A", "R": "#79B5A8"})
+PARTS["kepler_samples"] = (CONTAINER_ROWS, {**CONTAINER_PAL, "r": "#6B5A2E", "R": "#B59B4A"})
+PARTS["tarantula_samples"] = (CONTAINER_ROWS, {**CONTAINER_PAL, "r": "#9C4A7A", "R": "#E58BC0"})
 # Station lunaire : un module central, ses deux ailes solaires et son antenne tournée vers la Terre.
 PARTS["lunar_gateway"] = ([
     "................",

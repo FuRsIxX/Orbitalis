@@ -1494,8 +1494,6 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("station.orbitalis.module.cupola.short", "COUPOLE");
         add("station.orbitalis.module.airlock.short", "SAS");
         add("station.orbitalis.module.power.short", "ÉNERGIE");
-        add("station.orbitalis.module.habitation.desc", "Quatre couchettes, quatre casiers et un terminal.");
-        add("station.orbitalis.module.laboratory.desc", "Huit baies d'expériences et un terminal : de la recherche en apesanteur.");
         add("station.orbitalis.module.greenhouse.desc", "Huit bacs de culture sous leurs rampes de diodes, et un casier.");
         add("station.orbitalis.module.cargo.desc", "Huit casiers de fret : 216 emplacements.");
         add("station.orbitalis.module.cupola.desc", "Une verrière pour voir la planète ; l'équipage y observe aussi les planètes et les lunes.");
@@ -1742,7 +1740,7 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("station.orbitalis.airlock.interlock", "Verrouillage du sas : fermez d'abord l'autre porte.");
         add("station.orbitalis.airlock.cycling", "Mise à niveau du sas en cours…");
         add("guide.orbitalis.stations.title", "Les stations spatiales");
-        add("guide.orbitalis.stations.text", "Une station commence par son module central, lancé sans équipage. Il se déploie en orbite, à la verticale du pas de tir.\n\nUn vol habité orbital parti du même site s'y amarre tout seul. Accroupissez-vous pour passer le sas. Le terminal affiche énergie, air, orbite, équipage et fret.\n\nLe générateur d'air pressurise la station tant qu'il est alimenté. Les panneaux solaires produisent en orbite, mais rien pendant l'éclipse : prévoyez des batteries.\n\nChaque module (nœud, habitation, laboratoire, serre, logistique, coupole, sas) s'emporte à bord et s'accroche sur un port de jonction, l'écoutille ronde. Visé avec le kit, il s'y dessine en fantôme ; un clic droit le déploie. Le module central a trois ports, chaque nœud en ajoute trois, la pièce nue un au fond. La poutre d'énergie, elle, se plante sur un mur.");
+        add("guide.orbitalis.stations.text", "Une station commence par son module central, lancé sans équipage. Il se déploie en orbite, à la verticale du pas de tir.\n\nUn vol habité orbital parti du même site s'y amarre tout seul. Accroupissez-vous pour passer le sas. Le terminal affiche énergie, air, orbite, équipage et fret.\n\nLe générateur d'air pressurise la station tant qu'il est alimenté. Les panneaux solaires produisent en orbite, mais rien pendant l'éclipse : prévoyez des batteries.\n\nChaque module (nœud, habitation, laboratoire, serre, logistique, coupole, sas) s'emporte à bord et s'accroche sur un port de jonction, l'écoutille ronde. Visé avec le kit, il s'y dessine en fantôme ; un clic droit le déploie. Le module central a trois ports, chaque nœud en ajoute trois, la pièce nue un au fond. La poutre d'énergie, elle, se plante sur un mur.\n\nReposez-vous dans une couchette de l'habitation : si vous mourez, vous vous y réveillerez, tant que la station est pressurisée. Une baie du laboratoire mène ses expériences toute seule ; confiez-lui une boîte d'échantillons (Lune, Mars, exoplanètes) et elle l'analyse en une minute, pour la moitié de points de plus que sur Terre.");
 
         // Ravitaillement
         add("orbitalis.configuration.boilOff", "Évaporation des ergols");
@@ -1808,6 +1806,25 @@ public class FrFrLanguageProvider extends LanguageProvider {
 
         // Modules d'extension
         add("station.orbitalis.expand.done", "Module « %s » en place : le passage est ouvert.");
+        add("item.orbitalis.proxima_samples", "Échantillons de Proxima b");
+        add("item.orbitalis.trappist_samples", "Échantillons de TRAPPIST-1 e");
+        add("item.orbitalis.kepler_samples", "Échantillons de Kepler-452b");
+        add("item.orbitalis.tarantula_samples", "Échantillons de Tarentule b");
+        add("station.orbitalis.bunk.berth", "Cette couchette est désormais la vôtre : si vous mourez, vous vous y réveillerez, tant que la station est pressurisée.");
+        add("station.orbitalis.bunk.lost", "Votre couchette n'était plus dans une pièce close, pourvue d'un générateur d'air : vous vous réveillez sur Terre.");
+        add("station.orbitalis.bunk.gone", "Votre couchette n'est plus là : vous vous réveillez sur Terre.");
+        add("station.orbitalis.lab.sample_in", "%s en analyse : comptez %s secondes, tant que la baie a du courant et de l'air.");
+        add("station.orbitalis.lab.busy", "Cette baie analyse déjà %s.");
+        add("station.orbitalis.lab.analysing", "Analyse en cours : %s, %s %%.");
+        add("station.orbitalis.lab.analysed", "Analyse en apesanteur terminée : %s, +%s points de recherche.");
+        add("station.orbitalis.lab.analysed_first", "Première analyse en apesanteur : %s, +%s points de recherche.");
+        add("exploration.orbitalis.samples.wrong_world", "Il n'y a rien à prélever ici : les échantillons se prennent sur la Lune, sur Mars ou sur une exoplanète.");
+        add("exploration.orbitalis.samples.collected", "Prélèvement fait : %s, à analyser sur Terre ou au laboratoire d'une station.");
+        add("exploration.orbitalis.samples.bring_home", "Les échantillons s'analysent sur Terre, ou dans une baie du laboratoire d'une station.");
+        add("exploration.orbitalis.samples.container_tooltip", "Sur la Lune, sur Mars ou sur une exoplanète, un clic droit sur le sol y prélève un échantillon.");
+        add("exploration.orbitalis.samples.tooltip", "Sur Terre, un clic droit les confie au laboratoire de l'agence. Dans une baie de laboratoire en orbite, leur analyse vaut la moitié de plus.");
+        add("station.orbitalis.module.habitation.desc", "Quatre couchettes, quatre casiers et un terminal. Reposez-vous dans une couchette pour vous y réveiller.");
+        add("station.orbitalis.module.laboratory.desc", "Huit baies d'expériences et un terminal : de la recherche en apesanteur, et l'analyse des échantillons.");
         add("block.orbitalis.station_port", "Port de jonction");
         add("item.orbitalis.node_module", "Module nœud");
         add("station.orbitalis.module.node", "Nœud");
@@ -1931,14 +1948,9 @@ public class FrFrLanguageProvider extends LanguageProvider {
         add("satellite.orbitalis.orbit.lunar", "Orbite lunaire");
         add("exploration.orbitalis.samples.returned", "La capsule de retour est revenue de %s avec ses échantillons : +%s points de recherche.");
         add("exploration.orbitalis.samples.first", "Premiers échantillons de %s : leur analyse change ce que l'on sait de son histoire.");
-        add("exploration.orbitalis.samples.wrong_world", "Il n'y a rien à prélever ici : les échantillons se prennent sur la Lune ou sur Mars.");
         add("exploration.orbitalis.samples.not_ground", "Prélevez le sol lui-même : la roche, le régolithe ou la glace.");
-        add("exploration.orbitalis.samples.collected", "Prélèvement fait : %s, à rapporter sur Terre.");
-        add("exploration.orbitalis.samples.bring_home", "Les échantillons s'analysent sur Terre : rapportez-les à la maison.");
         add("exploration.orbitalis.samples.analysed", "Analyse de %s : +%s points de recherche.");
         add("exploration.orbitalis.samples.analysed_first", "Première analyse de %s : +%s points de recherche.");
-        add("exploration.orbitalis.samples.container_tooltip", "Sur la Lune ou sur Mars, un clic droit sur le sol y prélève un échantillon.");
-        add("exploration.orbitalis.samples.tooltip", "Sur Terre, un clic droit les confie au laboratoire de l'agence, qui les analyse.");
         add("item.orbitalis.mars_lander", "Vaisseau martien");
         add("creative.orbitalis.rocket.mars", "Lanceur martien (essai)");
         add("rocket.orbitalis.reach.mars", "Transfert martien");

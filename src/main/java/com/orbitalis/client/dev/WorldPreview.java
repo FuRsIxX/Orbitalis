@@ -2695,6 +2695,28 @@ public final class WorldPreview {
                 com.orbitalis.phase2.station.ModuleType.NODE), 15.0, 106.0, 70.0, 4.0, 100.0, 60.0, 30));
         SHOTS.add(look("tm_orbit_port_ghost_lab", level -> com.orbitalis.client.ModuleKitPlacement.force(new BlockPos(0, 100, 58),
                 com.orbitalis.phase2.station.ModuleType.LABORATORY), -12.0, 107.0, 50.0, 0.0, 100.0, 56.0, 30));
+        // Le laboratoire du second nœud : une boîte d'échantillons de Proxima b confiée à une baie (12 99 -4), et la couchette
+        // de l'habitation retenue pour le réveil ; le fil de discussion montre ce que le joueur lit.
+        SHOTS.add(new Shot("tm_orbit_lab_sample", level -> {
+            ServerLevel orbit = level.getServer().getLevel(SpaceRules.ORBIT);
+            BlockPos rackPos = new BlockPos(12, 99, -4);
+            for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+                player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,
+                        new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.PROXIMA_SAMPLES.get(), 2));
+                if (orbit != null && orbit.getBlockEntity(rackPos) instanceof com.orbitalis.phase2.station.LabRackBlockEntity rack
+                        && rack.insertSample(new net.minecraft.world.item.ItemStack(com.orbitalis.core.registry.ModItems.PROXIMA_SAMPLES.get()))) {
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("station.orbitalis.bunk.berth")
+                            .withStyle(net.minecraft.ChatFormatting.AQUA));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("station.orbitalis.lab.sample_in",
+                            rack.getSample().getHoverName(), com.orbitalis.phase2.station.LabRackBlockEntity.ANALYSIS_TICKS / 20)
+                            .withStyle(net.minecraft.ChatFormatting.AQUA));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("station.orbitalis.lab.analysed_first",
+                            rack.getSample().getHoverName(), com.orbitalis.phase2.station.LabRackBlockEntity.orbitalPoints(
+                                    com.orbitalis.phase3.exploration.SampleItem.Body.PROXIMA, true)).withStyle(net.minecraft.ChatFormatting.GREEN));
+                }
+            }
+            hover(level);
+        }, 11.5, 99.0, -2.6, 160.0F, 12.0F, 40));
         SHOTS.add(new Shot("tm_orbit_port_done", level -> {
             com.orbitalis.client.ModuleKitPlacement.force(null, null);
             for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {

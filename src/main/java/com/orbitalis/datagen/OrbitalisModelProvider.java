@@ -479,6 +479,10 @@ public class OrbitalisModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.SAMPLE_CONTAINER.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.LUNAR_SAMPLES.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.MARS_SAMPLES.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.PROXIMA_SAMPLES.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.TRAPPIST_SAMPLES.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.KEPLER_SAMPLES.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.TARANTULA_SAMPLES.get(), ModelTemplates.FLAT_ITEM);
         // Rover : son châssis et sa roue, portés par un bloc jamais posé ; l'objet est dessiné à plat.
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.ROVER_MODEL.get())
                 .with(BlockModelGenerators.createBooleanModelDispatch(com.orbitalis.phase3.exploration.RoverModelBlock.WHEEL,
