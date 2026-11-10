@@ -79,6 +79,7 @@ public final class WarpFx {
     private static Component subtitle = Component.empty();
     private static int lastSound = -1;
     private static DynamicTexture texture;
+    private static DynamicTexture wallTexture;
 
     private WarpFx() {
     }
@@ -334,25 +335,113 @@ public final class WarpFx {
     // Le ciel : les étoiles qui filent, les ondes de choc, le tunnel
     // ------------------------------------------------------------------
 
-    /** L'image : à gauche un carré plein, à droite une bande en pointillés de gros pixels, pour les anneaux. */
+    /**
+     * L'atlas, quatre images de 16 pixels dessinées comme des textures du jeu : en haut à gauche un carré plein (les
+     * traits, les fonds) ; en haut à droite la bande d'énergie des anneaux (un cœur blanc, des bords sombres, des
+     * segments) ; en bas à gauche l'étoile à quatre branches du bout du tunnel ; en bas à droite le bord crépitant des
+     * ondes de choc, piqueté d'étincelles.
+     */
     private static DynamicTexture texture() {
         if (texture == null) {
-            texture = new DynamicTexture(() -> "Orbitalis warp", 16, 16, false) {
+            texture = new DynamicTexture(() -> "Orbitalis warp", 32, 32, false) {
                 {
-                    sampler = RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST);
+                    sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST);
                 }
             };
             NativeImage image = texture.getPixels();
-            for (int y = 0; y < 16; y++) {
-                for (int x = 0; x < 16; x++) {
-                    boolean on = x < 8 || ((y / 2) % 2 == 0 && x != 8 && x != 15);
-                    int alpha = x < 8 ? 255 : on ? (x == 9 || x == 14 ? 150 : 255) : 40;
-                    image.setPixel(x, y, alpha << 24 | 0xFFFFFF);
+            for (int y = 0; y < 32; y++) {
+                for (int x = 0; x < 32; x++) {
+                    image.setPixel(x, y, atlasPixel(x, y));
                 }
             }
             texture.upload();
         }
         return texture;
+    }
+
+    private static int grey(int alpha, int light) {
+        return Mth.clamp(alpha, 0, 255) << 24 | light << 16 | light << 8 | light;
+    }
+
+    private static int atlasPixel(int x, int y) {
+        int u = x & 15;
+        int v = y & 15;
+        if (x < 16 && y < 16) {
+            return grey(255, 255);
+        }
+        if (y < 16) {
+            // La bande d'énergie : transparente aux bords, un liseré sombre, le corps en segments, le cœur blanc.
+            if (v <= 1 || v >= 14) {
+                return grey(0, 255);
+            }
+            if (v == 2 || v == 13) {
+                return grey(110, 190);
+            }
+            if (v == 3 || v == 12) {
+                return grey(200, 215);
+            }
+            boolean core = v >= 6 && v <= 9;
+            boolean dash = (u / 4) % 2 == 0;
+            return core ? grey(255, 255) : grey(dash ? 240 : 185, dash ? 235 : 175);
+        }
+        if (x < 16) {
+            // L'étoile : un cœur plein, quatre branches qui s'effilent, quatre petits rayons en diagonale.
+            float dx = Math.abs(u - 7.5F);
+            float dy = Math.abs(v - 7.5F);
+            if (dx < 1.5F && dy < 1.5F) {
+                return grey(255, 255);
+            }
+            if (dx < 0.6F && dy < 7.5F) {
+                return grey(Math.round((1.0F - dy / 8.0F) * 4.0F) * 60, 255);
+            }
+            if (dy < 0.6F && dx < 7.5F) {
+                return grey(Math.round((1.0F - dx / 8.0F) * 4.0F) * 60, 255);
+            }
+            if (Math.abs(dx - dy) < 0.6F && dx < 3.5F) {
+                return grey(150, 255);
+            }
+            return grey(0, 255);
+        }
+        // Le bord des ondes de choc : de plus en plus vif vers l'extérieur, et des étincelles ici et là.
+        float rise = v / 15.0F;
+        int alpha = Math.round(rise * rise * 7.0F) * 32;
+        int hash = (u * 73 + v * 151 + u * v * 17) % 11;
+        if (hash == 0 && v > 3) {
+            alpha = Math.min(255, alpha + 110);
+        }
+        return grey(alpha, v >= 13 ? 255 : 215);
+    }
+
+    /**
+     * La paroi du tunnel : un plasma veiné, en quatre tons, qui se répète tout autour et le long du tunnel ; on le fait
+     * défiler vers l'arrière.
+     */
+    private static DynamicTexture wallTexture() {
+        if (wallTexture == null) {
+            wallTexture = new DynamicTexture(() -> "Orbitalis warp wall", 32, 32, false) {
+                {
+                    sampler = RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST);
+                }
+            };
+            NativeImage image = wallTexture.getPixels();
+            RandomSource random = RandomSource.createThreadLocalInstance(3_210L);
+            for (int y = 0; y < 32; y++) {
+                for (int x = 0; x < 32; x++) {
+                    float a = x / 32.0F * Mth.TWO_PI;
+                    float b = y / 32.0F * Mth.TWO_PI;
+                    float vein = 0.5F + 0.5F * Mth.sin(a * 2.0F + 2.2F * Mth.sin(b) + Mth.sin(b * 2.0F + a));
+                    vein = vein * vein + (random.nextFloat() - 0.5F) * 0.12F;
+                    int level = Mth.clamp(Math.round(vein * 3.0F), 0, 3);
+                    int light = new int[] {80, 130, 190, 255}[level];
+                    if (random.nextInt(60) == 0) {
+                        light = 255;
+                    }
+                    image.setPixel(x, y, grey(255, light));
+                }
+            }
+            wallTexture.upload();
+        }
+        return wallTexture;
     }
 
     private static Vector3f forward() {
@@ -399,7 +488,7 @@ public final class WarpFx {
         }
         int tail = argb & 0x00FFFFFF;
         quad(builder, new Vector3f(from).add(side), new Vector3f(to).add(side), new Vector3f(to).sub(side), new Vector3f(from).sub(side),
-                0.0F, 0.0F, 0.45F, 1.0F, tail, argb, argb, tail);
+                0.0F, 0.0F, 0.45F, 0.45F, tail, argb, argb, tail);
     }
 
     private static int argb(float alpha, int rgb) {
@@ -440,11 +529,11 @@ public final class WarpFx {
                 float inner = radius - thickness;
                 float middle = radius - thickness * 0.3F;
                 quad(builder, at(forward, right, along, inner, a0), at(forward, right, along, inner, a1),
-                        at(forward, right, along, middle, a1), at(forward, right, along, middle, a0), 0.0F, 0.0F, 0.45F, 1.0F,
-                        argb(0.0F, body), argb(0.0F, body), argb(alpha * 0.55F, body), argb(alpha * 0.55F, body));
+                        at(forward, right, along, middle, a1), at(forward, right, along, middle, a0), 0.5F, 0.5F, 1.0F, 0.75F,
+                        argb(0.0F, body), argb(0.0F, body), argb(alpha * 0.7F, body), argb(alpha * 0.7F, body));
                 quad(builder, at(forward, right, along, middle, a0), at(forward, right, along, middle, a1),
-                        at(forward, right, along, radius, a1), at(forward, right, along, radius, a0), 0.0F, 0.0F, 0.45F, 1.0F,
-                        argb(alpha * 0.55F, body), argb(alpha * 0.55F, body), argb(alpha, edge), argb(alpha, edge));
+                        at(forward, right, along, radius, a1), at(forward, right, along, radius, a0), 0.5F, 0.75F, 1.0F, 1.0F,
+                        argb(alpha * 0.7F, body), argb(alpha * 0.7F, body), argb(alpha, edge), argb(alpha, edge));
             }
         }
     }
@@ -511,46 +600,61 @@ public final class WarpFx {
         float spin = inside * 0.035F;
         float flicker = 0.88F + 0.12F * Mth.sin(t * 1.7F) * Mth.sin(t * 0.63F);
         RandomSource random = RandomSource.createThreadLocalInstance(1_616L);
-        try (ByteBufferBuilder bytes = new ByteBufferBuilder(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * 8 * 4200)) {
-            BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            // La paroi : un long cylindre, sombre derrière, bleuté vers l'avant ; et le fond, au bout, qui rayonne.
-            int sides = 28;
-            float wall = 46.0F;
-            float[] stations = {-100.0F, -40.0F, 10.0F, 55.0F, 88.0F};
+        // La paroi : un long cylindre de plasma veiné, sombre derrière, bleuté vers l'avant ; sa texture tourne avec le
+        // tunnel et file vers l'arrière.
+        int sides = 28;
+        float wall = 46.0F;
+        float[] stations = {-100.0F, -40.0F, 10.0F, 55.0F, 88.0F};
+        try (ByteBufferBuilder wallBytes = new ByteBufferBuilder(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * 8 * 140)) {
+            BufferBuilder walls = new BufferBuilder(wallBytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            float scroll = rush / 22.0F;
             for (int k = 0; k < sides; k++) {
                 float a0 = k * Mth.TWO_PI / sides + spin * 0.3F;
                 float a1 = (k + 1) * Mth.TWO_PI / sides + spin * 0.3F;
+                float u0 = k * 6.0F / sides;
+                float u1 = (k + 1) * 6.0F / sides;
                 for (int s = 0; s < stations.length - 1; s++) {
-                    int c0 = 0xFF000000 | mix(deep, band, Mth.clamp((stations[s] + 40.0F) / 260.0F, 0.0F, 1.0F) * 0.22F * flicker);
-                    int c1 = 0xFF000000 | mix(deep, band, Mth.clamp((stations[s + 1] + 40.0F) / 260.0F, 0.0F, 1.0F) * 0.22F * flicker);
-                    quad(builder, at(forward, right, stations[s], wall, a0), at(forward, right, stations[s], wall, a1),
+                    int c0 = 0xFF000000 | mix(deep, band, Mth.clamp((stations[s] + 40.0F) / 260.0F, 0.0F, 1.0F) * 0.42F * flicker);
+                    int c1 = 0xFF000000 | mix(deep, band, Mth.clamp((stations[s + 1] + 40.0F) / 260.0F, 0.0F, 1.0F) * 0.42F * flicker);
+                    quad(walls, at(forward, right, stations[s], wall, a0), at(forward, right, stations[s], wall, a1),
                             at(forward, right, stations[s + 1], wall, a1), at(forward, right, stations[s + 1], wall, a0),
-                            0.0F, 0.0F, 0.45F, 1.0F, c0, c0, c1, c1);
+                            u0, stations[s] / 24.0F + scroll, u1, stations[s + 1] / 24.0F + scroll, c0, c0, c1, c1);
                 }
+            }
+            draw(minecraft, walls, wallTexture());
+        }
+        try (ByteBufferBuilder bytes = new ByteBufferBuilder(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * 8 * 4200)) {
+            BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            for (int k = 0; k < sides; k++) {
+                float a0 = k * Mth.TWO_PI / sides + spin * 0.3F;
+                float a1 = (k + 1) * Mth.TWO_PI / sides + spin * 0.3F;
                 // Le fond : du bord de la paroi vers le cœur, de plus en plus clair ; derrière, la nuit.
                 int rim = 0xFF000000 | mix(deep, band, 0.12F * flicker);
                 int core = 0xFF000000 | mix(deep, band, 0.55F);
                 quad(builder, at(forward, right, 88.0F, wall, a0), at(forward, right, 88.0F, wall, a1),
-                        at(forward, right, 89.0F, 7.0F, a1), at(forward, right, 89.0F, 7.0F, a0), 0.0F, 0.0F, 0.45F, 1.0F, rim, rim, core, core);
+                        at(forward, right, 89.0F, 7.0F, a1), at(forward, right, 89.0F, 7.0F, a0), 0.0F, 0.0F, 0.45F, 0.45F, rim, rim, core, core);
                 quad(builder, at(forward, right, 89.0F, 7.0F, a0), at(forward, right, 89.0F, 7.0F, a1),
-                        at(forward, right, 89.5F, 0.0F, a1), at(forward, right, 89.5F, 0.0F, a0), 0.0F, 0.0F, 0.45F, 1.0F,
+                        at(forward, right, 89.5F, 0.0F, a1), at(forward, right, 89.5F, 0.0F, a0), 0.0F, 0.0F, 0.45F, 0.45F,
                         core, core, 0xFF000000 | mix(band, 0xFFFFFF, 0.3F), 0xFF000000 | mix(band, 0xFFFFFF, 0.3F));
                 quad(builder, at(forward, right, -100.0F, wall, a0), at(forward, right, -100.0F, wall, a1),
-                        at(forward, right, -100.0F, 0.0F, a1), at(forward, right, -100.0F, 0.0F, a0), 0.0F, 0.0F, 0.45F, 1.0F,
+                        at(forward, right, -100.0F, 0.0F, a1), at(forward, right, -100.0F, 0.0F, a0), 0.0F, 0.0F, 0.45F, 0.45F,
                         0xFF000000 | deep);
             }
-            // L'éclat au bout du tunnel : trois losanges emboîtés qui palpitent, et qui tournent.
+            // L'éclat au bout du tunnel : un halo en losange, et par-dessus une étoile à quatre branches, en pixels, qui
+            // palpite et tourne lentement.
             float beat = 1.0F + 0.14F * Mth.sin(t * 0.45F);
-            for (int k = 0; k < 3; k++) {
-                float size = (10.0F - 3.2F * k) * beat;
-                Vector3f centre = new Vector3f(forward).mul(86.0F);
-                float turn = spin * (k % 2 == 0 ? 1.5F : -1.5F);
-                Vector3f up = at(forward, right, 0.0F, size, Mth.HALF_PI + turn);
-                Vector3f side = at(forward, right, 0.0F, size, turn);
-                int color = argb(k == 0 ? 0.25F : k == 1 ? 0.5F : 0.9F, k == 2 ? 0xFFFFFF : band);
-                quad(builder, new Vector3f(centre).sub(up), new Vector3f(centre).add(side), new Vector3f(centre).add(up),
-                        new Vector3f(centre).sub(side), 0.0F, 0.0F, 0.45F, 1.0F, color);
-            }
+            Vector3f centre = new Vector3f(forward).mul(86.0F);
+            Vector3f haloUp = at(forward, right, 0.0F, 11.0F * beat, Mth.HALF_PI + spin);
+            Vector3f haloSide = at(forward, right, 0.0F, 11.0F * beat, spin);
+            quad(builder, new Vector3f(centre).sub(haloUp), new Vector3f(centre).add(haloSide), new Vector3f(centre).add(haloUp),
+                    new Vector3f(centre).sub(haloSide), 0.0F, 0.0F, 0.45F, 0.45F, argb(0.28F, band));
+            float star = 10.0F * beat;
+            float turn = spin * 0.6F;
+            Vector3f starUp = at(forward, right, 0.0F, star, Mth.HALF_PI + turn);
+            Vector3f starSide = at(forward, right, 0.0F, star, turn);
+            quad(builder, new Vector3f(centre).sub(starSide).sub(starUp), new Vector3f(centre).add(starSide).sub(starUp),
+                    new Vector3f(centre).add(starSide).add(starUp), new Vector3f(centre).sub(starSide).add(starUp),
+                    0.0F, 0.5F, 0.5F, 1.0F, argb(0.95F, mix(band, 0xFFFFFF, 0.7F)));
             // Les anneaux : ils viennent de l'avant, passent autour du vaisseau en tournant, et respirent.
             float spacing = 9.0F;
             float span = 130.0F;
@@ -569,7 +673,7 @@ public final class WarpFx {
                     float a1 = (k + 1) * Mth.TWO_PI / segments + twist;
                     quad(builder, at(forward, right, along, radius, a0), at(forward, right, along, radius, a1),
                             at(forward, right, along + 3.0F, radius, a1), at(forward, right, along + 3.0F, radius, a0),
-                            0.5F, 0.0F, 1.0F, 1.0F, color);
+                            0.5F, 0.0F, 1.0F, 0.5F, color);
                 }
             }
             // Trois filaments d'énergie en spirale, le long de la paroi.
@@ -613,7 +717,10 @@ public final class WarpFx {
     }
 
     private static void draw(Minecraft minecraft, BufferBuilder builder) {
-        DynamicTexture image = texture();
+        draw(minecraft, builder, texture());
+    }
+
+    private static void draw(Minecraft minecraft, BufferBuilder builder, DynamicTexture image) {
         try (MeshData data = builder.build()) {
             if (data == null) {
                 return;
