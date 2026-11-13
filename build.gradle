@@ -24,6 +24,7 @@ subprojects {
     repositories {
         maven { url = "https://maven.neoforged.net/releases/" }
         maven { url = "https://maven.architectury.dev/" }
+        mavenCentral()
     }
 
     loom {
@@ -33,6 +34,7 @@ subprojects {
     dependencies {
         minecraft "net.minecraft:minecraft:${rootProject.minecraft_version}"
         mappings loom.officialMojangMappings()
+        compileOnly "org.jspecify:jspecify:1.0.0"
     }
 
     java {

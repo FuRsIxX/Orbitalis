@@ -137,17 +137,23 @@ public final class Compat {
 
     /** Les postures imposées aux joueurs (en apesanteur) : le mixin de Player les applique à la place de la posture calculée. */
     private static final Map<UUID, Pose> FORCED_POSES = new ConcurrentHashMap<>();
+    /** Côté client, à part : en solo, le client et le serveur intégré partagent ce code et ce joueur. */
+    private static final Map<UUID, Pose> FORCED_POSES_CLIENT = new ConcurrentHashMap<>();
+
+    private static Map<UUID, Pose> forcedPoses(Player player) {
+        return player.level().isClientSide() ? FORCED_POSES_CLIENT : FORCED_POSES;
+    }
 
     public static void setForcedPose(Player player, @Nullable Pose pose) {
         if (pose == null) {
-            FORCED_POSES.remove(player.getUUID());
+            forcedPoses(player).remove(player.getUUID());
         } else {
-            FORCED_POSES.put(player.getUUID(), pose);
+            forcedPoses(player).put(player.getUUID(), pose);
         }
     }
 
     public static @Nullable Pose forcedPose(Player player) {
-        return FORCED_POSES.get(player.getUUID());
+        return forcedPoses(player).get(player.getUUID());
     }
 
     /** Les trois rangées de l'inventaire du joueur, puis sa barre d'objets, 58 pixels plus bas, comme dans toutes les interfaces. */

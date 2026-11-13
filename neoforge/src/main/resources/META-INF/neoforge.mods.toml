@@ -12,6 +12,9 @@ Du premier lingot d'acier aux lunes de Jupiter : bâtissez une industrie spatial
 From the first steel ingot to the moons of Jupiter: build a space industry, a spaceport and modular rockets, launch satellites and probes, assemble stations in orbit, land on the Moon, Mars, Titan and Europa, and ignite fusion.
 '''
 
+[[mixins]]
+config = "orbitalis.mixins.json"
+
 [[dependencies.orbitalis]]
 modId = "neoforge"
 type = "required"

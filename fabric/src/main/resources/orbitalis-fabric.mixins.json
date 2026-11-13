@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.orbitalis.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BlockDropsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

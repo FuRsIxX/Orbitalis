@@ -88,6 +88,20 @@ public final class Events {
             com.orbitalis.core.world.FacilitySalvage.onPlace(event);
             return event.isCanceled() ? EventResult.interruptFalse() : EventResult.pass();
         });
+        // Le module sans fil agit avant le bloc cliqué : sans cela, un clic sur un pupitre ouvrirait son écran.
+        dev.architectury.event.events.common.InteractionEvent.RIGHT_CLICK_BLOCK.register((player, hand, pos, face) -> {
+            net.minecraft.world.item.ItemStack stack = player.getItemInHand(hand);
+            if (!(stack.getItem() instanceof com.orbitalis.phase1.spaceport.WirelessModuleItem module)) {
+                return EventResult.pass();
+            }
+            net.minecraft.world.item.context.UseOnContext context = new net.minecraft.world.item.context.UseOnContext(player, hand,
+                    new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(pos), face, pos, false));
+            net.minecraft.world.InteractionResult result = module.onItemUseFirst(stack, context);
+            if (result == net.minecraft.world.InteractionResult.PASS) {
+                return EventResult.pass();
+            }
+            return result.consumesAction() ? EventResult.interruptTrue() : EventResult.interruptFalse();
+        });
         EntityEvent.LIVING_HURT.register((entity, source, amount) -> {
             LivingIncomingDamageEvent event = new LivingIncomingDamageEvent(entity, source, amount);
             com.orbitalis.phase2.flight.CrewRules.onDamage(event);

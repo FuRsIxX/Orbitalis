@@ -11,6 +11,10 @@
     "main": ["com.orbitalis.fabric.OrbitalisFabric"],
     "client": ["com.orbitalis.fabric.OrbitalisFabricClient"]
   },
+  "mixins": [
+    "orbitalis.mixins.json",
+    "orbitalis-fabric.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "minecraft": "~${minecraft_version}",
