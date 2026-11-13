@@ -98,7 +98,7 @@ public final class Observatory {
 
     /** L'heure du jeu qui règle les fenêtres : celle du monde principal, avec ses jours et ses phases de la Lune. */
     public static long dayTime(MinecraftServer server) {
-        return server.overworld().getOverworldClockTime();
+        return server.overworld().getDayTime();
     }
 
     /** Vrai si l'agence connaît cet astre : il est connu d'emblée, ou celui qui le révèle est découvert. */
@@ -196,7 +196,7 @@ public final class Observatory {
         if (!satellites.isDiscovered(body) || satellites.isImaged(body)) {
             return;
         }
-        if (!SatelliteManager.isSkyClear(player.level(), station) && !satellites.hasRelay(SatelliteManager.now(server), SatelliteManager.limited())) {
+        if (!SatelliteManager.isSkyClear(player.serverLevel(), station) && !satellites.hasRelay(SatelliteManager.now(server), SatelliteManager.limited())) {
             player.sendSystemMessage(Component.translatable("observatory.orbitalis.no_link").withStyle(ChatFormatting.GOLD));
             return;
         }
@@ -227,7 +227,7 @@ public final class Observatory {
             entries.add(new ObservatoryPayload.Entry(body.ordinal(), state, permille, power(satellites, body, now, limited, cupolas),
                     visible(body, dayTime), (int) Math.min(Integer.MAX_VALUE, untilChange(body, dayTime))));
         }
-        boolean link = SatelliteManager.isSkyClear(player.level(), station) || satellites.hasRelay(now, limited);
+        boolean link = SatelliteManager.isSkyClear(player.serverLevel(), station) || satellites.hasRelay(now, limited);
         return new ObservatoryPayload(station, satellites.active(SatelliteType.TELESCOPE, now, limited),
                 satellites.active(SatelliteType.OBSERVATION, now, limited), link, entries);
     }

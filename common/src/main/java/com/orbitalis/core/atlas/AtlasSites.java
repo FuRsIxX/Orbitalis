@@ -316,8 +316,8 @@ public final class AtlasSites {
             return;
         }
         AtlasSites sites = of(level);
-        int chunkX = chunk.getPos().x();
-        int chunkZ = chunk.getPos().z();
+        int chunkX = chunk.getPos().x;
+        int chunkZ = chunk.getPos().z;
         for (Map.Entry<Long, Integer> entry : new HashMap<>(sites.kinds).entrySet()) {
             BlockPos pos = BlockPos.of(entry.getKey());
             if (pos.getX() >> 4 != chunkX || pos.getZ() >> 4 != chunkZ) {

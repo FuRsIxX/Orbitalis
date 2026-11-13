@@ -90,9 +90,9 @@ public final class FacilitySalvage {
         double y = event.getPos().getY() + 0.5;
         double z = event.getPos().getZ() + 0.5;
         int nuggets = 1 + level.getRandom().nextInt(3);
-        event.getDrops().add(new ItemEntity(level, x, y, z, new ItemStack(Items.IRON_NUGGET, nuggets)));
+        event.getDrops().add(new ItemStack(Items.IRON_NUGGET, nuggets));
         if (level.getRandom().nextFloat() < 0.2F) {
-            event.getDrops().add(new ItemEntity(level, x, y, z, new ItemStack(ModItems.STEEL_PLATE.get())));
+            event.getDrops().add(new ItemStack(ModItems.STEEL_PLATE.get()));
         }
     }
 }

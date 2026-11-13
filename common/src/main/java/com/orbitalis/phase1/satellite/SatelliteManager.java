@@ -172,7 +172,7 @@ public final class SatelliteManager {
         }
 
         int[] forecast = forecast(server, ResearchManager.agencyKey(player));
-        return new SatelliteStatusPayload(station, open, isSkyClear(player.level(), station), satellites.hasRelay(now, limited),
+        return new SatelliteStatusPayload(station, open, isSkyClear(player.serverLevel(), station), satellites.hasRelay(now, limited),
                 satellites.active(SatelliteType.NAVIGATION, now, limited), forecast[0], forecast[1], entries);
     }
 
@@ -220,7 +220,7 @@ public final class SatelliteManager {
         int originX = (station.getX() >> 4) - radius;
         int originZ = (station.getZ() >> 4) - radius;
         int[] counts = new int[size * size * kinds];
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                 net.minecraft.world.level.chunk.LevelChunk chunk = level.getChunkSource().getChunkNow(originX + column, originZ + row);
@@ -255,7 +255,7 @@ public final class SatelliteManager {
     /** Demande venue de l'écran d'une station de poursuite. */
     public static void handleCommand(ServerPlayer player, SatelliteCommandPayload payload) {
         BlockPos station = payload.station();
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         if (!level.isLoaded(station) || !level.getBlockState(station).is(ModBlocks.TRACKING_STATION.get())
                 || !player.blockPosition().closerThan(station, STATION_REACH)) {
             return;

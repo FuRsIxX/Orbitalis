@@ -29,12 +29,12 @@ public final class StationStatus {
 
     /** Envoie à un joueur l'état de la station, pour ouvrir l'écran du terminal ou l'actualiser. */
     public static void send(ServerPlayer player, BlockPos terminal, BlockPos station, boolean open) {
-        ModNetwork.send(player, collect(player.level(), terminal, station, open));
+        ModNetwork.send(player, collect(player.serverLevel(), terminal, station, open));
     }
 
     /** Demande d'actualisation de l'écran d'un terminal : le joueur doit être devant, et le terminal à sa place. */
     public static void request(ServerPlayer player, BlockPos terminal) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         if (!level.isLoaded(terminal) || !level.getBlockState(terminal).is(ModBlocks.STATION_TERMINAL.get())
                 || player.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(terminal)) > TERMINAL_RANGE * TERMINAL_RANGE) {
             return;

@@ -103,7 +103,7 @@ public class DesignComputerBlock extends Block implements Workstation.Host, Enti
      * charge utile, puis remet le plan.
      */
     public static void print(ServerPlayer player, DesignPrintPayload payload) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         boolean near = false;
         for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-REACH, -3, -REACH), player.blockPosition().offset(REACH, 3, REACH))) {
             if (level.getBlockState(pos).is(ModBlocks.DESIGN_COMPUTER.get())) {

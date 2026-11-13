@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.Direction;

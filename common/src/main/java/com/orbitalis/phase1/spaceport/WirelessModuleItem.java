@@ -47,8 +47,7 @@ public class WirelessModuleItem extends Item {
     }
 
     /** Le module agit avant le bloc : sans cela, un clic sur un pupitre ouvrirait son écran. */
-    @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
         if (!(level instanceof ServerLevel serverLevel) || !(context.getPlayer() instanceof ServerPlayer player)) {
             return isLinkable(level, context.getClickedPos()) ? InteractionResult.SUCCESS : InteractionResult.PASS;

@@ -103,7 +103,7 @@ public class EngineerWorkbenchBlock extends Block implements Workstation.Host {
      * technologie, et qu'il a les matériaux : le client ne décide de rien.
      */
     public static void study(ServerPlayer player, StudyPayload payload) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         boolean near = false;
         for (BlockPos pos : BlockPos.betweenClosed(player.blockPosition().offset(-REACH, -3, -REACH), player.blockPosition().offset(REACH, 3, REACH))) {
             if (level.getBlockState(pos).is(ModBlocks.ENGINEER_WORKBENCH.get())) {

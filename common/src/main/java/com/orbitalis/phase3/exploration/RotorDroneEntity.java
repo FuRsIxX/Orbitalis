@@ -338,7 +338,7 @@ public class RotorDroneEntity extends Entity {
 
     /** Posé : un clic droit l'envoie en sortie ; accroupi, on le remet dans son inventaire. */
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         if (!(level() instanceof ServerLevel level) || !(player instanceof ServerPlayer serverPlayer)) {
             return InteractionResult.SUCCESS;
         }
@@ -362,14 +362,17 @@ public class RotorDroneEntity extends Entity {
     private void pickUp(ServerLevel level, Player player) {
         ItemStack drone = new ItemStack(ModItems.ROTOR_DRONE.get());
         if (!player.getAbilities().instabuild && !player.getInventory().add(drone)) {
-            spawnAtLocation(level, drone);
+            spawnAtLocation(drone);
         }
         discard();
     }
 
     /** Un coup de poing d'un joueur, au sol, le remet dans son inventaire ; rien d'autre ne l'abîme. */
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
+        if (!(level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (source.getEntity() instanceof Player player && state() == State.LANDED) {
             pickUp(level, player);
             return true;
@@ -387,7 +390,7 @@ public class RotorDroneEntity extends Entity {
     // ------------------------------------------------------------------
 
     @Override
-    protected void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
         ValueOutput output = ValueOutput.of(tag$, registryAccess());
         output.putInt("state", state().ordinal());
         output.putDouble("home_x", home.x);
@@ -411,7 +414,7 @@ public class RotorDroneEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
         ValueInput input = ValueInput.of(tag$, registryAccess());
         entityData.set(STATE, input.getIntOr("state", 0));
         home = new Vec3(input.getDoubleOr("home_x", getX()), input.getDoubleOr("home_y", getY()), input.getDoubleOr("home_z", getZ()));

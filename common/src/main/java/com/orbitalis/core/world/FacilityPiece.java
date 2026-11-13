@@ -65,11 +65,11 @@ public class FacilityPiece extends StructurePiece {
 
     public FacilityPiece(StructurePieceSerializationContext context, CompoundTag tag) {
         super(ModStructures.FACILITY_BUILDING.get(), tag);
-        this.building = FacilityBuilding.byName(tag.getStringOr("Building", ""));
-        this.kind = FacilityKind.CODEC.byName(tag.getStringOr("Kind", ""), FacilityKind.WEATHER_STATION);
-        this.abandoned = tag.getBooleanOr("Abandoned", false);
-        this.seed = tag.getLongOr("Seed", 0L);
-        this.style = tag.getIntOr("Style", 0);
+        this.building = FacilityBuilding.byName(tag.getString("Building"));
+        this.kind = FacilityKind.CODEC.byName(tag.getString("Kind"), FacilityKind.WEATHER_STATION);
+        this.abandoned = tag.getBoolean("Abandoned");
+        this.seed = tag.getLong("Seed");
+        this.style = tag.getInt("Style");
     }
 
     @Override
@@ -280,7 +280,7 @@ public class FacilityPiece extends StructurePiece {
         if (chunk.isInside(pos)) {
             // Un écran qui chevauche deux tronçons s'accorde aussi au voisin posé plus tard, quand le tronçon s'achève.
             if (!(level.getChunk(pos) instanceof net.minecraft.world.level.chunk.LevelChunk)) {
-                level.getChunk(pos).markPosForPostProcessing(pos);
+                level.getChunk(pos).markPosForPostprocessing(pos);
             }
             // Un écran de centre spatial : en veille, sans la marche à suivre des écrans qu'un joueur vient de poser.
             if (level.getBlockEntity(pos) instanceof com.orbitalis.phase1.spaceport.MissionDisplayBlockEntity display) {
@@ -371,7 +371,7 @@ public class FacilityPiece extends StructurePiece {
         if (block == ModBlocks.ORANGE_FACILITY_SIDING.get()) {
             return h < 0.3 ? ModBlocks.RUSTY_FACILITY_SIDING.get().defaultBlockState() : state;
         }
-        if ((state.is(BlockTags.TERRACOTTA) || state.is(Blocks.CONCRETE.pick(net.minecraft.world.item.DyeColor.LIGHT_GRAY))) && y >= 2 && h < 0.03) {
+        if ((state.is(BlockTags.TERRACOTTA) || state.is(Blocks.LIGHT_GRAY_CONCRETE)) && y >= 2 && h < 0.03) {
             return Blocks.AIR.defaultBlockState();
         }
         return state;

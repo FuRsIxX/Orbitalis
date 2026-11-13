@@ -28,17 +28,17 @@ public record FacilityStyle(BlockState wall, BlockState accent, BlockState floor
             BlockState blue = ModBlocks.BLUE_FACILITY_SIDING.get().defaultBlockState();
             BlockState orange = ModBlocks.ORANGE_FACILITY_SIDING.get().defaultBlockState();
             BlockState tiles = ModBlocks.FACILITY_TILES.get().defaultBlockState();
-            BlockState gray = Blocks.CONCRETE.pick(DyeColor.GRAY).defaultBlockState();
+            BlockState gray = Blocks.GRAY_CONCRETE.defaultBlockState();
             styles = new FacilityStyle[] {
                     // L'agence : bardage blanc, liseré bleu, carrelage clair.
                     new FacilityStyle(siding, blue, tiles, concrete, concrete),
                     // Le centre d'essais : béton brut, bandeaux orange, sol d'andésite polie.
                     new FacilityStyle(concrete, orange, Blocks.POLISHED_ANDESITE.defaultBlockState(), gray, Blocks.SMOOTH_STONE.defaultBlockState()),
                     // L'institut : enduit gris clair, céramique turquoise, sol de pierre lisse.
-                    new FacilityStyle(Blocks.CONCRETE.pick(DyeColor.LIGHT_GRAY).defaultBlockState(), Blocks.DYED_TERRACOTTA.pick(DyeColor.CYAN).defaultBlockState(),
+                    new FacilityStyle(Blocks.LIGHT_GRAY_CONCRETE.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(),
                             Blocks.SMOOTH_STONE.defaultBlockState(), concrete, gray),
                     // Le centre du désert : enduit blanc cassé, liseré bleu.
-                    new FacilityStyle(Blocks.DYED_TERRACOTTA.pick(DyeColor.WHITE).defaultBlockState(), blue, tiles, Blocks.SMOOTH_STONE.defaultBlockState(),
+                    new FacilityStyle(Blocks.WHITE_TERRACOTTA.defaultBlockState(), blue, tiles, Blocks.SMOOTH_STONE.defaultBlockState(),
                             concrete),
                     // La base polaire : bardage blanc, gros bandeaux orange, qu'on voit de loin dans la neige.
                     new FacilityStyle(siding, orange, Blocks.POLISHED_ANDESITE.defaultBlockState(), gray, concrete)};

@@ -45,6 +45,60 @@ public final class Compat {
         return BlockEntityType.Builder.of(factory, blocks).build(null);
     }
 
+    /** Un type d'entité de bloc, pour cet ensemble de blocs. */
+    public static <T extends BlockEntity> BlockEntityType<T> blockEntityType(BlockEntityType.BlockEntitySupplier<T> factory,
+            java.util.Collection<? extends Block> blocks) {
+        return blockEntityType(factory, blocks.toArray(new Block[0]));
+    }
+
+    /** La couleur d'une teinte de carte, en ARGB (le jeu la donne en ABGR, pour ses images). */
+    public static int argb(net.minecraft.world.level.material.MapColor color, net.minecraft.world.level.material.MapColor.Brightness brightness) {
+        int abgr = color.calculateRGBColor(brightness);
+        return (abgr & 0xFF00FF00) | (abgr & 0xFF) << 16 | (abgr >> 16 & 0xFF);
+    }
+
+    /** Tourne la caméra du joueur vers ces angles, sans le déplacer. */
+    public static void forceSetRotation(Player player, float yaw, float pitch) {
+        if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer && serverPlayer.connection != null) {
+            serverPlayer.connection.teleport(0.0, 0.0, 0.0, yaw, pitch, java.util.EnumSet.of(
+                    net.minecraft.world.entity.RelativeMovement.X, net.minecraft.world.entity.RelativeMovement.Y,
+                    net.minecraft.world.entity.RelativeMovement.Z));
+        }
+        player.setYRot(yaw);
+        player.setXRot(pitch);
+        player.setYHeadRot(yaw);
+    }
+
+    /** Un type de recette du mod (le jeu n'en crée que pour lui-même en 1.21.1). */
+    public static <T extends net.minecraft.world.item.crafting.Recipe<?>> net.minecraft.world.item.crafting.RecipeType<T> recipeType(
+            net.minecraft.resources.ResourceLocation id) {
+        String name = id.toString();
+        return new net.minecraft.world.item.crafting.RecipeType<>() {
+            @Override
+            public String toString() {
+                return name;
+            }
+        };
+    }
+
+    /**
+     * Le niveau de surface approché d'un monde fait de bruit, en ce point : là où la densité du terrain, sans ses
+     * aspérités, passe le seuil du sol — le calcul que fait le jeu pour placer ses nappes d'eau. Bien plus rapide que de
+     * bâtir la colonne.
+     */
+    public static int preliminarySurfaceLevel(net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator generator,
+            net.minecraft.world.level.levelgen.RandomState random, int x, int z) {
+        net.minecraft.world.level.levelgen.NoiseSettings noise = generator.generatorSettings().value().noiseSettings();
+        net.minecraft.world.level.levelgen.DensityFunction density = random.router().initialDensityWithoutJaggedness();
+        int cell = noise.getCellHeight();
+        for (int y = noise.minY() + noise.height(); y >= noise.minY(); y -= cell) {
+            if (density.compute(new net.minecraft.world.level.levelgen.DensityFunction.SinglePointContext(x, y, z)) > 0.390625) {
+                return y;
+            }
+        }
+        return noise.minY();
+    }
+
     /** Le résultat d'un clic droit avec un objet, à la façon de 1.21.1 (l'objet tenu, et ce qui s'est passé). */
     public static InteractionResultHolder<ItemStack> holder(InteractionResult result, ItemStack stack, Level level) {
         return switch (result) {

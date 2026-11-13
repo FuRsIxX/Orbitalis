@@ -18,9 +18,8 @@ public class CombustionGeneratorMenu extends MachineMenu {
     /** Côté client : construit à partir des données envoyées par le serveur. */
     public static CombustionGeneratorMenu fromNetwork(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buffer) {
         buffer.readBlockPos();
-        var fuelValues = playerInventory.player.level().fuelValues();
-        MachineInventory inventory = new MachineInventory(1,
-                (slot, stack) -> stack.getBurnTime(null, fuelValues) > 0, slot -> true, () -> {
+                MachineInventory inventory = new MachineInventory(1,
+                (slot, stack) -> dev.architectury.registry.fuel.FuelRegistry.get(stack) > 0, slot -> true, () -> {
                 });
         return new CombustionGeneratorMenu(containerId, playerInventory, null, inventory, new SimpleContainerData(DATA_COUNT));
     }

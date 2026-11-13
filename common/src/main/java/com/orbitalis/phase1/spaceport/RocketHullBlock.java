@@ -37,7 +37,7 @@ public class RocketHullBlock extends Block {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, net.minecraft.world.level.BlockGetter level$, BlockPos pos$) {
         return true;
     }
 

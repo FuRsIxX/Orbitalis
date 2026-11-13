@@ -149,7 +149,8 @@ public class ElevatorCabinEntity extends Entity {
 
     /** Le plancher : trois blocs sur trois, un pixel d'épaisseur. */
     @Override
-    protected AABB makeBoundingBox(Vec3 position) {
+    protected AABB makeBoundingBox() {
+        Vec3 position = position();
         return new AABB(position.x - HALF, position.y, position.z - HALF, position.x + HALF, position.y + FLOOR, position.z + HALF);
     }
 
@@ -157,7 +158,7 @@ public class ElevatorCabinEntity extends Entity {
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         super.onSyncedDataUpdated(key);
         if (FACING.equals(key)) {
-            setBoundingBox(makeBoundingBox(position()));
+            setBoundingBox(makeBoundingBox());
         }
     }
 
@@ -216,7 +217,7 @@ public class ElevatorCabinEntity extends Entity {
 
     /** Clic droit sur le plancher, depuis la cabine : ouvre le panneau de commande. */
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         if (level() instanceof ServerLevel level && player instanceof ServerPlayer serverPlayer && !isMoving()
                 && occupants(level).contains(serverPlayer)) {
             com.orbitalis.platform.network.Network.sendToPlayer(serverPlayer, new ElevatorPayload(getId(), stops, nearestStop(), -1));
@@ -346,7 +347,7 @@ public class ElevatorCabinEntity extends Entity {
             ServerPlayer player = riders.get(i);
             entityData.set(SEAT_X.get(i), (float) Mth.clamp(player.getX() - shaftX, -HALF + 0.35, HALF - 0.35));
             entityData.set(SEAT_Z.get(i), (float) Mth.clamp(player.getZ() - shaftZ, -HALF + 0.35, HALF - 0.35));
-            player.startRiding(this, true, false);
+            player.startRiding(this, true);
         }
     }
 
@@ -400,14 +401,13 @@ public class ElevatorCabinEntity extends Entity {
     }
 
     /** Les occupants restent debout pendant le trajet. */
-    @Override
-    public boolean shouldRiderSit() {
+        public boolean shouldRiderSit() {
         return false;
     }
 
     /** À l'arrêt comme en marche, le plancher porte ce qui se trouve dessus. */
     @Override
-    public boolean canBeCollidedWith(Entity other) {
+    public boolean canBeCollidedWith() {
         return true;
     }
 
@@ -424,7 +424,10 @@ public class ElevatorCabinEntity extends Entity {
 
     /** Rien ne détruit la cabine : on la retire en cassant son socle. */
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
+        if (!(level() instanceof ServerLevel level)) {
+            return false;
+        }
         return false;
     }
 
@@ -433,14 +436,14 @@ public class ElevatorCabinEntity extends Entity {
     // ------------------------------------------------------------------
 
     @Override
-    protected void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
         ValueOutput output = ValueOutput.of(tag$, registryAccess());
         output.store("home", BlockPos.CODEC, home);
         output.putInt("facing", entityData.get(FACING));
     }
 
     @Override
-    protected void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
         ValueInput input = ValueInput.of(tag$, registryAccess());
         setHome(input.read("home", BlockPos.CODEC).orElse(blockPosition()));
         entityData.set(FACING, input.getIntOr("facing", Direction.EAST.get2DDataValue()));

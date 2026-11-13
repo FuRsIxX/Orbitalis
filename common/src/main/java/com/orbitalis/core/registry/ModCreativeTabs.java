@@ -17,9 +17,8 @@ public final class ModCreativeTabs {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Orbitalis.MODID);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ORBITALIS = CREATIVE_MODE_TABS.register("orbitalis",
-            () -> CreativeModeTab.builder()
+            () -> dev.architectury.registry.CreativeTabRegistry.create(builder$ -> builder$
                     .title(Component.translatable("itemGroup.orbitalis"))
-                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .icon(() -> ModItems.TITANIUM_INGOT.get().getDefaultInstance())
                     // Tous les items du mod sont ajoutés automatiquement, dans leur ordre d'enregistrement.
                     // La fusée assemblée n'y figure pas : une fusée se bâtit sur son pas de tir, d'après un plan. La
@@ -32,7 +31,7 @@ public final class ModCreativeTabs {
                                         && !com.orbitalis.core.Features.hidden(item.get()))
                                 .forEach(item -> output.accept(item.get()));
                     })
-                    .build());
+                    ));
 
     private ModCreativeTabs() {
     }

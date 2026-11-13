@@ -209,7 +209,7 @@ public final class ShipJump {
      * qu'il faut montrer (celle du voyage en cours, sinon la première).
      */
     public static ShipHelmPayload status(ServerPlayer player, BlockPos helm, BlockPos origin, Direction out) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         String agency = ResearchManager.agencyKey(player);
         ShipSystems systems = ShipSystems.check(level, origin, out);
         Place place = place(level, origin, out, agency);
@@ -232,7 +232,7 @@ public final class ShipJump {
      * compte à rebours commence, si rien ne l'empêche.
      */
     public static void request(ServerPlayer player, BlockPos helm, int destinationIndex) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         BlockState state = level.getBlockState(helm);
         if (!Features.interstellar() || !state.is(ModBlocks.SHIP_HELM.get()) || player.distanceToSqr(Vec3.atCenterOf(helm)) > 64) {
             return;
@@ -273,7 +273,7 @@ public final class ShipJump {
      * détache du flanc du vaisseau, le joueur aux commandes. D'autres équipiers peuvent y monter avant le freinage.
      */
     public static void launchShuttle(ServerPlayer player, BlockPos helm) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         BlockState state = level.getBlockState(helm);
         if (!Features.interstellar() || !state.is(ModBlocks.SHIP_HELM.get()) || player.distanceToSqr(Vec3.atCenterOf(helm)) > 64
                 || player.isPassenger()) {
@@ -460,8 +460,7 @@ public final class ShipJump {
             Vec3 at = entity.position().subtract(Vec3.atLowerCornerOf(origin)).add(Vec3.atLowerCornerOf(target));
             entity.changeDimension(new DimensionTransition(to, at, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
         }
-        int remove = place | net.minecraft.world.level.block.Block.UPDATE_SUPPRESS_DROPS
-                | net.minecraft.world.level.block.Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS;
+        int remove = place | net.minecraft.world.level.block.Block.UPDATE_SUPPRESS_DROPS;
         for (Move move : moves) {
             from.removeBlockEntity(move.from());
             from.setBlock(move.from(), Blocks.AIR.defaultBlockState(), remove);

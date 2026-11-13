@@ -22,15 +22,15 @@ public final class GuideBookGift {
         if (!ServerConfig.GIVE_GUIDE_BOOK.get()) {
             return;
         }
-        Player player = event.getEntity();
-        // Les données rangées sous PERSISTED_NBT_TAG sont conservées après la mort du joueur.
-        CompoundTag data = player.getPersistentData();
-        CompoundTag persisted = data.getCompoundOrEmpty(Player.PERSISTED_NBT_TAG);
-        if (persisted.getBooleanOr(RECEIVED_KEY, false)) {
+        if (!(event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player)) {
             return;
         }
-        persisted.putBoolean(RECEIVED_KEY, true);
-        data.put(Player.PERSISTED_NBT_TAG, persisted);
+        // Les données du joueur rangées par le mod sont conservées après sa mort.
+        CompoundTag data = com.orbitalis.platform.PlayerData.of(player);
+        if (data.getBoolean(RECEIVED_KEY)) {
+            return;
+        }
+        data.putBoolean(RECEIVED_KEY, true);
         player.getInventory().placeItemBackInInventory(new ItemStack(ModItems.GUIDE_BOOK.get()));
     }
 }

@@ -30,7 +30,7 @@ public final class SatelliteCommand {
 
         public static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("orbitalis")
-                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(source$ -> source$.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("satellites")
                         .then(Commands.literal("deploy")
                                 .then(Commands.argument("type", StringArgumentType.word())

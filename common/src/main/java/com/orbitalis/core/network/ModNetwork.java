@@ -194,7 +194,7 @@ public final class ModNetwork {
      * simulé par un test, par exemple) est simplement ignoré, au lieu de faire échouer ce qui était en cours.
      */
     public static void send(ServerPlayer player, net.minecraft.network.protocol.common.custom.CustomPacketPayload payload) {
-        if (player.connection != null && player.connection.hasChannel(payload.type())) {
+        if (player.connection != null && dev.architectury.networking.NetworkManager.canPlayerReceive(player, payload.type())) {
             com.orbitalis.platform.network.Network.sendToPlayer(player, payload);
         }
     }

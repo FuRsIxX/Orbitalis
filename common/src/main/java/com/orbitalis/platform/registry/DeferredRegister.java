@@ -33,7 +33,9 @@ public class DeferredRegister<T> {
     private final List<DeferredHolder<T, ? extends T>> entries = new ArrayList<>();
 
     protected DeferredRegister(ResourceKey<? extends Registry<T>> registry, String modid) {
-        this.inner = dev.architectury.registry.registries.DeferredRegister.create(modid, registry);
+        @SuppressWarnings("unchecked")
+        ResourceKey<Registry<T>> key = (ResourceKey<Registry<T>>) (ResourceKey<?>) registry;
+        this.inner = dev.architectury.registry.registries.DeferredRegister.create(modid, key);
         this.registry = registry;
         this.modid = modid;
     }

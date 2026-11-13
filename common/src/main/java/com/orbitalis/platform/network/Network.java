@@ -51,6 +51,13 @@ public final class Network {
             NetworkManager.registerReceiver(NetworkManager.Side.C2S, type, codec, (payload, context) ->
                     context.queue(() -> handler.handle(payload, wrap(context))));
         }
+
+        /** Un message qui va dans les deux sens : le client l'attache aussi à son gestionnaire au démarrage. */
+        public <T extends CustomPacketPayload> void playBidirectional(CustomPacketPayload.Type<T> type,
+                StreamCodec<? super RegistryFriendlyByteBuf, T> codec, Handler<T> serverHandler) {
+            playToClient(type, codec);
+            playToServer(type, codec, serverHandler);
+        }
     }
 
     public static final Registrar REGISTRAR = new Registrar();

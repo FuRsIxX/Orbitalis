@@ -62,7 +62,7 @@ public class CargoRackBlockEntity extends RandomizableContainerBlockEntity {
 
     @Override
     public void startOpen(Player user) {
-        if (!remove && level != null && !user.getLivingEntity().isSpectator()) {
+        if (!remove && level != null && !user.isSpectator()) {
             level.playSound(null, worldPosition, SoundEvents.BUNDLE_DROP_CONTENTS, SoundSource.BLOCKS, 0.5F, 0.9F);
         }
     }
@@ -71,8 +71,8 @@ public class CargoRackBlockEntity extends RandomizableContainerBlockEntity {
     protected void saveAdditional(net.minecraft.nbt.CompoundTag tag$, net.minecraft.core.HolderLookup.Provider registries$) {
         ValueOutput output = ValueOutput.of(tag$, registries$);
         super.saveAdditional(output.tag(), output.lookup());
-        if (!trySaveLootTable(output)) {
-            ContainerHelper.saveAllItems(output, items);
+        if (!trySaveLootTable(output.tag())) {
+            ContainerHelper.saveAllItems(output.tag(), items, output.lookup());
         }
     }
 
@@ -81,8 +81,8 @@ public class CargoRackBlockEntity extends RandomizableContainerBlockEntity {
         ValueInput input = ValueInput.of(tag$, registries$);
         super.loadAdditional(input.tag(), input.lookup());
         items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        if (!tryLoadLootTable(input)) {
-            ContainerHelper.loadAllItems(input, items);
+        if (!tryLoadLootTable(input.tag())) {
+            ContainerHelper.loadAllItems(input.tag(), items, input.lookup());
         }
     }
 }

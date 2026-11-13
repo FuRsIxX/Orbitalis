@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.orbitalis.core.registry.ModItems;
 import com.orbitalis.core.research.ResearchManager;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -26,7 +26,7 @@ public final class MachineDrops {
 
     /** À appeler depuis {@code playerWillDestroy} : en mode créatif, une machine pleine tombe avec son contenu. */
     public static void keepInCreative(Level level, BlockPos pos, BlockState state, Player player) {
-        if (level.isClientSide() || !player.preventsBlockDrops()) {
+        if (level.isClientSide() || !player.isCreative()) {
             return;
         }
         BlockEntity blockEntity = level.getBlockEntity(pos);

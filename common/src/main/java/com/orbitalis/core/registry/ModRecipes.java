@@ -28,7 +28,7 @@ public final class ModRecipes {
     // Fonderie à arc : alliages (deux ingrédients -> un lingot)
     // ------------------------------------------------------------------
     public static final DeferredHolder<RecipeType<?>, RecipeType<MachineRecipe>> ALLOYING_TYPE =
-            TYPES.register("alloying", RecipeType::simple);
+            TYPES.register("alloying", () -> com.orbitalis.platform.Compat.recipeType(Orbitalis.id("alloying")));
     public static final MachineRecipe.Kind ALLOYING =
             new MachineRecipe.Kind(() -> ModRecipes.ALLOYING_TYPE.get(), () -> ModRecipes.ALLOYING_SERIALIZER.get());
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MachineRecipe>> ALLOYING_SERIALIZER =
@@ -38,7 +38,7 @@ public final class ModRecipes {
     // Laminoir : tôles (un lingot -> une tôle)
     // ------------------------------------------------------------------
     public static final DeferredHolder<RecipeType<?>, RecipeType<MachineRecipe>> ROLLING_TYPE =
-            TYPES.register("rolling", RecipeType::simple);
+            TYPES.register("rolling", () -> com.orbitalis.platform.Compat.recipeType(Orbitalis.id("rolling")));
     public static final MachineRecipe.Kind ROLLING =
             new MachineRecipe.Kind(() -> ModRecipes.ROLLING_TYPE.get(), () -> ModRecipes.ROLLING_SERIALIZER.get());
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MachineRecipe>> ROLLING_SERIALIZER =
@@ -48,7 +48,7 @@ public final class ModRecipes {
     // Électrolyseur : eau -> hydrogène + oxygène
     // ------------------------------------------------------------------
     public static final DeferredHolder<RecipeType<?>, RecipeType<FluidRecipe>> ELECTROLYSIS_TYPE =
-            TYPES.register("electrolysis", RecipeType::simple);
+            TYPES.register("electrolysis", () -> com.orbitalis.platform.Compat.recipeType(Orbitalis.id("electrolysis")));
     public static final FluidRecipe.Kind ELECTROLYSIS =
             new FluidRecipe.Kind(() -> ModRecipes.ELECTROLYSIS_TYPE.get(), () -> ModRecipes.ELECTROLYSIS_SERIALIZER.get());
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FluidRecipe>> ELECTROLYSIS_SERIALIZER =
@@ -58,7 +58,7 @@ public final class ModRecipes {
     // Liquéfacteur cryogénique : gaz -> liquide
     // ------------------------------------------------------------------
     public static final DeferredHolder<RecipeType<?>, RecipeType<FluidRecipe>> LIQUEFACTION_TYPE =
-            TYPES.register("liquefaction", RecipeType::simple);
+            TYPES.register("liquefaction", () -> com.orbitalis.platform.Compat.recipeType(Orbitalis.id("liquefaction")));
     public static final FluidRecipe.Kind LIQUEFACTION =
             new FluidRecipe.Kind(() -> ModRecipes.LIQUEFACTION_TYPE.get(), () -> ModRecipes.LIQUEFACTION_SERIALIZER.get());
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FluidRecipe>> LIQUEFACTION_SERIALIZER =
@@ -68,7 +68,7 @@ public final class ModRecipes {
     // Raffinerie : charbon -> kérosène RP-1
     // ------------------------------------------------------------------
     public static final DeferredHolder<RecipeType<?>, RecipeType<FluidRecipe>> REFINING_TYPE =
-            TYPES.register("refining", RecipeType::simple);
+            TYPES.register("refining", () -> com.orbitalis.platform.Compat.recipeType(Orbitalis.id("refining")));
     public static final FluidRecipe.Kind REFINING =
             new FluidRecipe.Kind(() -> ModRecipes.REFINING_TYPE.get(), () -> ModRecipes.REFINING_SERIALIZER.get());
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FluidRecipe>> REFINING_SERIALIZER =
@@ -78,7 +78,7 @@ public final class ModRecipes {
     // Réacteur de Sabatier : carbone + hydrogène -> méthane + eau
     // ------------------------------------------------------------------
     public static final DeferredHolder<RecipeType<?>, RecipeType<FluidRecipe>> SABATIER_TYPE =
-            TYPES.register("sabatier", RecipeType::simple);
+            TYPES.register("sabatier", () -> com.orbitalis.platform.Compat.recipeType(Orbitalis.id("sabatier")));
     public static final FluidRecipe.Kind SABATIER =
             new FluidRecipe.Kind(() -> ModRecipes.SABATIER_TYPE.get(), () -> ModRecipes.SABATIER_SERIALIZER.get());
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FluidRecipe>> SABATIER_SERIALIZER =
@@ -88,7 +88,7 @@ public final class ModRecipes {
     // Extracteur d'hélium-3 : régolithe lunaire -> hélium-3 + hydrogène
     // ------------------------------------------------------------------
     public static final DeferredHolder<RecipeType<?>, RecipeType<FluidRecipe>> HELIUM3_TYPE =
-            TYPES.register("helium3_extraction", RecipeType::simple);
+            TYPES.register("helium3_extraction", () -> com.orbitalis.platform.Compat.recipeType(Orbitalis.id("helium3_extraction")));
     public static final FluidRecipe.Kind HELIUM3 =
             new FluidRecipe.Kind(() -> ModRecipes.HELIUM3_TYPE.get(), () -> ModRecipes.HELIUM3_SERIALIZER.get());
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FluidRecipe>> HELIUM3_SERIALIZER =
@@ -98,7 +98,7 @@ public final class ModRecipes {
     // Chambre de Casimir : un objet -> la matière exotique
     // ------------------------------------------------------------------
     public static final DeferredHolder<RecipeType<?>, RecipeType<MachineRecipe>> CASIMIR_TYPE =
-            TYPES.register("casimir", RecipeType::simple);
+            TYPES.register("casimir", () -> com.orbitalis.platform.Compat.recipeType(Orbitalis.id("casimir")));
     public static final MachineRecipe.Kind CASIMIR =
             new MachineRecipe.Kind(() -> ModRecipes.CASIMIR_TYPE.get(), () -> ModRecipes.CASIMIR_SERIALIZER.get());
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MachineRecipe>> CASIMIR_SERIALIZER =

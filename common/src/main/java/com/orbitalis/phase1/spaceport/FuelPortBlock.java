@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import com.orbitalis.core.registry.ModFluids;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

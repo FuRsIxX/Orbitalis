@@ -99,7 +99,6 @@ public class ResourceHandlerSlot extends Slot {
         return handler;
     }
 
-    @Override
     public boolean isSameInventory(Slot other) {
         return other instanceof ResourceHandlerSlot slot && slot.handler == handler;
     }

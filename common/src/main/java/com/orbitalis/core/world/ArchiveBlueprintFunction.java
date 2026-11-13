@@ -33,8 +33,8 @@ public class ArchiveBlueprintFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public MapCodec<ArchiveBlueprintFunction> codec() {
-        return CODEC;
+    public net.minecraft.world.level.storage.loot.functions.LootItemFunctionType<ArchiveBlueprintFunction> getType() {
+        return com.orbitalis.core.registry.ModStructures.ARCHIVE_BLUEPRINT.get();
     }
 
     @Override

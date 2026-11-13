@@ -159,8 +159,8 @@ public final class AtlasStore {
             return;
         }
         clock = level.getGameTime();
-        int chunkX = chunk.getPos().x();
-        int chunkZ = chunk.getPos().z();
+        int chunkX = chunk.getPos().x;
+        int chunkZ = chunk.getPos().z;
         int sea = level.getSeaLevel();
         int[] columns = new int[256];
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -221,7 +221,7 @@ public final class AtlasStore {
         } else {
             MapColor color = state.getMapColor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
             rgb = color == MapColor.GRASS ? LaunchTableBlockEntity.FAR_GRASS
-                    : color == MapColor.NONE ? 0x7A8088 : color.calculateARGBColor(MapColor.Brightness.NORMAL) & 0xFFFFFF;
+                    : color == MapColor.NONE ? 0x7A8088 : com.orbitalis.platform.Compat.argb(color, MapColor.Brightness.NORMAL) & 0xFFFFFF;
         }
         return Math.clamp(y - sea + LaunchTableBlockEntity.MAP_HEIGHT_BIAS, 1, 255) << 24 | rgb;
     }
@@ -313,15 +313,15 @@ public final class AtlasStore {
     }
 
         public static void onChunkLoad(ChunkEvent.Load event) {
-        if (event.getLevel() instanceof ServerLevel level) {
-            of(level).record(level, event.getChunk());
+        if (event.getLevel() instanceof ServerLevel level && event.getChunk() instanceof LevelChunk chunk) {
+            of(level).record(level, chunk);
         }
     }
 
         public static void onChunkUnload(ChunkEvent.Unload event) {
         // Au moment où il est déchargé, le morceau porte ce que les joueurs y ont bâti : c'est ce relevé-là qui reste.
-        if (event.getLevel() instanceof ServerLevel level) {
-            of(level).record(level, event.getChunk());
+        if (event.getLevel() instanceof ServerLevel level && event.getChunk() instanceof LevelChunk chunk) {
+            of(level).record(level, chunk);
         }
     }
 

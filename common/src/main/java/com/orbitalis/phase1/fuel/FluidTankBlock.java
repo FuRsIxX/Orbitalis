@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -136,7 +137,7 @@ public class FluidTankBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, net.minecraft.world.level.BlockGetter level$, BlockPos pos$) {
         return true;
     }
 }

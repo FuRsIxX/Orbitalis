@@ -91,10 +91,10 @@ public final class TestMap {
         Orbitalis.LOGGER.info("Carte de test : construction…");
         if (server.getWorldData() instanceof PrimaryLevelData data) {
             // Les commandes sont permises : les panneaux de téléportation et les essais en ont besoin.
-            data.setAllowCommands(true);
-            // Un monde bâti par un serveur, avec les dimensions du mod, passe pour « expérimental » : le jeu demanderait
-            // de le confirmer (et proposerait une sauvegarde) à chaque première ouverture. La carte est faite pour ça.
-            data.withConfirmedWarning(true);
+            net.minecraft.world.level.LevelSettings settings = data.getLevelSettings();
+            ((com.orbitalis.mixin.PrimaryLevelDataAccessor) data).orbitalis$setSettings(new net.minecraft.world.level.LevelSettings(
+                    settings.levelName(), settings.gameType(), settings.hardcore(), settings.difficulty(), true,
+                    settings.gameRules(), settings.getDataConfiguration()));
         }
         run(server, "time set 6000");
         run(server, "weather clear 1000000");

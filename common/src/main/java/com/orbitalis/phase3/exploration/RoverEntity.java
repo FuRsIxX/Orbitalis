@@ -97,6 +97,20 @@ public class RoverEntity extends LivingEntity {
     }
 
     @Override
+    public Iterable<ItemStack> getArmorSlots() {
+        return java.util.List.of();
+    }
+
+    @Override
+    public ItemStack getItemBySlot(net.minecraft.world.entity.EquipmentSlot slot) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void setItemSlot(net.minecraft.world.entity.EquipmentSlot slot, ItemStack stack) {
+    }
+
+    @Override
     public HumanoidArm getMainArm() {
         return HumanoidArm.RIGHT;
     }
@@ -106,7 +120,7 @@ public class RoverEntity extends LivingEntity {
     // ------------------------------------------------------------------
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         if (player.isSecondaryUseActive() || isVehicle()) {
             return InteractionResult.PASS;
         }
@@ -271,11 +285,14 @@ public class RoverEntity extends LivingEntity {
 
     /** Un coup de poing d'un joueur remet le rover dans son inventaire ; rien d'autre ne l'abîme. */
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
+        if (!(level() instanceof ServerLevel level)) {
+            return false;
+        }
         if (source.getEntity() instanceof Player player && !isVehicle()) {
             ItemStack rover = new ItemStack(ModItems.ROVER.get());
             if (!player.getAbilities().instabuild && !player.getInventory().add(rover)) {
-                spawnAtLocation(level, rover);
+                spawnAtLocation(rover);
             }
             discard();
             return true;
@@ -289,14 +306,14 @@ public class RoverEntity extends LivingEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
         ValueOutput output = ValueOutput.of(tag$, registryAccess());
         super.addAdditionalSaveData(output.tag());
         output.putInt("charge", charge());
     }
 
     @Override
-    protected void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
         ValueInput input = ValueInput.of(tag$, registryAccess());
         super.readAdditionalSaveData(input.tag());
         setCharge(input.getIntOr("charge", MAX_CHARGE));

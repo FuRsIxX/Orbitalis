@@ -62,10 +62,10 @@ final class FacilityBuilders {
         static final BlockState BARS = Blocks.IRON_BARS.defaultBlockState();
         static final BlockState ROD = Blocks.LIGHTNING_ROD.defaultBlockState();
         /** Les pièces mécaniques (étriers, montures, cornets) : un béton gris clair, jamais du fer. */
-        static final BlockState IRON = Blocks.CONCRETE.pick(DyeColor.LIGHT_GRAY).defaultBlockState();
+        static final BlockState IRON = Blocks.LIGHT_GRAY_CONCRETE.defaultBlockState();
         static final BlockState FRAME = ModBlocks.TOWER_FRAME.get().defaultBlockState();
-        static final BlockState WHITE = Blocks.CONCRETE.pick(DyeColor.WHITE).defaultBlockState();
-        static final BlockState GRAY = Blocks.CONCRETE.pick(DyeColor.GRAY).defaultBlockState();
+        static final BlockState WHITE = Blocks.WHITE_CONCRETE.defaultBlockState();
+        static final BlockState GRAY = Blocks.GRAY_CONCRETE.defaultBlockState();
 
         static BlockState of(Block block) {
             return block.defaultBlockState();
@@ -94,7 +94,7 @@ final class FacilityBuilders {
 
         /** Un écran posé sur un plan de travail : une vitre noire, de la largeur du bureau (qui court de gauche à droite). */
         static BlockState monitor() {
-            return Blocks.STAINED_GLASS_PANE.pick(DyeColor.BLACK).defaultBlockState()
+            return Blocks.BLACK_STAINED_GLASS_PANE.defaultBlockState()
                     .setValue(net.minecraft.world.level.block.CrossCollisionBlock.EAST, true)
                     .setValue(net.minecraft.world.level.block.CrossCollisionBlock.WEST, true);
         }
@@ -153,7 +153,7 @@ final class FacilityBuilders {
     /** Un plafonnier pris dans un plancher d'étage : un tapis le couvre côté étage, pour qu'il n'éclaire que la pièce du dessous. */
     private static void ceilingLight(FacilityPiece p, int x, int y, int z) {
         p.solid(x, y, z, P.LIGHT);
-        p.cover(x, y + 1, z, P.of(Blocks.CARPET.pick(DyeColor.GRAY)));
+        p.cover(x, y + 1, z, P.of(Blocks.GRAY_CARPET));
     }
 
     /** Un mât d'antenne : des barreaux, et un paratonnerre au sommet. */
@@ -391,7 +391,7 @@ final class FacilityBuilders {
         p.room(1, 1, 2, 5, 4, 6);
         roof(p, 0, 5, 1, 6, 7);
         p.solid(3, 5, 4, P.LIGHT);
-        p.fill(2, 2, 4, 4, 4, 6, P.of(Blocks.WOOL.pick(DyeColor.WHITE)));
+        p.fill(2, 2, 4, 4, 4, 6, P.of(Blocks.WHITE_WOOL));
         for (int x : new int[] {2, 4}) {
             for (int y : new int[] {2, 4}) {
                 for (int z : new int[] {4, 6}) {
@@ -509,7 +509,7 @@ final class FacilityBuilders {
         }
         p.set(12, 5, 10, P.rack(OUT));
         p.chest(13, 5, 10, OUT);
-        p.fill(6, 5, 4, 12, 5, 7, P.of(Blocks.CARPET.pick(DyeColor.LIGHT_GRAY)));
+        p.fill(6, 5, 4, 12, 5, 7, P.of(Blocks.LIGHT_GRAY_CARPET));
         roof(p, 0, 8, 2, 16, 11);
         p.air(1, 9, 3, 15, 11, 10);
         p.solid(3, 8, 5, P.LIGHT);
@@ -676,7 +676,7 @@ final class FacilityBuilders {
         p.set(5, 5, 6, P.WHITE);
         p.set(5, 6, 5, P.WHITE);
         p.set(5, 7, 4, P.WHITE);
-        p.set(5, 8, 3, P.of(Blocks.CONCRETE.pick(DyeColor.BLACK)));
+        p.set(5, 8, 3, P.of(Blocks.BLACK_CONCRETE));
         p.draftingTable(2, 1, 4, RIGHT, p.archiveReach());
         p.chest(8, 1, 4, LEFT);
         p.set(2, 1, 8, P.of(Blocks.BOOKSHELF));
@@ -861,7 +861,7 @@ final class FacilityBuilders {
         // Deuxième niveau : la salle de tir. En bas, une rangée de bureaux face aux baies ; sur le gradin, les deux
         // pupitres de lancement et leurs murs d'écrans ; au fond, les baies de serveurs.
         p.fill(1, 5, 7, 22, 5, 12, P.CONCRETE);
-        p.fill(1, 5, 3, 22, 5, 6, P.of(Blocks.CARPET.pick(DyeColor.GRAY)));
+        p.fill(1, 5, 3, 22, 5, 6, P.of(Blocks.GRAY_CARPET));
         for (int x = 2; x <= 21; x++) {
             if (x != 11 && x != 12) {
                 p.set(x, 5, 4, P.console(IN));
@@ -871,7 +871,7 @@ final class FacilityBuilders {
             p.set(x, 5, 6, P.stairs(IN));
         }
         for (int x = 1; x <= 22; x++) {
-            p.set(x, 6, 11, P.of(Blocks.CARPET.pick(DyeColor.GRAY)));
+            p.set(x, 6, 11, P.of(Blocks.GRAY_CARPET));
         }
         p.workstation(7, 6, 9, IN, ModBlocks.LAUNCH_CONSOLE.get(), true);
         p.workstation(17, 6, 9, IN, ModBlocks.LAUNCH_CONSOLE.get(), true);
@@ -900,7 +900,7 @@ final class FacilityBuilders {
         }
         p.chest(12, 11, 12, OUT);
         p.set(18, 11, 12, P.rack(OUT));
-        p.fill(8, 11, 4, 18, 11, 8, P.of(Blocks.CARPET.pick(DyeColor.LIGHT_BLUE)));
+        p.fill(8, 11, 4, 18, 11, 8, P.of(Blocks.LIGHT_BLUE_CARPET));
         for (int x : new int[] {4, 11, 18}) {
             p.solid(x, 14, 6, P.LIGHT);
         }

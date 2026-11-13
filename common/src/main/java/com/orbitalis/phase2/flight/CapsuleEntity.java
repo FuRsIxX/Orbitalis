@@ -91,7 +91,7 @@ public class CapsuleEntity extends Entity {
     /** Hauteur de la capsule sur sa fusée au repos : la montée s'y ajoute. */
     private static final EntityDataAccessor<Float> BASE_Y = SynchedEntityData.defineId(CapsuleEntity.class, EntityDataSerializers.FLOAT);
     /** Orientation de la fusée pendant la montée : tous les clients la dessinent penchée d'autant, cabine comprise. */
-    private static final EntityDataAccessor<org.joml.Quaternionfc> ATTITUDE =
+    private static final EntityDataAccessor<org.joml.Quaternionf> ATTITUDE =
             SynchedEntityData.defineId(CapsuleEntity.class, EntityDataSerializers.QUATERNION);
     /** Plan de la fusée que suit la capsule : elle la dessine elle-même pendant la montée, étage par étage. */
     private static final EntityDataAccessor<ItemStack> ROCKET = SynchedEntityData.defineId(CapsuleEntity.class, EntityDataSerializers.ITEM_STACK);
@@ -843,7 +843,7 @@ public class CapsuleEntity extends Entity {
             } else {
                 Vec3 moved = table.flightOffset();
                 setPos(getTable().getX() + 0.5 + moved.x, base + Math.max(0.0, moved.y), getTable().getZ() + 0.5 + moved.z);
-                entityData.set(ATTITUDE, table.attitude());
+                entityData.set(ATTITUDE, new org.joml.Quaternionf(table.attitude()));
                 entityData.set(STAGES, table.stagesPassed());
                 entityData.set(COASTING, table.enginesOut());
                 // Aux commandes : tangage, lacet et roulis font tourner la fusée sur ses trois axes, et la touche
@@ -1014,7 +1014,7 @@ public class CapsuleEntity extends Entity {
                 : canReachTitan() ? "capsule.orbitalis.in_orbit_titan" : canReachMars() ? "capsule.orbitalis.in_orbit_mars"
                 : canReachMoon() ? "capsule.orbitalis.in_orbit_lunar" : "capsule.orbitalis.in_orbit")
                 .withStyle(ChatFormatting.AQUA));
-        teleport(new DimensionTransition(orbit, parking, Vec3.ZERO, getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
+        changeDimension(new DimensionTransition(orbit, parking, Vec3.ZERO, getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
         return true;
     }
 
@@ -1048,7 +1048,7 @@ public class CapsuleEntity extends Entity {
         if (getFirstPassenger() instanceof ServerPlayer player) {
             player.sendSystemMessage(Component.translatable("capsule.orbitalis.transeuropa").withStyle(ChatFormatting.AQUA));
         }
-        teleport(new DimensionTransition(europa, new Vec3(originX, MOON_ARRIVAL_HEIGHT, originZ), Vec3.ZERO,
+        changeDimension(new DimensionTransition(europa, new Vec3(originX, MOON_ARRIVAL_HEIGHT, originZ), Vec3.ZERO,
                 getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
     }
 
@@ -1094,7 +1094,7 @@ public class CapsuleEntity extends Entity {
         if (getFirstPassenger() instanceof ServerPlayer player) {
             player.sendSystemMessage(Component.translatable("capsule.orbitalis.transtitan").withStyle(ChatFormatting.AQUA));
         }
-        teleport(new DimensionTransition(titan, new Vec3(originX, TITAN_ARRIVAL_HEIGHT, originZ), Vec3.ZERO,
+        changeDimension(new DimensionTransition(titan, new Vec3(originX, TITAN_ARRIVAL_HEIGHT, originZ), Vec3.ZERO,
                 getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
     }
 
@@ -1145,7 +1145,7 @@ public class CapsuleEntity extends Entity {
         if (getFirstPassenger() instanceof ServerPlayer player) {
             player.sendSystemMessage(Component.translatable("capsule.orbitalis.transmars").withStyle(ChatFormatting.AQUA));
         }
-        teleport(new DimensionTransition(mars, new Vec3(originX, MARS_ARRIVAL_HEIGHT, originZ), Vec3.ZERO,
+        changeDimension(new DimensionTransition(mars, new Vec3(originX, MARS_ARRIVAL_HEIGHT, originZ), Vec3.ZERO,
                 getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
     }
 
@@ -1223,7 +1223,7 @@ public class CapsuleEntity extends Entity {
         }
         boolean burn = thrust > DESCENT_THRUST * 0.05;
         descentVelocity = descentVelocity.add(nose.x * thrust, nose.y * thrust - DESCENT_GRAVITY, nose.z * thrust);
-        entityData.set(ATTITUDE, lander.orientation());
+        entityData.set(ATTITUDE, new org.joml.Quaternionf(lander.orientation()));
         entityData.set(BURNING, burn);
         entityData.set(FUEL, (float) (descentFuel / DESCENT_FUEL));
         move(descentVelocity);
@@ -1288,7 +1288,7 @@ public class CapsuleEntity extends Entity {
         if (getFirstPassenger() instanceof ServerPlayer player) {
             player.sendSystemMessage(Component.translatable("capsule.orbitalis.translunar").withStyle(ChatFormatting.AQUA));
         }
-        teleport(new DimensionTransition(moon, new Vec3(originX, MOON_ARRIVAL_HEIGHT, originZ), Vec3.ZERO,
+        changeDimension(new DimensionTransition(moon, new Vec3(originX, MOON_ARRIVAL_HEIGHT, originZ), Vec3.ZERO,
                 getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
     }
 
@@ -1610,7 +1610,7 @@ public class CapsuleEntity extends Entity {
         }
         setPhase(Phase.REENTRY);
         tell(Component.translatable(shuttle ? "capsule.orbitalis.shuttle_deorbit" : "capsule.orbitalis.deorbit").withStyle(ChatFormatting.GOLD));
-        teleport(new DimensionTransition(planet, new Vec3(originX, REENTRY_HEIGHT, originZ), Vec3.ZERO,
+        changeDimension(new DimensionTransition(planet, new Vec3(originX, REENTRY_HEIGHT, originZ), Vec3.ZERO,
                 getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
     }
 
@@ -1762,8 +1762,7 @@ public class CapsuleEntity extends Entity {
         level.explode(null, null, null, at.x, at.y + 0.6, at.z, CRASH_EXPLOSION, !otherWorld,
                 otherWorld ? net.minecraft.world.level.Level.ExplosionInteraction.NONE : net.minecraft.world.level.Level.ExplosionInteraction.TNT,
                 net.minecraft.core.particles.ParticleTypes.EXPLOSION, net.minecraft.core.particles.ParticleTypes.EXPLOSION_EMITTER,
-                net.minecraft.util.random.WeightedList.of(),
-                net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(net.minecraft.sounds.SoundEvents.EMPTY));
+                                net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(net.minecraft.sounds.SoundEvents.EMPTY));
     }
 
     /** Force de l'explosion d'une capsule qui s'écrase : celle d'un bloc de TNT, un peu plus. */
@@ -1788,7 +1787,7 @@ public class CapsuleEntity extends Entity {
         }
         if (onGround() || isInWater()) {
             land();
-        } else if (getY() < level().getMinY() - 16) {
+        } else if (getY() < level().getMinBuildHeight() - 16) {
             discard();
         }
     }
@@ -1854,7 +1853,7 @@ public class CapsuleEntity extends Entity {
         if (bridge == null) {
             setPhase(Phase.ORBIT);
             tell(Component.translatable("capsule.orbitalis.shuttle_lost").withStyle(ChatFormatting.GOLD));
-            teleport(new DimensionTransition(orbit, new Vec3(originX, SpaceRules.PARKING_HEIGHT, originZ), Vec3.ZERO,
+            changeDimension(new DimensionTransition(orbit, new Vec3(originX, SpaceRules.PARKING_HEIGHT, originZ), Vec3.ZERO,
                     getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
             return;
         }
@@ -1983,7 +1982,7 @@ public class CapsuleEntity extends Entity {
         Direction out = padExitDirection();
         super.removePassenger(passenger);
         if (out != null && passenger instanceof ServerPlayer player) {
-            player.forceSetRotation(out.toYRot(), false, 0.0F, false);
+            com.orbitalis.platform.Compat.forceSetRotation(player, out.toYRot(), 0.0F);
             player.setYHeadRot(out.toYRot());
         }
     }
@@ -1996,7 +1995,7 @@ public class CapsuleEntity extends Entity {
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
         if (passenger instanceof ServerPlayer player) {
-            player.forceSetRotation(PILOT_YAW, false, PILOT_PITCH, false);
+            com.orbitalis.platform.Compat.forceSetRotation(player, PILOT_YAW, PILOT_PITCH);
             player.setYHeadRot(PILOT_YAW);
         }
     }
@@ -2013,7 +2012,7 @@ public class CapsuleEntity extends Entity {
 
     /** Posée : un clic droit pour y monter, accroupi pour la récupérer. */
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         Phase phase = getPhase();
         if ((phase != Phase.LANDED && phase != Phase.ORBIT) || getPassengers().size() >= seats()) {
             return InteractionResult.PASS;
@@ -2035,7 +2034,10 @@ public class CapsuleEntity extends Entity {
 
     /** Rien ne détruit une capsule : ni les coups, ni l'explosion de son lanceur. */
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
+        if (!(level() instanceof ServerLevel level)) {
+            return false;
+        }
         return false;
     }
 
@@ -2050,7 +2052,7 @@ public class CapsuleEntity extends Entity {
     // ------------------------------------------------------------------
 
     @Override
-    protected void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
         ValueOutput output = ValueOutput.of(tag$, registryAccess());
         output.putInt("phase", getPhase().ordinal());
         output.putInt("timer", timer);
@@ -2083,7 +2085,7 @@ public class CapsuleEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag$) {
         ValueInput input = ValueInput.of(tag$, registryAccess());
         setPhase(Phase.values()[Math.floorMod(input.getIntOr("phase", 0), Phase.values().length)]);
         timer = input.getIntOr("timer", 0);

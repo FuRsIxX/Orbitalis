@@ -13,11 +13,11 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
  */
 public final class StationHatch {
     /** La famille de la porte : métallique, mais elle s'ouvre à la main, avec le bruit sourd d'une écoutille. */
-    public static final BlockSetType TYPE = BlockSetType.register(new BlockSetType("orbitalis_station", true, false, false,
+    public static final BlockSetType TYPE = new BlockSetType("orbitalis_station", true, false, false,
             BlockSetType.PressurePlateSensitivity.EVERYTHING, SoundType.METAL,
             SoundEvents.IRON_DOOR_CLOSE, SoundEvents.IRON_DOOR_OPEN, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundEvents.IRON_TRAPDOOR_OPEN,
             SoundEvents.METAL_PRESSURE_PLATE_CLICK_OFF, SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON,
-            SoundEvents.STONE_BUTTON_CLICK_OFF, SoundEvents.STONE_BUTTON_CLICK_ON));
+            SoundEvents.STONE_BUTTON_CLICK_OFF, SoundEvents.STONE_BUTTON_CLICK_ON);
 
     private StationHatch() {
     }

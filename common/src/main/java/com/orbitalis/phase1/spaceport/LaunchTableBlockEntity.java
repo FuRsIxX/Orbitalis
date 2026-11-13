@@ -4572,8 +4572,8 @@ public class LaunchTableBlockEntity extends BlockEntity implements com.orbitalis
         // Un monde fait de bruit donne son niveau de surface d'un seul calcul, à quelques blocs près : c'est cent fois
         // plus rapide que de lui faire bâtir la colonne entière, et bien assez juste pour une vue de loin.
         int floor = generator instanceof net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator
-                ? net.minecraft.util.Mth.floor(random.router().preliminarySurfaceLevel()
-                        .compute(new net.minecraft.world.level.levelgen.DensityFunction.SinglePointContext(x, 0, z))) - 1
+                ? com.orbitalis.platform.Compat.preliminarySurfaceLevel(
+                        (net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator) generator, random, x, z) - 1
                 : generator.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, heights, random) - 1;
         int rgb;
         int top = floor;

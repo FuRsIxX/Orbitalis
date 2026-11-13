@@ -36,7 +36,7 @@ public class WorkstationPartBlock extends Block {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, net.minecraft.world.level.BlockGetter level$, BlockPos pos$) {
         return true;
     }
 
@@ -71,7 +71,7 @@ public class WorkstationPartBlock extends Block {
             BlockPos host = Workstation.findHost(level, pos);
             if (host != null) {
                 BlockState hostState = level.getBlockState(host);
-                boolean drop = !player.preventsBlockDrops() && player.hasCorrectToolForDrops(hostState);
+                boolean drop = !player.isCreative() && player.hasCorrectToolForDrops(hostState);
                 if (drop) {
                     Block.dropResources(hostState, level, host, level.getBlockEntity(host), player, player.getMainHandItem());
                 }

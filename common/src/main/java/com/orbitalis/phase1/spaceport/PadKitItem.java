@@ -74,7 +74,7 @@ public class PadKitItem extends Item {
 
     /** Le joueur a validé un plan : on pose la table s'il le faut, et on lui confie le plan. */
     public static void handle(ServerPlayer player, PadKitPayload payload) {
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         BlockPos pos = payload.table();
         boolean holding = player.getMainHandItem().is(ModItems.PAD_KIT.get()) || player.getOffhandItem().is(ModItems.PAD_KIT.get());
         if (!holding || !level.isLoaded(pos) || player.distanceToSqr(Vec3.atCenterOf(pos)) > REACH * REACH) {

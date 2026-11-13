@@ -150,7 +150,7 @@ public class FurnaceMachineBlockEntity extends MachineBlockEntity {
 
     /** Ce que donne une cuisson : le résultat du four, doublé dans le four de fusion. */
     private ItemStack result(ItemStack input) {
-        ItemStack result = currentRecipe.value().assemble(new SingleRecipeInput(input));
+        ItemStack result = currentRecipe.value().assemble(new SingleRecipeInput(input), level.registryAccess());
         if (melting && !result.isEmpty()) {
             result.setCount(Math.min(result.getMaxStackSize(), result.getCount() * 2));
         }

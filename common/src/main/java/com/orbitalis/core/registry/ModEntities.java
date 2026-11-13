@@ -25,7 +25,7 @@ public final class ModEntities {
                     .updateInterval(1)
                     .fireImmune()
                     .noSummon()
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Orbitalis.id("capsule"))));
+                    .build(Orbitalis.id("capsule").toString()));
 
     /** Cabine de l'ascenseur de la tour de service : créée par son socle. */
     public static final DeferredHolder<EntityType<?>, EntityType<ElevatorCabinEntity>> ELEVATOR_CABIN = ENTITIES.register("elevator_cabin",
@@ -35,7 +35,7 @@ public final class ModEntities {
                     .updateInterval(1)
                     .fireImmune()
                     .noSummon()
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Orbitalis.id("elevator_cabin"))));
+                    .build(Orbitalis.id("elevator_cabin").toString()));
 
     /** Rover : un véhicule conduisible, posé par son objet (voir RoverItem). */
     public static final DeferredHolder<EntityType<?>, EntityType<com.orbitalis.phase3.exploration.RoverEntity>> ROVER = ENTITIES.register("rover",
@@ -43,7 +43,7 @@ public final class ModEntities {
                     .sized(1.75F, 0.9F)
                     .clientTrackingRange(10)
                     .fireImmune()
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Orbitalis.id("rover"))));
+                    .build(Orbitalis.id("rover").toString()));
 
     /** Drone volant : un giravion autonome, posé par son objet (voir RotorDroneItem). */
     public static final DeferredHolder<EntityType<?>, EntityType<com.orbitalis.phase3.exploration.RotorDroneEntity>> ROTOR_DRONE = ENTITIES.register("rotor_drone",
@@ -52,7 +52,7 @@ public final class ModEntities {
                     .clientTrackingRange(16)
                     .updateInterval(1)
                     .fireImmune()
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Orbitalis.id("rotor_drone"))));
+                    .build(Orbitalis.id("rotor_drone").toString()));
 
     private ModEntities() {
     }

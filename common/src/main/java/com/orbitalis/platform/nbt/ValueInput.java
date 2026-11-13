@@ -84,8 +84,9 @@ public final class ValueInput {
         return tag.contains(key, Tag.TAG_ANY_NUMERIC) ? Optional.of(tag.getInt(key)) : Optional.empty();
     }
 
-    public Optional<int[]> getIntArray(String key) {
-        return tag.contains(key, Tag.TAG_INT_ARRAY) ? Optional.of(tag.getIntArray(key)) : Optional.empty();
+    /** Le tableau rangé sous cette clé, ou un tableau vide. */
+    public int[] getIntArray(String key) {
+        return tag.getIntArray(key);
     }
 
     /** La sous-partie sous cette clé, s'il y en a une. */

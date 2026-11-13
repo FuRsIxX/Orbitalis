@@ -31,7 +31,7 @@ public final class ResearchCommand {
 
         public static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("orbitalis")
-                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(source$ -> source$.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("research")
                         .then(Commands.literal("points")
                                 .then(Commands.literal("add")

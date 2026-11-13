@@ -48,7 +48,7 @@ public class SampleContainerItem extends Item {
         }
         // On ne prélève que le sol lui-même : pas une machine, ni un bloc qu'on a posé là.
         BlockState ground = level.getBlockState(context.getClickedPos());
-        if (ground.hasBlockEntity() || ground.isAir() || !ground.isSolidRender()) {
+        if (ground.hasBlockEntity() || ground.isAir() || !ground.isSolidRender(level, context.getClickedPos())) {
             player.displayClientMessage(Component.translatable("exploration.orbitalis.samples.not_ground").withStyle(ChatFormatting.GOLD), true);
             return InteractionResult.FAIL;
         }

@@ -59,7 +59,8 @@ public final class ModParticles {
     }
 
     private static DeferredHolder<ParticleType<?>, SimpleParticleType> register(String name, boolean alwaysVisible) {
-        return PARTICLE_TYPES.register(name, () -> new SimpleParticleType(alwaysVisible));
+        return PARTICLE_TYPES.register(name, () -> new SimpleParticleType(alwaysVisible) {
+        });
     }
 
     public static void register() {

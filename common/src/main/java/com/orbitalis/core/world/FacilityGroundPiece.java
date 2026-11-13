@@ -57,14 +57,14 @@ public class FacilityGroundPiece extends StructurePiece {
 
     public FacilityGroundPiece(StructurePieceSerializationContext context, CompoundTag tag) {
         super(ModStructures.FACILITY_GROUND.get(), tag);
-        this.kind = FacilityKind.CODEC.byName(tag.getStringOr("Kind", ""), FacilityKind.WEATHER_STATION);
+        this.kind = FacilityKind.CODEC.byName(tag.getString("Kind"), FacilityKind.WEATHER_STATION);
         this.paths = tag.getIntArray("Paths");
         this.rects = tag.getIntArray("Rects");
-        this.gateX = tag.getIntOr("GateX", 0);
-        this.gateZ = tag.getIntOr("GateZ", 0);
-        this.gate = Direction.from2DDataValue(tag.getIntOr("Gate", 0));
-        this.abandoned = tag.getBooleanOr("Abandoned", false);
-        this.seed = tag.getLongOr("Seed", 0L);
+        this.gateX = tag.getInt("GateX");
+        this.gateZ = tag.getInt("GateZ");
+        this.gate = Direction.from2DDataValue(tag.getInt("Gate"));
+        this.abandoned = tag.getBoolean("Abandoned");
+        this.seed = tag.getLong("Seed");
     }
 
     private static int[] flatten(List<int[]> list) {
@@ -105,10 +105,10 @@ public class FacilityGroundPiece extends StructurePiece {
         for (int k = 1; k <= 5; k++) {
             put(level, chunkBB, cx + 3, y + k, cz + 3, Blocks.IRON_BARS.defaultBlockState());
         }
-        put(level, chunkBB, cx + 3, y + 6, cz + 3, Blocks.CONCRETE.pick(DyeColor.LIGHT_GRAY).defaultBlockState());
+        put(level, chunkBB, cx + 3, y + 6, cz + 3, Blocks.LIGHT_GRAY_CONCRETE.defaultBlockState());
         if (!abandoned || hash(cx, y, cz, 5) < 0.5) {
             put(level, chunkBB, cx + 4, y + 6, cz + 3,
-                    Blocks.WALL_BANNER.pick(DyeColor.BLUE).defaultBlockState().setValue(WallBannerBlock.FACING, Direction.EAST));
+                    Blocks.BLUE_WALL_BANNER.defaultBlockState().setValue(WallBannerBlock.FACING, Direction.EAST));
         }
         // Les allées, puis leurs lampadaires.
         for (int k = 0; k + 4 < paths.length; k += 5) {
@@ -233,7 +233,7 @@ public class FacilityGroundPiece extends StructurePiece {
             BlockPos pos = new BlockPos(x, y, z);
             level.setBlock(pos, state, 2);
             if (state.is(Blocks.IRON_BARS) || state.is(Blocks.ANDESITE_WALL)) {
-                level.getChunk(pos).markPosForPostProcessing(pos);
+                level.getChunk(pos).markPosForPostprocessing(pos);
             }
         }
     }
