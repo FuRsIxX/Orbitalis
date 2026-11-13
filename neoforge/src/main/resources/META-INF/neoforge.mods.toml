@@ -1,0 +1,34 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "orbitalis"
+version = "${version}"
+displayName = "Orbitalis"
+authors = "Azzukashi"
+description = '''
+Du premier lingot d'acier aux lunes de Jupiter : bâtissez une industrie spatiale, un centre spatial et des fusées modulaires, lancez satellites et sondes, assemblez des stations en orbite, posez-vous sur la Lune, Mars, Titan et Europe, et allumez la fusion.
+From the first steel ingot to the moons of Jupiter: build a space industry, a spaceport and modular rockets, launch satellites and probes, assemble stations in orbit, land on the Moon, Mars, Titan and Europa, and ignite fusion.
+'''
+
+[[dependencies.orbitalis]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.orbitalis]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft_version},1.21.2)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.orbitalis]]
+modId = "architectury"
+type = "required"
+versionRange = "[${architectury_api_version},)"
+ordering = "AFTER"
+side = "BOTH"

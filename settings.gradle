@@ -1,12 +1,17 @@
+// Orbitalis pour Minecraft 1.21.1 : un tronc commun (common) et deux chargeurs (fabric, neoforge), avec Architectury.
 pluginManagement {
     repositories {
+        maven { url = "https://maven.fabricmc.net/" }
+        maven { url = "https://maven.architectury.dev/" }
+        maven { url = "https://maven.neoforged.net/releases/" }
         gradlePluginPortal()
     }
 }
 
 plugins {
-    // Permet à Gradle de télécharger automatiquement le JDK 25 s'il est absent de la machine.
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+    // Télécharge au besoin le JDK 21 que demande Minecraft 1.21.1.
+    id "org.gradle.toolchains.foojay-resolver-convention" version "0.10.0"
 }
 
-rootProject.name = 'orbitalis'
+rootProject.name = "orbitalis"
+include "common", "fabric", "neoforge"

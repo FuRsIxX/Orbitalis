@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "orbitalis",
+  "version": "${version}",
+  "name": "Orbitalis",
+  "description": "From the first steel ingot to the moons of Jupiter: build a space industry, a spaceport and modular rockets, launch satellites and probes, assemble stations in orbit, land on the Moon, Mars, Titan and Europa, and ignite fusion.",
+  "authors": ["Azzukashi"],
+  "license": "All Rights Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.orbitalis.fabric.OrbitalisFabric"],
+    "client": ["com.orbitalis.fabric.OrbitalisFabricClient"]
+  },
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=21",
+    "fabric-api": "*",
+    "architectury": ">=${architectury_api_version}"
+  }
+}
