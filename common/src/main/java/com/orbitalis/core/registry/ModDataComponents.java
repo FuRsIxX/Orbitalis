@@ -1,0 +1,59 @@
+package com.orbitalis.core.registry;
+
+import java.util.List;
+
+import com.orbitalis.Orbitalis;
+import com.orbitalis.phase2.survival.SuitModule;
+
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.Registries;
+import com.orbitalis.platform.registry.DeferredHolder;
+import com.orbitalis.platform.registry.DeferredRegister;
+
+/** Données propres au mod, gardées sur les objets. */
+public final class ModDataComponents {
+    public static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE,
+            Orbitalis.MODID);
+
+    /** Modules installés sur une pièce de combinaison avancée, dans l'ordre de leur pose. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<SuitModule>>> SUIT_MODULES = COMPONENTS.registerComponentType(
+            "suit_modules", builder -> builder.persistent(SuitModule.LIST_CODEC).networkSynchronized(SuitModule.LIST_STREAM_CODEC));
+
+    /**
+     * Plan d'archive pas encore validé : le modèle du catalogue qu'il décrit. Il faut le faire étudier à l'établi
+     * d'ingénieur (onglet Archives) avant de pouvoir le déposer sur une table de lancement.
+     */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> ARCHIVE_PLAN = COMPONENTS.registerComponentType(
+            "archive_plan", builder -> builder.persistent(com.mojang.serialization.Codec.STRING)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8));
+
+    /** Contenu d'un réservoir cassé : il le garde, et le retrouve une fois reposé. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.orbitalis.platform.fluid.SimpleFluidContent>> FLUID_CONTENT =
+            COMPONENTS.registerComponentType("fluid_content", builder -> builder.persistent(com.orbitalis.platform.fluid.SimpleFluidContent.CODEC)
+                    .networkSynchronized(com.orbitalis.platform.fluid.SimpleFluidContent.STREAM_CODEC));
+
+    /** Énergie d'une machine cassée, en FE : elle la garde, et la retrouve une fois reposée. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> STORED_ENERGY = COMPONENTS.registerComponentType(
+            "stored_energy", builder -> builder.persistent(net.minecraft.util.ExtraCodecs.NON_NEGATIVE_INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
+
+    /** Fluides d'une machine cassée, réservoir par réservoir : elle les garde, et les retrouve une fois reposée. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<com.orbitalis.platform.fluid.SimpleFluidContent>>> MACHINE_FLUIDS =
+            COMPONENTS.registerComponentType("machine_fluids", builder -> builder
+                    .persistent(com.orbitalis.platform.fluid.SimpleFluidContent.CODEC.listOf())
+                    .networkSynchronized(com.orbitalis.platform.fluid.SimpleFluidContent.STREAM_CODEC
+                            .apply(net.minecraft.network.codec.ByteBufCodecs.list())));
+
+    /** Surcadençage d'une machine cassée : son module et la vitesse choisie, retrouvés une fois reposée. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.orbitalis.phase1.machines.OverclockModuleItem.Setting>> OVERCLOCK =
+            COMPONENTS.registerComponentType("overclock", builder -> builder
+                    .persistent(com.orbitalis.phase1.machines.OverclockModuleItem.Setting.CODEC)
+                    .networkSynchronized(com.orbitalis.phase1.machines.OverclockModuleItem.Setting.STREAM_CODEC));
+
+    private ModDataComponents() {
+    }
+
+    public static void register() {
+        COMPONENTS.register();
+    }
+}

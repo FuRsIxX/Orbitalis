@@ -7,4 +7,9 @@ dependencies {
     // Seulement pour les annotations @Environment et les mixins communs ; rien de Fabric n'est appelé d'ici.
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "dev.architectury:architectury:${rootProject.architectury_api_version}"
+    compileOnly "org.jspecify:jspecify:1.0.0"
+}
+
+tasks.named("compileJava") {
+    options.compilerArgs += ["-Xmaxerrs", "20000"]
 }
