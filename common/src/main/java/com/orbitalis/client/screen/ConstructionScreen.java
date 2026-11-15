@@ -131,7 +131,7 @@ public class ConstructionScreen extends com.orbitalis.client.port.Screen26 imple
         float yaw = (Util.getMillis() % TURN_MILLIS) * 360.0F / TURN_MILLIS;
         float scale = Math.min(Math.min(16.0F, (areaWidth - 16) / (wide ? 4.5F : 2.0F)), (areaHeight - 16) / (float) (height + 1));
         if (!blocks.isEmpty()) {
-            graphics.submitPictureInPictureRenderState(new GuideSceneRenderState(blocks, yaw, PITCH, 0.5F, height / 2.0F, 0.5F,
+            com.orbitalis.client.guide.GuideSceneRenderer.draw(graphics, new GuideSceneRenderState(blocks, yaw, PITCH, 0.5F, height / 2.0F, 0.5F,
                     x, y, x + areaWidth, y + areaHeight, scale, graphics.peekScissorStack()));
             graphics.nextStratum();
         } else {

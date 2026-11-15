@@ -13,13 +13,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.builders.UVPair;
+import com.orbitalis.client.port.render.UVPair;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
+import com.orbitalis.client.port.render.BlockStateModelSet.BlockStateModelPart;
+import com.orbitalis.client.port.render.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import com.orbitalis.client.port.render.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import com.orbitalis.client.port.LightCoordsUtil;
@@ -80,7 +80,7 @@ public final class GhostBlocks {
         Entry entry = QUADS.get(state);
         if (entry == null || now - entry.builtAt() > LIFETIME) {
             List<BlockStateModelPart> parts = new ArrayList<>();
-            Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state).collectParts(RandomSource.create(42L), parts);
+            com.orbitalis.client.port.render.BlockStateModelSet.INSTANCE.get(state).collectParts(RandomSource.create(42L), parts);
             List<BakedQuad> quads = new ArrayList<>();
             for (BlockStateModelPart part : parts) {
                 for (Direction direction : Direction.values()) {
@@ -145,8 +145,8 @@ public final class GhostBlocks {
         }
         submitOutline(first, poseStack, collector);
         Set<BlockPos> solid = new HashSet<>(bulk);
-        List<BakedQuad> cube = quads(Blocks.STAINED_GLASS.lightBlue().defaultBlockState());
-        collector.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(), (pose, buffer) -> {
+        List<BakedQuad> cube = quads(Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState());
+        collector.submitCustomGeometry(poseStack, Sheets.translucentItemSheet(), (pose, buffer) -> {
             for (int i = 0; i < detailed.size(); i++) {
                 BlockPos offset = detailed.get(i);
                 for (BakedQuad quad : models.get(i)) {
@@ -177,13 +177,13 @@ public final class GhostBlocks {
             OUTLINES.put(List.copyOf(cells), outline);
         }
         if (!outline.isEmpty()) {
-            float width = Minecraft.getInstance().gameRenderer.gameRenderState().windowRenderState.appropriateLineWidth;
+            float width = Math.max(2.5F, Minecraft.getInstance().getWindow().getWidth() / 1920.0F * 2.5F);
             collector.submitShapeOutline(poseStack, outline, RenderTypes.lines(), OUTLINE, width * 1.5F, false);
         }
     }
 
     private static void put(PoseStack.Pose pose, VertexConsumer buffer, BakedQuad quad, float x, float y, float z, int color) {
-        Vector3fc normal = quad.direction().getUnitVec3f();
+        Vector3fc normal = quad.direction().step();
         for (int vertex = 0; vertex < 4; vertex++) {
             Vector3fc position = quad.position(vertex);
             long uv = quad.packedUV(vertex);

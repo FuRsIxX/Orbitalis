@@ -7,14 +7,9 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -130,7 +125,7 @@ final class SkyBodies {
      * brume : une couleur, de plus en plus opaque vers le bord.
      */
     private static BufferBuilder cap(float radius, float horizon, float du, float dv, Vector3f sun, int tint, int mode, float tile) {
-        BufferBuilder builder = new BufferBuilder(bytes(RINGS * SEGMENTS), PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        BufferBuilder builder = new BufferBuilder(bytes(RINGS * SEGMENTS), com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         for (int i = 0; i < RINGS; i++) {
             float t0 = horizon * i / RINGS;
             float t1 = horizon * (i + 1) / RINGS;
@@ -170,7 +165,7 @@ final class SkyBodies {
 
     /** Le liseré de l'atmosphère : une bande qui part de l'horizon, vive à sa base, et s'efface en montant. */
     private static BufferBuilder limb(float horizon, int glow) {
-        BufferBuilder builder = new BufferBuilder(bytes(SEGMENTS * 2), PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        BufferBuilder builder = new BufferBuilder(bytes(SEGMENTS * 2), com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         float[][] bands = {{0.0F, 1.1F, 0.85F, 0.45F}, {1.1F, 4.0F, 0.45F, 0.0F}};
         for (float[] band : bands) {
             for (int j = 0; j < SEGMENTS; j++) {
@@ -196,7 +191,7 @@ final class SkyBodies {
 
     /** Un astre : un disque tourné vers celui qui le regarde, à sa place dans le ciel, de cette demi-largeur. */
     private static void disc(Minecraft minecraft, DynamicTexture image, Vector3f direction, float size) {
-        BufferBuilder builder = new BufferBuilder(bytes(1), PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        BufferBuilder builder = new BufferBuilder(bytes(1), com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         Vector3f centre = new Vector3f(direction).normalize(SKY);
         Matrix3f turn = new Matrix3f().rotateTowards(new Vector3f(centre).negate(), new Vector3f(0.0F, 1.0F, 0.0F));
         builder.addVertex(new Vector3f(size, -size, 0.0F).mul(turn).add(centre)).setUv(1.0F, 1.0F).setColor(0xFFFFFFFF);
@@ -219,22 +214,7 @@ final class SkyBodies {
             if (data == null) {
                 return;
             }
-            int indexCount = data.drawState().indexCount();
-            RenderTarget target = minecraft.gameRenderer.mainRenderTarget();
-            GpuBufferSlice transforms = RenderSystem.getDynamicUniforms().writeTransform(new Matrix4f(RenderSystem.getModelViewStack()));
-            RenderSystem.AutoStorageIndexBuffer indices = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
-            GpuBuffer indexBuffer = indices.getBuffer(indexCount);
-            try (GpuBuffer vertices = RenderSystem.getDevice().createBuffer(() -> "Orbitalis sky body", GpuBuffer.USAGE_VERTEX, data.vertexBuffer());
-                    RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Orbitalis sky body",
-                            target.getColorTextureView(), Optional.empty(), target.getDepthTextureView(), OptionalDouble.empty())) {
-                pass.setPipeline(RenderPipelines.END_SKY);
-                RenderSystem.bindDefaultUniforms(pass);
-                pass.setUniform("DynamicTransforms", transforms);
-                pass.bindTexture("Sampler0", image.getTextureView(), image.getSampler());
-                pass.setVertexBuffer(0, vertices.slice());
-                pass.setIndexBuffer(indexBuffer, indices.type());
-                pass.drawIndexed(indexCount, 1, 0, 0, 0);
-            }
+            com.orbitalis.client.port.render.SkyDraw.draw(data, image);
         }
     }
 

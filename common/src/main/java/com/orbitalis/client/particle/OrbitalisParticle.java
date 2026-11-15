@@ -3,7 +3,7 @@ package com.orbitalis.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import com.orbitalis.client.port.render.SingleQuadParticle26;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import com.orbitalis.client.port.LightCoordsUtil;
@@ -13,7 +13,7 @@ import com.orbitalis.client.port.LightCoordsUtil;
  * avec l'âge de la particule (une volute qui se défait, une flamme qui rougit), une taille qui grandit ou
  * rétrécit, une pesanteur (négative pour ce qui monte), un frottement, et un fondu en fin de vie.
  */
-public class OrbitalisParticle extends SingleQuadParticle {
+public class OrbitalisParticle extends SingleQuadParticle26 {
     /**
      * Réglages d'un type de particule.
      *
@@ -97,7 +97,7 @@ public class OrbitalisParticle extends SingleQuadParticle {
 
     protected OrbitalisParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, Style style,
             SpriteSet sprites) {
-        super(level, x, y, z, sprites.first());
+        super(level, x, y, z, sprites.get(0, 1));
         this.style = style;
         this.sprites = sprites;
         this.xd = xd;
@@ -160,12 +160,12 @@ public class OrbitalisParticle extends SingleQuadParticle {
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return style.solid() ? SingleQuadParticle.Layer.OPAQUE : SingleQuadParticle.Layer.TRANSLUCENT;
+    public SingleQuadParticle26.Layer getLayer() {
+        return style.solid() ? SingleQuadParticle26.Layer.OPAQUE : SingleQuadParticle26.Layer.TRANSLUCENT;
     }
 
     /** Fabrique des particules d'un style donné, à enregistrer pour un type de particule. */
     public static ParticleProvider<SimpleParticleType> provider(Style style, SpriteSet sprites) {
-        return (type, level, x, y, z, xd, yd, zd, random) -> (Particle) new OrbitalisParticle(level, x, y, z, xd, yd, zd, style, sprites);
+        return (type, level, x, y, z, xd, yd, zd) -> (Particle) new OrbitalisParticle(level, x, y, z, xd, yd, zd, style, sprites);
     }
 }

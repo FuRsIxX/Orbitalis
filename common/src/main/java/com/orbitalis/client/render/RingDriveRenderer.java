@@ -16,17 +16,17 @@ import com.orbitalis.phase3.interstellar.RingSegmentBlock;
 import com.orbitalis.phase3.interstellar.ShipPlan;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.builders.UVPair;
+import com.orbitalis.client.port.render.UVPair;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
+import com.orbitalis.client.port.render.BlockStateModelSet.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.orbitalis.client.port.render.BlockEntityRenderState;
+import com.orbitalis.client.port.render.ModelFeatureRenderer;
+import com.orbitalis.client.port.render.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import com.orbitalis.client.port.render.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import com.orbitalis.client.port.LightCoordsUtil;
@@ -43,7 +43,7 @@ import net.minecraft.world.phys.Vec3;
  * Chaque bloc garde la variante de modèle qu'il a, posé à cette place (la coque unie ou matelassée) : le jeu
  * la tire de la position du bloc, et on la tire de même. Rien ne change d'aspect quand l'anneau démarre ou s'arrête.
  */
-public class RingDriveRenderer implements BlockEntityRenderer<RingDriveBlockEntity, RingDriveRenderer.State> {
+public class RingDriveRenderer implements com.orbitalis.client.port.render.BlockEntityRenderer26<RingDriveBlockEntity, RingDriveRenderer.State> {
     public static class State extends BlockEntityRenderState {
         final List<BlockPos> offsets = new ArrayList<>();
         final List<List<BakedQuad>> models = new ArrayList<>();
@@ -70,7 +70,7 @@ public class RingDriveRenderer implements BlockEntityRenderer<RingDriveBlockEnti
     @Override
     public void extractRenderState(RingDriveBlockEntity drive, State state, float partialTicks, Vec3 cameraPosition,
             ModelFeatureRenderer.CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(drive, state, partialTicks, cameraPosition, breakProgress);
+        com.orbitalis.client.port.render.BlockEntityRenderer26.super.extractRenderState(drive, state, partialTicks, cameraPosition, breakProgress);
         state.offsets.clear();
         state.models.clear();
         state.glass.clear();
@@ -103,7 +103,7 @@ public class RingDriveRenderer implements BlockEntityRenderer<RingDriveBlockEnti
             return known.quads();
         }
         List<BlockStateModelPart> parts = new ArrayList<>();
-        Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state).collectParts(RandomSource.create(state.getSeed(cell)), parts);
+        com.orbitalis.client.port.render.BlockStateModelSet.INSTANCE.get(state).collectParts(RandomSource.create(state.getSeed(cell)), parts);
         List<BakedQuad> quads = new ArrayList<>();
         for (BlockStateModelPart part : parts) {
             for (Direction direction : Direction.values()) {
@@ -130,7 +130,7 @@ public class RingDriveRenderer implements BlockEntityRenderer<RingDriveBlockEnti
             poseStack.translate(0.5F, 0.5F - down, 0.5F);
             poseStack.mulPose(state.axis == Direction.Axis.X ? Axis.XP.rotationDegrees(state.angle) : Axis.ZP.rotationDegrees(state.angle));
             poseStack.translate(offset.getX() - 0.5F, offset.getY() + down - 0.5F, offset.getZ() - 0.5F);
-            collector.submitCustomGeometry(poseStack, state.glass.get(i) ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet(),
+            collector.submitCustomGeometry(poseStack, state.glass.get(i) ? Sheets.translucentItemSheet() : Sheets.cutoutBlockSheet(),
                     (pose, buffer) -> {
                         for (BakedQuad quad : quads) {
                             put(pose, buffer, quad, light);
@@ -141,7 +141,7 @@ public class RingDriveRenderer implements BlockEntityRenderer<RingDriveBlockEnti
     }
 
     private static void put(PoseStack.Pose pose, VertexConsumer buffer, BakedQuad quad, int light) {
-        Vector3fc normal = quad.direction().getUnitVec3f();
+        Vector3fc normal = quad.direction().step();
         for (int vertex = 0; vertex < 4; vertex++) {
             Vector3fc position = quad.position(vertex);
             long uv = quad.packedUV(vertex);

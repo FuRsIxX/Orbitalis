@@ -5,12 +5,12 @@ import com.mojang.math.Axis;
 import com.orbitalis.core.registry.ModBlocks;
 import com.orbitalis.phase2.station.GlassDoorBlockEntity;
 import com.orbitalis.phase2.station.GlassDoorLeafBlock;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.orbitalis.client.port.render.BlockEntityRenderState;
+import com.orbitalis.client.port.render.ModelFeatureRenderer;
+import com.orbitalis.client.port.render.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
  * Le modèle du bloc ne porte que le rail et le linteau : les battants sont toujours dessinés ici, pour qu'ils ne se
  * montrent jamais deux fois pendant qu'ils bougent.
  */
-public class GlassDoorRenderer implements BlockEntityRenderer<GlassDoorBlockEntity, GlassDoorRenderer.State> {
+public class GlassDoorRenderer implements com.orbitalis.client.port.render.BlockEntityRenderer26<GlassDoorBlockEntity, GlassDoorRenderer.State> {
     /** Course d'un battant, en blocs : un peu moins que sa largeur, il reste un liseré dans l'ouverture. */
     private static final float SLIDE = 15.0F / 16.0F;
 
@@ -49,7 +49,7 @@ public class GlassDoorRenderer implements BlockEntityRenderer<GlassDoorBlockEnti
     @Override
     public void extractRenderState(GlassDoorBlockEntity door, State state, float partialTicks, Vec3 cameraPosition,
             ModelFeatureRenderer.CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(door, state, partialTicks, cameraPosition, breakProgress);
+        com.orbitalis.client.port.render.BlockEntityRenderer26.super.extractRenderState(door, state, partialTicks, cameraPosition, breakProgress);
         state.open = door.openness(partialTicks);
         BlockState blockState = door.getBlockState();
         state.facing = blockState.hasProperty(HorizontalDirectionalBlock.FACING) ? blockState.getValue(HorizontalDirectionalBlock.FACING) : Direction.NORTH;

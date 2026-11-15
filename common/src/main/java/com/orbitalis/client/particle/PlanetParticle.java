@@ -11,9 +11,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import com.orbitalis.client.port.render.SingleQuadParticle26;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import com.orbitalis.client.port.LightCoordsUtil;
@@ -28,7 +27,7 @@ import com.orbitalis.client.port.event.ClientHooks.ClientTickEvent;
  * <p>
  * C'est une particule unique, créée quand le joueur est dans la dimension d'orbite et qui dure tant qu'il y reste.
  */
-public class PlanetParticle extends SingleQuadParticle {
+public class PlanetParticle extends SingleQuadParticle26 {
     /**
      * Profondeur de la planète sous le joueur, et demi-largeur du disque, en part de la distance d'affichage.
      * Le disque doit rester en deçà de cette distance : au-delà, le brouillard, noir en orbite, l'effacerait.
@@ -91,7 +90,7 @@ public class PlanetParticle extends SingleQuadParticle {
             remove();
             return;
         }
-        anchor(Minecraft.getInstance().gameRenderer.mainCamera());
+        anchor(Minecraft.getInstance().gameRenderer.getMainCamera());
     }
 
     /**
@@ -99,15 +98,15 @@ public class PlanetParticle extends SingleQuadParticle {
      * juste devant le regard, où qu'il se tourne, alors que le disque, lui, reste sous le joueur.
      */
     private void anchor(Camera camera) {
-        Vec3 eye = camera.position();
-        Vector3fc forward = camera.forwardVector();
+        Vec3 eye = camera.getPosition();
+        Vector3fc forward = camera.getLookVector();
         x = xo = eye.x + forward.x() * 4.0;
         y = yo = eye.y + forward.y() * 4.0;
         z = zo = eye.z + forward.z() * 4.0;
     }
 
     @Override
-    public void extract(QuadParticleRenderState state, Camera camera, float partialTick) {
+    public void extract(SingleQuadParticle26.QuadParticleRenderState state, Camera camera, float partialTick) {
         // Le disque est horizontal, sa face tournée vers le haut, et tourne lentement autour de la verticale.
         float view = Minecraft.getInstance().options.getEffectiveRenderDistance() * 16.0F;
         if (SpaceRules.isProxima(level) && images != null) {
@@ -193,8 +192,8 @@ public class PlanetParticle extends SingleQuadParticle {
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.TRANSLUCENT;
+    public SingleQuadParticle26.Layer getLayer() {
+        return SingleQuadParticle26.Layer.TRANSLUCENT;
     }
 
     /**
@@ -209,8 +208,8 @@ public class PlanetParticle extends SingleQuadParticle {
 
     public static ParticleProvider<SimpleParticleType> provider(SpriteSet sprites) {
         images = sprites;
-        return (type, level, x, y, z, xd, yd, zd, random) -> {
-            current = new PlanetParticle(level, x, y, z, sprites.first());
+        return (type, level, x, y, z, xd, yd, zd) -> {
+            current = new PlanetParticle(level, x, y, z, sprites.get(0, 1));
             return current;
         };
     }

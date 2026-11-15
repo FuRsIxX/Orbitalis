@@ -1059,7 +1059,7 @@ public class GuideScreen extends com.orbitalis.client.port.Screen26 {
             blocks.add(new GuideSceneRenderState.PlacedBlock(pieceState(piece), piece.x(), piece.y() + drop, piece.z()));
         }
 
-        graphics.submitPictureInPictureRenderState(new GuideSceneRenderState(blocks, yaw, PITCH, centerX, centerY, centerZ,
+        com.orbitalis.client.guide.GuideSceneRenderer.draw(graphics, new GuideSceneRenderState(blocks, yaw, PITCH, centerX, centerY, centerZ,
                 x, y, x + areaWidth, y + areaHeight, scale, graphics.peekScissorStack()));
 
         // Tout ce qui suit est dessiné par-dessus l'image 3D.

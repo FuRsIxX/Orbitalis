@@ -16,7 +16,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import com.orbitalis.platform.fluid.FluidStack;
 
 /**
@@ -24,7 +23,7 @@ import com.orbitalis.platform.fluid.FluidStack;
  * teintée à sa couleur, comme dans le réservoir), pendant qu'on le frappe comme quand il cède. Vide, il garde les éclats
  * de ses parois. Rien d'autre ne change : le réservoir garde son contenu comme avant.
  */
-public final class TankParticles implements IClientBlockExtensions {
+public final class TankParticles {
     public static final TankParticles INSTANCE = new TankParticles();
 
     private TankParticles() {
@@ -49,7 +48,6 @@ public final class TankParticles implements IClientBlockExtensions {
         return null;
     }
 
-    @Override
     public boolean addHitEffects(BlockState state, Level level, HitResult target, ParticleEngine engine) {
         if (!(target instanceof BlockHitResult hit) || !(level instanceof ClientLevel client)) {
             return false;
@@ -71,7 +69,6 @@ public final class TankParticles implements IClientBlockExtensions {
         return true;
     }
 
-    @Override
     public boolean addDestroyEffects(BlockState state, Level level, BlockPos pos, ParticleEngine engine) {
         if (!(level instanceof ClientLevel client)) {
             return false;
@@ -107,8 +104,8 @@ public final class TankParticles implements IClientBlockExtensions {
         }
 
         @Override
-        public SingleQuadParticle.Layer getLayer() {
-            return SingleQuadParticle.Layer.bySprite(sprite);
+        public net.minecraft.client.particle.ParticleRenderType getRenderType() {
+            return net.minecraft.client.particle.ParticleRenderType.TERRAIN_SHEET;
         }
     }
 }

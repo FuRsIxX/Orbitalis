@@ -23,8 +23,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
+import com.orbitalis.client.port.render.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -542,9 +542,9 @@ public final class BreakupFx {
             return;
         }
         float partial = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
-        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        Vec3 camera = event.cameraPosition();
         PoseStack poseStack = event.getPoseStack();
-        SubmitNodeCollector collector = event.getSubmitNodeCollector();
+        SubmitNodeCollector collector = new com.orbitalis.client.port.render.SubmitNodeCollector(event.getBuffers());
 
         for (Piece piece : List.copyOf(PIECES)) {
             Vec3 at = piece.last.lerp(piece.pos, partial);
@@ -587,7 +587,7 @@ public final class BreakupFx {
                 // À plat sur le sol.
                 poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
             } else {
-                poseStack.mulPose(event.getLevelRenderState().cameraRenderState.orientation);
+                poseStack.mulPose(event.getCamera().rotation());
             }
             collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(ring ? SHOCKWAVE : GLOW), (pose, buffer) -> {
                 float[][] corners = {{-1, -1, 0, 1}, {-1, 1, 0, 0}, {1, 1, 1, 0}, {1, -1, 1, 1}};

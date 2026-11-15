@@ -20,13 +20,13 @@ import com.orbitalis.phase1.spaceport.RocketBlock;
 import com.orbitalis.phase1.spaceport.RocketShape;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.orbitalis.client.port.render.BlockEntityRenderState;
+import com.orbitalis.client.port.render.ModelFeatureRenderer;
+import com.orbitalis.client.port.render.RenderTypes;
+import com.orbitalis.client.port.render.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -53,7 +53,7 @@ import net.minecraft.world.phys.Vec3;
  * Tout est exprimé dans le repère de l'écran : x vers la droite, y vers le bas, en « points » dont
  * {@link #POINTS_PER_BLOCK} font un bloc. Seul l'écran du coin en haut à gauche du mur dessine.
  */
-public class MissionDisplayRenderer implements BlockEntityRenderer<MissionDisplayBlockEntity, MissionDisplayRenderer.State> {
+public class MissionDisplayRenderer implements com.orbitalis.client.port.render.BlockEntityRenderer26<MissionDisplayBlockEntity, MissionDisplayRenderer.State> {
     /** Finesse de l'image : nombre de points par bloc. Un caractère fait 8 points de haut. */
     private static final float POINTS_PER_BLOCK = 40.0F;
     /** Distance entre le dos de la dalle et le plan de l'image, en blocs : juste devant sa vitre. */
@@ -101,7 +101,7 @@ public class MissionDisplayRenderer implements BlockEntityRenderer<MissionDispla
     private float partial;
 
     public MissionDisplayRenderer(BlockEntityRendererProvider.Context context) {
-        this.font = context.font();
+        this.font = context.getFont();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class MissionDisplayRenderer implements BlockEntityRenderer<MissionDispla
     @Override
     public void extractRenderState(MissionDisplayBlockEntity display, State state, float partialTicks, Vec3 cameraPosition,
             ModelFeatureRenderer.CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(display, state, partialTicks, cameraPosition, breakProgress);
+        com.orbitalis.client.port.render.BlockEntityRenderer26.super.extractRenderState(display, state, partialTicks, cameraPosition, breakProgress);
         state.rects.clear();
         state.labels.clear();
         state.rocket = null;
@@ -543,7 +543,7 @@ public class MissionDisplayRenderer implements BlockEntityRenderer<MissionDispla
     private void composeStandby(State state, MissionDisplayBlockEntity display, float width, float height, float time) {
         rect(state, 0, 0, width, 12, COLOR_PANEL, 1);
         rect(state, 0, 12, width, 12.6F, COLOR_EDGE, 1);
-        long day = display.getLevel().getDefaultClockTime() % 24000L;
+        long day = display.getLevel().getDayTime() % 24000L;
         int minutes = (int) ((day + 6000L) % 24000L * 1440L / 24000L);
         String hour = "%02d:%02d".formatted(minutes / 60, minutes % 60);
         boolean clock = whole(state, width - 4, 2.5F, hour, width / 2.0F - 6, COLOR_TEXT, true);

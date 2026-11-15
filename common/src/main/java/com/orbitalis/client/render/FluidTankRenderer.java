@@ -5,13 +5,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.orbitalis.core.registry.ModFluids;
 import com.orbitalis.phase1.fuel.FluidTankBlockEntity;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.orbitalis.client.port.render.BlockEntityRenderState;
+import com.orbitalis.client.port.render.ModelFeatureRenderer;
+import com.orbitalis.client.port.render.RenderTypes;
+import com.orbitalis.client.port.render.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -29,7 +29,7 @@ import com.orbitalis.platform.fluid.FluidStack;
  * Seul le bloc maître du réservoir dessine. Le volume est en retrait d'un pixel derrière les parois de verre, et
  * s'assombrit de la surface vers le fond.
  */
-public class FluidTankRenderer implements BlockEntityRenderer<FluidTankBlockEntity, FluidTankRenderer.State> {
+public class FluidTankRenderer implements com.orbitalis.client.port.render.BlockEntityRenderer26<FluidTankBlockEntity, FluidTankRenderer.State> {
     /** Retrait du contenu derrière les parois, en blocs. */
     private static final float INSET = 1.0F / 16.0F;
 
@@ -51,7 +51,7 @@ public class FluidTankRenderer implements BlockEntityRenderer<FluidTankBlockEnti
     @Override
     public void extractRenderState(FluidTankBlockEntity tank, State state, float partialTicks, Vec3 cameraPosition,
             ModelFeatureRenderer.CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(tank, state, partialTicks, cameraPosition, breakProgress);
+        com.orbitalis.client.port.render.BlockEntityRenderer26.super.extractRenderState(tank, state, partialTicks, cameraPosition, breakProgress);
         FluidStack content = tank.isMaster() ? tank.fluid() : FluidStack.EMPTY;
         state.visible = !content.isEmpty() && tank.capacity() > 0;
         if (!state.visible) {

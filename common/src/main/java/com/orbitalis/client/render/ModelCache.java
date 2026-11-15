@@ -3,9 +3,7 @@ package com.orbitalis.client.render;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
+import com.orbitalis.client.port.render.BlockModelRenderState;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -20,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
  * jeu), le nouveau modèle est pris en compte sans rien avoir à surveiller.
  */
 public final class ModelCache {
-    private static final BlockDisplayContext DISPLAY_CONTEXT = BlockDisplayContext.create();
     /** Durée de validité d'un modèle gardé en mémoire, en nanosecondes. */
     private static final long LIFETIME = 2_000_000_000L;
 
@@ -38,8 +35,7 @@ public final class ModelCache {
         Entry entry = MODELS.get(state);
         if (entry == null || now - entry.builtAt() > LIFETIME) {
             // Un nouvel objet à chaque renouvellement : l'ancien peut encore être en cours de dessin.
-            BlockModelRenderState model = new BlockModelRenderState();
-            Minecraft.getInstance().getBlockModelResolver().update(model, state, DISPLAY_CONTEXT);
+            BlockModelRenderState model = new BlockModelRenderState(state);
             entry = new Entry(model, now);
             MODELS.put(state, entry);
         }

@@ -13,18 +13,15 @@ import com.orbitalis.phase1.spaceport.LaunchComplex;
 import com.orbitalis.phase1.spaceport.LaunchTableBlockEntity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
+import com.orbitalis.client.port.render.BlockStateModelSet.BlockStateModelPart;
+import com.orbitalis.client.port.render.RenderTypes;
+import com.orbitalis.client.port.render.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import com.orbitalis.client.port.render.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import com.orbitalis.client.port.LightCoordsUtil;
@@ -43,7 +40,7 @@ import net.minecraft.world.phys.Vec3;
  * Ce que la table de lancement dessine elle-même et qui s'anime (le tablier, les bras et les passerelles qui
  * s'écartent, la lueur des moteurs, la fusée qui s'élève) l'est par son propre rendu, comme dans le monde.
  */
-public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRenderer.State> {
+public final class PadViewRenderer {
     /** Terrain montré autour du complexe, en blocs. */
     private static final int MARGIN = 4;
     /** Profondeur de l'îlot sous le tablier, en blocs. */
@@ -65,11 +62,7 @@ public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRende
      * @param scale       pixels d'interface par bloc
      */
     public record State(BlockPos table, float yaw, float pitch, float partialTick, int x0, int y0, int x1, int y1, float scale,
-            ScreenRectangle scissorArea, ScreenRectangle bounds) implements PictureInPictureRenderState {
-        public State(BlockPos table, float yaw, float pitch, float partialTick, int x0, int y0, int x1, int y1, float scale,
-                ScreenRectangle scissorArea) {
-            this(table, yaw, pitch, partialTick, x0, y0, x1, y1, scale, scissorArea, PictureInPictureRenderState.getBounds(x0, y0, x1, y1, scissorArea));
-        }
+            ScreenRectangle scissorArea) {
     }
 
     /** Le volume montré, autour de la table : bornes en blocs, la table à l'origine. */
@@ -131,11 +124,6 @@ public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRende
         return new Box(minX - MARGIN, -DEPTH, minZ - MARGIN, maxX + MARGIN, top, maxZ + MARGIN);
     }
 
-    @Override
-    public Class<State> getRenderStateClass() {
-        return State.class;
-    }
-
     /** Vrai si ce bloc est dessiné en cube : il cache alors la face de son voisin qui le touche. */
     private static boolean cube(BlockState block) {
         return !block.isAir() && block.getRenderShape() == RenderShape.MODEL && block.getFluidState().isEmpty();
@@ -147,7 +135,7 @@ public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRende
         if (known != null) {
             return known;
         }
-        var models = Minecraft.getInstance().getModelManager().getBlockStateModelSet();
+        var models = com.orbitalis.client.port.render.BlockStateModelSet.INSTANCE;
         List<BlockStateModelPart> parts = new ArrayList<>();
         random.setSeed(42L);
         models.get(block).collectParts(random, parts);
@@ -202,8 +190,8 @@ public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRende
         return 0xFF000000 | r << 16 | g << 8 | b;
     }
 
-    @Override
-    protected void renderToTexture(State state, PoseStack poseStack, SubmitNodeCollector collector) {
+    /** Dessine la maquette, la pile de transformations au centre de sa zone, un bloc par unité. */
+    public void render(State state, PoseStack poseStack, SubmitNodeCollector collector) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel level = minecraft.level;
         if (level == null || !(level.getBlockEntity(state.table()) instanceof LaunchTableBlockEntity table)) {
@@ -212,7 +200,7 @@ public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRende
         if (faces.size() > 4096) {
             faces.clear();
         }
-        minecraft.gameRenderer.lighting().setupFor(Lighting.Entry.ITEMS_3D);
+        Lighting.setupFor3DItems();
         Box box = box(table);
         // La vue : le monde à l'endroit, de trois quarts, d'au-dessus, centré sur le volume.
         Quaternionf view = new Quaternionf().rotateZ((float) Math.PI).rotateX(-state.pitch()).rotateY(state.yaw());
@@ -238,7 +226,7 @@ public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRende
                         // L'eau : sa seule surface, à fleur, quand rien ne la couvre.
                         next.setWithOffset(pos, Direction.UP);
                         if (level.getBlockState(next).getFluidState().isEmpty() && !cube(level.getBlockState(next))) {
-                            TextureAtlasSprite sprite = minecraft.getModelManager().getBlockStateModelSet()
+                            TextureAtlasSprite sprite = com.orbitalis.client.port.render.BlockStateModelSet.INSTANCE
                                     .getParticleMaterial(Blocks.WATER.defaultBlockState()).sprite();
                             float[] corners = corners(Direction.UP);
                             for (int k = 0; k < 4; k++) {
@@ -268,10 +256,7 @@ public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRende
                         Face face = look[direction.ordinal()];
                         int rgb = 0xFFFFFF;
                         if (face.tintIndex() >= 0) {
-                            BlockTintSource source = colors.getTintSource(block, face.tintIndex());
-                            if (source != null) {
-                                rgb = source.colorInWorld(block, level, pos) & 0xFFFFFF;
-                            }
+                            rgb = colors.getColor(block, level, pos, face.tintIndex()) & 0xFFFFFF;
                         }
                         float[] corners = corners(direction);
                         for (int k = 0; k < 4; k++) {
@@ -307,13 +292,5 @@ public final class PadViewRenderer extends PictureInPictureRenderer<PadViewRende
         tableRenderer.submit(tableState, poseStack, collector, camera);
     }
 
-    @Override
-    protected float getTranslateY(int height, int guiScale) {
-        return height / 2.0F;
-    }
 
-    @Override
-    protected String getTextureLabel() {
-        return "orbitalis pad view";
-    }
 }

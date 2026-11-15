@@ -5,11 +5,11 @@ import com.mojang.math.Axis;
 import com.orbitalis.phase1.spaceport.ElevatorCabinEntity;
 import com.orbitalis.phase1.spaceport.StructurePartBlock;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.orbitalis.client.port.render.EntityRenderState;
+import com.orbitalis.client.port.render.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 
@@ -17,7 +17,7 @@ import net.minecraft.world.phys.AABB;
  * Dessine la cabine de l'ascenseur de la tour : un seul modèle du kit du pas de tir, tourné comme la tour et posé
  * sur le plancher de la cabine. Ses occupants sont dessinés par le jeu, debout dedans.
  */
-public class ElevatorCabinRenderer extends EntityRenderer<ElevatorCabinEntity, ElevatorCabinRenderer.State> {
+public class ElevatorCabinRenderer extends com.orbitalis.client.port.render.EntityRenderer26<ElevatorCabinEntity, ElevatorCabinRenderer.State> {
     public static class State extends EntityRenderState {
         Direction facing = Direction.EAST;
     }

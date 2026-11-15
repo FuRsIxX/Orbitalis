@@ -157,11 +157,11 @@ public final class PadKitPlacement {
                 }
             }
         }
-        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        Vec3 camera = event.cameraPosition();
         PoseStack poseStack = event.getPoseStack();
         poseStack.pushPose();
         poseStack.translate(table.getX() - camera.x, table.getY() - camera.y, table.getZ() - camera.z);
-        GhostBlocks.submit(OFFSETS, STATES, poseStack, event.getSubmitNodeCollector());
+        GhostBlocks.submit(OFFSETS, STATES, poseStack, new com.orbitalis.client.port.render.SubmitNodeCollector(event.getBuffers()));
         poseStack.popPose();
     }
 }

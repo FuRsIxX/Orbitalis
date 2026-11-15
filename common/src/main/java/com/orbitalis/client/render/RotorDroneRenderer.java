@@ -6,11 +6,11 @@ import com.orbitalis.core.registry.ModBlocks;
 import com.orbitalis.phase3.exploration.RotorDroneEntity;
 import com.orbitalis.phase3.exploration.RotorDroneModelBlock;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.orbitalis.client.port.render.EntityRenderState;
+import com.orbitalis.client.port.render.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * rotors, deux par bras, qui tournent en sens contraires. En croisière, il penche le nez vers l'avant, comme un vrai
  * giravion qui avance.
  */
-public class RotorDroneRenderer extends EntityRenderer<RotorDroneEntity, RotorDroneRenderer.State> {
+public class RotorDroneRenderer extends com.orbitalis.client.port.render.EntityRenderer26<RotorDroneEntity, RotorDroneRenderer.State> {
     /** Le modèle fait un bloc et demi d'envergure ; le drone est dessiné un peu plus grand. */
     private static final float SCALE = 1.2F;
     /** Moyeux des quatre bras, en pixels du modèle, et hauteur des deux rotors de chaque bras. */
@@ -48,7 +48,7 @@ public class RotorDroneRenderer extends EntityRenderer<RotorDroneEntity, RotorDr
     @Override
     public void extractRenderState(RotorDroneEntity drone, State state, float partialTicks) {
         super.extractRenderState(drone, state, partialTicks);
-        state.yaw = drone.getYRot(partialTicks);
+        state.yaw = drone.getViewYRot(partialTicks);
         state.rotor = drone.rotorAngle(partialTicks);
         RotorDroneEntity.State flight = drone.state();
         state.tilt = flight == RotorDroneEntity.State.OUTBOUND || flight == RotorDroneEntity.State.RETURN ? CRUISE_TILT : 0.0F;

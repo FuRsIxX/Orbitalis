@@ -116,11 +116,11 @@ public final class ModuleKitPlacement {
             OFFSETS.addAll(cradle);
             STATES.addAll(cradleStates);
         }
-        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        Vec3 camera = event.cameraPosition();
         PoseStack poseStack = event.getPoseStack();
         poseStack.pushPose();
         poseStack.translate(port.getX() - camera.x, port.getY() - camera.y, port.getZ() - camera.z);
-        GhostBlocks.submitFocused(OFFSETS, STATES, detailed, poseStack, event.getSubmitNodeCollector());
+        GhostBlocks.submitFocused(OFFSETS, STATES, detailed, poseStack, new com.orbitalis.client.port.render.SubmitNodeCollector(event.getBuffers()));
         poseStack.popPose();
     }
 

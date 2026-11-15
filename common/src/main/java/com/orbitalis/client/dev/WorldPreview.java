@@ -131,7 +131,7 @@ public final class WorldPreview {
             File directory = new File(minecraft.gameDirectory, "world_preview");
             new File(directory, "screenshots").mkdirs();
             String name = "%02d_%s.png".formatted(index, shot.name());
-            Screenshot.grab(directory, name, minecraft.gameRenderer.mainRenderTarget(), 1,
+            Screenshot.grab(directory, name, minecraft.getMainRenderTarget(),
                     message -> Orbitalis.LOGGER.info("Capture du monde : {}", name));
         } else if (waited > shot.settle() + 3) {
             index++;
@@ -500,7 +500,7 @@ public final class WorldPreview {
                     for (net.minecraft.server.level.ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
                         player.getAbilities().flying = false;
                         player.onUpdateAbilities();
-                        player.getInventory().setItem(player.getInventory().getSelectedSlot(), new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STONE));
+                        player.getInventory().setItem(player.getInventory().selected, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STONE));
                     }
                     run(level, ("execute in %s run tp @a %d.5 %d %d.5 0 75").formatted(key.location(), x, floor, z));
                     Orbitalis.LOGGER.info("Essai sous l'eau ({}) : fond en {}, surface en {}, liquide {}", key.location(), wetFloor, top,
@@ -744,7 +744,7 @@ public final class WorldPreview {
         SHOTS.add(new Shot("accumulator_screen", level -> {
             var players = level.getServer().getPlayerList().getPlayers();
             if (!players.isEmpty() && level.getBlockEntity(at(70, 0, 8)) instanceof com.orbitalis.phase1.power.AccumulatorBlockEntity accumulator) {
-                players.get(0).openMenu(accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
+                com.orbitalis.platform.Menus.open(players.get(0), accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
             }
         }, 70.5, 2.6, 12.0, 145.0F, 25.0F, 30));
         SHOTS.add(new Shot("accumulator_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
@@ -1457,8 +1457,8 @@ public final class WorldPreview {
         SHOTS.add(new Shot("pressure_burst", level -> {
             net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
             minecraft.execute(() -> minecraft.getSoundManager().addListener((sound, events, range) -> {
-                if (sound.getIdentifier().getNamespace().equals(com.orbitalis.Orbitalis.MODID) && minecraft.level != null) {
-                    com.orbitalis.Orbitalis.LOGGER.info("APERCU son : {} au tick {}", sound.getIdentifier().getPath(), minecraft.level.getGameTime());
+                if (sound.getLocation().getNamespace().equals(com.orbitalis.Orbitalis.MODID) && minecraft.level != null) {
+                    com.orbitalis.Orbitalis.LOGGER.info("APERCU son : {} au tick {}", sound.getLocation().getPath(), minecraft.level.getGameTime());
                 }
             }));
             if (level.getBlockEntity(at(22, 1, 22)) instanceof LaunchTableBlockEntity table) {
@@ -1563,7 +1563,7 @@ public final class WorldPreview {
         }), 24.0, 2.0, 8.0, 0.0F, 0.0F, 30));
         // Le ciel de l'agence : un satellite de chaque type et quatre de navigation, par beau temps ; puis sous la pluie.
         SHOTS.add(new Shot("atlas_sky", level -> {
-            level.getServer().setWeatherParameters(6000, 0, false, false);
+            level.setWeatherParameters(6000, 0, false, false);
             for (ServerPlayer player : level.players()) {
                 String agency = ResearchManager.agencyKey(player);
                 SatelliteManager.of(level.getServer(), agency).clear();
@@ -1590,7 +1590,7 @@ public final class WorldPreview {
             }
         }), 24.0, 2.0, 8.0, 0.0F, 0.0F, 80));
         SHOTS.add(new Shot("atlas_sky_rain", level -> {
-            level.getServer().setWeatherParameters(0, 6000, true, false);
+            level.setWeatherParameters(0, 6000, true, false);
         }, 24.0, 2.0, 8.0, 0.0F, 0.0F, 120));
         // Les repères de l'agence : deux posés autour du pas de tir, dont un nommé ; puis la fiche du premier.
         SHOTS.add(new Shot("atlas_pins", level -> {
@@ -1603,7 +1603,7 @@ public final class WorldPreview {
                 var placed = com.orbitalis.core.atlas.AtlasMarkers.of(level.getServer(), agency, dimension);
                 com.orbitalis.core.atlas.AtlasMarkers.rename(level.getServer(), agency, placed.get(0).id(), "Zone de récupération");
             }
-            level.getServer().setWeatherParameters(6000, 0, false, false);
+            level.setWeatherParameters(6000, 0, false, false);
             net.minecraft.client.Minecraft.getInstance().execute(() -> {
                 if (atlasPreview != null) {
                     atlasPreview.showLayers(false);
@@ -1664,7 +1664,7 @@ public final class WorldPreview {
                 table.removeRocket();
                 placeRocket(level, 22, 1, 22, 2);
                 com.orbitalis.Orbitalis.LOGGER.info("APERCU météo : au sec, météo favorable {}", table.isWeatherGo());
-                level.getServer().setWeatherParameters(0, 6000, true, false);
+                level.setWeatherParameters(0, 6000, true, false);
             }
         }, 40.0, 10.0, 4.0, 45.0F, -8.0F, 80));
         SHOTS.add(new Shot("weather_hold_check", level -> {
@@ -1672,7 +1672,7 @@ public final class WorldPreview {
                 var refused = table.command(com.orbitalis.phase1.spaceport.LaunchStep.IGNITE, "preview");
                 com.orbitalis.Orbitalis.LOGGER.info("APERCU météo : sous la pluie, météo favorable {}, allumage {}", table.isWeatherGo(),
                         refused == null ? "accepté" : "refusé (" + refused.getString() + ")");
-                level.getServer().setWeatherParameters(6000, 0, false, false);
+                level.setWeatherParameters(6000, 0, false, false);
             }
         }, 40.0, 10.0, 4.0, 45.0F, -8.0F, 10));
 
@@ -2043,7 +2043,7 @@ public final class WorldPreview {
         SHOTS.add(new Shot("orbit_node_seat", level -> {
             if (nodeCapsule != null) {
                 for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
-                    player.startRiding(nodeCapsule, true, false);
+                    player.startRiding(nodeCapsule, true);
                 }
             }
         }, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 30));
@@ -2233,8 +2233,7 @@ public final class WorldPreview {
                         new net.minecraft.world.phys.AABB(origin).inflate(64.0))) {
                     old.discard();
                 }
-                var drone = com.orbitalis.core.registry.ModEntities.ROTOR_DRONE.get().create(titan,
-                        net.minecraft.world.entity.EntitySpawnReason.SPAWN_ITEM_USE);
+                var drone = com.orbitalis.core.registry.ModEntities.ROTOR_DRONE.get().create(titan);
                 drone.moveTo(origin.getX() + 3.5, ground, origin.getZ() + 0.5, 30.0F, 0.0F);
                 titan.addFreshEntity(drone);
                 previewDrone = drone;
@@ -2500,9 +2499,9 @@ public final class WorldPreview {
             net.minecraft.client.multiplayer.ClientLevel client = net.minecraft.client.Minecraft.getInstance().level;
             ServerLevel orbit = level.getServer().getLevel(SpaceRules.ORBIT);
             com.orbitalis.Orbitalis.LOGGER.info("APERCU horloge : client {} heure {} horloge {} ; serveur orbite heure {} horloge {}",
-                    client == null ? "?" : client.dimension(), client == null ? -1 : client.getDefaultClockTime(),
-                    client == null ? "?" : client.dimensionType().defaultClock(), orbit == null ? -1 : orbit.getDefaultClockTime(),
-                    orbit == null ? "?" : orbit.dimensionType().defaultClock());
+                    client == null ? "?" : client.dimension(), client == null ? -1 : client.getDayTime(),
+                    client == null ? "?" : client.dimensionType().fixedTime(), orbit == null ? -1 : orbit.getDayTime(),
+                    orbit == null ? "?" : orbit.dimensionType().fixedTime());
         }, 30.0, 16.0, 10.0, 132.0F, 28.0F, 5));
         SHOTS.add(new Shot("orbit_station_west", null, -14.0, 8.0, -30.0, -50.0F, 22.0F, 30));
         SHOTS.add(new Shot("orbit_station_below", null, 6.0, -9.0, -2.0, 150.0F, -28.0F, 30));
@@ -2539,7 +2538,7 @@ public final class WorldPreview {
             for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
                 net.minecraft.client.player.LocalPlayer local = net.minecraft.client.Minecraft.getInstance().player;
                 com.orbitalis.Orbitalis.LOGGER.info("APERCU apesanteur serveur : y={} vol={} droit={} pesanteur={} posture={} ; client : y={} vol={} posture={} vitesse={}",
-                        String.format(java.util.Locale.ROOT, "%.3f", player.getY()), player.getAbilities().flying, player.mayFly(),
+                        String.format(java.util.Locale.ROOT, "%.3f", player.getY()), player.getAbilities().flying, player.getAbilities().mayfly,
                         player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.GRAVITY), player.getPose(),
                         local == null ? "?" : String.format(java.util.Locale.ROOT, "%.3f", local.getY()), local != null && local.getAbilities().flying,
                         local == null ? "?" : local.getPose(), local == null ? "?" : local.getDeltaMovement());
@@ -2746,7 +2745,7 @@ public final class WorldPreview {
             var players = level.getServer().getPlayerList().getPlayers();
             if (!players.isEmpty() && level.getBlockEntity(new net.minecraft.core.BlockPos(-4, -60, 7))
                     instanceof com.orbitalis.phase1.power.AccumulatorBlockEntity accumulator) {
-                players.get(0).openMenu(accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
+                com.orbitalis.platform.Menus.open(players.get(0), accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
             }
         }, -1.0, -59.4, 11.0, 180.0F, 22.0F, 30));
         // Le réglage de l'accumulateur : un accumulateur quantique posé devant le joueur, à demi chargé, réglé en décharge,
@@ -2765,7 +2764,7 @@ public final class WorldPreview {
             if (!players.isEmpty() && level.getBlockEntity(at) instanceof com.orbitalis.phase1.power.AccumulatorBlockEntity accumulator) {
                 accumulator.getEnergy().generate(accumulator.tier().capacity / 2);
                 accumulator.setMode(com.orbitalis.phase1.power.AccumulatorBlockEntity.Mode.DISCHARGE);
-                players.get(0).openMenu(accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
+                com.orbitalis.platform.Menus.open(players.get(0), accumulator, buffer -> buffer.writeBlockPos(accumulator.getBlockPos()));
             }
         }, 31.5, -59.4, 27.0, 20.0F, 25.0F, 40));
         SHOTS.add(new Shot("tm_accumulator_screen_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
@@ -2809,7 +2808,7 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_guard_key", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
             var screen = net.minecraft.client.Minecraft.getInstance().screen;
             if (screen != null) {
-                net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.ScreenEvent.KeyPressed.Pre(screen,
+                com.orbitalis.client.ScreenGuard.onKey(new com.orbitalis.client.port.event.ClientHooks.ScreenKeyPressed(screen,
                         new com.orbitalis.client.port.KeyEvent(org.lwjgl.glfw.GLFW.GLFW_KEY_E, 0, 0)));
             }
         }), -20.5, -59.0, 52.5, 180.0F, 30.0F, 20));
@@ -3030,7 +3029,7 @@ public final class WorldPreview {
                         net.minecraft.core.Direction.EAST);
                 var wake = com.orbitalis.phase2.survival.RespawnRules.wakeUp(player);
                 com.orbitalis.Orbitalis.LOGGER.info("APERCU vaisseau à Proxima : air {} ; réveil au caisson {}", status,
-                        wake == null ? "refusé" : wake.newLevel().dimension() + " " + wake.position());
+                        wake == null ? "refusé" : wake.newLevel().dimension() + " " + wake.pos());
             }
         }, 15.5, 119.0, 0.5, -90.0F, 6.0F, 60));
         SHOTS.add(new Shot("tm_proxima_orbit_return", level -> {

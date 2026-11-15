@@ -15,12 +15,12 @@ import com.orbitalis.phase1.spaceport.StructurePartBlock;
 import com.orbitalis.phase2.flight.CapsuleEntity;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import com.orbitalis.client.port.render.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.orbitalis.client.port.render.EntityRenderState;
+import com.orbitalis.client.port.render.RenderTypes;
+import com.orbitalis.client.port.render.CameraRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import com.orbitalis.client.port.LightCoordsUtil;
@@ -40,7 +40,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
  * Cette image n'est recomposée que dix fois par seconde, pas à chaque image du jeu : entre deux, la même
  * est redessinée telle quelle.
  */
-public class CapsuleRenderer extends EntityRenderer<CapsuleEntity, CapsuleRenderer.State> {
+public class CapsuleRenderer extends com.orbitalis.client.port.render.EntityRenderer26<CapsuleEntity, CapsuleRenderer.State> {
     // Grand écran de bord, dans le modèle de la capsule (en pixels) : il fait 14 sur 8, dressé sur la cloison avant,
     // sous le pare-brise, face au pilote assis (voir tools/generate_capsule.py). Son bord gauche, son bord haut, et
     // le plan de sa dalle.

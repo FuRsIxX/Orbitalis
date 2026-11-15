@@ -9,12 +9,8 @@ import org.joml.Matrix4fStack;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
@@ -23,13 +19,10 @@ import com.mojang.blaze3d.vertex.MeshData;
 import com.orbitalis.Orbitalis;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.state.level.LevelRenderState;
-import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.neoforged.neoforge.client.CustomSkyboxRenderer;
 
 /**
  * Le ciel de l'espace : celui qu'on voit depuis l'orbite et depuis la Lune. Il ne reprend rien du ciel du jeu : tout
@@ -48,7 +41,7 @@ import net.neoforged.neoforge.client.CustomSkyboxRenderer;
  * <p>
  * Avec un pack de shaders actif (Iris), ce ciel n'est pas dessiné : le pack garde la main sur le ciel du jeu.
  */
-public final class SpaceSky implements CustomSkyboxRenderer {
+public final class SpaceSky {
     /** Nom du ciel, à donner au type de dimension ({@code neoforge:custom_skybox}). */
     public static final ResourceLocation ID = Orbitalis.id("deep_space");
     private static final ResourceLocation ATLAS = Orbitalis.id("space_sky");
@@ -60,7 +53,7 @@ public final class SpaceSky implements CustomSkyboxRenderer {
     private static final float TURN_TICKS = 48_000.0F;
     private static final int[] STAR_TINTS = {0xBFD4FF, 0xFFFFFF, 0xFFFFFF, 0xFFF4DC, 0xFFE2B0, 0xFFC89A, 0xFFB4A4};
 
-    private GpuBuffer mesh;
+    private com.mojang.blaze3d.vertex.VertexBuffer mesh;
     private int indexCount;
     private float builtForSun = Float.NaN;
     /** Vrai si le maillage a été bâti pour l'orbite de Proxima : son soleil est une naine rouge. */
@@ -148,10 +141,10 @@ public final class SpaceSky implements CustomSkyboxRenderer {
         builtForSun = sunAngle;
         builtRed = red;
         builtOutside = outside;
-        RandomSource random = RandomSource.createThreadLocalInstance(20_261_013L);
+        RandomSource random = RandomSource.create(20_261_013L);
         int quads = 0;
         try (ByteBufferBuilder bytes = new ByteBufferBuilder(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * 4 * 20_000)) {
-            BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            BufferBuilder builder = new BufferBuilder(bytes, com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
             // 1. La Voie lactée, d'abord : tout le reste se dessine par-dessus. De grandes nuées très légères... Hors de
             // notre Galaxie, on ne la voit plus en écharpe : elle est une spirale, dessinée avec les astres (SkyBodies).
@@ -223,7 +216,7 @@ public final class SpaceSky implements CustomSkyboxRenderer {
 
             try (MeshData data = builder.buildOrThrow()) {
                 indexCount = data.drawState().indexCount();
-                mesh = RenderSystem.getDevice().createBuffer(() -> "Orbitalis space sky", 32, data.vertexBuffer());
+                mesh = com.orbitalis.client.port.render.SkyDraw.upload(data);
             }
         }
         Orbitalis.LOGGER.debug("Ciel de l'espace : {} éléments", quads);
@@ -263,11 +256,23 @@ public final class SpaceSky implements CustomSkyboxRenderer {
         }
     }
 
-    @Override
-    public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState sky, Matrix4fc modelViewMatrix, Runnable setupFog) {
+    /**
+     * Dessine le ciel de l'espace, la caméra tournée comme {@code modelViewMatrix} ; faux si le ciel du jeu doit se dessiner
+     * à la place (un pack de shaders est actif).
+     */
+    public boolean render(org.joml.Matrix4f modelViewMatrix) {
         if (shadersActive()) {
             return false;
         }
+        com.orbitalis.client.port.render.SkyDraw.push(modelViewMatrix);
+        try {
+            return renderInside();
+        } finally {
+            com.orbitalis.client.port.render.SkyDraw.pop();
+        }
+    }
+
+    private boolean renderInside() {
         // En distorsion, le ciel n'est plus qu'un tunnel.
         if (WarpFx.inTunnel()) {
             WarpFx.renderTunnel(Minecraft.getInstance());
@@ -285,26 +290,15 @@ public final class SpaceSky implements CustomSkyboxRenderer {
         }
         DynamicTexture image = atlas();
         Minecraft minecraft = Minecraft.getInstance();
-        RenderTarget target = minecraft.gameRenderer.mainRenderTarget();
         float time = minecraft.level == null ? 0.0F : (minecraft.level.getGameTime() % (long) TURN_TICKS) / TURN_TICKS;
         Matrix4fStack stack = RenderSystem.getModelViewStack();
         stack.pushMatrix();
         // Le ciel tourne très lentement autour de l'axe du monde.
         stack.rotateY(time * Mth.TWO_PI);
-        GpuBufferSlice transforms = RenderSystem.getDynamicUniforms().writeTransform(new Matrix4f(stack));
-        RenderSystem.AutoStorageIndexBuffer indices = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
-        GpuBuffer indexBuffer = indices.getBuffer(indexCount);
-        try (RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Orbitalis space sky",
-                target.getColorTextureView(), Optional.empty(), target.getDepthTextureView(), OptionalDouble.empty())) {
-            pass.setPipeline(RenderPipelines.END_SKY);
-            RenderSystem.bindDefaultUniforms(pass);
-            pass.setUniform("DynamicTransforms", transforms);
-            pass.bindTexture("Sampler0", image.getTextureView(), image.getSampler());
-            pass.setVertexBuffer(0, mesh.slice());
-            pass.setIndexBuffer(indexBuffer, indices.type());
-            pass.drawIndexed(indexCount, 1, 0, 0, 0);
-        }
+        RenderSystem.applyModelViewMatrix();
+        com.orbitalis.client.port.render.SkyDraw.draw(mesh, image);
         stack.popMatrix();
+        RenderSystem.applyModelViewMatrix();
         // Les astres : la planète sous l'orbite, la Lune, la planète bleue vue de la Lune, Jupiter vue d'Europe.
         SkyBodies.render(minecraft, new Vector3f(0.0F, 1.0F, 0.0F).rotateX(sunAngle).rotateY(-Mth.HALF_PI));
         // Avant un saut et à la sortie, les étoiles s'étirent en traits.

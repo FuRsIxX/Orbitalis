@@ -6,43 +6,50 @@ import org.joml.Vector3f;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.orbitalis.client.port.GuiGraphicsExtractor;
+import com.orbitalis.client.port.LightCoordsUtil;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
-import net.minecraft.client.renderer.block.BlockModelResolver;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import com.orbitalis.client.port.LightCoordsUtil;
 
 /**
  * Dessine une démonstration du manuel en 3D : chaque bloc est rendu avec son vrai modèle
- * (orientation, face allumée, raccordements des conduits), dans une image incrustée dans l'interface.
+ * (orientation, face allumée, raccordements des conduits), directement dans l'interface, découpé à sa zone.
  */
-public class GuideSceneRenderer extends PictureInPictureRenderer<GuideSceneRenderState> {
-    private static final BlockDisplayContext DISPLAY_CONTEXT = BlockDisplayContext.create();
+public final class GuideSceneRenderer {
+    /** La profondeur de la scène au-dessus du fond de l'écran. */
+    private static final float DEPTH = 200.0F;
 
-    @Override
-    public Class<GuideSceneRenderState> getRenderStateClass() {
-        return GuideSceneRenderState.class;
+    private GuideSceneRenderer() {
     }
 
-    @Override
-    protected void renderToTexture(GuideSceneRenderState state, PoseStack poseStack, SubmitNodeCollector collector) {
+    /** Dessine la scène dans sa zone ; l'écran passe ensuite à la strate suivante pour dessiner par-dessus. */
+    public static void draw(GuiGraphicsExtractor extractor, GuideSceneRenderState state) {
+        GuiGraphics graphics = extractor.vanilla();
         Minecraft minecraft = Minecraft.getInstance();
-        minecraft.gameRenderer.lighting().setupFor(Lighting.Entry.ITEMS_3D);
-        BlockModelResolver resolver = minecraft.getBlockModelResolver();
-
+        graphics.flush();
+        graphics.enableScissor(state.x0(), state.y0(), state.x1(), state.y1());
+        PoseStack poseStack = graphics.pose();
+        poseStack.pushPose();
+        // Le centre de la zone, la scène centrée verticalement ; un bloc fait « scale » pixels.
+        poseStack.translate((state.x0() + state.x1()) / 2.0F, (state.y0() + state.y1()) / 2.0F, DEPTH);
+        poseStack.scale(state.scale(), state.scale(), -state.scale());
         applyCamera(poseStack, state.yaw(), state.pitch());
+        Lighting.setupFor3DItems();
+        MultiBufferSource.BufferSource buffers = graphics.bufferSource();
         for (GuideSceneRenderState.PlacedBlock block : state.blocks()) {
             poseStack.pushPose();
             poseStack.translate(block.x() - state.centerX(), block.y() - state.centerY(), block.z() - state.centerZ());
-            BlockModelRenderState model = new BlockModelRenderState();
-            resolver.update(model, block.state(), DISPLAY_CONTEXT);
-            model.submit(poseStack, collector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+            minecraft.getBlockRenderer().renderSingleBlock(block.state(), poseStack, buffers, LightCoordsUtil.FULL_BRIGHT,
+                    OverlayTexture.NO_OVERLAY);
             poseStack.popPose();
         }
+        graphics.flush();
+        Lighting.setupForFlatItems();
+        poseStack.popPose();
+        graphics.disableScissor();
     }
 
     /** Oriente la scène : l'axe y pointe vers le haut de l'écran, puis la caméra s'incline et tourne. */
@@ -78,16 +85,5 @@ public class GuideSceneRenderer extends PictureInPictureRenderer<GuideSceneRende
                 .rotateY((float) Math.toRadians(yaw));
         // Une rotation s'inverse en la transposant.
         return camera.transpose().transformPosition(new Vector3f(x, y, z));
-    }
-
-    /** La scène est centrée verticalement dans sa zone. */
-    @Override
-    protected float getTranslateY(int height, int guiScale) {
-        return height / 2.0F;
-    }
-
-    @Override
-    protected String getTextureLabel() {
-        return "orbitalis guide scene";
     }
 }

@@ -155,7 +155,7 @@ public class ShipyardScreen extends com.orbitalis.client.port.Screen26 implement
         }
         float yaw = (Util.getMillis() % TURN_MILLIS) * 360.0F / TURN_MILLIS;
         float scale = Math.min((areaWidth - 12) / (ShipPlan.LENGTH + 1.0F), (areaHeight - 12) / (2.0F * ShipPlan.RING_RADIUS + 6.0F));
-        graphics.submitPictureInPictureRenderState(new GuideSceneRenderState(blocks, yaw, PITCH, ShipPlan.LENGTH / 2.0F, 0.5F, 0.5F,
+        com.orbitalis.client.guide.GuideSceneRenderer.draw(graphics, new GuideSceneRenderState(blocks, yaw, PITCH, ShipPlan.LENGTH / 2.0F, 0.5F, 0.5F,
                 x, y, x + areaWidth, y + areaHeight, scale, graphics.peekScissorStack()));
         graphics.nextStratum();
     }

@@ -6,14 +6,9 @@ import java.util.OptionalDouble;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -423,7 +418,7 @@ public final class WarpFx {
         if (wallTexture == null) {
             wallTexture = com.orbitalis.client.port.Textures.create("Orbitalis warp wall", 32, 32, false, false, true);
             NativeImage image = wallTexture.getPixels();
-            RandomSource random = RandomSource.createThreadLocalInstance(3_210L);
+            RandomSource random = RandomSource.create(3_210L);
             for (int y = 0; y < 32; y++) {
                 for (int x = 0; x < 32; x++) {
                     float a = x / 32.0F * Mth.TWO_PI;
@@ -529,7 +524,7 @@ public final class WarpFx {
             // L'écho : une onde plus faible, un peu en retrait.
             ring(builder, forward, right, along + 3.0F, radius * 0.8F, thickness * 0.5F, alpha * 0.4F, body, body, dt + 7.0F);
             // Des éclats projetés vers l'extérieur, au passage du front.
-            RandomSource random = RandomSource.createThreadLocalInstance(700L + k);
+            RandomSource random = RandomSource.create(700L + k);
             for (int i = 0; i < 40; i++) {
                 float angle = random.nextFloat() * Mth.TWO_PI;
                 float reach = 1.05F + 0.1F * random.nextFloat();
@@ -578,9 +573,9 @@ public final class WarpFx {
         Vector3f forward = forward();
         Vector3f right = right(forward);
         float flow = flow(t);
-        RandomSource random = RandomSource.createThreadLocalInstance(4_243L);
+        RandomSource random = RandomSource.create(4_243L);
         try (ByteBufferBuilder bytes = new ByteBufferBuilder(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * 8 * 1000)) {
-            BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            BufferBuilder builder = new BufferBuilder(bytes, com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             if (v > 0.01F) {
                 for (int i = 0; i < 760; i++) {
                     float theta0 = (float) Math.acos(1.0F - 2.0F * random.nextFloat());
@@ -622,14 +617,14 @@ public final class WarpFx {
         float rush = 1.8F * travelled;
         float spin = inside * 0.035F;
         float flicker = 0.88F + 0.12F * Mth.sin(t * 1.7F) * Mth.sin(t * 0.63F);
-        RandomSource random = RandomSource.createThreadLocalInstance(1_616L);
+        RandomSource random = RandomSource.create(1_616L);
         // La paroi : un long cylindre de plasma veiné, sombre derrière, bleuté vers l'avant ; sa texture tourne avec le
         // tunnel et file vers l'arrière.
         int sides = 28;
         float wall = 46.0F;
         float[] stations = {-100.0F, -40.0F, 10.0F, 55.0F, 88.0F};
         try (ByteBufferBuilder wallBytes = new ByteBufferBuilder(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * 8 * 140)) {
-            BufferBuilder walls = new BufferBuilder(wallBytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            BufferBuilder walls = new BufferBuilder(wallBytes, com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             float scroll = rush / 22.0F;
             for (int k = 0; k < sides; k++) {
                 float a0 = k * Mth.TWO_PI / sides + spin * 0.3F;
@@ -647,7 +642,7 @@ public final class WarpFx {
             draw(minecraft, walls, wallTexture());
         }
         try (ByteBufferBuilder bytes = new ByteBufferBuilder(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * 8 * 4200)) {
-            BufferBuilder builder = new BufferBuilder(bytes, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            BufferBuilder builder = new BufferBuilder(bytes, com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             for (int k = 0; k < sides; k++) {
                 float a0 = k * Mth.TWO_PI / sides + spin * 0.3F;
                 float a1 = (k + 1) * Mth.TWO_PI / sides + spin * 0.3F;
@@ -748,22 +743,7 @@ public final class WarpFx {
             if (data == null) {
                 return;
             }
-            int indexCount = data.drawState().indexCount();
-            RenderTarget target = minecraft.gameRenderer.mainRenderTarget();
-            GpuBufferSlice transforms = RenderSystem.getDynamicUniforms().writeTransform(new Matrix4f(RenderSystem.getModelViewStack()));
-            RenderSystem.AutoStorageIndexBuffer indices = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
-            GpuBuffer indexBuffer = indices.getBuffer(indexCount);
-            try (GpuBuffer vertices = RenderSystem.getDevice().createBuffer(() -> "Orbitalis warp", GpuBuffer.USAGE_VERTEX, data.vertexBuffer());
-                    RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Orbitalis warp",
-                            target.getColorTextureView(), Optional.empty(), target.getDepthTextureView(), OptionalDouble.empty())) {
-                pass.setPipeline(RenderPipelines.END_SKY);
-                RenderSystem.bindDefaultUniforms(pass);
-                pass.setUniform("DynamicTransforms", transforms);
-                pass.bindTexture("Sampler0", image.getTextureView(), image.getSampler());
-                pass.setVertexBuffer(0, vertices.slice());
-                pass.setIndexBuffer(indexBuffer, indices.type());
-                pass.drawIndexed(indexCount, 1, 0, 0, 0);
-            }
+            com.orbitalis.client.port.render.SkyDraw.draw(data, image);
         }
     }
 }
