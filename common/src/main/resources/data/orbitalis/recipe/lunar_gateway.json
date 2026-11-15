@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:station_core"
+    },
+    "P": {
+      "item": "orbitalis:flight_processor"
+    },
+    "R": {
+      "item": "orbitalis:radio_transmitter"
+    },
+    "S": {
+      "item": "orbitalis:solar_cell"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "SRS",
+    "TCT",
+    "SPS"
+  ],
+  "result": {
+    "id": "orbitalis:lunar_gateway"
+  }
+}

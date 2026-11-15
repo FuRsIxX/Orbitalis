@@ -1,0 +1,25 @@
+{
+  "type": "orbitalis:keep_energy_shaped",
+  "key": {
+    "A": {
+      "item": "orbitalis:accumulator_advanced"
+    },
+    "B": {
+      "item": "orbitalis:battery_cell"
+    },
+    "F": {
+      "item": "orbitalis:flight_processor"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TFT",
+    "BAB",
+    "TBT"
+  ],
+  "result": {
+    "id": "orbitalis:accumulator_elite"
+  }
+}

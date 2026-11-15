@@ -37,6 +37,13 @@ public final class OrbitalisFabric implements ModInitializer {
     public void onInitialize() {
         Orbitalis.init();
         ResourceConditions.register(InterstellarCondition.TYPE);
+        // Les minerais du mod dans les biomes de la Terre (sous NeoForge : data/orbitalis/neoforge/biome_modifier/add_ores.json).
+        for (String ore : java.util.List.of("ore_bauxite", "ore_lithium", "ore_titanium")) {
+            net.fabricmc.fabric.api.biome.v1.BiomeModifications.addFeature(
+                    net.fabricmc.fabric.api.biome.v1.BiomeSelectors.tag(net.minecraft.tags.BiomeTags.IS_OVERWORLD),
+                    net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES,
+                    net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.PLACED_FEATURE, Orbitalis.id(ore)));
+        }
         // Sous Fabric, les registres sont remplis dès l'inscription : ce qu'offrent les blocs peut être exposé tout de suite.
         FabricTransfer.expose();
     }

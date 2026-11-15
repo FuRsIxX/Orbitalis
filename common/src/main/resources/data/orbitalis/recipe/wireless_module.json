@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "item": "orbitalis:radio_transmitter"
+    }
+  },
+  "pattern": [
+    "STS",
+    "SCS"
+  ],
+  "result": {
+    "id": "orbitalis:wireless_module"
+  }
+}

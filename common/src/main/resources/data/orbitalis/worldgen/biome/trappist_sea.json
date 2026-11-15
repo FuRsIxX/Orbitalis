@@ -1,0 +1,39 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.6,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 4865624,
+    "sky_color": 5913170,
+    "water_color": 2775662,
+    "water_fog_color": 1191994
+  },
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "orbitalis:trappist_spire_reed",
+      "orbitalis:trappist_gleam_cup",
+      "orbitalis:trappist_tide_grass"
+    ]
+  ]
+}

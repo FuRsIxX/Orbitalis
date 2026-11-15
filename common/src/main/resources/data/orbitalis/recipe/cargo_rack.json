@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "tag": "c:chests/wooden"
+    },
+    "W": {
+      "item": "orbitalis:insulation_blanket"
+    }
+  },
+  "pattern": [
+    "AWA",
+    "WCW",
+    "AWA"
+  ],
+  "result": {
+    "id": "orbitalis:cargo_rack"
+  }
+}

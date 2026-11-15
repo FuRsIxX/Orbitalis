@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "orbitalis:interstellar"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "orbitalis:interstellar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "M": {
+      "item": "orbitalis:electric_motor"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "SMS",
+    "MCM",
+    "SMS"
+  ],
+  "result": {
+    "id": "orbitalis:ring_drive"
+  }
+}

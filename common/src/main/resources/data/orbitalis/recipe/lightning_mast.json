@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "C",
+    "S",
+    "S"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:lightning_mast"
+  }
+}

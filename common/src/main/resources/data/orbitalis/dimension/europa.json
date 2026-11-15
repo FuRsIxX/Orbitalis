@@ -1,0 +1,22 @@
+{
+  "type": "orbitalis:europa",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "orbitalis:europa",
+      "features": true,
+      "lakes": false,
+      "layers": [
+        {
+          "block": "minecraft:bedrock",
+          "height": 1
+        },
+        {
+          "block": "orbitalis:europa_ice",
+          "height": 127
+        }
+      ],
+      "structure_overrides": []
+    }
+  }
+}

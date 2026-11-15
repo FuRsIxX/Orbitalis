@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "G": {
+      "item": "orbitalis:reinforced_glass"
+    },
+    "L": {
+      "tag": "c:plates/aluminum_lithium"
+    },
+    "P": {
+      "item": "orbitalis:solar_panel"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "PCP",
+    "LLL"
+  ],
+  "result": {
+    "id": "orbitalis:solar_panel_advanced"
+  }
+}

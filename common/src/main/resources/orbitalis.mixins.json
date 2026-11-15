@@ -4,6 +4,7 @@
   "package": "com.orbitalis.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BedBlockMixin",
     "BlockStateBaseMixin",
     "EntityMixin",
     "PlayerMixin",

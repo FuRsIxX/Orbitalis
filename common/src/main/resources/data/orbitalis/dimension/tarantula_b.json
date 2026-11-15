@@ -1,0 +1,11 @@
+{
+  "type": "orbitalis:tarantula_b",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "orbitalis:tarantula_b",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "orbitalis:tarantula_fields"
+    }
+  }
+}

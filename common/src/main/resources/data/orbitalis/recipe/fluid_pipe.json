@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "PGP"
+  ],
+  "result": {
+    "count": 6,
+    "id": "orbitalis:fluid_pipe"
+  }
+}

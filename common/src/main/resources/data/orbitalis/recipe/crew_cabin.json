@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "orbitalis:rocket_fuselage"
+    },
+    "G": {
+      "item": "orbitalis:reinforced_glass"
+    },
+    "H": {
+      "item": "orbitalis:heat_shield_tile"
+    }
+  },
+  "pattern": [
+    "FGF",
+    "FHF"
+  ],
+  "result": {
+    "id": "orbitalis:crew_cabin"
+  }
+}

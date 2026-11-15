@@ -1,0 +1,144 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 7
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:aluminum_plate",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:aluminum_lithium_plate",
+          "weight": 6,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:titanium_plate",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:kerolox_engine",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:aluminum_tank",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:aluminum_lithium_tank",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:interstage",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:nose_cone",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:hydrolox_engine",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:recovery_remote",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:redstone",
+          "weight": 6,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 8
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:rocket_blueprint",
+          "weight": 6,
+          "functions": [
+            {
+              "function": "orbitalis:archive_blueprint",
+              "max_template": 5
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:pad_kit",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:crew_capsule",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "orbitalis:spacesuit",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 2
+        }
+      ]
+    }
+  ]
+}

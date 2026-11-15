@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "G": {
+      "item": "orbitalis:reinforced_glass"
+    },
+    "L": {
+      "item": "orbitalis:insulation_blanket"
+    }
+  },
+  "pattern": [
+    "AGA",
+    "ALA"
+  ],
+  "result": {
+    "id": "orbitalis:space_helmet"
+  }
+}

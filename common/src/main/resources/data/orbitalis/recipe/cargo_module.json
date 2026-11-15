@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:cargo_rack"
+    },
+    "H": {
+      "item": "orbitalis:station_hull"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CHC",
+    "CCC"
+  ],
+  "result": {
+    "id": "orbitalis:cargo_module"
+  }
+}

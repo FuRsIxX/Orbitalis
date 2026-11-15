@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "D": {
+      "item": "orbitalis:solar_cell"
+    },
+    "G": {
+      "item": "orbitalis:reinforced_glass"
+    },
+    "P": {
+      "item": "orbitalis:optical_sensor"
+    }
+  },
+  "pattern": [
+    "DCD",
+    "APA",
+    " G "
+  ],
+  "result": {
+    "id": "orbitalis:observation_satellite"
+  }
+}

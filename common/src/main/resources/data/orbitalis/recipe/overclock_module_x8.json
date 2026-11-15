@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "F": {
+      "item": "orbitalis:flight_processor"
+    },
+    "M": {
+      "item": "orbitalis:overclock_module_x4"
+    },
+    "O": {
+      "item": "orbitalis:optical_sensor"
+    }
+  },
+  "pattern": [
+    "DOD",
+    "FMF",
+    "DOD"
+  ],
+  "result": {
+    "id": "orbitalis:overclock_module_x8"
+  }
+}

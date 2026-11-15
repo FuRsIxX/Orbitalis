@@ -108,6 +108,7 @@
   "atlas.orbitalis.title": "아틀라스",
   "atlas.orbitalis.unknown": "측량되지 않은 지역",
   "atlas.orbitalis.view": "시점: %s",
+  "bed.orbitalis.no_sleep": "여기서는 잘 수 없습니다. 승무원 침상이나 동면 캡슐에서 쉬세요.",
   "biome.orbitalis.kepler_plains": "케플러-452b 평원",
   "biome.orbitalis.proxima_dayside": "낮 쪽",
   "biome.orbitalis.proxima_nightside": "밤 쪽",

@@ -108,6 +108,7 @@
   "atlas.orbitalis.title": "АТЛАС",
   "atlas.orbitalis.unknown": "Неисследованная область",
   "atlas.orbitalis.view": "Вид: %s",
+  "bed.orbitalis.no_sleep": "Здесь нельзя спать: отдохните в каюте экипажа или в капсуле гибернации.",
   "biome.orbitalis.kepler_plains": "Равнины Kepler-452b",
   "biome.orbitalis.proxima_dayside": "Дневная сторона",
   "biome.orbitalis.proxima_nightside": "Ночная сторона",

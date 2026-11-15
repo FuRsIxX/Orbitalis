@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "ITI",
+    "I I"
+  ],
+  "result": {
+    "id": "orbitalis:engineer_workbench"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "S S",
+    " S ",
+    "S S"
+  ],
+  "result": {
+    "count": 16,
+    "id": "orbitalis:tower_frame"
+  }
+}

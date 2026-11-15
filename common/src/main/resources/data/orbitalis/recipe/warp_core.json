@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "orbitalis:interstellar"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "orbitalis:interstellar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "R": {
+      "item": "orbitalis:fusion_reactor"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "X": {
+      "item": "orbitalis:exotic_matter"
+    }
+  },
+  "pattern": [
+    "TXT",
+    "XRX",
+    "TCT"
+  ],
+  "result": {
+    "id": "orbitalis:warp_core"
+  }
+}

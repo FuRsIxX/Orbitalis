@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "B": {
+      "item": "orbitalis:circuit_board"
+    },
+    "O": {
+      "item": "orbitalis:optical_sensor"
+    },
+    "R": {
+      "item": "orbitalis:radio_transmitter"
+    },
+    "S": {
+      "item": "orbitalis:solar_cell"
+    }
+  },
+  "pattern": [
+    " R ",
+    "SBS",
+    "AOA"
+  ],
+  "result": {
+    "id": "orbitalis:lunar_probe"
+  }
+}

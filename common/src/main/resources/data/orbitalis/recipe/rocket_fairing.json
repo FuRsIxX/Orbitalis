@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "orbitalis:aluminum_plate"
+    },
+    "N": {
+      "item": "orbitalis:nose_cone"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ANA",
+    " A "
+  ],
+  "result": {
+    "count": 8,
+    "id": "orbitalis:rocket_fairing"
+  }
+}

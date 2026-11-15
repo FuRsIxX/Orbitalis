@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "orbitalis:tower_frame"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "FPF",
+    "F F",
+    "FPF"
+  ],
+  "result": {
+    "id": "orbitalis:boarding_gate"
+  }
+}

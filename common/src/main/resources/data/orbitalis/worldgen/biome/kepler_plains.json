@@ -1,0 +1,38 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.7,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 13156512,
+    "sky_color": 9221320,
+    "water_color": 3828358,
+    "water_fog_color": 1981002
+  },
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "orbitalis:kepler_bronze_fern",
+      "orbitalis:kepler_amber_tuft"
+    ]
+  ]
+}

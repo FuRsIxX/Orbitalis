@@ -1,0 +1,22 @@
+{
+  "type": "orbitalis:alloying",
+  "energy": 6000,
+  "ingredients": [
+    {
+      "count": 1,
+      "ingredient": {
+        "tag": "c:ingots/iron"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "tag": "minecraft:coals"
+      }
+    }
+  ],
+  "result": {
+    "id": "orbitalis:steel_ingot"
+  },
+  "time": 200
+}

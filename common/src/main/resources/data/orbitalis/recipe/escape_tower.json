@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "orbitalis:steel_grating"
+    },
+    "M": {
+      "item": "orbitalis:solid_motor"
+    },
+    "S": {
+      "item": "orbitalis:steel_grating"
+    }
+  },
+  "pattern": [
+    " S ",
+    "IMI"
+  ],
+  "result": {
+    "id": "orbitalis:escape_tower"
+  }
+}

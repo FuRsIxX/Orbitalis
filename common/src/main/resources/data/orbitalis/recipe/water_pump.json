@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "F": {
+      "item": "orbitalis:fluid_pipe"
+    },
+    "M": {
+      "item": "orbitalis:electric_motor"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "SBS",
+    "SMS",
+    " F "
+  ],
+  "result": {
+    "id": "orbitalis:water_pump"
+  }
+}

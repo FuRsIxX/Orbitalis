@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "orbitalis:tower_frame"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "FFF"
+  ],
+  "result": {
+    "count": 6,
+    "id": "orbitalis:tower_deck"
+  }
+}

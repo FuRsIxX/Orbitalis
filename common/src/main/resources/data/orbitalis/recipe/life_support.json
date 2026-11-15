@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "S": {
+      "item": "orbitalis:co2_filter"
+    },
+    "T": {
+      "item": "orbitalis:cryogenic_tank"
+    }
+  },
+  "pattern": [
+    "ASA",
+    "CTC",
+    "ASA"
+  ],
+  "result": {
+    "id": "orbitalis:life_support"
+  }
+}

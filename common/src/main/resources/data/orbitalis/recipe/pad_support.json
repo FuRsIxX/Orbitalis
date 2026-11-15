@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:stone_bricks"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "P",
+    "B",
+    "B"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:pad_support"
+  }
+}

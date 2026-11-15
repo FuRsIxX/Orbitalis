@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "orbitalis:electric_motor"
+    },
+    "S": {
+      "item": "minecraft:slime_ball"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TPT",
+    "S S"
+  ],
+  "result": {
+    "id": "orbitalis:suit_module_shock_absorbers"
+  }
+}

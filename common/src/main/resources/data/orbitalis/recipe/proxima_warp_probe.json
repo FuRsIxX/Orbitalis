@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "c:dyes/red"
+    },
+    "E": {
+      "item": "orbitalis:exotic_matter"
+    },
+    "L": {
+      "item": "orbitalis:mars_robotic_lander"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    " E ",
+    "TLT",
+    " D "
+  ],
+  "result": {
+    "id": "orbitalis:proxima_warp_probe"
+  }
+}

@@ -231,7 +231,11 @@
           "texture": "#panel_v"
         }
       },
-      "light_emission": 2
+      "light_emission": 2,
+      "neoforge_data": {
+        "block_light": 2,
+        "sky_light": 2
+      }
     },
     {
       "from": [
@@ -264,7 +268,11 @@
           "texture": "#panel_v"
         }
       },
-      "light_emission": 2
+      "light_emission": 2,
+      "neoforge_data": {
+        "block_light": 2,
+        "sky_light": 2
+      }
     },
     {
       "from": [
@@ -297,7 +305,11 @@
           "texture": "#panel_h"
         }
       },
-      "light_emission": 2
+      "light_emission": 2,
+      "neoforge_data": {
+        "block_light": 2,
+        "sky_light": 2
+      }
     },
     {
       "from": [
@@ -330,7 +342,11 @@
           "texture": "#panel_h"
         }
       },
-      "light_emission": 2
+      "light_emission": 2,
+      "neoforge_data": {
+        "block_light": 2,
+        "sky_light": 2
+      }
     }
   ]
 }

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "orbitalis:optical_sensor"
+    },
+    "G": {
+      "item": "orbitalis:reinforced_glass"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TGT",
+    "RDR",
+    "TTT"
+  ],
+  "result": {
+    "id": "orbitalis:suit_module_sensor"
+  }
+}

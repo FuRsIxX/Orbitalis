@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "orbitalis:steel_grating"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "I I",
+    "I I",
+    "PPP"
+  ],
+  "result": {
+    "count": 6,
+    "id": "orbitalis:tower_railing"
+  }
+}

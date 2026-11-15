@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_staged_combustion_engine": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:staged_combustion_engine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:methalox_engine"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_staged_combustion_engine"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:methalox_engine"
+    ]
+  }
+}

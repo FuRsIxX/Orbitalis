@@ -108,6 +108,7 @@
   "atlas.orbitalis.title": "ATLAS",
   "atlas.orbitalis.unknown": "Unsurveyed area",
   "atlas.orbitalis.view": "View: %s",
+  "bed.orbitalis.no_sleep": "You can't sleep here: rest in the Crew Quarters or a Hibernation Pod.",
   "biome.orbitalis.kepler_plains": "Kepler-452b Plains",
   "biome.orbitalis.proxima_dayside": "Dayside",
   "biome.orbitalis.proxima_nightside": "Nightside",

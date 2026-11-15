@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "L": {
+      "tag": "c:gems/lapis"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "CLC"
+  ],
+  "result": {
+    "count": 3,
+    "id": "orbitalis:solar_cell"
+  }
+}

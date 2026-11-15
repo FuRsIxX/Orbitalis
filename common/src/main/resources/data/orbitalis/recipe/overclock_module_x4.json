@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "orbitalis:flight_processor"
+    },
+    "G": {
+      "tag": "c:ingots/gold"
+    },
+    "M": {
+      "item": "orbitalis:overclock_module_x2"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "pattern": [
+    "GFG",
+    "RMR",
+    "GFG"
+  ],
+  "result": {
+    "id": "orbitalis:overclock_module_x4"
+  }
+}

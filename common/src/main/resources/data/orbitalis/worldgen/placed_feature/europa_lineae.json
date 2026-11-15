@@ -1,0 +1,12 @@
+{
+  "feature": "orbitalis:europa_lineae",
+  "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 3
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "orbitalis:data_cable"
+    },
+    "E": {
+      "item": "orbitalis:energy_cable"
+    },
+    "F": {
+      "item": "orbitalis:tower_frame"
+    },
+    "G": {
+      "item": "orbitalis:gas_pipe"
+    },
+    "L": {
+      "item": "orbitalis:fluid_pipe"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "SLS",
+    "EFG",
+    "SDS"
+  ],
+  "result": {
+    "id": "orbitalis:fuel_port"
+  }
+}

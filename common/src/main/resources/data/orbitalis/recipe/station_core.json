@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "orbitalis:docking_port"
+    },
+    "H": {
+      "item": "orbitalis:station_hull"
+    },
+    "L": {
+      "item": "orbitalis:life_support"
+    },
+    "P": {
+      "item": "orbitalis:solar_panel"
+    },
+    "W": {
+      "item": "orbitalis:station_window"
+    }
+  },
+  "pattern": [
+    "HPH",
+    "WLD",
+    "HHH"
+  ],
+  "result": {
+    "id": "orbitalis:station_core"
+  }
+}

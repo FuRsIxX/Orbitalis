@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    }
+  },
+  "pattern": [
+    "GCG"
+  ],
+  "result": {
+    "count": 6,
+    "id": "orbitalis:gas_pipe"
+  }
+}

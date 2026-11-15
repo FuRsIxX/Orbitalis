@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "P": {
+      "item": "orbitalis:spacesuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TCT",
+    "TPT",
+    "TRT"
+  ],
+  "result": {
+    "id": "orbitalis:advanced_spacesuit"
+  }
+}

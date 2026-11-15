@@ -1,0 +1,8 @@
+{
+  "type": "orbitalis:space_facility",
+  "kind": "observation_center",
+  "biomes": "#orbitalis:has_structure/space_facility",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_box"
+}

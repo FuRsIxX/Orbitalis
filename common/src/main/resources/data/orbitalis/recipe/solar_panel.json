@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "D": {
+      "item": "orbitalis:solar_cell"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "DDD",
+    "ARA",
+    "AAA"
+  ],
+  "result": {
+    "id": "orbitalis:solar_panel"
+  }
+}

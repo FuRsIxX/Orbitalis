@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:energy_cable"
+    },
+    "F": {
+      "item": "orbitalis:fluid_pipe"
+    },
+    "T": {
+      "item": "orbitalis:service_tower"
+    }
+  },
+  "pattern": [
+    "TFC"
+  ],
+  "result": {
+    "id": "orbitalis:umbilical_arm"
+  }
+}

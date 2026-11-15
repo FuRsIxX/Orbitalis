@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lightning_mast": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:lightning_mast"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:pad_floodlight"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lightning_mast"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:pad_floodlight"
+    ]
+  }
+}

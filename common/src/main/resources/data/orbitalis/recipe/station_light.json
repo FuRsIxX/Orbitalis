@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "G": {
+      "item": "orbitalis:led_lamp"
+    },
+    "H": {
+      "item": "orbitalis:station_hull"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "HGH",
+    "GRG",
+    "HGH"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:station_light"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:insulation_blanket"
+    },
+    "L": {
+      "tag": "c:plates/aluminum_lithium"
+    },
+    "N": {
+      "item": "orbitalis:navigation_unit"
+    }
+  },
+  "pattern": [
+    "BLB",
+    "LNL",
+    "BLB"
+  ],
+  "result": {
+    "id": "orbitalis:solar_sail"
+  }
+}

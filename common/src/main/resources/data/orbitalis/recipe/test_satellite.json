@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "T": {
+      "item": "orbitalis:circuit_board"
+    }
+  },
+  "pattern": [
+    " T ",
+    "ACA",
+    " T "
+  ],
+  "result": {
+    "id": "orbitalis:test_satellite"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TAT",
+    "A A",
+    "TAT"
+  ],
+  "result": {
+    "id": "orbitalis:docking_port"
+  }
+}

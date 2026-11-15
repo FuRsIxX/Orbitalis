@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": {
+      "item": "orbitalis:space_leggings"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TPT",
+    "T T"
+  ],
+  "result": {
+    "id": "orbitalis:advanced_space_leggings"
+  }
+}

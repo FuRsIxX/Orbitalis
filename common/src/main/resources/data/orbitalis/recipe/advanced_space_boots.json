@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": {
+      "item": "orbitalis:space_boots"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "T T",
+    "TPT"
+  ],
+  "result": {
+    "id": "orbitalis:advanced_space_boots"
+  }
+}

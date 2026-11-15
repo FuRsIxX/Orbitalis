@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:crew_bunk"
+    },
+    "C": {
+      "item": "orbitalis:cargo_rack"
+    },
+    "T": {
+      "item": "orbitalis:station_terminal"
+    }
+  },
+  "pattern": [
+    "BCB",
+    "CTC",
+    "BCB"
+  ],
+  "result": {
+    "id": "orbitalis:habitation_module"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_saturn_orbiter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:saturn_orbiter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:titan_entry_probe"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_saturn_orbiter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:titan_entry_probe"
+    ]
+  }
+}

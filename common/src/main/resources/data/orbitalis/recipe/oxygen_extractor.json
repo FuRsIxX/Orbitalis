@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:battery_cell"
+    },
+    "F": {
+      "item": "orbitalis:co2_filter"
+    },
+    "H": {
+      "item": "orbitalis:heating_element"
+    },
+    "P": {
+      "item": "orbitalis:fluid_pipe"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TBT",
+    "FHF",
+    "TPT"
+  ],
+  "result": {
+    "id": "orbitalis:oxygen_extractor"
+  }
+}

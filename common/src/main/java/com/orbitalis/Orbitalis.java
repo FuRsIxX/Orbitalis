@@ -51,10 +51,12 @@ public final class Orbitalis {
         StartupConfig.SPEC.load(Platform.getConfigFolder().resolve(MODID + "-startup.toml"));
         ServerConfig.SPEC.load(Platform.getConfigFolder().resolve(MODID + "-server.toml"));
 
+        // Sous Fabric, chaque inscription est immédiate : les fluides d'abord (le bloc de méthane liquide en a besoin), puis
+        // les composants des objets, les blocs et les objets.
+        ModFluids.register();
+        ModDataComponents.register();
         ModBlocks.register();
         ModItems.register();
-        ModDataComponents.register();
-        ModFluids.register();
         ModBlockEntities.register();
         ModEntities.register();
         ModParticles.register();
@@ -71,6 +73,7 @@ public final class Orbitalis {
 
         com.orbitalis.core.network.ModNetwork.register();
         com.orbitalis.platform.event.Events.register();
+        com.orbitalis.core.world.SmokeTest.register();
         LOGGER.info("Orbitalis : démarrage commun");
     }
 

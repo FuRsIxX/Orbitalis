@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_part": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:hydrolox_engine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:vacuum_engine"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_part"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:vacuum_engine"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "D": {
+      "item": "orbitalis:solar_cell"
+    },
+    "M": {
+      "item": "orbitalis:optical_sensor"
+    },
+    "P": {
+      "item": "orbitalis:optical_sensor"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TPT",
+    "DMD",
+    "TCT"
+  ],
+  "result": {
+    "id": "orbitalis:space_telescope"
+  }
+}

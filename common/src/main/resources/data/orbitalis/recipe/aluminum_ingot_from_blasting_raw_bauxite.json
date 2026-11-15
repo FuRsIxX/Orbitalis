@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 0.7,
+  "group": "aluminum_ingot",
+  "ingredient": {
+    "item": "orbitalis:raw_bauxite"
+  },
+  "result": {
+    "id": "orbitalis:aluminum_ingot"
+  }
+}

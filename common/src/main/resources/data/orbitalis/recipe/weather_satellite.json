@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "D": {
+      "item": "orbitalis:solar_cell"
+    },
+    "G": {
+      "item": "orbitalis:reinforced_glass"
+    },
+    "S": {
+      "item": "minecraft:snowball"
+    }
+  },
+  "pattern": [
+    "DCD",
+    "ASA",
+    " G "
+  ],
+  "result": {
+    "id": "orbitalis:weather_satellite"
+  }
+}

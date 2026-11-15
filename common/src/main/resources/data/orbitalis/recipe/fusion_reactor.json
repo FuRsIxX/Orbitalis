@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:storage_blocks/copper"
+    },
+    "C": {
+      "item": "orbitalis:reactor_core"
+    },
+    "R": {
+      "item": "orbitalis:circuit_board"
+    },
+    "S": {
+      "item": "minecraft:nether_star"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TBT",
+    "CSC",
+    "TRT"
+  ],
+  "result": {
+    "id": "orbitalis:fusion_reactor"
+  }
+}

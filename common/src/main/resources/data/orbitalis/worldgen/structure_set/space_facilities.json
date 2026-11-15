@@ -1,0 +1,26 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1847203569,
+    "separation": 7,
+    "spacing": 24,
+    "exclusion_zone": {
+      "other_set": "minecraft:villages",
+      "chunk_count": 5
+    }
+  },
+  "structures": [
+    {
+      "structure": "orbitalis:weather_station",
+      "weight": 4
+    },
+    {
+      "structure": "orbitalis:research_center",
+      "weight": 3
+    },
+    {
+      "structure": "orbitalis:observation_center",
+      "weight": 3
+    }
+  ]
+}

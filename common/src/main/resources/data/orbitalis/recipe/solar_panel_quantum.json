@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "O": {
+      "item": "orbitalis:optical_sensor"
+    },
+    "P": {
+      "item": "orbitalis:solar_panel_perovskite"
+    },
+    "R": {
+      "item": "orbitalis:reactor_core"
+    },
+    "S": {
+      "item": "orbitalis:solar_sail"
+    },
+    "T": {
+      "item": "orbitalis:titanium_block"
+    }
+  },
+  "pattern": [
+    "ORO",
+    "PSP",
+    "TTT"
+  ],
+  "result": {
+    "id": "orbitalis:solar_panel_quantum"
+  }
+}

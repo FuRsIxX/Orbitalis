@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    }
+  },
+  "pattern": [
+    " A ",
+    "A A",
+    "A A"
+  ],
+  "result": {
+    "id": "orbitalis:nose_cone"
+  }
+}

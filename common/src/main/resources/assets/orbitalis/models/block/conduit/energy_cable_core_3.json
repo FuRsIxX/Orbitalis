@@ -677,7 +677,11 @@
           "texture": "#panel"
         }
       },
-      "light_emission": 6
+      "light_emission": 6,
+      "neoforge_data": {
+        "block_light": 6,
+        "sky_light": 6
+      }
     },
     {
       "from": [
@@ -710,7 +714,11 @@
           "texture": "#panel"
         }
       },
-      "light_emission": 6
+      "light_emission": 6,
+      "neoforge_data": {
+        "block_light": 6,
+        "sky_light": 6
+      }
     },
     {
       "from": [
@@ -743,7 +751,11 @@
           "texture": "#panel"
         }
       },
-      "light_emission": 6
+      "light_emission": 6,
+      "neoforge_data": {
+        "block_light": 6,
+        "sky_light": 6
+      }
     },
     {
       "from": [
@@ -776,7 +788,11 @@
           "texture": "#panel"
         }
       },
-      "light_emission": 6
+      "light_emission": 6,
+      "neoforge_data": {
+        "block_light": 6,
+        "sky_light": 6
+      }
     },
     {
       "from": [
@@ -809,7 +825,11 @@
           "texture": "#panel"
         }
       },
-      "light_emission": 6
+      "light_emission": 6,
+      "neoforge_data": {
+        "block_light": 6,
+        "sky_light": 6
+      }
     },
     {
       "from": [
@@ -842,7 +862,11 @@
           "texture": "#panel"
         }
       },
-      "light_emission": 6
+      "light_emission": 6,
+      "neoforge_data": {
+        "block_light": 6,
+        "sky_light": 6
+      }
     }
   ]
 }

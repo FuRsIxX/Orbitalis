@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:crew_capsule_mk2"
+    },
+    "G": {
+      "item": "orbitalis:reinforced_glass"
+    },
+    "H": {
+      "item": "orbitalis:heat_shield_tile"
+    },
+    "R": {
+      "item": "orbitalis:circuit_board"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TGT",
+    "RCR",
+    "THT"
+  ],
+  "result": {
+    "id": "orbitalis:crew_capsule_mk3"
+  }
+}

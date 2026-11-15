@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lunar_ice": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:lunar_ice"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:water_from_lunar_ice"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lunar_ice"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:water_from_lunar_ice"
+    ]
+  }
+}

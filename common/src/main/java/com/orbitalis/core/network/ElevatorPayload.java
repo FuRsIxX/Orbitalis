@@ -24,7 +24,13 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
  * @param target  rang de l'arrêt demandé, ou -1
  */
 public record ElevatorPayload(int cabin, List<Integer> stops, int current, int target) implements CustomPacketPayload {
+    /** Client → serveur : l'arrêt choisi. */
     public static final Type<ElevatorPayload> TYPE = new Type<>(Orbitalis.id("elevator"));
+    /**
+     * Serveur → client : le panneau à ouvrir. Un type à part, de même forme : un message ne s'inscrit que dans un sens sous
+     * NeoForge 1.21.1 (par Architectury).
+     */
+    public static final Type<ElevatorPayload> PANEL = new Type<>(Orbitalis.id("elevator_panel"));
 
     public static final StreamCodec<ByteBuf, ElevatorPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, ElevatorPayload::cabin,
@@ -35,6 +41,6 @@ public record ElevatorPayload(int cabin, List<Integer> stops, int current, int t
 
     @Override
     public Type<ElevatorPayload> type() {
-        return TYPE;
+        return target < 0 ? PANEL : TYPE;
     }
 }

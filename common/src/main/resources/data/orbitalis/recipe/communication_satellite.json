@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum_lithium"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "D": {
+      "item": "orbitalis:solar_cell"
+    },
+    "E": {
+      "item": "orbitalis:radio_transmitter"
+    },
+    "Q": {
+      "item": "orbitalis:radio_transmitter"
+    }
+  },
+  "pattern": [
+    "DED",
+    "ACA",
+    " Q "
+  ],
+  "result": {
+    "id": "orbitalis:communication_satellite"
+  }
+}

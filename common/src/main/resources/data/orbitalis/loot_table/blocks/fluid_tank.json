@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "orbitalis:fluid_content"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "orbitalis:fluid_tank"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "orbitalis:blocks/fluid_tank"
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:steel_block"
+    },
+    "I": {
+      "tag": "c:ingots/steel"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "IBI",
+    "PPP"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:drill_base"
+  }
+}

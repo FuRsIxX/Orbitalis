@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "L": {
+      "tag": "c:ingots/lithium"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "ALA",
+    "AWA"
+  ],
+  "result": {
+    "id": "orbitalis:co2_filter"
+  }
+}

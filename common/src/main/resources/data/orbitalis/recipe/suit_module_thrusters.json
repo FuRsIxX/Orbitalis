@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "F": {
+      "item": "minecraft:firework_rocket"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TRT",
+    "TCT",
+    "F F"
+  ],
+  "result": {
+    "id": "orbitalis:suit_module_thrusters"
+  }
+}

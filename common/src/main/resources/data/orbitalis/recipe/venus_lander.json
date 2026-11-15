@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:battery_cell"
+    },
+    "H": {
+      "item": "orbitalis:heat_shield_tile"
+    },
+    "O": {
+      "item": "orbitalis:optical_sensor"
+    },
+    "P": {
+      "item": "orbitalis:venus_orbiter"
+    }
+  },
+  "pattern": [
+    " O ",
+    "BPB",
+    "HHH"
+  ],
+  "result": {
+    "id": "orbitalis:venus_lander"
+  }
+}

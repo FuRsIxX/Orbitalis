@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:insulation_blanket"
+    },
+    "H": {
+      "item": "orbitalis:station_hull"
+    },
+    "W": {
+      "item": "orbitalis:insulation_blanket"
+    }
+  },
+  "pattern": [
+    "HHH",
+    "WBW",
+    "HHH"
+  ],
+  "result": {
+    "id": "orbitalis:crew_bunk"
+  }
+}

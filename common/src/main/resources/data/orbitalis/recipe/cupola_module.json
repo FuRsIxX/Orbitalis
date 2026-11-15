@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "orbitalis:station_hull"
+    },
+    "W": {
+      "item": "orbitalis:cupola_window"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WHW",
+    "WWW"
+  ],
+  "result": {
+    "id": "orbitalis:cupola_module"
+  }
+}

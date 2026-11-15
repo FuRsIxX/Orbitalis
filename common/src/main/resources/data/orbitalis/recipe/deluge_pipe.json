@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "orbitalis:steel_grating"
+    },
+    "P": {
+      "item": "orbitalis:fluid_pipe"
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    }
+  },
+  "pattern": [
+    " I ",
+    "PWP"
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:deluge_pipe"
+  }
+}

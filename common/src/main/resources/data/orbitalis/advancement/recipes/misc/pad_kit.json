@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_launch_table": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:launch_table"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:pad_kit"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_launch_table"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:pad_kit"
+    ]
+  }
+}

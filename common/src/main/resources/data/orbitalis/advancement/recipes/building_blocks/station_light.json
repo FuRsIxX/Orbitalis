@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_station_hull": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:station_hull"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:station_light"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_station_hull"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:station_light"
+    ]
+  }
+}

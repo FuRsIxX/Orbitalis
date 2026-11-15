@@ -1,0 +1,28 @@
+{
+  "type": "orbitalis:keep_energy_shaped",
+  "key": {
+    "A": {
+      "item": "orbitalis:accumulator_elite"
+    },
+    "B": {
+      "item": "orbitalis:battery_cell"
+    },
+    "O": {
+      "item": "orbitalis:optical_sensor"
+    },
+    "R": {
+      "item": "orbitalis:reactor_core"
+    },
+    "T": {
+      "item": "orbitalis:titanium_block"
+    }
+  },
+  "pattern": [
+    "ORO",
+    "BAB",
+    "TBT"
+  ],
+  "result": {
+    "id": "orbitalis:accumulator_quantum"
+  }
+}

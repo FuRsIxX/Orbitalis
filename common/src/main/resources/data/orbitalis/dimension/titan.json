@@ -1,0 +1,11 @@
+{
+  "type": "orbitalis:titan",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "orbitalis:titan",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "orbitalis:titan"
+    }
+  }
+}

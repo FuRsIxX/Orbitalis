@@ -22,6 +22,10 @@ public final class ModFeatures {
     public static final DeferredHolder<Feature<?>, com.orbitalis.phase3.celestial.EuropaTerrainFeature> EUROPA_CHAOS =
             FEATURES.register("europa_chaos", () -> new com.orbitalis.phase3.celestial.EuropaTerrainFeature(true));
 
+    /** Un amas de blocs posé sur le sol (le « block_blob » de 26.2, absent de 1.21.1). */
+    public static final DeferredHolder<Feature<?>, com.orbitalis.phase3.celestial.BlockBlobFeature> BLOCK_BLOB =
+            FEATURES.register("block_blob", com.orbitalis.phase3.celestial.BlockBlobFeature::new);
+
     private ModFeatures() {
     }
 

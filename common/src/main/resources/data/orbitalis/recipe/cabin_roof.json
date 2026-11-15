@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "orbitalis:rocket_fuselage"
+    },
+    "I": {
+      "item": "minecraft:iron_trapdoor"
+    }
+  },
+  "pattern": [
+    " I ",
+    "FFF"
+  ],
+  "result": {
+    "id": "orbitalis:cabin_roof"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:circuit_board"
+    },
+    "D": {
+      "tag": "c:dusts/glowstone"
+    },
+    "P": {
+      "tag": "c:glass_panes"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "DBD"
+  ],
+  "result": {
+    "count": 2,
+    "id": "orbitalis:display_screen"
+  }
+}

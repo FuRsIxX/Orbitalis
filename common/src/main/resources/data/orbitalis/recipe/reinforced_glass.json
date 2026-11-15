@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    }
+  },
+  "pattern": [
+    "AGA",
+    "GGG",
+    "AGA"
+  ],
+  "result": {
+    "count": 6,
+    "id": "orbitalis:reinforced_glass"
+  }
+}

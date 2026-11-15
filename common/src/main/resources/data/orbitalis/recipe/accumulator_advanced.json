@@ -1,0 +1,25 @@
+{
+  "type": "orbitalis:keep_energy_shaped",
+  "key": {
+    "A": {
+      "item": "orbitalis:accumulator"
+    },
+    "B": {
+      "item": "orbitalis:battery_cell"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "L": {
+      "tag": "c:plates/aluminum_lithium"
+    }
+  },
+  "pattern": [
+    "LBL",
+    "BAB",
+    "LCL"
+  ],
+  "result": {
+    "id": "orbitalis:accumulator_advanced"
+  }
+}

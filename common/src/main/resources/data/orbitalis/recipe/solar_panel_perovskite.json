@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:battery_cell"
+    },
+    "D": {
+      "item": "orbitalis:solar_cell"
+    },
+    "F": {
+      "item": "orbitalis:flight_processor"
+    },
+    "P": {
+      "item": "orbitalis:solar_panel_advanced"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "DFD",
+    "PBP",
+    "TTT"
+  ],
+  "result": {
+    "id": "orbitalis:solar_panel_perovskite"
+  }
+}

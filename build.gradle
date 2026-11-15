@@ -29,6 +29,12 @@ subprojects {
 
     loom {
         silentMojangMappingsLicense()
+        // ./gradlew :fabric:runServer -Porbitalis.smokeTest : démarre, génère chaque dimension du mod, puis s'arrête.
+        if (project.name != "common" && project.hasProperty("orbitalis.smokeTest")) {
+            runs.configureEach {
+                vmArg "-Dorbitalis.smokeTest=true"
+            }
+        }
     }
 
     dependencies {

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "B": {
+      "item": "orbitalis:insulation_blanket"
+    }
+  },
+  "pattern": [
+    "A A",
+    "ABA"
+  ],
+  "result": {
+    "id": "orbitalis:space_boots"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lunar_probe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:lunar_probe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:mars_probe"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lunar_probe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:mars_probe"
+    ]
+  }
+}

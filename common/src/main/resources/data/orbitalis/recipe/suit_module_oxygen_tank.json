@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:glass_bottle"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "TRT",
+    "TBT",
+    "TBT"
+  ],
+  "result": {
+    "id": "orbitalis:suit_module_oxygen_tank"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "orbitalis:navigation_unit"
+    },
+    "E": {
+      "item": "orbitalis:pressure_fed_engine"
+    },
+    "H": {
+      "item": "orbitalis:heat_shield_tile"
+    },
+    "M": {
+      "item": "orbitalis:crew_capsule_mk3"
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "W": {
+      "item": "minecraft:white_wool"
+    }
+  },
+  "pattern": [
+    "WCW",
+    "HMH",
+    "PEP"
+  ],
+  "result": {
+    "id": "orbitalis:titan_lander"
+  }
+}

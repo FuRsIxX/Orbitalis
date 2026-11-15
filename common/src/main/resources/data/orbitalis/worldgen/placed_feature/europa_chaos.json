@@ -1,0 +1,12 @@
+{
+  "feature": "orbitalis:europa_chaos",
+  "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 9
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

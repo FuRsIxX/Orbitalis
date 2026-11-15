@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum_lithium"
+    },
+    "E": {
+      "item": "orbitalis:kerolox_engine"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "ARA",
+    "TET",
+    "T T"
+  ],
+  "result": {
+    "id": "orbitalis:hydrolox_engine"
+  }
+}

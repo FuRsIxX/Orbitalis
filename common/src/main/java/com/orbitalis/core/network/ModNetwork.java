@@ -182,7 +182,8 @@ public final class ModNetwork {
             }
         });
         // Panneau de l'ascenseur : le serveur l'ouvre chez le joueur, qui lui renvoie l'arrêt choisi.
-        registrar.playBidirectional(ElevatorPayload.TYPE, ElevatorPayload.STREAM_CODEC, (payload, context) -> {
+        registrar.playToClient(ElevatorPayload.PANEL, ElevatorPayload.STREAM_CODEC);
+        registrar.playToServer(ElevatorPayload.TYPE, ElevatorPayload.STREAM_CODEC, (payload, context) -> {
             if (context.player() instanceof ServerPlayer player) {
                 ElevatorCabinEntity.handle(player, payload);
             }

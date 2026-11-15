@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:circuit_board"
+    },
+    "E": {
+      "item": "orbitalis:pressure_fed_engine"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    " B ",
+    "TET",
+    "T T"
+  ],
+  "result": {
+    "id": "orbitalis:hypergolic_engine"
+  }
+}

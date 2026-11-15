@@ -1,0 +1,25 @@
+{
+  "dimension": {
+    "minecraft:gameplay/bed_rule": {
+      "can_set_spawn": "never",
+      "can_sleep": "never",
+      "explodes": false
+    },
+    "minecraft:gameplay/respawn_anchor_works": false,
+    "minecraft:gameplay/water_evaporates": false,
+    "minecraft:visual/fog_color": "#5E2A1E",
+    "minecraft:visual/sky_color": "#4E1E18",
+    "minecraft:visual/fog_start_distance": 120.0,
+    "minecraft:visual/fog_end_distance": 520.0,
+    "minecraft:visual/sky_fog_end_distance": 560.0,
+    "minecraft:visual/cloud_color": "#00ffffff",
+    "minecraft:visual/cloud_height": 4000.0,
+    "minecraft:visual/sky_light_color": "#FFB08A",
+    "minecraft:visual/sky_light_factor": 1.0,
+    "minecraft:visual/star_brightness": 0.35,
+    "minecraft:visual/star_angle": 30.0,
+    "minecraft:visual/sun_angle": 290.0,
+    "minecraft:visual/moon_angle": 110.0
+  },
+  "ambient_light": 0.32
+}

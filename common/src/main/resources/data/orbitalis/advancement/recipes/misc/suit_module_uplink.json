@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mission_tablet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:mission_tablet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:suit_module_uplink"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mission_tablet"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:suit_module_uplink"
+    ]
+  }
+}

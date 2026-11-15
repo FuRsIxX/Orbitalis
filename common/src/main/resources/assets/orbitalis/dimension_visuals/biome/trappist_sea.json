@@ -1,0 +1,7 @@
+{
+  "biome": {
+    "minecraft:visual/sky_color": "#5A3A52",
+    "minecraft:visual/fog_color": "#4A3E58",
+    "minecraft:visual/water_fog_color": "#12303A"
+  }
+}

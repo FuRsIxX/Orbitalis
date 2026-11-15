@@ -1,0 +1,11 @@
+{
+  "type": "orbitalis:kepler_452b",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "orbitalis:kepler_452b",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "orbitalis:kepler_plains"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "minecraft:gunpowder"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    " P ",
+    "PGP",
+    "PGP"
+  ],
+  "result": {
+    "id": "orbitalis:solid_motor"
+  }
+}

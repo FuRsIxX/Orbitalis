@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "G": {
+      "item": "orbitalis:display_screen"
+    },
+    "H": {
+      "item": "orbitalis:station_hull"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "AGA",
+    "RCR",
+    "AHA"
+  ],
+  "result": {
+    "id": "orbitalis:station_terminal"
+  }
+}

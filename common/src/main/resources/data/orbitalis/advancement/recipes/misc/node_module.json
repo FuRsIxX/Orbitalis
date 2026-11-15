@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_station_port": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:station_port"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:node_module"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_station_port"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:node_module"
+    ]
+  }
+}

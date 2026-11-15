@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mars_probe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "orbitalis:mars_probe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "orbitalis:jupiter_orbiter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mars_probe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "orbitalis:jupiter_orbiter"
+    ]
+  }
+}

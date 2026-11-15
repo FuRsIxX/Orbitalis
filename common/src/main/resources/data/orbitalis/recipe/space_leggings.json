@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "D": {
+      "tag": "c:dyes/orange"
+    },
+    "L": {
+      "item": "orbitalis:insulation_blanket"
+    }
+  },
+  "pattern": [
+    "ADA",
+    "ALA"
+  ],
+  "result": {
+    "id": "orbitalis:space_leggings"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "dimension": {
+    "minecraft:gameplay/bed_rule": {
+      "can_set_spawn": "never",
+      "can_sleep": "never",
+      "explodes": false
+    },
+    "minecraft:gameplay/respawn_anchor_works": false,
+    "minecraft:visual/fog_color": "#000000",
+    "minecraft:visual/sky_color": "#000000",
+    "minecraft:visual/star_brightness": 0.6,
+    "minecraft:visual/star_angle": 40.0,
+    "minecraft:visual/sun_angle": 180.0,
+    "minecraft:visual/moon_angle": 0.0,
+    "neoforge:custom_skybox": "orbitalis:deep_space",
+    "minecraft:visual/cloud_color": "#00ffffff",
+    "minecraft:visual/cloud_height": 4000.0
+  },
+  "ambient_light": 0.15
+}

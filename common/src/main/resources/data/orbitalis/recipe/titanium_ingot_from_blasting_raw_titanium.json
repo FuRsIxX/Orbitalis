@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 1.0,
+  "group": "titanium_ingot",
+  "ingredient": {
+    "item": "orbitalis:raw_titanium"
+  },
+  "result": {
+    "id": "orbitalis:titanium_ingot"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "orbitalis:facility_concrete"
+  },
+  "result": {
+    "id": "orbitalis:cracked_facility_concrete"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "dimension": {
+    "minecraft:gameplay/bed_rule": {
+      "can_set_spawn": "never",
+      "can_sleep": "never",
+      "explodes": false
+    },
+    "minecraft:gameplay/respawn_anchor_works": false,
+    "minecraft:visual/fog_color": "#C8996B",
+    "minecraft:visual/sky_color": "#D9AC7C",
+    "minecraft:visual/star_brightness": 0.0,
+    "minecraft:visual/star_angle": 20.0,
+    "minecraft:visual/sun_angle": 65.0,
+    "minecraft:visual/moon_angle": 200.0
+  },
+  "ambient_light": 0.2
+}

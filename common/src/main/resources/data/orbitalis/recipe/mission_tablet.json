@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "G": {
+      "item": "orbitalis:display_screen"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "AGA",
+    "ACA",
+    "ARA"
+  ],
+  "result": {
+    "id": "orbitalis:mission_tablet"
+  }
+}

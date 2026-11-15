@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "B": {
+      "item": "orbitalis:circuit_board"
+    },
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    }
+  },
+  "pattern": [
+    " G ",
+    "ABA"
+  ],
+  "result": {
+    "id": "orbitalis:optical_sensor"
+  }
+}

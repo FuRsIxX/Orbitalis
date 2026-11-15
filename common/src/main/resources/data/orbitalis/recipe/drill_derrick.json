@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "orbitalis:steel_block"
+    },
+    "C": {
+      "item": "orbitalis:circuit_board"
+    },
+    "D": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "M": {
+      "item": "orbitalis:electric_motor"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "PMP",
+    "CDC",
+    "PBP"
+  ],
+  "result": {
+    "id": "orbitalis:drill_derrick"
+  }
+}

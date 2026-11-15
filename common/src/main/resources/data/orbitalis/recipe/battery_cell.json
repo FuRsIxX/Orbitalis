@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "L": {
+      "tag": "c:ingots/lithium"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "ALA",
+    "LRL",
+    "ACA"
+  ],
+  "result": {
+    "count": 2,
+    "id": "orbitalis:battery_cell"
+  }
+}

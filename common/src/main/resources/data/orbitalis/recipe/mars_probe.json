@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "orbitalis:heat_shield_tile"
+    },
+    "N": {
+      "item": "orbitalis:navigation_unit"
+    },
+    "P": {
+      "item": "orbitalis:lunar_probe"
+    }
+  },
+  "pattern": [
+    " N ",
+    "HPH"
+  ],
+  "result": {
+    "id": "orbitalis:mars_probe"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "orbitalis:facility_siding"
+    },
+    {
+      "item": "orbitalis:facility_siding"
+    },
+    {
+      "item": "orbitalis:facility_siding"
+    },
+    {
+      "item": "orbitalis:facility_siding"
+    },
+    {
+      "tag": "c:dyes/orange"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "orbitalis:orange_facility_siding"
+  }
+}

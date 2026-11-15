@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "orbitalis:heat_shield_tile"
+    },
+    "L": {
+      "item": "orbitalis:lunar_robotic_lander"
+    },
+    "N": {
+      "item": "orbitalis:navigation_unit"
+    }
+  },
+  "pattern": [
+    " N ",
+    "HLH"
+  ],
+  "result": {
+    "id": "orbitalis:mars_robotic_lander"
+  }
+}

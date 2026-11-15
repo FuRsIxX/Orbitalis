@@ -108,6 +108,7 @@
   "atlas.orbitalis.title": "ATLAS",
   "atlas.orbitalis.unknown": "Zone non relevée",
   "atlas.orbitalis.view": "Vue : %s",
+  "bed.orbitalis.no_sleep": "Impossible de dormir ici : reposez-vous dans une couchette d'équipage ou un caisson d'hibernation.",
   "biome.orbitalis.kepler_plains": "Plaines de Kepler-452b",
   "biome.orbitalis.proxima_dayside": "Face de jour",
   "biome.orbitalis.proxima_nightside": "Face de nuit",

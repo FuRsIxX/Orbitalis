@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "D": {
+      "tag": "c:dusts/glowstone"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "GDG",
+    "CRC"
+  ],
+  "result": {
+    "count": 2,
+    "id": "orbitalis:led_lamp"
+  }
+}
