@@ -4,11 +4,13 @@
   "package": "com.orbitalis.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BaseEntityBlockMixin",
     "BedBlockMixin",
     "BlockStateBaseMixin",
     "EntityMixin",
     "PlayerMixin",
-    "PrimaryLevelDataAccessor"
+    "PrimaryLevelDataAccessor",
+    "PrimaryLevelDataMixin"
   ],
   "client": [
     "client.ClientLevelMixin",

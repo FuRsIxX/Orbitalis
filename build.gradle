@@ -35,6 +35,18 @@ subprojects {
                 vmArg "-Dorbitalis.smokeTest=true"
             }
         }
+        // ./gradlew :fabric:runClient -Porbitalis.worldPreview=true [-Porbitalis.previewOnly=vue1,vue2] [-Porbitalis.previewWorld=nom] :
+        // ouvre run/saves/orbitalis_render (ou le monde nommé), y bâtit des scènes, les capture dans run/world_preview, puis
+        // ferme le jeu (voir WorldPreview).
+        if (project.name != "common" && project.hasProperty("orbitalis.worldPreview")) {
+            runs.named("client") {
+                vmArg "-Dorbitalis.worldPreview=true"
+                if (project.hasProperty("orbitalis.previewOnly")) {
+                    vmArg "-Dorbitalis.previewOnly=" + project.property("orbitalis.previewOnly")
+                }
+                programArgs "--quickPlaySingleplayer", (project.findProperty("orbitalis.previewWorld") ?: "orbitalis_render").toString()
+            }
+        }
     }
 
     dependencies {

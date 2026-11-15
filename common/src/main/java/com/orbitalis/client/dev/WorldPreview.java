@@ -275,7 +275,30 @@ public final class WorldPreview {
     }
 
     private static void run(ServerLevel level, String command) {
-        level.getServer().getCommands().performPrefixedCommand(level.getServer().createCommandSourceStack().withSuppressedOutput(), command);
+        // Les refus des commandes sont notés dans le journal : une scène incomplète se voit sans avoir à deviner pourquoi.
+        net.minecraft.commands.CommandSource logger = new net.minecraft.commands.CommandSource() {
+            @Override
+            public void sendSystemMessage(net.minecraft.network.chat.Component message) {
+                com.orbitalis.Orbitalis.LOGGER.info("APERCU commande « {} » : {}", command, message.getString());
+            }
+
+            @Override
+            public boolean acceptsSuccess() {
+                return false;
+            }
+
+            @Override
+            public boolean acceptsFailure() {
+                return true;
+            }
+
+            @Override
+            public boolean shouldInformAdmins() {
+                return false;
+            }
+        };
+        net.minecraft.commands.CommandSourceStack source = level.getServer().createCommandSourceStack().withSource(logger).withLevel(level);
+        level.getServer().getCommands().performPrefixedCommand(source, command);
     }
 
     /** Un vrai clic droit du joueur sur le pupitre d'essai de la carte de test (en -20 -60 50). */

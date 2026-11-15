@@ -132,8 +132,13 @@ public final class OrbitalisClient {
      * dise (liste écrite par tools/render_layers_121.py).
      */
     private static void renderLayers() {
-        ResourceLocation file = Orbitalis.id("render_layers.json");
-        try (Reader reader = new InputStreamReader(Minecraft.getInstance().getResourceManager().open(file), StandardCharsets.UTF_8)) {
+        // Lue dans le jar du mod : au démarrage du client, les ressources du jeu ne sont pas encore chargées.
+        java.io.InputStream in = OrbitalisClient.class.getResourceAsStream("/assets/orbitalis/render_layers.json");
+        if (in == null) {
+            Orbitalis.LOGGER.error("Couches de rendu des blocs introuvables");
+            return;
+        }
+        try (Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
             JsonObject layers = JsonParser.parseReader(reader).getAsJsonObject();
             register(layers, "cutout", RenderType.cutout());
             register(layers, "translucent", RenderType.translucent());
