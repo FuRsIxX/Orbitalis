@@ -91,6 +91,7 @@ public final class Orbitalis {
     /** Démarrage propre au client. */
     public static void initClient() {
         ClientConfig.SPEC.load(Platform.getConfigFolder().resolve(MODID + "-client.toml"));
+        com.orbitalis.client.OrbitalisClient.init();
         LOGGER.info("Orbitalis : démarrage du client");
     }
 }

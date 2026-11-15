@@ -8,5 +8,12 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "client.CameraMixin",
+    "client.GameRendererMixin",
+    "client.GuiMixin",
+    "client.ParticleEngineMixin",
+    "client.PlayerRendererMixin"
+  ]
 }

@@ -56,6 +56,7 @@ public final class OrbitalisNeoForge {
         NeoForge.EVENT_BUS.addListener(BlockDropsEvent.class, OrbitalisNeoForge::onDrops);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             Orbitalis.initClient();
+            OrbitalisNeoForgeClient.init(modBus);
         }
     }
 

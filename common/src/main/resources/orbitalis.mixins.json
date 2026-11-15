@@ -13,6 +13,7 @@
   "client": [
     "client.ClientLevelMixin",
     "client.DimensionSpecialEffectsMixin",
+    "client.FogRendererMixin",
     "client.KeyMappingAccessor",
     "client.ReceivingLevelScreenMixin"
   ],
