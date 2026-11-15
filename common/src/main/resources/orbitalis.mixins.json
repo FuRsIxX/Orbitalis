@@ -10,7 +10,12 @@
     "PlayerMixin",
     "PrimaryLevelDataAccessor"
   ],
-  "client": [],
+  "client": [
+    "client.ClientLevelMixin",
+    "client.DimensionSpecialEffectsMixin",
+    "client.KeyMappingAccessor",
+    "client.ReceivingLevelScreenMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
