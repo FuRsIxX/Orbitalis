@@ -51,6 +51,11 @@ Generated data on `main` is converted, not regenerated: a script turns 26.2 JSON
 3. Server logic: machines, energy and fluid networks, research, rockets, flights, stations, ship.
 4. Networking and screens (GuiGraphics, 1.21.1 widgets).
 5. Rendering: block entity and entity renderers, sky and planets, warp jump, ghosts, HUD.
+   **Client running on both loaders (2026-11-15):** the 26.2 client code is kept almost as is, on a small layer
+   that speaks the 26 API over 1.21.1 (`client/port`: `GuiGraphicsExtractor`, `Screen26`, render states and
+   `SubmitNodeCollector` over buffers, client events). Checked in game with the capture tool on Fabric and
+   NeoForge: machines, launch pad and rocket, design computer, item icons, orbit sky, Earth from orbit and from the
+   Moon, Mars, Titan lakes and methane fog, Europa and Jupiter.
 6. Dimensions and world generation (Moon, Mars, Titan, Europa, exoplanets).
 7. Game tests and a test map, then in-game captures on Fabric and NeoForge, fixing every difference.
 8. Then the same for 1.20.1 (Forge + Fabric), starting from this branch.
@@ -79,4 +84,10 @@ Data is converted with `python tools/convert_data_121.py` (rerun it after copyin
 | `block_blob` feature, integer `trapezoid` | `orbitalis:block_blob`, exact weighted list | Same |
 | Noise router `preliminary_surface_level` | `initial_density_without_jaggedness` | Same terrain shape |
 | One elevator message both ways | Two message types (`elevator_panel` to the player, `elevator` to the server) | Same |
-| Test map marked as "experimental" world | 1.21.1 has no such flag to clear | Nothing to do |
+| Test map marked as "experimental" world | Every world with the mod's dimensions is "experimental" in 1.21.1; `PrimaryLevelDataMixin` treats it as stable (NeoForge already did) | No warning on either loader |
+| Block entity blocks draw their model | 1.21.1 `BaseEntityBlock` is invisible by default; `BaseEntityBlockMixin` restores the model for the mod's blocks | Same |
+| Render layer guessed from textures | `render_layers.json` (tools/render_layers_121.py), registered at client start | Same |
+| `END_SKY` pipeline (no alpha cut) | Own core shader `orbitalis:sky` (position_tex_color without the 10 % alpha cut) | Same soft Milky Way and halos |
+| Picture-in-picture 3D scenes (guide, shipyard, construction) | Drawn straight into the GUI, clipped to their area | Same framing |
+| Emissive model faces | NeoForge only for now (mast lights glow on NeoForge, not on Fabric) | To do on Fabric |
+| Mod fluids on NeoForge | Architectury gives no textures to NeoForge: the client registers them (water texture, tinted) | Same |

@@ -30,8 +30,8 @@ public final class ModFluids {
     private static final int WATER_COLOR = 0xFF3F76E4;
     private static final int UNKNOWN_COLOR = 0xFF9A9A9A;
     /** Les fluides du mod se dessinent avec la texture de l'eau, teintée à leur couleur. */
-    private static final ResourceLocation STILL = ResourceLocation.withDefaultNamespace("block/water_still");
-    private static final ResourceLocation FLOW = ResourceLocation.withDefaultNamespace("block/water_flow");
+    public static final ResourceLocation STILL = ResourceLocation.withDefaultNamespace("block/water_still");
+    public static final ResourceLocation FLOW = ResourceLocation.withDefaultNamespace("block/water_flow");
 
     /**
      * Un fluide du mod.

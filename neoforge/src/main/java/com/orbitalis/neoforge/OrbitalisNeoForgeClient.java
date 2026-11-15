@@ -34,6 +34,37 @@ final class OrbitalisNeoForgeClient {
     static void init(IEventBus modBus) {
         // Le ciel de l'espace : orbites, Lune, Europe (« effects » de leur type de dimension).
         modBus.addListener(RegisterDimensionSpecialEffectsEvent.class, event -> event.register(Orbitalis.id("deep_space"), new SpaceEffects()));
+        // Le shader du ciel du mod (halos qui s'éteignent en douceur).
+        modBus.addListener(net.neoforged.neoforge.client.event.RegisterShadersEvent.class, event -> {
+            try {
+                event.registerShader(new net.minecraft.client.renderer.ShaderInstance(event.getResourceProvider(), Orbitalis.id("sky"),
+                        com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR), com.orbitalis.client.port.render.SkyShader::set);
+            } catch (java.io.IOException failed) {
+                Orbitalis.LOGGER.error("Shader du ciel illisible", failed);
+            }
+        });
+        // Les fluides du mod : la texture de l'eau, teintée à leur couleur (Architectury ne la donne pas à NeoForge).
+        modBus.addListener(RegisterClientExtensionsEvent.class, event -> {
+            for (com.orbitalis.core.registry.ModFluids.Entry fluid : com.orbitalis.core.registry.ModFluids.entries()) {
+                int color = fluid.color();
+                event.registerFluidType(new net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions() {
+                    @Override
+                    public net.minecraft.resources.ResourceLocation getStillTexture() {
+                        return com.orbitalis.core.registry.ModFluids.STILL;
+                    }
+
+                    @Override
+                    public net.minecraft.resources.ResourceLocation getFlowingTexture() {
+                        return com.orbitalis.core.registry.ModFluids.FLOW;
+                    }
+
+                    @Override
+                    public int getTintColor() {
+                        return color | 0xFF000000;
+                    }
+                }, fluid.source().get().getFluidType());
+            }
+        });
         // Les éclats d'un réservoir qu'on casse ont la couleur de son contenu.
         modBus.addListener(RegisterClientExtensionsEvent.class, event -> event.registerBlock(new IClientBlockExtensions() {
             @Override

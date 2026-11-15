@@ -20,6 +20,9 @@ public final class OrbitalisFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         Orbitalis.initClient();
+        // Le shader du ciel du mod (halos qui s'éteignent en douceur).
+        net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback.EVENT.register(context -> context.register(
+                Orbitalis.id("sky"), com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR, com.orbitalis.client.port.render.SkyShader::set));
         // Le ciel de l'espace : orbites, Lune, Europe. L'apparence (pas de nuages, pas de ciel du jeu), puis le ciel du mod.
         DimensionRenderingRegistry.registerDimensionEffects(Orbitalis.id("deep_space"), new SpaceEffects());
         for (var world : List.of(SpaceRules.ORBIT, SpaceRules.MOON, SpaceRules.EUROPA, SpaceRules.PROXIMA_ORBIT, SpaceRules.TRAPPIST_ORBIT,

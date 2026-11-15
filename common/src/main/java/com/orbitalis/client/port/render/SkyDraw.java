@@ -26,7 +26,7 @@ public final class SkyDraw {
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
         RenderSystem.disableCull();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShader(SkyShader::get);
         RenderSystem.setShaderTexture(0, texture.getId());
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
