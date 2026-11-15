@@ -46,9 +46,37 @@ Generated data on `main` is converted, not regenerated: a script turns 26.2 JSON
 1. Skeleton builds and starts on both loaders. **Done.**
 2. Platform layer, registries (blocks, items, block entities, menus, entities, sounds, particles, fluids,
    creative tabs), assets and converted data. The game starts with every block and item present.
+   **Server side done (2026-11-15):** both dedicated servers start, register 198 blocks and 294 items (same as
+   `main`) and generate every one of the 13 dimensions (`-Porbitalis.smokeTest`, see below).
 3. Server logic: machines, energy and fluid networks, research, rockets, flights, stations, ship.
 4. Networking and screens (GuiGraphics, 1.21.1 widgets).
 5. Rendering: block entity and entity renderers, sky and planets, warp jump, ghosts, HUD.
 6. Dimensions and world generation (Moon, Mars, Titan, Europa, exoplanets).
 7. Game tests and a test map, then in-game captures on Fabric and NeoForge, fixing every difference.
 8. Then the same for 1.20.1 (Forge + Fabric), starting from this branch.
+
+## Checking a build
+
+    ./gradlew build
+    ./gradlew :fabric:runServer -Porbitalis.smokeTest
+    ./gradlew :neoforge:runServer -Porbitalis.smokeTest
+
+The smoke test starts a dedicated server, generates the centre chunk of each Orbitalis dimension, logs what it
+found (`[essai]` lines), then stops the server and the process.
+
+Data is converted with `python tools/convert_data_121.py` (rerun it after copying new data from `main`).
+
+## Differences with 26.2 found so far
+
+| 26.2 | 1.21.1 | Status |
+|---|---|---|
+| Environment attributes (sky, fog, clouds, stars, sun angle, sky light colour) | Kept per dimension in `assets/orbitalis/dimension_visuals/`; sky and fog colours also go into the biomes; the sun angle becomes the dimension's fixed time | Rendering to port with the client |
+| Bed rule "never sleep, never explode" | `bed_works: false` + `BedBlockMixin`: no explosion, a message points to the crew quarters and hibernation pods | Same behaviour, new message |
+| `light_emission` on model elements | NeoForge reads `neoforge_data`; vanilla and Fabric ignore it | Fabric: emissive faces to do on the client |
+| `preRemoveSideEffects` | `RemovalAware`, called by `BlockStateBaseMixin` | Same |
+| NeoForge persistent player data | `PlayerData` (saved with the world) | Same |
+| Item model definitions (`assets/*/items`) | `models/item/*.json` | Same |
+| `block_blob` feature, integer `trapezoid` | `orbitalis:block_blob`, exact weighted list | Same |
+| Noise router `preliminary_surface_level` | `initial_density_without_jaggedness` | Same terrain shape |
+| One elevator message both ways | Two message types (`elevator_panel` to the player, `elevator` to the server) | Same |
+| Test map marked as "experimental" world | 1.21.1 has no such flag to clear | Nothing to do |
