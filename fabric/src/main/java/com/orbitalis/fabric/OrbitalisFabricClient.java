@@ -20,6 +20,18 @@ public final class OrbitalisFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         Orbitalis.initClient();
+        // Sous Fabric, les registres sont remplis : les rendus des entités de bloc s'inscrivent tout de suite.
+        com.orbitalis.client.OrbitalisClient.blockEntityRenderers(new com.orbitalis.client.OrbitalisClient.BlockEntityRenderers() {
+            @Override
+            public <T extends net.minecraft.world.level.block.entity.BlockEntity> void register(
+                    net.minecraft.world.level.block.entity.BlockEntityType<? extends T> type,
+                    net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider<T> provider) {
+                net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(type, provider);
+            }
+        });
+        // Les particules du mod, par l'API de Fabric (Architectury 13 ne les inscrit pas sous Fabric).
+        com.orbitalis.client.OrbitalisClient.particles((type, provider) ->
+                net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(type, provider::apply));
         // Le shader du ciel du mod (halos qui s'éteignent en douceur).
         net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback.EVENT.register(context -> context.register(
                 Orbitalis.id("sky"), com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR, com.orbitalis.client.port.render.SkyShader::set));

@@ -42,7 +42,6 @@ import com.orbitalis.platform.network.Network;
 
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
-import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.client.rendering.ColorHandlerRegistry;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
@@ -67,7 +66,6 @@ public final class OrbitalisClient {
         hooks();
         com.orbitalis.client.port.event.ClientEvents.register();
         entityRenderers();
-        particles();
         payloads();
         ColorHandlerRegistry.registerBlockColors((state, level, pos, tint) -> {
             boolean gas = state.is(ModBlocks.GAS_PIPE.get());
@@ -79,7 +77,6 @@ public final class OrbitalisClient {
         // Ce qui demande les registres remplis : les écrans des interfaces, les rendus des entités de bloc, les couches.
         ClientLifecycleEvent.CLIENT_SETUP.register(minecraft -> {
             screens();
-            blockEntityRenderers();
             renderLayers();
             Orbitalis.LOGGER.info("Orbitalis : initialisation client terminée.");
         });
@@ -110,14 +107,25 @@ public final class OrbitalisClient {
         MenuRegistry.registerScreenFactory(ModMenus.ACCUMULATOR.get(), com.orbitalis.client.screen.AccumulatorScreen::new);
     }
 
-    private static void blockEntityRenderers() {
-        BlockEntityRendererRegistry.register(ModBlockEntities.LAUNCH_TABLE.get(), LaunchTableRenderer::new);
-        BlockEntityRendererRegistry.register(ModBlockEntities.SHIPYARD_CONSOLE.get(), com.orbitalis.client.render.ShipyardConsoleRenderer::new);
-        BlockEntityRendererRegistry.register(ModBlockEntities.MISSION_DISPLAY.get(), MissionDisplayRenderer::new);
-        BlockEntityRendererRegistry.register(ModBlockEntities.FLUID_TANK.get(), FluidTankRenderer::new);
-        BlockEntityRendererRegistry.register(ModBlockEntities.DRILL_DERRICK.get(), com.orbitalis.client.render.DerrickRenderer::new);
-        BlockEntityRendererRegistry.register(ModBlockEntities.GLASS_DOOR.get(), com.orbitalis.client.render.GlassDoorRenderer::new);
-        BlockEntityRendererRegistry.register(ModBlockEntities.RING_DRIVE.get(), com.orbitalis.client.render.RingDriveRenderer::new);
+    /** Ce qui inscrit un rendu d'entité de bloc : chaque chargeur donne le sien (voir {@link #blockEntityRenderers}). */
+    public interface BlockEntityRenderers {
+        <T extends net.minecraft.world.level.block.entity.BlockEntity> void register(net.minecraft.world.level.block.entity.BlockEntityType<? extends T> type,
+                net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider<T> provider);
+    }
+
+    /**
+     * Les rendus des entités de bloc. Le jeu bâtit sa table de rendus pendant le premier chargement des ressources, en
+     * parallèle du démarrage du client : il faut les inscrire au moment que dit le chargeur (Fabric : à l'initialisation du
+     * client ; NeoForge : pendant son événement d'inscription des rendus), sans quoi ils manquent une fois sur deux.
+     */
+    public static void blockEntityRenderers(BlockEntityRenderers registry) {
+        registry.register(ModBlockEntities.LAUNCH_TABLE.get(), LaunchTableRenderer::new);
+        registry.register(ModBlockEntities.SHIPYARD_CONSOLE.get(), com.orbitalis.client.render.ShipyardConsoleRenderer::new);
+        registry.register(ModBlockEntities.MISSION_DISPLAY.get(), MissionDisplayRenderer::new);
+        registry.register(ModBlockEntities.FLUID_TANK.get(), FluidTankRenderer::new);
+        registry.register(ModBlockEntities.DRILL_DERRICK.get(), com.orbitalis.client.render.DerrickRenderer::new);
+        registry.register(ModBlockEntities.GLASS_DOOR.get(), com.orbitalis.client.render.GlassDoorRenderer::new);
+        registry.register(ModBlockEntities.RING_DRIVE.get(), com.orbitalis.client.render.RingDriveRenderer::new);
     }
 
     private static void entityRenderers() {
@@ -154,31 +162,41 @@ public final class OrbitalisClient {
         }
     }
 
-    /** Particules du mod : chacune a ses images, parcourues au fil de sa vie, et son comportement. */
-    private static void particles() {
-        particle(ModParticles.EXHAUST_SMOKE, OrbitalisParticle.Style.EXHAUST_SMOKE);
-        particle(ModParticles.ENGINE_FLAME, OrbitalisParticle.Style.ENGINE_FLAME);
-        particle(ModParticles.SPARK, OrbitalisParticle.Style.SPARK);
-        particle(ModParticles.CRYO_MIST, OrbitalisParticle.Style.CRYO_MIST);
-        particle(ModParticles.VAPOR, OrbitalisParticle.Style.VAPOR);
-        ParticleProviderRegistry.register(ModParticles.PLANET.registrySupplier(), PlanetParticle::provider);
-        particle(ModParticles.SOOT, OrbitalisParticle.Style.SOOT);
-        particle(ModParticles.LAUNCH_SMOKE, OrbitalisParticle.Style.LAUNCH_SMOKE);
-        particle(ModParticles.LAUNCH_STEAM, OrbitalisParticle.Style.LAUNCH_STEAM);
-        particle(ModParticles.DELUGE_WATER, OrbitalisParticle.Style.DELUGE_WATER);
-        particle(ModParticles.BLAST_FIRE, OrbitalisParticle.Style.BLAST_FIRE);
-        particle(ModParticles.BLAST_SMOKE, OrbitalisParticle.Style.BLAST_SMOKE);
-        particle(ModParticles.BLAST_CRYO, OrbitalisParticle.Style.BLAST_CRYO);
-        particle(ModParticles.TRENCH_FIRE, OrbitalisParticle.Style.TRENCH_FIRE);
-        particle(ModParticles.LAUNCH_EMBER, OrbitalisParticle.Style.LAUNCH_EMBER);
-        particle(ModParticles.LAUNCH_DUST, OrbitalisParticle.Style.LAUNCH_DUST);
-        particle(ModParticles.HEAT_HAZE, OrbitalisParticle.Style.HEAT_HAZE);
-        particle(ModParticles.LAUNCH_FLASH, OrbitalisParticle.Style.LAUNCH_FLASH);
+    /** Ce qui inscrit une particule et ses images : chaque chargeur donne le sien (voir {@link #particles}). */
+    public interface Particles {
+        void register(SimpleParticleType type, java.util.function.Function<net.minecraft.client.particle.SpriteSet,
+                net.minecraft.client.particle.ParticleProvider<SimpleParticleType>> provider);
     }
 
-    private static void particle(com.orbitalis.platform.registry.DeferredHolder<net.minecraft.core.particles.ParticleType<?>, SimpleParticleType> type,
+    /**
+     * Particules du mod : chacune a ses images, parcourues au fil de sa vie, et son comportement. Inscrites par le chargeur
+     * (Fabric : à l'initialisation du client ; NeoForge : pendant son événement) ; Architectury 13 ne le fait pas sous Fabric.
+     */
+    public static void particles(Particles registry) {
+        particle(registry, ModParticles.EXHAUST_SMOKE, OrbitalisParticle.Style.EXHAUST_SMOKE);
+        particle(registry, ModParticles.ENGINE_FLAME, OrbitalisParticle.Style.ENGINE_FLAME);
+        particle(registry, ModParticles.SPARK, OrbitalisParticle.Style.SPARK);
+        particle(registry, ModParticles.CRYO_MIST, OrbitalisParticle.Style.CRYO_MIST);
+        particle(registry, ModParticles.VAPOR, OrbitalisParticle.Style.VAPOR);
+        registry.register(ModParticles.PLANET.get(), PlanetParticle::provider);
+        particle(registry, ModParticles.SOOT, OrbitalisParticle.Style.SOOT);
+        particle(registry, ModParticles.LAUNCH_SMOKE, OrbitalisParticle.Style.LAUNCH_SMOKE);
+        particle(registry, ModParticles.LAUNCH_STEAM, OrbitalisParticle.Style.LAUNCH_STEAM);
+        particle(registry, ModParticles.DELUGE_WATER, OrbitalisParticle.Style.DELUGE_WATER);
+        particle(registry, ModParticles.BLAST_FIRE, OrbitalisParticle.Style.BLAST_FIRE);
+        particle(registry, ModParticles.BLAST_SMOKE, OrbitalisParticle.Style.BLAST_SMOKE);
+        particle(registry, ModParticles.BLAST_CRYO, OrbitalisParticle.Style.BLAST_CRYO);
+        particle(registry, ModParticles.TRENCH_FIRE, OrbitalisParticle.Style.TRENCH_FIRE);
+        particle(registry, ModParticles.LAUNCH_EMBER, OrbitalisParticle.Style.LAUNCH_EMBER);
+        particle(registry, ModParticles.LAUNCH_DUST, OrbitalisParticle.Style.LAUNCH_DUST);
+        particle(registry, ModParticles.HEAT_HAZE, OrbitalisParticle.Style.HEAT_HAZE);
+        particle(registry, ModParticles.LAUNCH_FLASH, OrbitalisParticle.Style.LAUNCH_FLASH);
+    }
+
+    private static void particle(Particles registry,
+            com.orbitalis.platform.registry.DeferredHolder<net.minecraft.core.particles.ParticleType<?>, SimpleParticleType> type,
             OrbitalisParticle.Style style) {
-        ParticleProviderRegistry.register(type.registrySupplier(), sprites -> OrbitalisParticle.provider(style, sprites));
+        registry.register(type.get(), sprites -> OrbitalisParticle.provider(style, sprites));
     }
 
     /** Messages reçus du serveur. */

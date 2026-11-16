@@ -4120,7 +4120,13 @@ public class LaunchTableBlockEntity extends BlockEntity implements com.orbitalis
         loadedHelium3 -= (int) (loadedHelium3 * share);
     }
 
+    /** Pendant les captures (outil de développement), les annonces de la table vont aussi au journal. */
+    private static final boolean PREVIEW_LOG = Boolean.getBoolean("orbitalis.worldPreview");
+
     private void endCountdown(Result result, Component message) {
+        if (PREVIEW_LOG) {
+            com.orbitalis.Orbitalis.LOGGER.info("APERCU table {} fin {} : {}", worldPosition, result, message == null ? "" : message.getString());
+        }
         phase = Phase.IDLE;
         timer = 0;
         lastResult = result;
@@ -4618,6 +4624,9 @@ public class LaunchTableBlockEntity extends BlockEntity implements com.orbitalis
 
     /** Message envoyé aux joueurs proches du pas de tir. */
     private void announce(Component message) {
+        if (PREVIEW_LOG) {
+            com.orbitalis.Orbitalis.LOGGER.info("APERCU table {} : {}", worldPosition, message.getString());
+        }
         if (level instanceof ServerLevel serverLevel) {
             for (ServerPlayer player : serverLevel.players()) {
                 if (player.blockPosition().closerThan(worldPosition, ANNOUNCE_RANGE)) {

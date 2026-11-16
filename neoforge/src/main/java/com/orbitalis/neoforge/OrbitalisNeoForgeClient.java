@@ -34,6 +34,19 @@ final class OrbitalisNeoForgeClient {
     static void init(IEventBus modBus) {
         // Le ciel de l'espace : orbites, Lune, Europe (« effects » de leur type de dimension).
         modBus.addListener(RegisterDimensionSpecialEffectsEvent.class, event -> event.register(Orbitalis.id("deep_space"), new SpaceEffects()));
+        // Les rendus des entités de bloc, pendant l'événement prévu pour cela.
+        modBus.addListener(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers.class,
+                event -> com.orbitalis.client.OrbitalisClient.blockEntityRenderers(new com.orbitalis.client.OrbitalisClient.BlockEntityRenderers() {
+                    @Override
+                    public <T extends net.minecraft.world.level.block.entity.BlockEntity> void register(
+                            net.minecraft.world.level.block.entity.BlockEntityType<? extends T> type,
+                            net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider<T> provider) {
+                        event.registerBlockEntityRenderer(type, provider);
+                    }
+                }));
+        // Les particules du mod, pendant l'événement prévu pour cela.
+        modBus.addListener(net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent.class,
+                event -> com.orbitalis.client.OrbitalisClient.particles((type, provider) -> event.registerSpriteSet(type, provider::apply)));
         // Le shader du ciel du mod (halos qui s'éteignent en douceur).
         modBus.addListener(net.neoforged.neoforge.client.event.RegisterShadersEvent.class, event -> {
             try {
