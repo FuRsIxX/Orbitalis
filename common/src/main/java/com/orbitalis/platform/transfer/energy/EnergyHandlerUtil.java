@@ -19,16 +19,16 @@ public final class EnergyHandlerUtil {
             try (Transaction probe = Transaction.open(outer)) {
                 available = from.extract(amount, probe);
             }
-            int accepted;
-            try (Transaction probe = Transaction.open(outer)) {
-                accepted = to.insert(available, probe);
-            }
-            if (accepted <= 0) {
+            if (available <= 0) {
                 return 0;
             }
-            int extracted = from.extract(accepted, outer);
-            int inserted = to.insert(extracted, outer);
-            if (inserted != extracted) {
+            // La cible n'est sollicitée qu'une fois (voir ResourceHandlerUtil#move), puis on retire de la source ce qu'elle a pris.
+            int inserted = to.insert(available, outer);
+            if (inserted <= 0) {
+                return 0;
+            }
+            int extracted = from.extract(inserted, outer);
+            if (extracted != inserted) {
                 return 0;
             }
             outer.commit();

@@ -35,6 +35,36 @@ subprojects {
                 vmArg "-Dorbitalis.smokeTest=true"
             }
         }
+        // La carte de test : ./gradlew :fabric:runTestMap (ou :neoforge:runTestMap). Un serveur sans fenêtre crée un monde plat
+        // neuf dans run/testmap, y bâtit tout ce que le mod ajoute (voir TestMap), puis s'arrête.
+        if (project.name != "common") {
+            runs.register("testMap") {
+                server()
+                name = "Test Map"
+                runDir = "run/testmap"
+                vmArg "-Dorbitalis.testMap=true"
+                programArgs "--nogui"
+            }
+        }
+        // Les tests en jeu : ./gradlew :fabric:runGametest (ou :neoforge:runGametest). Un serveur les passe tous, puis s'arrête.
+        if (project.name == "fabric") {
+            runs.register("gametest") {
+                server()
+                name = "Game Tests"
+                runDir = "build/gametest"
+                vmArg "-Dfabric-api.gametest"
+                vmArg "-Dfabric-api.gametest.report-file=" + file("build/gametest/report.xml").absolutePath
+            }
+        } else if (project.name == "neoforge") {
+            runs.register("gametest") {
+                server()
+                name = "Game Tests"
+                runDir = "build/gametest"
+                vmArg "-Dneoforge.gameTestServer=true"
+                vmArg "-Dneoforge.enableGameTest=true"
+                vmArg "-Dneoforge.enabledGameTestNamespaces=orbitalis"
+            }
+        }
         // ./gradlew :fabric:runClient -Porbitalis.worldPreview=true [-Porbitalis.previewOnly=vue1,vue2] [-Porbitalis.previewWorld=nom] :
         // ouvre run/saves/orbitalis_render (ou le monde nommé), y bâtit des scènes, les capture dans run/world_preview, puis
         // ferme le jeu (voir WorldPreview).
@@ -62,5 +92,57 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
         options.release = 21
+    }
+}
+
+// La carte de test : un monde plat neuf à chaque fois, bâti par le serveur du chargeur (voir runTestMap).
+def testMapName = "Orbitalis - Carte de test"
+subprojects {
+    if (project.name == "common") {
+        return
+    }
+    def dir = file("run/testmap")
+    tasks.register("prepareTestMap") {
+        group = "orbitalis"
+        description = "Prépare un serveur neuf pour la carte de test : monde plat, créatif, paisible."
+        doLast {
+            def world = new File(dir, testMapName)
+            if (world.exists()) {
+                world.deleteDir()
+            }
+            dir.mkdirs()
+            new File(dir, "eula.txt").text = "eula=true\n"
+            new File(dir, "server.properties").text = [
+                    "level-name=${testMapName}",
+                    'level-type=minecraft\\:flat',
+                    "generate-structures=false",
+                    "gamemode=creative",
+                    "difficulty=peaceful",
+                    "spawn-monsters=false",
+                    "online-mode=false",
+                    "spawn-protection=0",
+                    "motd=Orbitalis - carte de test",
+            ].join("\n") + "\n"
+        }
+    }
+    tasks.matching { it.name == "runTestMap" }.configureEach { dependsOn "prepareTestMap" }
+    // La carte bâtie va dans run/saves, où la trouve le jeu lancé par runClient.
+    tasks.register("deployTestMapLocal", Sync) {
+        group = "orbitalis"
+        description = "Bâtit la carte de test et la copie dans run/saves."
+        dependsOn "runTestMap"
+        from new File(dir, testMapName)
+        into file("run/saves/${testMapName}")
+        exclude "session.lock"
+    }
+}
+
+// Les tests en jeu partent toujours d'un monde neuf : ce qu'un passage précédent a laissé (satellites, relevés) fausserait
+// les comptes.
+subprojects {
+    tasks.matching { it.name == "runGametest" }.configureEach {
+        doFirst {
+            delete file("build/gametest/world")
+        }
     }
 }

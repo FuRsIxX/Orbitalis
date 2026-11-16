@@ -9,7 +9,8 @@
   "environment": "*",
   "entrypoints": {
     "main": ["com.orbitalis.fabric.OrbitalisFabric"],
-    "client": ["com.orbitalis.fabric.OrbitalisFabricClient"]
+    "client": ["com.orbitalis.fabric.OrbitalisFabricClient"],
+    "fabric-gametest": ["com.orbitalis.gametest.OrbitalisGameTests"]
   },
   "mixins": [
     "orbitalis.mixins.json",

@@ -10,10 +10,14 @@
     "defaultRequire": 1
   },
   "client": [
+    "client.BlockElementDeserializerMixin",
+    "client.BlockElementMixin",
+    "client.BlockModelMixin",
     "client.CameraMixin",
     "client.GameRendererMixin",
     "client.GuiMixin",
     "client.ParticleEngineMixin",
-    "client.PlayerRendererMixin"
+    "client.PlayerRendererMixin",
+    "client.VertexConsumerMixin"
   ]
 }

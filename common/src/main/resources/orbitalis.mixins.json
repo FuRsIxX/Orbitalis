@@ -10,7 +10,9 @@
     "EntityMixin",
     "PlayerMixin",
     "PrimaryLevelDataAccessor",
-    "PrimaryLevelDataMixin"
+    "PrimaryLevelDataMixin",
+    "StructureGridSpawnerMixin",
+    "StructureUtilsMixin"
   ],
   "client": [
     "client.ClientLevelMixin",

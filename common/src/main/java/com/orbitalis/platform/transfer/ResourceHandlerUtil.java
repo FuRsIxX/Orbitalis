@@ -30,7 +30,9 @@ public final class ResourceHandlerUtil {
                 if (resource.isEmpty() || !filter.test(resource)) {
                     continue;
                 }
-                // Ce que la source peut donner, puis ce que la cible peut prendre, puis le mouvement réel.
+                // Ce que la source peut donner (un essai), puis ce que la cible prend vraiment, puis on le retire de la source.
+                // La cible n'est sollicitée qu'une fois : certaines comptent ce qu'elles reçoivent par tick (le bras d'une
+                // table de lancement), et un essai leur aurait pris leur part.
                 int available;
                 try (Transaction probe = Transaction.open(outer)) {
                     available = from.extract(index, resource, amount - moved, probe);
@@ -38,20 +40,19 @@ public final class ResourceHandlerUtil {
                 if (available <= 0) {
                     continue;
                 }
-                int accepted;
-                try (Transaction probe = Transaction.open(outer)) {
-                    accepted = to.insert(resource, available, probe);
+                try (Transaction step = Transaction.open(outer)) {
+                    int inserted = to.insert(resource, available, step);
+                    if (inserted <= 0) {
+                        continue;
+                    }
+                    int extracted = from.extract(index, resource, inserted, step);
+                    if (extracted != inserted) {
+                        // La source a changé d'avis entre l'essai et le mouvement : on annule ce pas.
+                        continue;
+                    }
+                    step.commit();
+                    moved += inserted;
                 }
-                if (accepted <= 0) {
-                    continue;
-                }
-                int extracted = from.extract(index, resource, accepted, outer);
-                int inserted = to.insert(resource, extracted, outer);
-                if (inserted != extracted) {
-                    // Une réserve a changé d'avis entre l'essai et le mouvement : on n'en fait rien.
-                    return 0;
-                }
-                moved += inserted;
             }
             outer.commit();
         }

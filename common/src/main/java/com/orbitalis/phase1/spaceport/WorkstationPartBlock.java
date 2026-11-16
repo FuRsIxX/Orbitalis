@@ -71,7 +71,7 @@ public class WorkstationPartBlock extends Block {
             BlockPos host = Workstation.findHost(level, pos);
             if (host != null) {
                 BlockState hostState = level.getBlockState(host);
-                boolean drop = !player.isCreative() && player.hasCorrectToolForDrops(hostState);
+                boolean drop = !player.getAbilities().instabuild && player.hasCorrectToolForDrops(hostState);
                 if (drop) {
                     Block.dropResources(hostState, level, host, level.getBlockEntity(host), player, player.getMainHandItem());
                 }

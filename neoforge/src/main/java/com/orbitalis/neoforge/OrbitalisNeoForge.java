@@ -54,6 +54,9 @@ public final class OrbitalisNeoForge {
         CONDITIONS.register(modBus);
         modBus.addListener(RegisterCapabilitiesEvent.class, NeoForgeTransfer::expose);
         NeoForge.EVENT_BUS.addListener(BlockDropsEvent.class, OrbitalisNeoForge::onDrops);
+        // Les tests en jeu du mod (lancés par runGametest).
+        modBus.addListener(net.neoforged.neoforge.event.RegisterGameTestsEvent.class,
+                event -> event.register(com.orbitalis.gametest.OrbitalisGameTests.class));
         if (FMLEnvironment.dist == Dist.CLIENT) {
             Orbitalis.initClient();
             OrbitalisNeoForgeClient.init(modBus);
