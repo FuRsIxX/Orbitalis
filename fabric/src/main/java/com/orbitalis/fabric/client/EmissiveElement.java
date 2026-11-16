@@ -1,4 +1,4 @@
-package com.orbitalis.fabric.mixin.client;
+package com.orbitalis.fabric.client;
 
 /** La lumière propre d'un élément de modèle (« light_emission »), de 0 à 15, lue par le mod sous Fabric. */
 public interface EmissiveElement {

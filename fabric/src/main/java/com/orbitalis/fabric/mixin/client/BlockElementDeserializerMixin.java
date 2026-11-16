@@ -2,6 +2,7 @@ package com.orbitalis.fabric.mixin.client;
 
 import java.lang.reflect.Type;
 
+import com.orbitalis.fabric.client.EmissiveElement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

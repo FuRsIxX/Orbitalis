@@ -1,5 +1,6 @@
 package com.orbitalis.fabric.mixin.client;
 
+import com.orbitalis.fabric.client.EmissiveElement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
