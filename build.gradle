@@ -25,6 +25,16 @@ subprojects {
         maven { url = "https://maven.neoforged.net/releases/" }
         maven { url = "https://maven.architectury.dev/" }
         mavenCentral()
+        // JEI (recettes) : seulement pour compiler le module de compatibilité et le tester en développement.
+        exclusiveContent {
+            forRepository { maven { name = "BlameJared"; url = "https://maven.blamejared.com/" } }
+            filter { includeGroup "mezz.jei"; includeGroup "net.mezzdev.config" }
+        }
+        // Mod Menu (Fabric) : le bouton qui ouvre l'écran des réglages.
+        exclusiveContent {
+            forRepository { maven { name = "TerraformersMC"; url = "https://maven.terraformersmc.com/releases/" } }
+            filter { includeGroup "com.terraformersmc" }
+        }
     }
 
     loom {
@@ -44,6 +54,21 @@ subprojects {
                 runDir = "run/testmap"
                 vmArg "-Dorbitalis.testMap=true"
                 programArgs "--nogui"
+            }
+        }
+        // L'essai à plusieurs : ./gradlew :fabric:runMultiplayerServer démarre un serveur dédié (monde plat, run/multiplayer), puis
+        // ./gradlew :fabric:runClient -Porbitalis.joinServer=true le rejoint directement.
+        if (project.name != "common") {
+            runs.register("multiplayerServer") {
+                server()
+                name = "Multiplayer Server"
+                runDir = "run/multiplayer"
+                programArgs "--nogui"
+            }
+        }
+        if (project.name != "common" && project.hasProperty("orbitalis.joinServer")) {
+            runs.named("client") {
+                programArgs "--quickPlayMultiplayer", "localhost:25565"
             }
         }
         // Les tests en jeu : ./gradlew :fabric:runGametest (ou :neoforge:runGametest). Un serveur les passe tous, puis s'arrête.
@@ -126,6 +151,22 @@ subprojects {
         }
     }
     tasks.matching { it.name == "runTestMap" }.configureEach { dependsOn "prepareTestMap" }
+    // Le serveur de l'essai à plusieurs : accepte les joueurs hors ligne (le client de développement).
+    tasks.register("prepareMultiplayerServer") {
+        group = "orbitalis"
+        description = "Prépare le serveur dédié de l'essai à plusieurs (monde plat, hors ligne)."
+        doLast {
+            def server = file("run/multiplayer")
+            server.mkdirs()
+            new File(server, "eula.txt").text = "eula=true\n"
+            def properties = new File(server, "server.properties")
+            if (!properties.exists()) {
+                properties.text = ["level-name=world", 'level-type=minecraft\\:flat', "generate-structures=false",
+                                   "online-mode=false", "spawn-protection=0", "motd=Orbitalis - essai a plusieurs"].join("\n") + "\n"
+            }
+        }
+    }
+    tasks.matching { it.name == "runMultiplayerServer" }.configureEach { dependsOn "prepareMultiplayerServer" }
     // La carte bâtie va dans run/saves, où la trouve le jeu lancé par runClient.
     tasks.register("deployTestMapLocal", Sync) {
         group = "orbitalis"

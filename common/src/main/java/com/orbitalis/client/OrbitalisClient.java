@@ -202,6 +202,13 @@ public final class OrbitalisClient {
     /** Messages reçus du serveur. */
     private static void payloads() {
         Network.onClient(ResearchSyncPayload.TYPE, (payload, context) -> ClientResearch.receive(payload));
+        // Les réglages du serveur (en solo, ce sont déjà les mêmes valeurs).
+        Network.onClient(com.orbitalis.core.network.ServerConfigPayload.TYPE, (payload, context) -> {
+            if (!net.minecraft.client.Minecraft.getInstance().hasSingleplayerServer()) {
+                com.orbitalis.core.config.ServerConfig.SPEC.applyRemote(payload.values());
+                com.orbitalis.Orbitalis.LOGGER.info("Réglages du serveur reçus : {}", payload.values());
+            }
+        });
         // Foreuse : l'état complet (réglages, carte, carottage) arrive à l'ouverture puis à chaque commande.
         Network.onClient(com.orbitalis.core.network.DerrickStatusPayload.TYPE, (payload, context) -> {
             if (Minecraft.getInstance().screen instanceof com.orbitalis.client.screen.DerrickScreen screen) {

@@ -1,3 +1,13 @@
+# Orbitalis — édition 1.21.1 (en préparation)
+
+*Minecraft 1.21.1 · Fabric (Fabric API, Architectury API) ou NeoForge 21.1 (Architectury API) · JEI recommandé*
+
+Le même mod que la version 26.2, porté sur Minecraft 1.21.1, pour Fabric comme pour NeoForge. Les écarts connus sont listés dans PORTING.md.
+
+- **Les deux chargeurs** : machines, énergie, fluides, fusées, vols, stations, vaisseau, dimensions, écrans et rendus fonctionnent sous Fabric comme sous NeoForge ; les 70 tests en jeu passent sur les deux. L'énergie s'échange avec les autres mods par Team Reborn Energy sous Fabric (inclus dans le mod), par la capacité d'énergie sous NeoForge ; fluides et objets passent par l'API de transfert de chacun.
+- **JEI** : les recettes des machines (fonderie à arc, laminoir, chambre de Casimir, électrolyseur, liquéfacteur, raffinerie, réacteur de Sabatier, extracteur d'hélium-3) s'affichent dans JEI sous les deux chargeurs, avec leur énergie et leur durée.
+- **Écran des réglages** : depuis la liste des mods (NeoForge) ou Mod Menu (Fabric), un écran par fichier : réglages du client, du serveur, de démarrage. Les réglages du serveur sont propres à chaque monde (`saves/<monde>/serverconfig/orbitalis-server.toml`, modèle facultatif dans `defaultconfigs/`), se changent dans un monde ouvert en solo et sont envoyés à chaque joueur qui se connecte, pour que ses écrans montrent les coûts du serveur.
+
 # Orbitalis — prochaine version
 
 ## Nouveautés

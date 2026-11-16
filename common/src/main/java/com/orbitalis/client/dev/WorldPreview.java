@@ -786,6 +786,41 @@ public final class WorldPreview {
         SHOTS.add(new Shot("solar_icons_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
                 () -> net.minecraft.client.Minecraft.getInstance().setScreen(null)), 44.5, 3.2, -2.6, 0.0F, 45.0F, 4));
 
+        // Écran des réglages (liste des mods, Mod Menu) : l'accueil puis chaque fichier, en anglais puis en français.
+        for (String language : java.util.List.of("en_us", "fr_fr")) {
+            String suffix = language.equals("en_us") ? "" : "_fr";
+            SHOTS.add(new Shot("config_root" + suffix, level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+                var minecraft = net.minecraft.client.Minecraft.getInstance();
+                // La langue change pour les captures seulement : rien n'est écrit dans les options du joueur.
+                minecraft.getLanguageManager().setSelected(language);
+                minecraft.getLanguageManager().onResourceManagerReload(minecraft.getResourceManager());
+                minecraft.setScreen(new com.orbitalis.client.screen.ConfigScreen(null));
+            }), 44.5, 3.2, -2.6, 0.0F, 45.0F, 6));
+            for (String file : java.util.List.of("server", "client", "startup")) {
+                SHOTS.add(new Shot("config_" + file + suffix, level -> net.minecraft.client.Minecraft.getInstance().execute(
+                        () -> net.minecraft.client.Minecraft.getInstance().setScreen(com.orbitalis.client.screen.ConfigScreen.section(null, file))),
+                        44.5, 3.2, -2.6, 0.0F, 45.0F, 4));
+            }
+        }
+        SHOTS.add(new Shot("config_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+            var minecraft = net.minecraft.client.Minecraft.getInstance();
+            minecraft.setScreen(null);
+            minecraft.getLanguageManager().setSelected(minecraft.options.languageCode);
+            minecraft.getLanguageManager().onResourceManagerReload(minecraft.getResourceManager());
+        }), 44.5, 3.2, -2.6, 0.0F, 45.0F, 4));
+
+        // JEI (s'il est installé) : les recettes de la fonderie à arc, puis celles de l'électrolyseur.
+        for (String category : java.util.List.of("alloying", "electrolysis")) {
+            SHOTS.add(new Shot("jei_" + category, level -> net.minecraft.client.Minecraft.getInstance().execute(() -> {
+                if (!dev.architectury.platform.Platform.isModLoaded("jei")
+                        || !com.orbitalis.compat.jei.OrbitalisJeiPlugin.showForPreview(category)) {
+                    com.orbitalis.Orbitalis.LOGGER.warn("APERCU JEI absent ou pas prêt");
+                }
+            }), 44.5, 3.2, -2.6, 0.0F, 45.0F, 10));
+        }
+        SHOTS.add(new Shot("jei_closed", level -> net.minecraft.client.Minecraft.getInstance().execute(
+                () -> net.minecraft.client.Minecraft.getInstance().setScreen(null)), 44.5, 3.2, -2.6, 0.0F, 45.0F, 4));
+
         // Grand pas de tir 5×5 bâti selon le plan complet, avec le lanceur orbital.
         SHOTS.add(new Shot("large_pad", level -> {
             buildPad(level, 22, 1, 22, 2);

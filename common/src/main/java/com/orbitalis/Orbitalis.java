@@ -49,7 +49,6 @@ public final class Orbitalis {
     public static void init() {
         // Le réglage de démarrage d'abord : il dit quel contenu en préparation montrer, et il est lu dès l'inscription des registres.
         StartupConfig.SPEC.load(Platform.getConfigFolder().resolve(MODID + "-startup.toml"));
-        ServerConfig.SPEC.load(Platform.getConfigFolder().resolve(MODID + "-server.toml"));
 
         // Sous Fabric, chaque inscription est immédiate : les fluides d'abord (le bloc de méthane liquide en a besoin), puis
         // les composants des objets, les blocs et les objets.

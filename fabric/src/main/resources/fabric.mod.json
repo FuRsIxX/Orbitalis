@@ -10,7 +10,9 @@
   "entrypoints": {
     "main": ["com.orbitalis.fabric.OrbitalisFabric"],
     "client": ["com.orbitalis.fabric.OrbitalisFabricClient"],
-    "fabric-gametest": ["com.orbitalis.gametest.OrbitalisGameTests"]
+    "fabric-gametest": ["com.orbitalis.gametest.OrbitalisGameTests"],
+    "jei_mod_plugin": ["com.orbitalis.compat.jei.OrbitalisJeiPlugin"],
+    "modmenu": ["com.orbitalis.fabric.compat.ModMenuEntry"]
   },
   "mixins": [
     "orbitalis.mixins.json",

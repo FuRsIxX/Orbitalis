@@ -30,7 +30,8 @@ public class DeferredRegister<T> {
     private final dev.architectury.registry.registries.DeferredRegister<T> inner;
     private final ResourceKey<? extends Registry<T>> registry;
     private final String modid;
-    private final List<DeferredHolder<T, ? extends T>> entries = new ArrayList<>();
+    /** Toutes les entrées, dans leur ordre d'inscription (onglet créatif, carte de test). */
+    protected final List<DeferredHolder<T, ? extends T>> entries = new ArrayList<>();
 
     protected DeferredRegister(ResourceKey<? extends Registry<T>> registry, String modid) {
         @SuppressWarnings("unchecked")
@@ -110,6 +111,7 @@ public class DeferredRegister<T> {
 
         public <B extends Block> DeferredBlock<B> block(String name, Supplier<? extends B> supplier) {
             DeferredBlock<B> block = new DeferredBlock<>(key(name), add(name, supplier));
+            entries.add(block);
             return block;
         }
     }
@@ -155,7 +157,9 @@ public class DeferredRegister<T> {
         }
 
         public <I extends Item> DeferredItem<I> item(String name, Supplier<? extends I> supplier) {
-            return new DeferredItem<>(key(name), add(name, supplier));
+            DeferredItem<I> item = new DeferredItem<>(key(name), add(name, supplier));
+            entries.add(item);
+            return item;
         }
 
         @Override

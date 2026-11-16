@@ -81,7 +81,11 @@ public final class Network {
         };
     }
 
+    /** Envoie un message à un joueur, s'il sait le recevoir (pas les joueurs factices des tests, ni un client sans le mod). */
     public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
+        if (!NetworkManager.canPlayerReceive(player, payload.type())) {
+            return;
+        }
         NetworkManager.sendToPlayer(player, payload);
     }
 

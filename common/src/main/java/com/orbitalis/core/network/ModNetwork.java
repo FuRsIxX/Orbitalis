@@ -25,6 +25,7 @@ public final class ModNetwork {
         public static void register() {
         Network.Registrar registrar = Network.REGISTRAR;
         registrar.playToClient(ResearchSyncPayload.TYPE, ResearchSyncPayload.STREAM_CODEC);
+        registrar.playToClient(ServerConfigPayload.TYPE, ServerConfigPayload.STREAM_CODEC);
         registrar.playToClient(LaunchStatusPayload.TYPE, LaunchStatusPayload.STREAM_CODEC);
         registrar.playToClient(BreakupPayload.TYPE, BreakupPayload.STREAM_CODEC);
         registrar.playToClient(FlightHudPayload.TYPE, FlightHudPayload.STREAM_CODEC);

@@ -58,6 +58,8 @@ Generated data on `main` is converted, not regenerated: a script turns 26.2 JSON
    Moon, Mars, Titan lakes and methane fog, Europa and Jupiter.
 6. Dimensions and world generation (Moon, Mars, Titan, Europa, exoplanets).
 7. Game tests and a test map, then in-game captures on Fabric and NeoForge, fixing every difference.
+   **Game tests: 70/70 on both loaders (2026-11-16)** (`./gradlew :fabric:runGametest`, `:neoforge:runGametest`).
+   Launch checked in game on both loaders: countdown, deluge, ignition, smoke and flames, lift-off.
 8. Then the same for 1.20.1 (Forge + Fabric), starting from this branch.
 
 ## Checking a build
@@ -65,6 +67,9 @@ Generated data on `main` is converted, not regenerated: a script turns 26.2 JSON
     ./gradlew build
     ./gradlew :fabric:runServer -Porbitalis.smokeTest
     ./gradlew :neoforge:runServer -Porbitalis.smokeTest
+    ./gradlew :fabric:runGametest
+    ./gradlew :fabric:runMultiplayerServer        # then, in another shell:
+    ./gradlew :fabric:runClient -Porbitalis.joinServer=true
 
 The smoke test starts a dedicated server, generates the centre chunk of each Orbitalis dimension, logs what it
 found (`[essai]` lines), then stops the server and the process.
@@ -75,9 +80,9 @@ Data is converted with `python tools/convert_data_121.py` (rerun it after copyin
 
 | 26.2 | 1.21.1 | Status |
 |---|---|---|
-| Environment attributes (sky, fog, clouds, stars, sun angle, sky light colour) | Kept per dimension in `assets/orbitalis/dimension_visuals/`; sky and fog colours also go into the biomes; the sun angle becomes the dimension's fixed time | Rendering to port with the client |
+| Environment attributes (sky, fog, clouds, stars, sun angle, sky light colour) | Kept per dimension in `assets/orbitalis/dimension_visuals/`; sky and fog colours also go into the biomes; the sun angle becomes the dimension's fixed time | Same sky, fog and light |
 | Bed rule "never sleep, never explode" | `bed_works: false` + `BedBlockMixin`: no explosion, a message points to the crew quarters and hibernation pods | Same behaviour, new message |
-| `light_emission` on model elements | NeoForge reads `neoforge_data`; vanilla and Fabric ignore it | Fabric: emissive faces to do on the client |
+| `light_emission` on model elements | NeoForge reads `neoforge_data`; vanilla and Fabric ignore it | Fabric: read back by client mixins (see below) |
 | `preRemoveSideEffects` | `RemovalAware`, called by `BlockStateBaseMixin` | Same |
 | NeoForge persistent player data | `PlayerData` (saved with the world) | Same |
 | Item model definitions (`assets/*/items`) | `models/item/*.json` | Same |
@@ -89,5 +94,12 @@ Data is converted with `python tools/convert_data_121.py` (rerun it after copyin
 | Render layer guessed from textures | `render_layers.json` (tools/render_layers_121.py), registered at client start | Same |
 | `END_SKY` pipeline (no alpha cut) | Own core shader `orbitalis:sky` (position_tex_color without the 10 % alpha cut) | Same soft Milky Way and halos |
 | Picture-in-picture 3D scenes (guide, shipyard, construction) | Drawn straight into the GUI, clipped to their area | Same framing |
-| Emissive model faces | NeoForge only for now (mast lights glow on NeoForge, not on Fabric) | To do on Fabric |
+| Emissive model faces | NeoForge reads them; on Fabric, mixins keep the element's light when baking and use it when drawing | Same on both |
 | Mod fluids on NeoForge | Architectury gives no textures to NeoForge: the client registers them (water texture, tinted) | Same |
+| Particles registered by Architectury | Architectury 13 registers nothing on Fabric: each loader registers the providers itself (`OrbitalisClient.particles`) | Same |
+| Block entity renderers registered at client setup | Raced the resource reload; each loader now registers them at its own moment (`OrbitalisClient.blockEntityRenderers`) | Same |
+| Game test structures | 1.21.1 walls each test with barriers and spaces them 5 blocks apart: `StructureUtilsMixin` and `StructureGridSpawnerMixin` remove both | Same results |
+| JEI 30 | JEI 19 (`compat/jei`, common code): found by its annotation on NeoForge and the `jei_mod_plugin` entrypoint on Fabric. Built against 19.43 (the last one made with Loom 1.11), runs with later 19.x | Same categories and catalysts |
+| Create compatibility | Nothing to port: `main` only has the empty package | — |
+| Server config per world, synced to players (NeoForge `SERVER` config) | Own file per world (`serverconfig/orbitalis-server.toml`, `defaultconfigs/` as model), sent to each player on join and after a change | Same |
+| NeoForge generic config screen | Own screen on vanilla options widgets (`ConfigScreen`), opened from the mod list (NeoForge) or Mod Menu (Fabric) | Same settings, vanilla look |

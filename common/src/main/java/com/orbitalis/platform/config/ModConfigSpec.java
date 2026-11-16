@@ -21,13 +21,47 @@ import com.orbitalis.Orbitalis;
  */
 public final class ModConfigSpec {
     private final List<Value<?>> values;
+    /** Le fichier lu en dernier, pour y réécrire les réglages changés à l'écran. */
+    private Path file;
 
     private ModConfigSpec(List<Value<?>> values) {
         this.values = values;
     }
 
+    /** Les réglages, dans l'ordre de leur description (pour l'écran des réglages). */
+    public List<Value<?>> values() {
+        return values;
+    }
+
+    /** Réécrit le fichier lu au démarrage (après un changement à l'écran). */
+    public void save() {
+        if (file != null) {
+            save(file);
+        }
+    }
+
+    /** Chaque réglage sous sa clé, tel qu'écrit dans le fichier (pour l'envoyer aux joueurs). */
+    public Map<String, String> snapshot() {
+        Map<String, String> out = new HashMap<>();
+        for (Value<?> value : values) {
+            out.put(value.key, value.format());
+        }
+        return out;
+    }
+
+    /** Prend les valeurs envoyées par le serveur, sans rien écrire : elles valent le temps de la partie. */
+    public void applyRemote(Map<String, String> remote) {
+        for (Value<?> value : values) {
+            String text = remote.get(value.key);
+            if (text != null) {
+                value.parse(text);
+            }
+        }
+    }
+
     /** Lit le fichier ; s'il manque ou s'il lui manque des réglages, il est réécrit avec les valeurs par défaut. */
     public void load(Path file) {
+        this.file = file;
         Map<String, String> read = new HashMap<>();
         if (Files.exists(file)) {
             try {
@@ -79,12 +113,29 @@ public final class ModConfigSpec {
         final List<String> comment;
         final T fallback;
         T current;
+        /** Le nom affiché à l'écran (clé de traduction) et s'il faut relancer le jeu pour l'appliquer. */
+        String translation;
+        boolean restart;
 
         Value(String key, List<String> comment, T fallback) {
             this.key = key;
             this.comment = comment;
             this.fallback = fallback;
             this.current = fallback;
+        }
+
+        public String key() {
+            return key;
+        }
+
+        /** La clé de traduction du nom ; « .tooltip » à la suite donne l'explication. */
+        public String translation() {
+            return translation != null ? translation : "orbitalis.configuration." + key;
+        }
+
+        /** Vrai si le réglage ne prend effet qu'au prochain lancement du jeu. */
+        public boolean needsRestart() {
+            return restart;
         }
 
         @Override
@@ -145,6 +196,14 @@ public final class ModConfigSpec {
             return current;
         }
 
+        public double min() {
+            return min;
+        }
+
+        public double max() {
+            return max;
+        }
+
         @Override
         boolean parse(String text) {
             try {
@@ -186,6 +245,8 @@ public final class ModConfigSpec {
     public static final class Builder {
         private final List<Value<?>> values = new ArrayList<>();
         private List<String> comment = List.of();
+        private String translation;
+        private boolean restart;
 
         public Builder comment(String... lines) {
             comment = List.of(lines);
@@ -193,6 +254,7 @@ public final class ModConfigSpec {
         }
 
         public Builder translation(String key) {
+            translation = key;
             return this;
         }
 
@@ -201,6 +263,7 @@ public final class ModConfigSpec {
         }
 
         public Builder gameRestart() {
+            restart = true;
             return this;
         }
 
@@ -231,6 +294,10 @@ public final class ModConfigSpec {
         }
 
         private <V extends Value<?>> V add(V value) {
+            value.translation = translation;
+            value.restart = restart;
+            translation = null;
+            restart = false;
             values.add(value);
             return value;
         }

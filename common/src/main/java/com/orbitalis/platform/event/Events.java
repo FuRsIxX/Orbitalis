@@ -53,7 +53,10 @@ public final class Events {
         });
         dev.architectury.event.events.common.PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd, reason) ->
                 com.orbitalis.phase2.survival.RespawnRules.afterRespawn(player, conqueredEnd));
+        // Les réglages du serveur sont propres au monde : lus à son démarrage, puis envoyés à chaque joueur qui arrive.
+        LifecycleEvent.SERVER_STARTING.register(com.orbitalis.core.config.ServerConfig::loadFor);
         dev.architectury.event.events.common.PlayerEvent.PLAYER_JOIN.register(player -> {
+            com.orbitalis.core.config.ServerConfig.sendTo(player);
             PlayerEvent.PlayerLoggedInEvent event = new PlayerEvent.PlayerLoggedInEvent(player);
             com.orbitalis.core.research.ResearchManager.onPlayerLoggedIn(event);
             com.orbitalis.core.guide.GuideBookGift.onPlayerLoggedIn(event);

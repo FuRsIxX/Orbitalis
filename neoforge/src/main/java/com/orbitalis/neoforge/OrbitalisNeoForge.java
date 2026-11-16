@@ -49,7 +49,7 @@ public final class OrbitalisNeoForge {
         CONDITIONS.register(Features.INTERSTELLAR_CONDITION.getPath(), () -> InterstellarCondition.CODEC);
     }
 
-    public OrbitalisNeoForge(IEventBus modBus) {
+    public OrbitalisNeoForge(IEventBus modBus, net.neoforged.fml.ModContainer container) {
         Orbitalis.init();
         CONDITIONS.register(modBus);
         modBus.addListener(RegisterCapabilitiesEvent.class, NeoForgeTransfer::expose);
@@ -59,7 +59,7 @@ public final class OrbitalisNeoForge {
                 event -> event.register(com.orbitalis.gametest.OrbitalisGameTests.class));
         if (FMLEnvironment.dist == Dist.CLIENT) {
             Orbitalis.initClient();
-            OrbitalisNeoForgeClient.init(modBus);
+            OrbitalisNeoForgeClient.init(modBus, container);
         }
     }
 

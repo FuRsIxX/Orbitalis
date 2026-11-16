@@ -67,6 +67,38 @@ public final class ServerConfig {
 
     public static final ModConfigSpec SPEC = BUILDER.build();
 
+    private static final String FILE = "orbitalis-server.toml";
+
     private ServerConfig() {
+    }
+
+    /**
+     * Au démarrage d'un monde : lit son fichier. S'il n'existe pas encore, il part de {@code defaultconfigs/orbitalis-server.toml}
+     * quand le dossier du jeu en a un (comme NeoForge), sinon des valeurs par défaut.
+     */
+    public static void loadFor(net.minecraft.server.MinecraftServer server) {
+        java.nio.file.Path file = server.getWorldPath(net.minecraft.world.level.storage.LevelResource.ROOT).resolve("serverconfig").resolve(FILE);
+        java.nio.file.Path model = dev.architectury.platform.Platform.getGameFolder().resolve("defaultconfigs").resolve(FILE);
+        if (!java.nio.file.Files.exists(file) && java.nio.file.Files.exists(model)) {
+            try {
+                java.nio.file.Files.createDirectories(file.getParent());
+                java.nio.file.Files.copy(model, file);
+            } catch (java.io.IOException failed) {
+                com.orbitalis.Orbitalis.LOGGER.warn("Réglages par défaut non copiés ({})", model, failed);
+            }
+        }
+        SPEC.load(file);
+    }
+
+    /** Envoie les réglages à un joueur (à sa connexion). */
+    public static void sendTo(net.minecraft.server.level.ServerPlayer player) {
+        com.orbitalis.platform.network.Network.sendToPlayer(player, new com.orbitalis.core.network.ServerConfigPayload(SPEC.snapshot()));
+    }
+
+    /** Envoie les réglages à tous les joueurs (après un changement à l'écran, monde ouvert en réseau local). */
+    public static void broadcast(net.minecraft.server.MinecraftServer server) {
+        for (net.minecraft.server.level.ServerPlayer player : server.getPlayerList().getPlayers()) {
+            sendTo(player);
+        }
     }
 }

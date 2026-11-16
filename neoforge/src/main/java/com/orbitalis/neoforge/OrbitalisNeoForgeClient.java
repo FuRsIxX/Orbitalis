@@ -31,7 +31,10 @@ final class OrbitalisNeoForgeClient {
     private OrbitalisNeoForgeClient() {
     }
 
-    static void init(IEventBus modBus) {
+    static void init(IEventBus modBus, net.neoforged.fml.ModContainer container) {
+        // Le bouton « Configurer » de la liste des mods ouvre les réglages d'Orbitalis.
+        container.registerExtensionPoint(net.neoforged.neoforge.client.gui.IConfigScreenFactory.class,
+                (net.neoforged.neoforge.client.gui.IConfigScreenFactory) (mod, parent) -> new com.orbitalis.client.screen.ConfigScreen(parent));
         // Le ciel de l'espace : orbites, Lune, Europe (« effects » de leur type de dimension).
         modBus.addListener(RegisterDimensionSpecialEffectsEvent.class, event -> event.register(Orbitalis.id("deep_space"), new SpaceEffects()));
         // Les rendus des entités de bloc, pendant l'événement prévu pour cela.
