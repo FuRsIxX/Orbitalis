@@ -45,7 +45,6 @@ import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.client.rendering.ColorHandlerRegistry;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
-import dev.architectury.registry.menu.MenuRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -76,7 +75,6 @@ public final class OrbitalisClient {
         }, ModBlocks.FLUID_PIPE.registrySupplier(), ModBlocks.GAS_PIPE.registrySupplier());
         // Ce qui demande les registres remplis : les écrans des interfaces, les rendus des entités de bloc, les couches.
         ClientLifecycleEvent.CLIENT_SETUP.register(minecraft -> {
-            screens();
             renderLayers();
             Orbitalis.LOGGER.info("Orbitalis : initialisation client terminée.");
         });
@@ -97,14 +95,26 @@ public final class OrbitalisClient {
         PadKitItem.blockClick = PadKitPlacement::useOn;
     }
 
-    private static void screens() {
-        MenuRegistry.registerScreenFactory(ModMenus.PROCESSING_MACHINE.get(), ProcessingMachineScreen::new);
-        MenuRegistry.registerScreenFactory(ModMenus.COMBUSTION_GENERATOR.get(), CombustionGeneratorScreen::new);
-        MenuRegistry.registerScreenFactory(ModMenus.FLUID_MACHINE.get(), FluidMachineScreen::new);
-        MenuRegistry.registerScreenFactory(ModMenus.CRYOGENIC_TANK.get(), CryogenicTankScreen::new);
-        MenuRegistry.registerScreenFactory(ModMenus.SUIT_WORKBENCH.get(), com.orbitalis.client.screen.SuitWorkbenchScreen::new);
-        MenuRegistry.registerScreenFactory(ModMenus.DRILL_DERRICK.get(), com.orbitalis.client.screen.DerrickScreen::new);
-        MenuRegistry.registerScreenFactory(ModMenus.ACCUMULATOR.get(), com.orbitalis.client.screen.AccumulatorScreen::new);
+    /** Ce qui inscrit l'écran d'une interface : chaque chargeur donne le sien (voir {@link #menuScreens}). */
+    public interface MenuScreenRegistry {
+        <M extends net.minecraft.world.inventory.AbstractContainerMenu, U extends net.minecraft.client.gui.screens.Screen
+                & net.minecraft.client.gui.screens.inventory.MenuAccess<M>> void register(net.minecraft.world.inventory.MenuType<? extends M> type,
+                dev.architectury.registry.menu.MenuRegistry.ScreenFactory<M, U> constructor);
+    }
+
+    /**
+     * Les écrans des interfaces à inventaire (machines, combinaison, foreuse, accumulateur). NeoForge n'en accepte que pendant
+     * son événement d'inscription des écrans : chaque chargeur les inscrit donc à son moment (Fabric : à l'initialisation du
+     * client).
+     */
+    public static void menuScreens(MenuScreenRegistry registry) {
+        registry.register(ModMenus.PROCESSING_MACHINE.get(), ProcessingMachineScreen::new);
+        registry.register(ModMenus.COMBUSTION_GENERATOR.get(), CombustionGeneratorScreen::new);
+        registry.register(ModMenus.FLUID_MACHINE.get(), FluidMachineScreen::new);
+        registry.register(ModMenus.CRYOGENIC_TANK.get(), CryogenicTankScreen::new);
+        registry.register(ModMenus.SUIT_WORKBENCH.get(), com.orbitalis.client.screen.SuitWorkbenchScreen::new);
+        registry.register(ModMenus.DRILL_DERRICK.get(), com.orbitalis.client.screen.DerrickScreen::new);
+        registry.register(ModMenus.ACCUMULATOR.get(), com.orbitalis.client.screen.AccumulatorScreen::new);
     }
 
     /** Ce qui inscrit un rendu d'entité de bloc : chaque chargeur donne le sien (voir {@link #blockEntityRenderers}). */

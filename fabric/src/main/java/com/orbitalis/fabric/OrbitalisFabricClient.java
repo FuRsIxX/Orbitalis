@@ -29,6 +29,15 @@ public final class OrbitalisFabricClient implements ClientModInitializer {
                 net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(type, provider);
             }
         });
+        // Les écrans des interfaces à inventaire, par Architectury (sous Fabric, l'inscription est immédiate).
+        com.orbitalis.client.OrbitalisClient.menuScreens(new com.orbitalis.client.OrbitalisClient.MenuScreenRegistry() {
+            @Override
+            public <M extends net.minecraft.world.inventory.AbstractContainerMenu, U extends net.minecraft.client.gui.screens.Screen
+                    & net.minecraft.client.gui.screens.inventory.MenuAccess<M>> void register(net.minecraft.world.inventory.MenuType<? extends M> type,
+                    dev.architectury.registry.menu.MenuRegistry.ScreenFactory<M, U> constructor) {
+                dev.architectury.registry.menu.MenuRegistry.registerScreenFactory(type, constructor);
+            }
+        });
         // Les particules du mod, par l'API de Fabric (Architectury 13 ne les inscrit pas sous Fabric).
         com.orbitalis.client.OrbitalisClient.particles((type, provider) ->
                 net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(type, provider::apply));

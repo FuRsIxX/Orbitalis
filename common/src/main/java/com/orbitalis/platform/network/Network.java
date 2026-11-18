@@ -33,6 +33,9 @@ public final class Network {
     /** Les codecs des messages vers le client : le client y attache ses gestionnaires au démarrage. */
     private static final Map<CustomPacketPayload.Type<?>, StreamCodec<? super RegistryFriendlyByteBuf, ?>> TO_CLIENT = new HashMap<>();
 
+    /** Les messages déjà signalés comme non reçus (une ligne au journal par type, pas une par envoi). */
+    private static final java.util.Set<CustomPacketPayload.Type<?>> SKIPPED = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
     private Network() {
     }
 
@@ -84,6 +87,10 @@ public final class Network {
     /** Envoie un message à un joueur, s'il sait le recevoir (pas les joueurs factices des tests, ni un client sans le mod). */
     public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
         if (!NetworkManager.canPlayerReceive(player, payload.type())) {
+            if (SKIPPED.add(payload.type())) {
+                com.orbitalis.Orbitalis.LOGGER.info("Message {} non envoyé à {} : son client ne le reçoit pas", payload.type().id(),
+                        player.getGameProfile().getName());
+            }
             return;
         }
         NetworkManager.sendToPlayer(player, payload);

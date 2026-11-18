@@ -77,6 +77,11 @@ public final class WorldPreview {
     private static boolean finished;
     /** Ticks passés sans être entré dans le monde. */
     private static int stalled;
+    /**
+     * Le clic sur le pupitre d'essai attend quelques ticks : en 1.21.1, le serveur ignore les clics d'un joueur tant qu'il n'a
+     * pas confirmé sa dernière téléportation, et chaque vue commence par en faire une.
+     */
+    private static int consoleClickIn = -1;
 
     private WorldPreview() {
     }
@@ -118,6 +123,9 @@ public final class WorldPreview {
 
         Shot shot = SHOTS.get(index);
         waited++;
+        if (consoleClickIn >= 0 && consoleClickIn-- == 0) {
+            clickTestConsoleNow();
+        }
         if (shot.name().startsWith("rover_")) {
             // Le second rover est figé en plein virage à droite : roues braquées, caisse qui penche.
             for (net.minecraft.world.entity.Entity entity : minecraft.level.entitiesForRendering()) {
@@ -131,6 +139,9 @@ public final class WorldPreview {
             File directory = new File(minecraft.gameDirectory, "world_preview");
             new File(directory, "screenshots").mkdirs();
             String name = "%02d_%s.png".formatted(index, shot.name());
+            Orbitalis.LOGGER.info("APERCU {} : {} {} {} {}, saut {}, écran {}", shot.name(), minecraft.level.dimension().location(),
+                    (int) Math.floor(minecraft.player.getX()), (int) Math.floor(minecraft.player.getY()), (int) Math.floor(minecraft.player.getZ()),
+                    (int) com.orbitalis.client.WarpFx.elapsed(), minecraft.screen == null ? "aucun" : minecraft.screen.getClass().getSimpleName());
             Screenshot.grab(directory, name, minecraft.getMainRenderTarget(),
                     message -> Orbitalis.LOGGER.info("Capture du monde : {}", name));
         } else if (waited > shot.settle() + 3) {
@@ -303,12 +314,18 @@ public final class WorldPreview {
 
     /** Un vrai clic droit du joueur sur le pupitre d'essai de la carte de test (en -20 -60 50). */
     private static void clickTestConsole() {
+        consoleClickIn = 10;
+    }
+
+    private static void clickTestConsoleNow() {
         net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
         minecraft.execute(() -> {
             if (minecraft.player != null && minecraft.gameMode != null) {
                 BlockPos console = new BlockPos(-20, -60, 50);
-                minecraft.gameMode.useItemOn(minecraft.player, net.minecraft.world.InteractionHand.MAIN_HAND,
+                var result = minecraft.gameMode.useItemOn(minecraft.player, net.minecraft.world.InteractionHand.MAIN_HAND,
                         new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(console), Direction.SOUTH, console, false));
+                com.orbitalis.Orbitalis.LOGGER.info("APERCU clic pupitre : {} en {}, écran {}", result, minecraft.gameMode.getPlayerMode(),
+                        minecraft.screen == null ? "aucun" : minecraft.screen.getClass().getSimpleName());
             }
         });
     }
@@ -2852,7 +2869,7 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_test_kit", level -> net.minecraft.client.Minecraft.getInstance().execute(() -> net.minecraft.client.Minecraft.getInstance()
                 .setScreen(new com.orbitalis.client.screen.PadKitScreen(null, Direction.NORTH, 1, false))), -20.5, -58.4, 53.5, 180.0F, 10.0F, 30));
         // La pompe à eau de l'atelier, au-dessus de son bassin.
-        SHOTS.add(new Shot("tm_pump", null, -11.5, -58.0, 14.5, 145.0F, 28.0F, 40));
+        SHOTS.add(new Shot("tm_pump", level -> closeScreen(), -11.5, -58.0, 14.5, 145.0F, 28.0F, 40));
         // Garde des écrans : un clic ouvre le pupitre d'essai ; le pupitre cassé, l'écran se ferme ; rouvert, la touche
         // d'inventaire le ferme aussi.
         SHOTS.add(new Shot("tm_guard_open", level -> {
@@ -3058,6 +3075,10 @@ public final class WorldPreview {
         SHOTS.add(new Shot("tm_warp_after", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 12));
         SHOTS.add(new Shot("tm_warp_banner", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 24));
         SHOTS.add(new Shot("tm_orbit_jump_arrived", null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 140));
+        // Le saut en rafale, une image tous les 10 ticks après tm_orbit_jump_order (le journal donne le temps de l'effet).
+        for (int frame = 0; frame < 48; frame++) {
+            SHOTS.add(new Shot("tm_warpframe_%02d".formatted(frame), frame == 0 ? level -> closeScreen() : null, Double.NaN, 0.0, 0.0, 0.0F, 0.0F, 6));
+        }
         // Arrivé en orbite de TRAPPIST-1 e (poupe en 0 120 0) : le vaisseau vu du dehors, puis la passerelle.
         SHOTS.add(new Shot("tm_trappist_orbit_ship", level -> hover(level), 26.0, 134.0, 26.0, 200.0F, 25.0F, 120));
         SHOTS.add(new Shot("tm_trappist_orbit_helm", level -> helm(level, false), 37.5, 119.0, 0.5, -90.0F, 6.0F, 60));

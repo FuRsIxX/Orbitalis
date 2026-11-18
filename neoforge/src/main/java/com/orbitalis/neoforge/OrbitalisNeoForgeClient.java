@@ -47,6 +47,16 @@ final class OrbitalisNeoForgeClient {
                         event.registerBlockEntityRenderer(type, provider);
                     }
                 }));
+        // Les écrans des interfaces à inventaire : NeoForge ne les accepte que pendant cet événement.
+        modBus.addListener(net.neoforged.neoforge.client.event.RegisterMenuScreensEvent.class,
+                event -> com.orbitalis.client.OrbitalisClient.menuScreens(new com.orbitalis.client.OrbitalisClient.MenuScreenRegistry() {
+                    @Override
+                    public <M extends net.minecraft.world.inventory.AbstractContainerMenu, U extends net.minecraft.client.gui.screens.Screen
+                            & net.minecraft.client.gui.screens.inventory.MenuAccess<M>> void register(net.minecraft.world.inventory.MenuType<? extends M> type,
+                            dev.architectury.registry.menu.MenuRegistry.ScreenFactory<M, U> constructor) {
+                        event.register(type, constructor::create);
+                    }
+                }));
         // Les particules du mod, pendant l'événement prévu pour cela.
         modBus.addListener(net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent.class,
                 event -> com.orbitalis.client.OrbitalisClient.particles((type, provider) -> event.registerSpriteSet(type, provider::apply)));

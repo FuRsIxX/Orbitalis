@@ -60,6 +60,9 @@ Generated data on `main` is converted, not regenerated: a script turns 26.2 JSON
 7. Game tests and a test map, then in-game captures on Fabric and NeoForge, fixing every difference.
    **Game tests: 70/70 on both loaders (2026-11-16)** (`./gradlew :fabric:runGametest`, `:neoforge:runGametest`).
    Launch checked in game on both loaders: countdown, deluge, ignition, smoke and flames, lift-off.
+   **Test map (2026-11-18):** built by the server of each loader, then 117 to 129 views captured on each (station
+   nodes and port ghosts, ship sections, shipyard, warp jump frame by frame, exoplanets, shuttle, ring, screen guard,
+   guide, atlas, piloting and suit HUDs).
 8. Then the same for 1.20.1 (Forge + Fabric), starting from this branch.
 
 ## Checking a build
@@ -103,3 +106,7 @@ Data is converted with `python tools/convert_data_121.py` (rerun it after copyin
 | Create compatibility | Nothing to port: `main` only has the empty package | — |
 | Server config per world, synced to players (NeoForge `SERVER` config) | Own file per world (`serverconfig/orbitalis-server.toml`, `defaultconfigs/` as model), sent to each player on join and after a change | Same |
 | NeoForge generic config screen | Own screen on vanilla options widgets (`ConfigScreen`), opened from the mod list (NeoForge) or Mod Menu (Fabric) | Same settings, vanilla look |
+| Menu screens registered at client setup | NeoForge 21 only takes them during `RegisterMenuScreensEvent`: each loader registers them at its own moment (`OrbitalisClient.menuScreens`) | Same |
+| Server ignores a click sent before the player confirms a teleport | Real players never hit it; the capture tool waits a few ticks before clicking | Tool only |
+| Test map server stops by itself | 1.21.1 keeps the process alive after `halt`: it exits once the world is closed | Same |
+

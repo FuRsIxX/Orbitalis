@@ -140,6 +140,9 @@ public final class TestMap {
 
         server.saveEverything(false, true, true);
         Orbitalis.LOGGER.info("Carte de test : terminée");
+        // En 1.21.1, le serveur arrêté laisse vivre le processus (fils du chargeur) : on le quitte une fois le monde fermé.
+        dev.architectury.event.events.common.LifecycleEvent.SERVER_STOPPED.register(stopped ->
+                new Thread(() -> System.exit(0), "orbitalis-carte-fin").start());
         server.halt(false);
     }
 

@@ -92,6 +92,11 @@ public final class WarpFx {
         lastSound = -1;
     }
 
+    /** Le temps écoulé depuis le départ, en ticks (-1 hors saut) : pour l'outil de capture. */
+    public static float elapsed() {
+        return time(partial());
+    }
+
     /** Vrai pendant toute la mise en scène. */
     public static boolean active() {
         return active;
